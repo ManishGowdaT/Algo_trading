@@ -33,6 +33,28 @@ const tradeSchema = new mongoose.Schema({
     pnl: {
         type: Number
     },
+    executionMode: {
+        type: String,
+        enum: ['PAPER', 'LIVE'],
+        default: 'PAPER'
+    },
+    entryOrderId: {
+        type: String
+    },
+    protectiveOrderId: {
+        type: String
+    },
+    protectiveStopPrice: {
+        type: Number
+    },
+    positionState: {
+        type: String,
+        enum: ['OPEN', 'PROTECTED', 'UNPROTECTED', 'EXIT_PENDING', 'CLOSED', 'RECONCILIATION_REQUIRED'],
+        default: 'OPEN'
+    },
+    lastBrokerSyncAt: {
+        type: Date
+    },
     exitReason: {
         type: String,
         enum: ['Target', 'SL', 'Trailing SL', 'Strategy', 'HA_TREND_REVERSAL', 'Reversal', 'RECOVERY_CLEANUP', 'Manual']

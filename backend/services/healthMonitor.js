@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const mongoose = require('mongoose');
 const config = require('../config');
+const { notifyUrgent } = require('./notificationService');
 
 class HealthMonitorService extends EventEmitter {
   constructor() {
@@ -12,6 +13,7 @@ class HealthMonitorService extends EventEmitter {
       lastCheck: null,
       rttMs: 0
     };
+    this.lastOperationalState = null;
   }
 
   async checkHealth() {
@@ -28,7 +30,10 @@ class HealthMonitorService extends EventEmitter {
     // 2. Check Python Wrapper /health endpoint
     const startMs = Date.now();
     try {
-      const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
+      const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/health`, {
+        signal: AbortSignal.timeout(3000),
+        headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+      });
       if (res.ok) {
         state.pythonApi = true;
         state.rttMs = Date.now() - startMs;
@@ -38,6 +43,16 @@ class HealthMonitorService extends EventEmitter {
     }
 
     this.lastHealthState = state;
+
+    const operational = state.pythonApi && state.mongoDb;
+    if (this.lastOperationalState !== operational) {
+      const label = operational ? 'HEALTHY' : 'DEGRADED';
+      console.log(`[HealthMonitor] System health transition: ${label}`, state);
+      notifyUrgent(operational ? 'SYSTEM_HEALTH_RESTORED' : 'SYSTEM_HEALTH_DEGRADED', {
+        reason: operational ? 'Node, Python, and MongoDB checks are healthy' : 'Python API or MongoDB health check failed',
+      }).catch(err => console.error('[HealthMonitor] Health alert error:', err.message));
+      this.lastOperationalState = operational;
+    }
 
     if (!state.pythonApi || !state.mongoDb) {
       console.warn('[HealthMonitor] System Health Warning:', state);

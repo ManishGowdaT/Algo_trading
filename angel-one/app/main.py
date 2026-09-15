@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta, timezone
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from app.core.config import load_config
-from app.services.angel_client import AngelClient
+from app.services.broker_session import BrokerSessionManager
 from app.services.instrument_master import InstrumentMasterCache
 from app.services.order_store import OrderStore
 
@@ -49,7 +51,10 @@ class ExitPositionRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
+    apiKey: str
+    clientCode: str
     mpin: str
+    totpSecret: str
 
 
 class LtpRequest(BaseModel):
@@ -80,14 +85,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-angel = AngelClient(
-    api_key=cfg.angel.api_key,
-    client_code=cfg.angel.client_code,
-    totp_secret=cfg.angel.totp_secret,
-)
+INTERNAL_SERVICE_KEY = (
+    os.getenv("INTERNAL_SERVICE_KEY")
+    or os.getenv("INTERNAL_API_SECRET")
+    or ""
+).strip()
+
+
+@app.middleware("http")
+async def require_internal_service_key(request: Request, call_next):
+    """Keep broker/data endpoints private behind the Node API."""
+    protected_prefixes = ("/angel", "/market", "/instruments")
+    if request.method != "OPTIONS" and request.url.path.startswith(protected_prefixes):
+        supplied = request.headers.get("X-Internal-Service-Key", "")
+        if not INTERNAL_SERVICE_KEY or supplied != INTERNAL_SERVICE_KEY:
+            return JSONResponse(status_code=401, content={"detail": "Internal service authentication required"})
+    return await call_next(request)
+
+angel = BrokerSessionManager()
 
 store = OrderStore(db_path=str(BASE_DIR / "orders.sqlite"))
 instruments = InstrumentMasterCache()
+
+
+@app.on_event("shutdown")
+def shutdown_services() -> None:
+    angel.shutdown()
 
 
 @app.get("/health")
@@ -97,12 +120,13 @@ def health() -> Dict[str, Any]:
 
 @app.post("/angel/login")
 def angel_login(req: LoginRequest) -> Dict[str, Any]:
-    if angel.is_logged_in:
-        info = angel.get_session_info()
-        info["message"] = "Angel One login successful (Reused active session)"
-        return info
     try:
-        return angel.login(req.mpin)
+        return angel.connect(
+            api_key=req.apiKey,
+            client_code=req.clientCode,
+            mpin=req.mpin,
+            totp_secret=req.totpSecret,
+        )
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -111,7 +135,12 @@ def angel_login(req: LoginRequest) -> Dict[str, Any]:
 def get_session_tokens() -> Dict[str, Any]:
     if not angel.is_logged_in:
         raise HTTPException(status_code=401, detail="Not logged in")
-    return angel.get_session_info()
+    return angel.get_internal_session_info()
+
+
+@app.get("/angel/status")
+def angel_status() -> Dict[str, Any]:
+    return angel.get_status()
 
 @app.post("/angel/logout")
 def angel_logout() -> Dict[str, Any]:

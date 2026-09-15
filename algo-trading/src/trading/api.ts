@@ -1,15 +1,13 @@
-const API_BASE = import.meta.env.VITE_ANGEL_ONE_API_BASE ?? 'http://localhost:8000';
+const configuredApiBase = import.meta.env.VITE_API_BASE ?? import.meta.env.VITE_API_URL;
+const API_BASE = configuredApiBase
+  ? `${configuredApiBase.replace(/\/+$/, '')}${configuredApiBase.replace(/\/+$/, '').endsWith('/api/v1') ? '' : '/api/v1'}`
+  : 'http://localhost:5000/api/v1';
 
 function getUrl(path: string): string {
   if (path.startsWith('/market/index-ltp')) {
-    return `http://localhost:5000/api/v1/chart/index-ltp${path.replace('/market/index-ltp', '')}`;
+    return `${API_BASE}/chart/index-ltp${path.replace('/market/index-ltp', '')}`;
   }
-  // Python Angel One Wrapper routes
-  if (path.startsWith('/market') || path.startsWith('/angel') || path.startsWith('/instruments')) {
-    return `${API_BASE}${path}`;
-  }
-  // Node.js Main Backend routes (/chart, /trades, /strategies, /users, etc.)
-  return `http://localhost:5000/api/v1${path}`;
+  return `${API_BASE}${path}`;
 }
 
 export async function apiGet<T>(path: string): Promise<T> {

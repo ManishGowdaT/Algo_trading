@@ -113,7 +113,7 @@ function drawDivider(doc: jsPDF, y: number, pageWidth: number, margin = 10) {
 // MAIN EXPORT — Portrait layout for readable display on mobile devices
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function generateTradesPdf({ trades, filters, strategyName, analytics }: GeneratePdfParams) {
+export function generateTradesPdf({ trades, analytics }: GeneratePdfParams) {
     const doc = new jsPDF({
         orientation: 'portrait',  // Changed to portrait to look big and clear on mobile screens
         unit: 'mm',

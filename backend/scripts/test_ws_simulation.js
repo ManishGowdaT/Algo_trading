@@ -8,7 +8,7 @@ async function runSimulation() {
   // 1. Verify Subscriptions & Ref Counting
   console.log('[Test 1] Testing Subscription Reference Counting...');
   await marketDataService.subscribe('BFO', '854321', 'FIVE_MINUTE');
-  const sub1 = marketDataService.subscribers.get('854321');
+  const sub1 = marketDataService.subscribers.get('BFO_854321_FIVE_MINUTE');
   console.log(`Ref count after sub 1: ${sub1.refCount}`);
 
   await marketDataService.subscribe('BFO', '854321', 'FIVE_MINUTE');

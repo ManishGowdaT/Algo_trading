@@ -21,7 +21,7 @@ async function runE2ESimulation() {
   // STAGE 2: Market Data Subscription & Ref Counting
   console.log('[STAGE 2] Subscribing Tokens (Reference Counting)');
   await marketDataService.subscribe('BFO', '854321', 'FIVE_MINUTE');
-  const sub = marketDataService.subscribers.get('854321');
+  const sub = marketDataService.subscribers.get('BFO_854321_FIVE_MINUTE');
   console.log(`Subscribed Token: 854321 | RefCount: ${sub.refCount} | ExchangeType: ${sub.exchangeType}`);
   console.log('✅ [Executed] Token subscription registered\n');
 

@@ -6,6 +6,7 @@ async function testRestCandles() {
   console.log('====================================================\n');
 
   const ANGEL_API_BASE = 'http://localhost:8000';
+  const INTERNAL_SERVICE_KEY = process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '';
   const targetDate = new Date().toISOString().split('T')[0];
 
   const bn = await contractManager.resolveContracts('BANKNIFTY', 'ATM', 1);
@@ -17,7 +18,7 @@ async function testRestCandles() {
   // Fetch NFO candles
   try {
     const urlNfo = `${ANGEL_API_BASE}/market/candles?exchange=${encodeURIComponent(bn.exchange)}&symboltoken=${encodeURIComponent(bn.ceContract.symboltoken)}&interval=FIVE_MINUTE&date=${targetDate}`;
-    const resNfo = await fetch(urlNfo);
+    const resNfo = await fetch(urlNfo, { headers: { 'X-Internal-Service-Key': INTERNAL_SERVICE_KEY } });
     const jsonNfo = await resNfo.json();
     console.log(`\n[NFO REST Candles Response Status: ${resNfo.status}] Items Count: ${Array.isArray(jsonNfo.items) ? jsonNfo.items.length : 0}`);
   } catch (err) {
@@ -27,7 +28,7 @@ async function testRestCandles() {
   // Fetch BFO candles
   try {
     const urlBfo = `${ANGEL_API_BASE}/market/candles?exchange=${encodeURIComponent(sx.exchange)}&symboltoken=${encodeURIComponent(sx.ceContract.symboltoken)}&interval=FIVE_MINUTE&date=${targetDate}`;
-    const resBfo = await fetch(urlBfo);
+    const resBfo = await fetch(urlBfo, { headers: { 'X-Internal-Service-Key': INTERNAL_SERVICE_KEY } });
     const jsonBfo = await resBfo.json();
     console.log(`[BFO REST Candles Response Status: ${resBfo.status}] Items Count: ${Array.isArray(jsonBfo.items) ? jsonBfo.items.length : 0}`);
     if (jsonBfo.detail) {

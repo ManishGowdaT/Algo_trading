@@ -14,6 +14,8 @@ module.exports = {
   API: {
     ANGEL_ONE_API_BASE: process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000',
     TIMEOUT_MS: parseInt(process.env.API_TIMEOUT_MS || '5000', 10),
+    // Keep compatibility with the existing single-user environment name.
+    INTERNAL_SERVICE_KEY: process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '',
   },
   LOGGING: {
     LEVEL: process.env.LOG_LEVEL || 'info', // 'info' | 'debug'

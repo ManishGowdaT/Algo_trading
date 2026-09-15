@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Play, Square, XCircle } from 'lucide-react'
 import { apiGet, apiPost } from '../../trading'
 import { usePageTitle } from '../../hooks/usePageTitle'
@@ -29,7 +29,6 @@ type StrategyManifest = {
 
 export default function DynamicStrategyPage() {
   const { strategyId } = useParams<{ strategyId: string }>()
-  const navigate = useNavigate()
   const [manifest, setManifest] = useState<StrategyManifest | null>(null)
   const [config, setConfig] = useState<Record<string, any>>({})
   const [status, setStatus] = useState<any>(null)

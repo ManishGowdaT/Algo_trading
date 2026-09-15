@@ -2,11 +2,21 @@ import { createContext, useCallback, useContext, useMemo, useState, useEffect } 
 import type { ReactNode } from 'react'
 
 import MpinModal from './MpinModal'
+import { apiGet, apiPost } from '../../trading'
+import { useAuth } from '../../context/AuthContext'
+
+export type AngelCredentials = {
+  apiKey: string
+  clientCode: string
+  mpin: string
+  totpSecret: string
+}
 
 type AngelLoginResponse = {
   status: boolean
+  connected?: boolean
+  clientCode?: string | null
   message?: string
-  client_code?: string
 }
 
 type ConnectStatus = 'idle' | 'connecting' | 'connected' | 'error'
@@ -18,21 +28,10 @@ type AngelConnectionContextValue = {
   disconnect: () => Promise<void>
 }
 
-const API_BASE = import.meta.env.VITE_ANGEL_ONE_API_BASE ?? 'http://localhost:8000'
-
-async function apiPost<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  })
-  if (!res.ok) throw new Error(await res.text())
-  return (await res.json()) as T
-}
-
 const AngelConnectionContext = createContext<AngelConnectionContextValue | null>(null)
 
 export function AngelConnectionProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const [connectStatus, setConnectStatus] = useState<ConnectStatus>('idle')
   const [connectMessage, setConnectMessage] = useState('')
   const [mpinOpen, setMpinOpen] = useState(false)
@@ -51,42 +50,34 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     setConnectMessage('Disconnected')
   }, [])
 
-  const submitMpin = useCallback(async (mpin: string, silent = false) => {
-    if (!silent) {
-      setConnectStatus('connecting')
-      setConnectMessage('')
-    }
+  const submitCredentials = useCallback(async (credentials: AngelCredentials) => {
+    setConnectStatus('connecting')
+    setConnectMessage('')
     try {
-      const login = await apiPost<AngelLoginResponse>('/angel/login', { mpin })
+      const login = await apiPost<AngelLoginResponse>('/angel/login', credentials)
       setConnectStatus('connected')
-      if (!silent) {
-        setConnectMessage(login.message ?? 'Connected')
-      }
+      setConnectMessage(login.message ?? 'Connected')
       setMpinOpen(false)
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Connect failed'
-      if (!silent) {
-        setConnectStatus('error')
-        setConnectMessage('')
-      }
+      setConnectStatus('error')
+      setConnectMessage('')
       throw new Error(msg)
     }
   }, [])
 
-  // Auto-login & 5 min reconnect
+  // Restore the broker connection indicator after an application refresh.
   useEffect(() => {
-    const mpin = import.meta.env.VITE_ANGEL_MPIN ?? ''
-
-    // Auto login on mount
-    submitMpin(mpin, false).catch(console.error)
-
-    // Auto reconnect every 5 minutes
-    const intervalId = setInterval(() => {
-      submitMpin(mpin, true).catch(console.error)
-    }, 300_000)
-
-    return () => clearInterval(intervalId)
-  }, [submitMpin])
+    if (!user) return
+    apiGet<{ connected: boolean; message?: string }>('/angel/status')
+      .then((status) => {
+        setConnectStatus(status.connected ? 'connected' : 'idle')
+        if (status.message) setConnectMessage(status.message)
+      })
+      .catch(() => {
+        setConnectStatus('idle')
+      })
+  }, [user])
 
   const value = useMemo<AngelConnectionContextValue>(
     () => ({
@@ -104,8 +95,8 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       <MpinModal
         open={mpinOpen}
         onCancel={() => setMpinOpen(false)}
-        onSubmit={async (mpin) => {
-          await submitMpin(mpin)
+        onSubmit={async (credentials) => {
+          await submitCredentials(credentials)
         }}
       />
     </AngelConnectionContext.Provider>

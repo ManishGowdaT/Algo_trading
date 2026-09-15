@@ -28,9 +28,22 @@ exports.getIndexLtp = async (req, res) => {
       return res.status(200).json(cached.data);
     }
 
-    const response = await fetch(`${config.API.ANGEL_ONE_API_BASE}/market/index-ltp?underlying=${encodeURIComponent(underlying)}`);
+    const response = await fetch(`${config.API.ANGEL_ONE_API_BASE}/market/index-ltp?underlying=${encodeURIComponent(underlying)}`, {
+      headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+    });
     if (!response.ok) {
       const text = await response.text();
+      // This route is reached after Node application authentication. A 401
+      // from Python means the Angel One session is unavailable, not that the
+      // application JWT expired. Return a non-auth status so the frontend
+      // does not redirect the user back to the sign-in page.
+      if (response.status === 401) {
+        return res.status(503).json({
+          status: 'fail',
+          message: 'Angel One broker session is unavailable',
+          brokerSessionUnavailable: true,
+        });
+      }
       return res.status(response.status).send(text);
     }
     const data = await response.json();

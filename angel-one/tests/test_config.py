@@ -6,14 +6,14 @@ import pytest
 from app.core.config import load_config
 
 
-def test_load_config_requires_env_vars(monkeypatch):
+def test_load_config_does_not_require_broker_credentials(monkeypatch):
     monkeypatch.delenv("ANGEL_API_KEY", raising=False)
     monkeypatch.delenv("ANGEL_CLIENT_CODE", raising=False)
     monkeypatch.delenv("ANGEL_PASSWORD", raising=False)
     monkeypatch.delenv("ANGEL_TOTP_SECRET", raising=False)
 
-    with pytest.raises(ValueError):
-        load_config(dotenv_path="nonexistent_env_file")
+    cfg = load_config(dotenv_path="nonexistent_env_file")
+    assert cfg.angel.base_url == "https://apiconnect.angelone.in"
 
 
 def test_load_config_parses_cors_origins(monkeypatch, tmp_path):
@@ -37,6 +37,5 @@ def test_load_config_parses_cors_origins(monkeypatch, tmp_path):
     monkeypatch.delenv("CORS_ORIGINS", raising=False)
 
     cfg = load_config(dotenv_path=str(env_file))
-    assert cfg.angel.api_key == "key"
     assert cfg.cors_origins == ["http://a", "http://b"]
 

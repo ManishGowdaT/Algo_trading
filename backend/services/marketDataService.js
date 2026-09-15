@@ -38,13 +38,16 @@ class MarketDataService extends EventEmitter {
   constructor() {
     super();
     this.ltpCache = new Map(); // token -> { ltp, timestamp }
-    this.subscribers = new Map(); // token -> { exchange, exchangeType, refCount }
+    this.subscribers = new Map(); // exchange_token_interval -> { exchange, exchangeType, token, refCount }
+    this.streamSubscribers = new Map(); // exchangeType:token -> { exchange, exchangeType, token, refCount }
     this.candleBuilders = new Map(); // bufferKey -> builder object
 
     this.wsConsecutiveTicks = 0;
     this.fallbackTimer = null;
     this.fallbackPollingInterval = null;
     this.isRestFallbackActive = false;
+    this.sessionId = null;
+    this.sessionAvailable = false;
 
     smartStream.on('tick', (tick) => this.handleTick(tick));
     smartStream.on('disconnected', () => this.handleStreamDisconnect());
@@ -119,15 +122,17 @@ class MarketDataService extends EventEmitter {
   async pollRestLtpFallback() {
     if (this.subscribers.size === 0) return;
 
-    for (const [token, sub] of this.subscribers.entries()) {
+    for (const [streamKey, sub] of this.streamSubscribers.entries()) {
       try {
-        const url = `${ANGEL_API_BASE}/market/ltp?exchange=${encodeURIComponent(sub.exchange)}&tradingsymbol=&symboltoken=${encodeURIComponent(token)}`;
-        const res = await fetch(url);
+        const url = `${ANGEL_API_BASE}/market/ltp?exchange=${encodeURIComponent(sub.exchange)}&tradingsymbol=&symboltoken=${encodeURIComponent(sub.token)}`;
+        const res = await fetch(url, {
+          headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+        });
         if (res.ok) {
           const json = await res.json();
           if (json && json.ltp > 0) {
-            this.handleTick({
-              token,
+          this.handleTick({
+            token: sub.token,
               exchangeType: sub.exchangeType,
               ltp: json.ltp,
               timestamp: Date.now(),
@@ -244,12 +249,25 @@ class MarketDataService extends EventEmitter {
   }
 
   async autoInitSession() {
-    if ((smartStream.isConnected || smartStream.isConnecting) && (orderUpdateService.isConnected || orderUpdateService.isConnecting)) return;
     try {
-      const res = await fetch(`${ANGEL_API_BASE}/angel/session-tokens`);
+      const res = await fetch(`${ANGEL_API_BASE}/angel/session-tokens`, {
+        headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+      });
       if (res.ok) {
         const data = await res.json();
         if (data && data.status && data.client_code && data.feed_token) {
+          if (!this.sessionAvailable) {
+            console.log(`[MarketDataService] Broker session restored${data.session_id ? ` (session ${data.session_id})` : ''}`);
+            this.emit('session:restored', data);
+          }
+          this.sessionAvailable = true;
+          if (this.sessionId && data.session_id && this.sessionId !== data.session_id) {
+            console.log(`[MarketDataService] Broker session changed: ${this.sessionId} -> ${data.session_id}. Reconnecting streams.`);
+            smartStream.disconnect(false);
+            orderUpdateService.disconnect(false);
+            this.stopRestFallback();
+          }
+          this.sessionId = data.session_id || this.sessionId;
           this.initSession({
             clientCode: data.client_code,
             feedToken: data.feed_token,
@@ -257,9 +275,23 @@ class MarketDataService extends EventEmitter {
             apiKey: data.api_key
           });
         }
+      } else if (res.status === 401) {
+        if (this.sessionAvailable) {
+          console.warn('[MarketDataService] Broker session unavailable (HTTP 401)');
+          this.emit('session:lost', { reason: 'Broker session is unavailable' });
+        }
+        this.sessionAvailable = false;
+        this.sessionId = null;
+        smartStream.disconnect(false);
+        orderUpdateService.disconnect(false);
+        this.stopRestFallback();
       }
     } catch (e) {
-      // Session fetch error
+      if (this.sessionAvailable) {
+        console.warn(`[MarketDataService] Broker session health check failed: ${e.message}`);
+        this.emit('session:lost', { reason: 'Broker session service is unreachable' });
+        this.sessionAvailable = false;
+      }
     }
   }
 
@@ -270,15 +302,25 @@ class MarketDataService extends EventEmitter {
     const exchType = this.getExchangeType(exchange);
     const key = this.getBufferKey(exchange, token, interval);
 
-    // Reference Counting
-    let sub = this.subscribers.get(token);
+    // Reference count the exact candle stream and the underlying broker token separately.
+    let sub = this.subscribers.get(key);
     if (!sub) {
-      sub = { exchange, exchangeType: exchType, refCount: 0 };
-      this.subscribers.set(token, sub);
+      sub = { exchange, exchangeType: exchType, token, refCount: 0 };
+      this.subscribers.set(key, sub);
     }
     sub.refCount++;
+    console.log(`[MarketDataService] Candle subscription ${key}: refCount=${sub.refCount}`);
 
-    if (sub.refCount === 1) {
+    const streamKey = `${exchType}:${token}`;
+    let streamSub = this.streamSubscribers.get(streamKey);
+    if (!streamSub) {
+      streamSub = { exchange, exchangeType: exchType, token, refCount: 0 };
+      this.streamSubscribers.set(streamKey, streamSub);
+    }
+    streamSub.refCount++;
+
+    if (streamSub.refCount === 1) {
+      console.log(`[MarketDataService] Broker stream subscribe ${streamKey}`);
       smartStream.subscribe([{ exchangeType: exchType, tokens: [token] }]);
     }
 
@@ -300,7 +342,9 @@ class MarketDataService extends EventEmitter {
       try {
         const targetDate = new Date().toISOString().split('T')[0];
         const url = `${ANGEL_API_BASE}/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${targetDate}`;
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+        });
         if (res.ok) {
           const json = await res.json();
           if (Array.isArray(json.items)) {
@@ -326,15 +370,27 @@ class MarketDataService extends EventEmitter {
     const token = String(symboltoken);
     const key = this.getBufferKey(exchange, token, interval);
 
-    this.candleBuilders.delete(key);
-
-    const sub = this.subscribers.get(token);
+    const sub = this.subscribers.get(key);
     if (sub) {
       sub.refCount--;
       if (sub.refCount <= 0) {
-        smartStream.unsubscribe([{ exchangeType: sub.exchangeType, tokens: [token] }]);
-        this.subscribers.delete(token);
-        this.ltpCache.delete(token);
+        console.log(`[MarketDataService] Candle subscription ${key}: removed`);
+        this.candleBuilders.delete(key);
+        this.subscribers.delete(key);
+      }
+
+      const streamKey = `${sub.exchangeType}:${token}`;
+      const streamSub = this.streamSubscribers.get(streamKey);
+      if (streamSub) {
+        streamSub.refCount--;
+        if (streamSub.refCount <= 0) {
+          console.log(`[MarketDataService] Broker stream unsubscribe ${streamKey}`);
+          smartStream.unsubscribe([{ exchangeType: streamSub.exchangeType, tokens: [token] }]);
+          this.streamSubscribers.delete(streamKey);
+          this.ltpCache.delete(token);
+        } else {
+          console.log(`[MarketDataService] Broker stream ${streamKey}: refCount=${streamSub.refCount}`);
+        }
       }
     }
   }

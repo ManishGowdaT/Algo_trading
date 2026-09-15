@@ -4,6 +4,7 @@ const contractManager = require('./contractManager');
 const marketDataService = require('./marketDataService');
 const orderUpdateService = require('./orderUpdateService');
 const marketSessionManager = require('./marketSessionManager');
+const { notifyUrgent } = require('./notificationService');
 marketSessionManager.startMonitoring();
 
 const strategyRegistry = require('./strategyRegistry');
@@ -11,6 +12,7 @@ const indicators = require('../trading/indicators');
 strategyRegistry.init().catch(err => console.error('[StrategyEngine] Registry init error:', err.message));
 
 const ANGEL_API_BASE = process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000';
+const INTERNAL_SERVICE_KEY = process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '';
 
 const INDEX_CONFIG = {
   SENSEX: { qty: 20, step: 20, exchange: 'BFO' },
@@ -24,7 +26,10 @@ async function callAngelApi(endpoint, method = 'GET', body = null) {
   const url = `${ANGEL_API_BASE}${endpoint}`;
   const options = {
     method,
-    headers: { 'Content-Type': 'application/json' }
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Internal-Service-Key': INTERNAL_SERVICE_KEY,
+    }
   };
   if (body !== null) {
     options.body = JSON.stringify(body);
@@ -132,6 +137,10 @@ class SingleStrategyRunner {
     this.activeTradePremium = null;
     this.entryPrice = null;
     this.activeTradeContract = null;
+    this.entryOrderId = null;
+    this.protectiveOrderId = null;
+    this.protectiveStopPrice = null;
+    this.positionState = 'NONE';
     this.currentLtp = null;
     this.activeTrailingSl = null;
     this.stopLoss = null;
@@ -150,6 +159,8 @@ class SingleStrategyRunner {
     this.lastExitError = null;
     this.exitRetryCount = 0;
     this.lastExitAttemptTime = 0;
+    this.brokerReady = false;
+    this.sessionAlertSent = false;
 
     this.contractInterval = null;
     this.scanInterval = null;
@@ -168,6 +179,13 @@ class SingleStrategyRunner {
   async start(config, userId) {
     this.config = config || {};
     this.userId = userId;
+
+    const brokerStatus = await callAngelApi('/angel/status');
+    if (!brokerStatus || !brokerStatus.connected) {
+      throw new Error(brokerStatus?.message || 'Angel One broker session is not connected');
+    }
+
+    this.brokerReady = true;
     this.isRunning = true;
     this.state = this.strategyName === '5minBreakout' ? 'WAITING' : 'SCANNING';
     this.log('Strategy execution started on Node.js');
@@ -240,6 +258,10 @@ class SingleStrategyRunner {
     this.activeTradePremium = null;
     this.entryPrice = null;
     this.activeTradeContract = null;
+    this.entryOrderId = null;
+    this.protectiveOrderId = null;
+    this.protectiveStopPrice = null;
+    this.positionState = 'NONE';
     this.currentLtp = null;
     this.activeTrailingSl = null;
     this.stopLoss = null;
@@ -290,7 +312,11 @@ class SingleStrategyRunner {
           this.activeTradeId = trade._id.toString();
           this.activeTradePremium = trade.premium;
           this.entryPrice = trade.buyPrice;
-          this.state = 'IN_POSITION';
+          this.entryOrderId = trade.entryOrderId || null;
+          this.protectiveOrderId = trade.protectiveOrderId || null;
+          this.protectiveStopPrice = trade.protectiveStopPrice || null;
+          this.positionState = trade.positionState || (this.config.liveTradingConsent ? 'UNPROTECTED' : 'PROTECTED');
+          this.state = this.positionState === 'PROTECTED' ? 'POSITION_PROTECTED' : 'POSITION_UNPROTECTED';
           if (trade.premium.endsWith('CE')) this.rangeSide = 'CE';
           if (trade.premium.endsWith('PE')) this.rangeSide = 'PE';
           
@@ -393,7 +419,7 @@ class SingleStrategyRunner {
       }
 
       // Handle Reversal exit check when IN_POSITION on closed candle
-      if (this.state === 'IN_POSITION' && this.activeTradePremium) {
+      if (['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state) && this.activeTradePremium) {
         const activeContract = (this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
           ? this.ceContract
           : (this.peContract && this.peContract.tradingsymbol === this.activeTradePremium)
@@ -420,6 +446,7 @@ class SingleStrategyRunner {
       }
 
       if (this.state !== 'SCANNING' && this.state !== 'WAITING') return;
+      if (!this.brokerReady) return;
       if (this.activeTradeId) return;
       if (!this.ceContract || !this.peContract) return;
 
@@ -565,6 +592,10 @@ class SingleStrategyRunner {
   }
 
   async executeEntry(contract, signalPrice, trendSide, timingInfo = {}) {
+    if (!this.brokerReady) {
+      this.log('Entry blocked because the Angel One session is unavailable.');
+      return;
+    }
     const signalGeneratedMs = timingInfo.signalGeneratedMs || Date.now();
     const candleDetectedTs = timingInfo.candleDetectedTs || formatPrecisionTime(new Date(signalGeneratedMs));
     const signalGeneratedTs = timingInfo.signalGeneratedTs || formatPrecisionTime(new Date(signalGeneratedMs));
@@ -574,12 +605,20 @@ class SingleStrategyRunner {
 
     let actualPrice = signalPrice;
     const qty = this.config.quantity || INDEX_CONFIG[this.config.underlying || 'SENSEX']?.qty || 10;
+    let entryOrderId = null;
+    let protectiveOrderId = null;
+    let protectiveStopPrice = null;
 
     let buySentMs = Date.now();
     let buySentTs = formatPrecisionTime(new Date(buySentMs));
 
     if (this.config.liveTradingConsent) {
       try {
+        const brokerStatus = await callAngelApi('/angel/status');
+        if (!brokerStatus || !brokerStatus.connected) {
+          throw new Error(brokerStatus?.message || 'Angel One broker session is not connected');
+        }
+
         this.log(`BUY request sent: ${buySentTs}`);
         const sendStartMs = Date.now();
         const orderRes = await callAngelApi('/angel/orders/simple', 'POST', {
@@ -596,7 +635,9 @@ class SingleStrategyRunner {
         this.log(`Broker acknowledged: ${ackTs} (API HTTP delay: ${ackMs - sendStartMs}ms)`);
 
         const orderId = orderRes?.item?.response?.data?.orderid || orderRes?.item?.response?.orderid;
+        entryOrderId = orderId || null;
         if (orderId) {
+          let orderConfirmed = false;
           for (let i = 0; i < 4; i++) {
             await new Promise(r => setTimeout(r, 1000));
             const ob = await callAngelApi('/angel/orderbook');
@@ -605,6 +646,7 @@ class SingleStrategyRunner {
               const execPrice = parseFloat(order.averageprice || order.price);
               if (!isNaN(execPrice) && execPrice > 0) {
                 actualPrice = execPrice;
+                orderConfirmed = true;
                 const completedMs = Date.now();
                 const completedTs = formatPrecisionTime(new Date(completedMs));
                 this.log(`Order completed: ${completedTs}`);
@@ -612,9 +654,15 @@ class SingleStrategyRunner {
               }
             }
           }
+          if (!orderConfirmed) {
+            throw new Error(`BUY order ${orderId} was not confirmed by the broker`);
+          }
+        } else {
+          throw new Error('Broker returned no BUY order ID');
         }
       } catch (err) {
         console.error(`[${this.strategyName}] LIVE BUY Order failed:`, err.message);
+        return;
       }
     } else {
       // Paper trading simulation timing logging
@@ -631,6 +679,7 @@ class SingleStrategyRunner {
     this.log(`Total execution latency: ${totalLatencyMs} ms`);
 
     this.entryPrice = actualPrice;
+    this.entryOrderId = entryOrderId;
     this.activeTradePremium = contract.tradingsymbol;
     this.activeTradeContract = contract;
     this.state = 'IN_POSITION';
@@ -642,6 +691,50 @@ class SingleStrategyRunner {
     } else if (this.strategyName === 'ModifiedHeikenAshi') {
       const initialSlPoints = Number(this.config.initialSlPoints) || 30;
       this.activeTrailingSl = actualPrice - initialSlPoints;
+    }
+
+    if (this.strategyName === '5minBreakout') {
+      protectiveStopPrice = Number(this.stopLoss);
+    } else if (this.strategyName === 'ModifiedHeikenAshi' && this.config.exitStrategy === 'TRAILING_SL') {
+      protectiveStopPrice = Number(this.activeTrailingSl);
+    } else {
+      protectiveStopPrice = actualPrice - (Number(this.config.slPoints) || 30);
+    }
+
+    if (this.config.liveTradingConsent && Number.isFinite(protectiveStopPrice) && protectiveStopPrice > 0) {
+      try {
+        const protectiveRes = await callAngelApi('/angel/orders/simple', 'POST', {
+          exchange: contract.exchange,
+          tradingsymbol: contract.tradingsymbol,
+          symboltoken: contract.symboltoken,
+          transactiontype: 'SELL',
+          producttype: 'CARRYFORWARD',
+          quantity: qty,
+          ordertype: 'SL',
+          triggerprice: protectiveStopPrice
+        });
+        protectiveOrderId = protectiveRes?.item?.response?.data?.orderid || protectiveRes?.item?.response?.orderid || null;
+      } catch (err) {
+        this.log(`Protective stop placement failed: ${err.message}`);
+      }
+    }
+
+    this.protectiveOrderId = protectiveOrderId;
+    this.protectiveStopPrice = protectiveStopPrice;
+    this.positionState = this.config.liveTradingConsent
+      ? (protectiveOrderId ? 'PROTECTED' : 'UNPROTECTED')
+      : 'PROTECTED';
+    this.state = this.positionState === 'UNPROTECTED' ? 'POSITION_UNPROTECTED' : 'POSITION_PROTECTED';
+
+    if (this.positionState === 'UNPROTECTED') {
+      await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
+        strategyName: this.strategyName,
+        symbol: contract.tradingsymbol,
+        quantity: qty,
+        state: this.state,
+        reason: 'Protective stop was not confirmed',
+        lastKnownLtp: actualPrice,
+      });
     }
 
     this.log(`ENTRY ${contract.tradingsymbol} @ ₹${actualPrice}`);
@@ -657,7 +750,12 @@ class SingleStrategyRunner {
           index: this.config.underlying || 'SENSEX',
           premium: contract.tradingsymbol,
           qty,
-          buyPrice: actualPrice
+          buyPrice: actualPrice,
+          executionMode: this.config.liveTradingConsent ? 'LIVE' : 'PAPER',
+          entryOrderId,
+          protectiveOrderId,
+          protectiveStopPrice,
+          positionState: this.positionState
         });
         this.activeTradeId = tradeDoc._id.toString();
         const dbEndMs = Date.now();
@@ -674,7 +772,10 @@ class SingleStrategyRunner {
     if (this.monitorInterval) clearInterval(this.monitorInterval);
 
     const monitor = async () => {
-      if (!this.isRunning || this.state !== 'IN_POSITION' || !this.activeTradePremium) return;
+      if (!this.isRunning || !['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state) || !this.activeTradePremium) return;
+      // Do not make exit decisions from stale prices while the broker session is down.
+      // A confirmed broker-side protective order remains active during this period.
+      if (!this.brokerReady) return;
 
       const contract = this.activeTradeContract || (
         (this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
@@ -731,8 +832,23 @@ class SingleStrategyRunner {
                     const steps = Math.floor(pointsGained / trailingStopPoints);
                     const proposedSl = this.entryPrice + (steps * trailingStopPoints) - initialSlPoints;
                     if (proposedSl > this.activeTrailingSl) {
-                      this.activeTrailingSl = proposedSl;
-                      this.log(`Trailed SL up to ₹${proposedSl}`);
+                      try {
+                        await this.replaceProtectiveStop(contract, proposedSl);
+                        this.activeTrailingSl = proposedSl;
+                        this.log(`Trailed SL up to ₹${proposedSl}`);
+                      } catch (err) {
+                        this.positionState = 'UNPROTECTED';
+                        this.state = 'POSITION_UNPROTECTED';
+                        this.log(`Trailing stop update failed: ${err.message}`);
+                        await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
+                          strategyName: this.strategyName,
+                          symbol: contract.tradingsymbol,
+                          quantity: this.config.quantity || 10,
+                          state: this.state,
+                          reason: 'Trailing stop replacement failed',
+                          lastKnownLtp: livePrice,
+                        });
+                      }
                     }
                   }
                 }
@@ -775,6 +891,45 @@ class SingleStrategyRunner {
     this.monitorInterval = setInterval(monitor, 1000);
   }
 
+  async replaceProtectiveStop(contract, stopPrice) {
+    if (!this.config.liveTradingConsent) return true;
+    if (!contract || !Number.isFinite(stopPrice) || stopPrice <= 0) {
+      throw new Error('Invalid protective stop details');
+    }
+
+    if (this.protectiveOrderId) {
+      await callAngelApi(`/angel/orders/${encodeURIComponent(this.protectiveOrderId)}/cancel`, 'POST', { variety: 'NORMAL' });
+    }
+
+    const qty = this.config.quantity || 10;
+    const protectiveRes = await callAngelApi('/angel/orders/simple', 'POST', {
+      exchange: contract.exchange,
+      tradingsymbol: contract.tradingsymbol,
+      symboltoken: contract.symboltoken,
+      transactiontype: 'SELL',
+      producttype: 'CARRYFORWARD',
+      quantity: qty,
+      ordertype: 'SL',
+      triggerprice: stopPrice
+    });
+    const orderId = protectiveRes?.item?.response?.data?.orderid || protectiveRes?.item?.response?.orderid;
+    if (!orderId) throw new Error('Broker returned no protective stop order ID');
+
+    this.protectiveOrderId = orderId;
+    this.protectiveStopPrice = stopPrice;
+    this.positionState = 'PROTECTED';
+    this.state = 'POSITION_PROTECTED';
+    if (this.activeTradeId) {
+      Trade.findByIdAndUpdate(this.activeTradeId, {
+        protectiveOrderId: orderId,
+        protectiveStopPrice: stopPrice,
+        positionState: 'PROTECTED',
+        lastBrokerSyncAt: new Date()
+      }).catch(err => console.error(`[${this.strategyName}] Protective stop DB sync error:`, err.message));
+    }
+    return true;
+  }
+
   async executeExit(contract, price, exitReason) {
     if (this.exitInProgress) {
       this.log('Exit order execution already in progress. Skipping duplicate call.');
@@ -789,6 +944,10 @@ class SingleStrategyRunner {
 
     if (this.config.liveTradingConsent && contract) {
       try {
+        if (this.protectiveOrderId) {
+          await callAngelApi(`/angel/orders/${encodeURIComponent(this.protectiveOrderId)}/cancel`, 'POST', { variety: 'NORMAL' });
+          this.protectiveOrderId = null;
+        }
         const orderRes = await callAngelApi('/angel/orders/simple', 'POST', {
           exchange: contract.exchange,
           tradingsymbol: contract.tradingsymbol,
@@ -882,6 +1041,8 @@ class SingleStrategyRunner {
             trade.exitPrice = actualExitPx;
             trade.exitReason = exitReason;
             trade.pnl = pnl;
+            trade.positionState = 'CLOSED';
+            trade.lastBrokerSyncAt = new Date();
             await trade.save();
             this.lastCompletedTrade = trade.toObject();
           }
@@ -895,6 +1056,10 @@ class SingleStrategyRunner {
       this.entryPrice = null;
       this.activeTradeContract = null;
       this.activeTrailingSl = null;
+      this.entryOrderId = null;
+      this.protectiveOrderId = null;
+      this.protectiveStopPrice = null;
+      this.positionState = 'NONE';
       this.stopLoss = null;
       this.target = null;
       this.rangeSide = null;
@@ -957,10 +1122,99 @@ class SingleStrategyRunner {
     await this.executeExit(contract, exitPx, 'Manual');
   }
 
+  handleBrokerSessionLost(reason = 'Broker session expired') {
+    this.brokerReady = false;
+    if (!this.isRunning) return;
+
+    if (this.activeTradePremium) {
+      const hasBrokerProtection = Boolean(this.protectiveOrderId);
+      this.positionState = hasBrokerProtection ? 'PROTECTED' : 'UNPROTECTED';
+      this.state = hasBrokerProtection ? 'POSITION_PROTECTED' : 'POSITION_UNPROTECTED';
+      this.message = hasBrokerProtection
+        ? `Broker session lost. Broker-side protective stop remains active for ${this.activeTradePremium}.`
+        : `URGENT: broker session lost with an unprotected position ${this.activeTradePremium}.`;
+
+      if (this.activeTradeId) {
+        Trade.findByIdAndUpdate(this.activeTradeId, {
+          positionState: this.positionState,
+          lastBrokerSyncAt: new Date()
+        }).catch(err => console.error(`[${this.strategyName}] Session-loss DB sync error:`, err.message));
+      }
+
+      if (!hasBrokerProtection && !this.sessionAlertSent) {
+        this.sessionAlertSent = true;
+        notifyUrgent('OPEN_POSITION_SESSION_EXPIRED', {
+          strategyName: this.strategyName,
+          symbol: this.activeTradePremium,
+          quantity: this.config.quantity || 10,
+          state: this.state,
+          reason,
+          lastKnownLtp: this.currentLtp,
+        }).catch(err => console.error(`[${this.strategyName}] Session-loss alert error:`, err.message));
+      }
+    } else {
+      this.message = `Broker session lost. New entries are blocked until reconnection.`;
+    }
+  }
+
+  handleBrokerSessionRestored() {
+    this.brokerReady = true;
+    this.sessionAlertSent = false;
+    if (!this.isRunning) return;
+
+    if (this.activeTradePremium) {
+      this.positionState = this.protectiveOrderId ? 'PROTECTED' : 'UNPROTECTED';
+      this.state = this.protectiveOrderId ? 'POSITION_PROTECTED' : 'POSITION_UNPROTECTED';
+      this.message = this.protectiveOrderId
+        ? `Broker session restored. Protective stop active for ${this.activeTradePremium}.`
+        : `Broker session restored. Position ${this.activeTradePremium} still requires protection.`;
+      if (this.protectiveOrderId) this.reconcileProtectiveOrder().catch(err => this.log(`Protective order reconciliation failed: ${err.message}`));
+    } else {
+      this.state = this.strategyName === '5minBreakout' ? 'WAITING' : 'SCANNING';
+      this.message = 'Broker session restored. Strategy scanning resumed.';
+    }
+  }
+
+  async reconcileProtectiveOrder() {
+    if (!this.protectiveOrderId || !this.config.liveTradingConsent) return;
+    const orderbook = await callAngelApi('/angel/orderbook');
+    const order = (orderbook?.data || []).find(item => String(item.orderid) === String(this.protectiveOrderId));
+    const status = String(order?.status || order?.orderstatus || '').toLowerCase();
+    if (!['complete', 'executed'].includes(status)) return;
+
+    const exitPrice = Number(order.averageprice || order.price || this.protectiveStopPrice || this.currentLtp || this.entryPrice);
+    if (this.activeTradeId) {
+      await Trade.findByIdAndUpdate(this.activeTradeId, {
+        exitPrice,
+        exitReason: 'SL',
+        pnl: (exitPrice - this.entryPrice) * (this.config.quantity || 10),
+        positionState: 'CLOSED',
+        lastBrokerSyncAt: new Date()
+      });
+    }
+    this.log(`Protective stop ${this.protectiveOrderId} was executed while disconnected. Position reconciled.`);
+    this.lastCompletedTrade = { exitPrice, exitReason: 'SL' };
+    this.activeTradeId = null;
+    this.activeTradePremium = null;
+    this.activeTradeContract = null;
+    this.entryPrice = null;
+    this.entryOrderId = null;
+    this.protectiveOrderId = null;
+    this.protectiveStopPrice = null;
+    this.positionState = 'NONE';
+    this.exitTriggered = false;
+    this.exitReasonStored = null;
+    this.state = this.strategyName === '5minBreakout' ? 'WAITING' : 'SCANNING';
+    if (this.monitorInterval) {
+      clearInterval(this.monitorInterval);
+      this.monitorInterval = null;
+    }
+  }
+
   getStatus() {
     // Refresh checkpoints dynamically
     this.checkpoints = [
-      { id: 'broker', label: 'Broker Connection', status: 'success' },
+      { id: 'broker', label: 'Broker Connection', status: this.brokerReady ? 'success' : 'error' },
       { id: 'expiry', label: 'Next Expiry Locked', status: this.selectedExpiry ? 'success' : 'pending' },
       { id: 'ha_trend', label: 'HA Trend Stability', status: this.trend !== 'NEUTRAL' ? 'success' : 'pending' },
       { id: 'confirmation', label: 'ATM Strike Sync', status: this.atmStrike ? 'success' : 'pending' },
@@ -993,6 +1247,11 @@ class SingleStrategyRunner {
       lastExitError: this.lastExitError,
       exitRetryCount: this.exitRetryCount,
       lastExitAttemptTime: this.lastExitAttemptTime,
+      brokerReady: this.brokerReady,
+      positionState: this.positionState,
+      entryOrderId: this.entryOrderId,
+      protectiveOrderId: this.protectiveOrderId,
+      protectiveStopPrice: this.protectiveStopPrice,
       logs: this.logs
     };
   }
@@ -1039,6 +1298,30 @@ class StrategyEngineManager {
     const runner = this.getRunner(key);
     return runner.getStatus();
   }
+
+  handleBrokerSessionLost(reason) {
+    for (const runner of this.runners.values()) runner.handleBrokerSessionLost(reason);
+  }
+
+  handleBrokerSessionRestored() {
+    for (const runner of this.runners.values()) runner.handleBrokerSessionRestored();
+  }
 }
 
-module.exports = new StrategyEngineManager();
+const manager = new StrategyEngineManager();
+marketDataService.on('session:lost', ({ reason }) => {
+  console.warn(`[StrategyEngine] Broker session lost: ${reason}`);
+  manager.handleBrokerSessionLost(reason);
+  notifyUrgent('BROKER_SESSION_LOST', { reason }).catch(err => {
+    console.error('[StrategyEngine] Session-loss alert error:', err.message);
+  });
+});
+marketDataService.on('session:restored', () => {
+  console.log('[StrategyEngine] Broker session restored');
+  manager.handleBrokerSessionRestored();
+  notifyUrgent('BROKER_SESSION_RESTORED').catch(err => {
+    console.error('[StrategyEngine] Session-restored alert error:', err.message);
+  });
+});
+
+module.exports = manager;

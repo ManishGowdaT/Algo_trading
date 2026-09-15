@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const tradeRoutes = require('./routes/tradeRoutes');
 const strategyRoutes = require('./routes/strategyRoutes');
 const chartRoutes = require('./routes/chartRoutes');
+const brokerProxyRoutes = require('./routes/brokerProxyRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/v1/users', authRoutes);
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/strategies', strategyRoutes);
 app.use('/api/v1/chart', chartRoutes);
+app.use('/api/v1', brokerProxyRoutes);
 
 // Root Route
 app.get('/', (req, res) => {
@@ -47,10 +49,12 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.error('DB connection error:', err));
 
 const marketDataService = require('./services/marketDataService');
+const healthMonitor = require('./services/healthMonitor');
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`App running on port ${port}...`);
+    healthMonitor.start();
     // Auto-poll Python wrapper for active session tokens
     setInterval(() => {
         marketDataService.autoInitSession();

@@ -1,6 +1,7 @@
 const candleCache = require('./candleCache');
 
-const ANGEL_API_URL = process.env.ANGEL_API_URL || 'http://localhost:8000';
+const ANGEL_API_URL = process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000';
+const INTERNAL_SERVICE_KEY = process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '';
 
 const INDEX_SPOT_TOKENS = {
   SENSEX: { exchange: 'BSE', symboltoken: '99919000' },
@@ -43,7 +44,10 @@ async function getCandles(underlying, date, interval = '5m') {
     const url = `${ANGEL_API_URL}/market/candles?exchange=${info.exchange}&symboltoken=${info.symboltoken}&interval=${iv}&date=${targetDate}`;
     
     console.log(`[candleService] Fetching candles for ${und} (Token: ${info.symboltoken}) date: ${targetDate} interval: ${iv}`);
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'X-Internal-Service-Key': INTERNAL_SERVICE_KEY },
+    });
     clearTimeout(timer);
 
     if (res.ok) {
