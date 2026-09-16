@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildTradesUrl } from './tradesQuery'
+import { buildTradesUrl, validateTradesTimeRange } from './tradesQuery'
 
 describe('buildTradesUrl', () => {
   it('builds base url with page/limit', () => {
@@ -47,5 +47,17 @@ describe('buildTradesUrl', () => {
         }
       })
     ).toBe('/trades?page=1&limit=10')
+  })
+
+  it('accepts an inclusive same-day time range', () => {
+    expect(validateTradesTimeRange('10:30', '15:30')).toBeNull()
+  })
+
+  it('rejects a reversed time range and explains 24-hour input', () => {
+    expect(validateTradesTimeRange('10:30', '03:30')).toContain('Use 15:30 for 3:30 PM')
+  })
+
+  it('allows a single time boundary', () => {
+    expect(validateTradesTimeRange('10:30', '')).toBeNull()
   })
 })

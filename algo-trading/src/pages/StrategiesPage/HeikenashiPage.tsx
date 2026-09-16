@@ -427,7 +427,7 @@ export default function HeikenashiPage() {
                                     </div>
                                 </div>
 
-                                {state === 'IN_POSITION' && activeTradeId && (
+                                {['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(state) && activeTradeId && (
                                     <div className="mt-4 pt-3 border-t border-[#E0E3EB] flex justify-end">
                                         <button
                                             onClick={manualExitPosition}

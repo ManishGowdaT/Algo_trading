@@ -16,7 +16,7 @@ import {
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { apiGet } from '../../trading'
-import { buildTradesUrl } from './tradesQuery'
+import { buildTradesUrl, validateTradesTimeRange } from './tradesQuery'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { generateTradesPdf } from './generateTradesPdf'
 
@@ -88,6 +88,7 @@ export default function TradesPage() {
     // Export PDF state
     const [isExporting, setIsExporting] = useState(false)
     const [pdfMessage, setPdfMessage] = useState<string | null>(null)
+    const [filterMessage, setFilterMessage] = useState<string | null>(null)
 
     const [analytics, setAnalytics] = useState({
         totalPnl: 0,
@@ -142,6 +143,7 @@ export default function TradesPage() {
 
     const fetchTrades = useCallback(async () => {
         setLoading(true)
+        setFilterMessage(null)
         try {
             const url = buildTradesUrl({ page, limit: 10, filters: appliedFilters })
 
@@ -156,6 +158,11 @@ export default function TradesPage() {
             }
         } catch (error) {
             console.error('Error fetching trades:', error)
+            setTrades([])
+            setTotalPages(1)
+            setTotalResults(0)
+            setAnalytics({ totalPnl: 0, totalTrades: 0, taxes: 0, netPnl: 0 })
+            setFilterMessage('Unable to load trades for the selected filters.')
         } finally {
             setLoading(false)
         }
@@ -402,6 +409,16 @@ export default function TradesPage() {
                         <div className="flex w-full xl:w-auto items-center gap-2">
                             <button
                                 onClick={() => {
+                                    const timeError = validateTradesTimeRange(timeFrom, timeTo)
+                                    if (timeError) {
+                                        setFilterMessage(timeError)
+                                        setTrades([])
+                                        setTotalPages(1)
+                                        setTotalResults(0)
+                                        setAnalytics({ totalPnl: 0, totalTrades: 0, taxes: 0, netPnl: 0 })
+                                        return
+                                    }
+                                    setFilterMessage(null)
                                     setPage(1)
                                     setAppliedFilters({
                                         searchQuery,
@@ -453,6 +470,11 @@ export default function TradesPage() {
                             </button>
                         </div>
                     </div>
+                    {filterMessage && (
+                        <div className="mt-2 p-2.5 rounded bg-[#FFF2F2] border border-[#F23645]/30 text-[#F23645] text-xs font-semibold">
+                            {filterMessage}
+                        </div>
+                    )}
                     {pdfMessage && (
                         <div className="mt-2 p-2.5 rounded bg-[#FFF2F2] border border-[#F23645]/30 text-[#F23645] text-xs font-semibold flex items-center justify-between">
                             <span>{pdfMessage}</span>
