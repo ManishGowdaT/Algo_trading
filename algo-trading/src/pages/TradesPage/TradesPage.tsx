@@ -238,7 +238,7 @@ export default function TradesPage() {
             </div>
 
             {/* Filters Panel */}
-            <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-4">
+            <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-4 max-md:p-3">
                 <div className="w-full flex flex-col gap-3">
                     {/* Top Row: Search & Dropdowns */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -346,9 +346,9 @@ export default function TradesPage() {
                     </div>
 
                     {/* Bottom Row: Date/Time Pickers & Actions */}
-                    <div className="flex flex-col xl:flex-row gap-3 justify-between items-center pt-1 border-t border-[#E0E3EB]">
+                    <div className="flex flex-col xl:flex-row gap-3 justify-between items-center pt-1 border-t border-[#E0E3EB] max-md:items-stretch">
                         {/* Time & Date Range */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full xl:w-auto">
+                        <div className="grid grid-cols-2 max-sm:grid-cols-1 md:grid-cols-4 gap-3 w-full xl:w-auto">
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#787B86] z-10" />
                                 <DatePicker
@@ -487,7 +487,7 @@ export default function TradesPage() {
             {/* Table Content */}
             <div className="bg-white rounded border border-[#E0E3EB] shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full max-md:min-w-[900px] text-left border-collapse">
                         <thead>
                             <tr className="bg-[#F8F9FA] border-b border-[#E0E3EB]">
                                 <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#787B86]">Entry date &amp; time</th>

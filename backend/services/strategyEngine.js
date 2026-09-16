@@ -131,6 +131,9 @@ class SingleStrategyRunner {
     this.peContract = null;
 
     this.monitoredPremiums = { ce: '---', pe: '---' };
+    this.previousDayCandles = { ce: [], pe: [] };
+    this.warmupTokens = { ce: null, pe: null };
+    this.warmupRequests = { ce: null, pe: null };
     this.checkpoints = [];
 
     this.activeTradeId = null;
@@ -197,6 +200,112 @@ class SingleStrategyRunner {
     this.startContractLoop();
     this.startScanLoop();
     this.startHeartbeatLoop();
+  }
+
+  isHeikenAshiWarmupStrategy() {
+    return this.strategyName === 'HeikenAshi' || this.strategyName === 'ModifiedHeikenAshi';
+  }
+
+  getIstDateIso(date = new Date()) {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(date).reduce((result, part) => {
+      if (part.type !== 'literal') result[part.type] = part.value;
+      return result;
+    }, {});
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
+
+  shiftIsoDate(dateIso, days) {
+    const date = new Date(`${dateIso}T00:00:00+05:30`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return this.getIstDateIso(date);
+  }
+
+  normalizeHistoricalCandles(items) {
+    if (!Array.isArray(items)) return [];
+    return items.map((candle) => {
+      const rawTs = candle.ts || candle.time;
+      const numericTs = Number(rawTs);
+      let parsedTs;
+      if (Number.isFinite(numericTs) && String(rawTs).trim() !== '') {
+        parsedTs = numericTs < 1e10 ? numericTs : Math.floor(numericTs / 1000);
+      } else {
+        const timestampText = String(rawTs || '').trim();
+        const hasTimezone = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestampText);
+        const normalizedText = hasTimezone
+          ? timestampText
+          : `${timestampText.replace(' ', 'T')}+05:30`;
+        parsedTs = Math.floor(new Date(normalizedText).getTime() / 1000);
+      }
+      return {
+        time: parsedTs,
+        open: Number(candle.open),
+        high: Number(candle.high),
+        low: Number(candle.low),
+        close: Number(candle.close)
+      };
+    }).filter(candle => Number.isFinite(candle.time) &&
+      Number.isFinite(candle.open) && Number.isFinite(candle.high) &&
+      Number.isFinite(candle.low) && Number.isFinite(candle.close) &&
+      candle.high >= Math.max(candle.open, candle.close) &&
+      candle.low <= Math.min(candle.open, candle.close) &&
+      candle.high >= candle.low)
+      .sort((a, b) => a.time - b.time)
+      .filter((candle, index, candles) => index === 0 || candle.time !== candles[index - 1].time);
+  }
+
+  async loadPreviousDayWarmup(contract, side) {
+    if (!this.isHeikenAshiWarmupStrategy() || !contract?.symboltoken) return;
+
+    const token = String(contract.symboltoken);
+    if (this.warmupTokens[side] === token && this.previousDayCandles[side].length > 0) return;
+    if (this.warmupRequests[side]?.token === token) return this.warmupRequests[side].promise;
+
+    this.warmupTokens[side] = token;
+    this.previousDayCandles[side] = [];
+
+    const promise = (async () => {
+      const todayIso = this.getIstDateIso();
+      for (let offset = 1; offset <= 7; offset++) {
+        const dateIso = this.shiftIsoDate(todayIso, -offset);
+        try {
+          const response = await callAngelApi(`/market/candles?exchange=${encodeURIComponent(contract.exchange)}&symboltoken=${encodeURIComponent(token)}&interval=FIVE_MINUTE&date=${dateIso}`);
+          const candles = this.normalizeHistoricalCandles(response?.items);
+          if (candles.length > 0) {
+            this.previousDayCandles[side] = candles;
+            this.log(`Loaded ${candles.length} previous trading-day candles for ${side.toUpperCase()} warm-up (${dateIso})`);
+            return;
+          }
+        } catch (err) {
+          console.warn(`[${this.strategyName}] Previous-day candle warm-up failed for ${side.toUpperCase()} ${dateIso}:`, err.message);
+        }
+      }
+
+      this.log(`Previous-day candle warm-up unavailable for ${side.toUpperCase()}; continuing with current-day history`);
+    })();
+
+    this.warmupRequests[side] = { token, promise };
+    try {
+      await promise;
+    } finally {
+      if (this.warmupRequests[side]?.token === token) this.warmupRequests[side] = null;
+    }
+  }
+
+  getCalculationCandles(contract, currentCandles, side) {
+    if (!this.isHeikenAshiWarmupStrategy()) return currentCandles;
+
+    const historical = this.previousDayCandles[side] || [];
+    const current = Array.isArray(currentCandles) ? currentCandles : [];
+    const merged = [...historical, ...current]
+      .filter(candle => candle && Number.isFinite(Number(candle.time)))
+      .sort((a, b) => Number(a.time) - Number(b.time));
+
+    return merged.filter((candle, index) => index === 0 || Number(candle.time) !== Number(merged[index - 1].time));
   }
 
   startHeartbeatLoop() {
@@ -268,6 +377,9 @@ class SingleStrategyRunner {
     this.target = null;
     this.rangeSide = null;
     this.monitoredPremiums = { ce: '---', pe: '---' };
+    this.previousDayCandles = { ce: [], pe: [] };
+    this.warmupTokens = { ce: null, pe: null };
+    this.warmupRequests = { ce: null, pe: null };
   }
 
   clearAllIntervals() {
@@ -385,6 +497,7 @@ class SingleStrategyRunner {
             }
             await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, baseTimeframe);
             this.subscribedCeToken = this.ceContract.symboltoken;
+            await this.loadPreviousDayWarmup(this.ceContract, 'ce');
           }
           if (!this.subscribedPeToken || this.subscribedPeToken !== this.peContract.symboltoken) {
             if (this.subscribedPeToken) {
@@ -392,6 +505,7 @@ class SingleStrategyRunner {
             }
             await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, baseTimeframe);
             this.subscribedPeToken = this.peContract.symboltoken;
+            await this.loadPreviousDayWarmup(this.peContract, 'pe');
           }
         }
       } catch (err) {
@@ -428,7 +542,9 @@ class SingleStrategyRunner {
 
         if (activeContract) {
           const baseTimeframe = this.getBaseTimeframe();
-          const items = marketDataService.getBuffer(activeContract.exchange, activeContract.symboltoken, baseTimeframe);
+          const currentItems = marketDataService.getBuffer(activeContract.exchange, activeContract.symboltoken, baseTimeframe);
+          const activeSide = activeContract.symboltoken === this.peContract?.symboltoken ? 'pe' : 'ce';
+          const items = this.getCalculationCandles(activeContract, currentItems, activeSide);
           if (items && items.length >= 2) {
             const PluginClass = strategyRegistry.getPlugin(this.strategyName);
             if (PluginClass) {
@@ -509,12 +625,16 @@ class SingleStrategyRunner {
           let ceItems = marketDataService.getBuffer(scanExchange, this.ceContract.symboltoken, baseTimeframe);
           let peItems = marketDataService.getBuffer(scanExchange, this.peContract.symboltoken, baseTimeframe);
 
-          if (!ceItems || ceItems.length < requiredCandles) {
+          if (!ceItems || (ceItems.length < requiredCandles &&
+            (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.ce.length === 0))) {
             try { ceItems = await marketDataService.subscribe(scanExchange, this.ceContract.symboltoken, baseTimeframe); } catch (err) { return; }
           }
-          if (!peItems || peItems.length < requiredCandles) {
+          if (!peItems || (peItems.length < requiredCandles &&
+            (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.pe.length === 0))) {
             try { peItems = await marketDataService.subscribe(scanExchange, this.peContract.symboltoken, baseTimeframe); } catch (err) { return; }
           }
+          ceItems = this.getCalculationCandles(this.ceContract, ceItems, 'ce');
+          peItems = this.getCalculationCandles(this.peContract, peItems, 'pe');
           if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
           const fetchEndMs = Date.now();
 

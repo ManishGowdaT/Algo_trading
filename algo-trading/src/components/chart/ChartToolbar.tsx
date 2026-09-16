@@ -52,7 +52,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-2 bg-[#F8F9FA] rounded border border-[#E0E3EB] mb-3 relative select-none">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-2 max-md:p-1.5 bg-[#F8F9FA] rounded border border-[#E0E3EB] mb-3 relative select-none">
       {/* Timeframe, Chart Type & Date */}
       <div className="flex items-center gap-3">
         {/* Timeframe Selector */}
@@ -126,7 +126,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
 
         {/* Indicators Popover Panel */}
         {panelOpen && (
-          <div className="absolute right-0 top-9 w-72 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
+          <div className="absolute right-0 top-9 w-72 max-md:w-[calc(100vw-2rem)] max-md:max-w-72 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
             <div className="flex items-center justify-between border-b border-[#E0E3EB] pb-2">
               <h4 className="text-xs font-bold uppercase text-[#1E222D] tracking-wider">
                 Chart Indicators

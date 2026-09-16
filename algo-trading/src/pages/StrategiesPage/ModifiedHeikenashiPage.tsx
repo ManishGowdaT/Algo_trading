@@ -235,9 +235,9 @@ export default function ModifiedHeikenashiPage() {
     }
 
     return (
-        <div className="space-y-4 select-none">
+        <div className="space-y-4 max-md:space-y-3 select-none">
             {/* Status Panel Header */}
-            <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-4">
+            <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-4 max-md:p-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
@@ -247,7 +247,7 @@ export default function ModifiedHeikenashiPage() {
                         <p className="text-xs font-medium text-[#787B86]">
                             {message || 'Ready to monitor market volatility and execution signals.'}
                         </p>
-                        <div className="flex items-center gap-6 pt-1">
+                        <div className="flex items-center gap-6 max-md:flex-wrap max-md:gap-3 pt-1">
                             <div>
                                 <p className="text-[10px] font-bold uppercase text-[#787B86]">State</p>
                                 <p className="text-xs font-bold text-[#1E222D]">{state}</p>
@@ -271,12 +271,12 @@ export default function ModifiedHeikenashiPage() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 max-md:w-full">
                         {!isRunning ? (
                             <button
                                 onClick={startStrategy}
                                 disabled={connectStatus !== 'connected'}
-                                className="flex items-center gap-1.5 px-4 py-2 bg-[#089981] hover:bg-[#07806c] disabled:opacity-50 text-white text-xs font-semibold rounded shadow-sm transition-colors"
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 max-md:w-full bg-[#089981] hover:bg-[#07806c] disabled:opacity-50 text-white text-xs font-semibold rounded shadow-sm transition-colors"
                             >
                                 <Play className="w-3.5 h-3.5 fill-current" />
                                 Start Strategy
@@ -284,7 +284,7 @@ export default function ModifiedHeikenashiPage() {
                         ) : (
                             <button
                                 onClick={stopStrategy}
-                                className="flex items-center gap-1.5 px-4 py-2 bg-[#F23645] hover:bg-[#d92b39] text-white text-xs font-semibold rounded shadow-sm transition-colors"
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 max-md:w-full bg-[#F23645] hover:bg-[#d92b39] text-white text-xs font-semibold rounded shadow-sm transition-colors"
                             >
                                 <Square className="w-3.5 h-3.5 fill-current" />
                                 Stop Strategy

@@ -203,7 +203,7 @@ export default function FiveMinBreakoutPage() {
   }
 
   return (
-    <div className="space-y-4 select-none">
+    <div className="space-y-4 max-md:space-y-3 select-none">
       {/* Control Panel Header */}
       <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -215,7 +215,7 @@ export default function FiveMinBreakoutPage() {
             <p className="text-xs font-medium text-[#787B86]">
               {message || `Scanning for premium range spikes on ${underlying} 5m candles.`}
             </p>
-            <div className="flex items-center gap-6 pt-1">
+            <div className="flex items-center gap-6 max-md:flex-wrap max-md:gap-3 pt-1">
               <div>
                 <p className="text-[10px] font-bold uppercase text-[#787B86]">State</p>
                 <p className="text-xs font-bold text-[#1E222D]">{state}</p>

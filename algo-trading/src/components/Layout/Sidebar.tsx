@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -11,12 +11,22 @@ import {
     Clock,
     TrendingUp,
     Shield,
-    History
+    History,
+    X
 } from 'lucide-react';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    isMobileOpen?: boolean;
+    onMobileClose?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }) => {
     const location = useLocation();
     const [isStrategiesOpen, setIsStrategiesOpen] = useState(true);
+
+    useEffect(() => {
+        onMobileClose?.();
+    }, [location.pathname, onMobileClose]);
 
     const strategies = [
         { name: 'Manual Trading', path: '/strategies/manual-trading', icon: Activity },
@@ -32,7 +42,7 @@ const Sidebar: React.FC = () => {
     const isStrategyActive = strategies.some(s => isActive(s.path));
 
     return (
-        <aside className="w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none">
+        <aside className={`w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[60] max-md:w-72 max-md:transition-transform max-md:duration-200 ${isMobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}`}>
             {/* Platform Branding */}
             <div className="h-14 px-4 border-b border-[#E0E3EB] flex items-center gap-2.5">
                 <div className="w-7 h-7 bg-[#0052FF] rounded flex items-center justify-center text-white shadow-sm">
@@ -42,6 +52,14 @@ const Sidebar: React.FC = () => {
                     <span className="text-sm font-bold tracking-tight text-[#1E222D]">OptionAlgo</span>
                     <span className="text-[9px] font-semibold uppercase tracking-wider text-[#787B86]">Angel Algo Terminal</span>
                 </div>
+                <button
+                    type="button"
+                    aria-label="Close navigation"
+                    className="ml-auto hidden max-md:block p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA]"
+                    onClick={onMobileClose}
+                >
+                    <X className="w-5 h-5" />
+                </button>
             </div>
 
             {/* Navigation Menu */}
@@ -50,6 +68,7 @@ const Sidebar: React.FC = () => {
 
                 <NavLink
                     to="/dashboard"
+                    onClick={onMobileClose}
                     className={({ isActive }) => `
                         flex items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
                         ${isActive
@@ -63,6 +82,7 @@ const Sidebar: React.FC = () => {
 
                 <NavLink
                     to="/trades"
+                    onClick={onMobileClose}
                     className={({ isActive }) => `
                         flex items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
                         ${isActive
@@ -97,6 +117,7 @@ const Sidebar: React.FC = () => {
                                 <NavLink
                                     key={strat.path}
                                     to={strat.path}
+                                    onClick={onMobileClose}
                                     className={({ isActive }) => `
                                         flex items-center gap-2 px-2.5 py-1.5 rounded text-[11px] font-medium transition-colors
                                         ${isActive

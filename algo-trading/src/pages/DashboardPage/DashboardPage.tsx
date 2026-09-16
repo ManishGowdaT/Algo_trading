@@ -202,7 +202,7 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 select-none">
+    <div className="space-y-4 max-md:space-y-3 select-none">
       {/* Top Section: Institutional Ticker Watchlist Bar (Angel One Inspired) */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {INDICES_CONFIG.map((cfg) => {
@@ -275,9 +275,9 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* Main Content Layout: Institutional Trading View Terminal Container */}
-      <div className="bg-white p-4 rounded border border-[#E0E3EB] shadow-sm flex flex-col">
+        <div className="bg-white p-4 max-md:p-3 rounded border border-[#E0E3EB] shadow-sm flex flex-col">
         {/* Terminal Header */}
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E0E3EB]">
+        <div className="flex items-center justify-between gap-2 max-md:flex-wrap pb-3 mb-3 border-b border-[#E0E3EB]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-[#0052FF]/10 rounded flex items-center justify-center text-[#0052FF]">
               <BarChart2 className="w-4 h-4" />
@@ -315,7 +315,7 @@ const DashboardPage: React.FC = () => {
         />
 
         {/* Institutional Chart Container */}
-        <div className="w-full flex-1 h-[calc(100vh-210px)] min-h-[720px] relative rounded border border-[#E0E3EB] overflow-hidden bg-white">
+        <div className="w-full flex-1 h-[calc(100vh-210px)] min-h-[720px] max-md:h-[420px] max-md:min-h-[420px] relative rounded border border-[#E0E3EB] overflow-hidden bg-white">
           {chartLoading && (
             <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex items-center justify-center z-10">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E0E3EB] rounded shadow-md text-xs font-semibold text-[#1E222D]">

@@ -52,8 +52,8 @@ export default function MpinModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-label="Connect to Angel One">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-white/10 dark:bg-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 max-md:p-2" role="dialog" aria-modal="true" aria-label="Connect to Angel One">
+      <div className="w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 max-md:p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-base font-semibold">Connect to Angel One</h3>

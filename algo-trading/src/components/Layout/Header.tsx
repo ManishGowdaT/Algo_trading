@@ -11,11 +11,16 @@ import {
     Settings,
     Bell,
     ChevronDown,
-    Activity
+    Activity,
+    Menu
 } from 'lucide-react';
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    onMobileMenuOpen?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const { connectStatus, openConnect, disconnect } = useAngelConnection();
@@ -42,19 +47,27 @@ const Header: React.FC = () => {
     };
 
     return (
-        <header className="h-14 bg-white border-b border-[#E0E3EB] px-5 flex items-center justify-between sticky top-0 z-30 select-none">
+        <header className="h-14 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
             {/* Left Page Title & Live Badge */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <button
+                    type="button"
+                    aria-label="Open navigation"
+                    className="hidden max-md:flex p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D]"
+                    onClick={onMobileMenuOpen}
+                >
+                    <Menu className="w-5 h-5" />
+                </button>
                 <h2 className="text-sm font-bold text-[#1E222D] flex items-center gap-2 tracking-tight capitalize">
                     {getPageTitle()}
                 </h2>
-                <span className="inline-flex items-center gap-1 bg-[#089981]/10 text-[#089981] text-[10px] font-bold px-2 py-0.5 rounded border border-[#089981]/20 uppercase tracking-wide">
+                <span className="hidden sm:inline-flex items-center gap-1 bg-[#089981]/10 text-[#089981] text-[10px] font-bold px-2 py-0.5 rounded border border-[#089981]/20 uppercase tracking-wide">
                     <Activity className="w-3 h-3" /> Live Feed
                 </span>
             </div>
 
             {/* Right Action Items & Account Profile */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4 shrink-0">
                 {/* Angel One Broker Connection Button */}
                 <button
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
@@ -66,7 +79,7 @@ const Header: React.FC = () => {
                     `}
                 >
                     <Unplug className="w-3.5 h-3.5" />
-                    <span>{connectStatus === 'connected' ? 'Angel One Connected' : 'Connect Angel Broker'}</span>
+                    <span className="hidden sm:inline">{connectStatus === 'connected' ? 'Angel One Connected' : 'Connect Angel Broker'}</span>
                 </button>
 
                 <div className="h-4 w-[1px] bg-[#E0E3EB]" />

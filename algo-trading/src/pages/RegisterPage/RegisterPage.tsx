@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
           <p className="text-xs font-semibold text-[#787B86] mt-0.5">Create your application login</p>
         </div>
 
-        <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-6">
+        <div className="bg-white rounded border border-[#E0E3EB] shadow-sm p-6 max-md:p-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 bg-[#F23645]/10 border border-[#F23645]/30 rounded">

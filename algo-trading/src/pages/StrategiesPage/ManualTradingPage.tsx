@@ -106,7 +106,7 @@ const ManualTradingPage: React.FC = () => {
   return (
     <div className="space-y-4 select-none">
       {/* Top Action Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded border border-[#E0E3EB] shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 max-md:p-3 rounded border border-[#E0E3EB] shadow-sm">
         <div>
           <h1 className="text-sm font-bold text-[#1E222D] tracking-tight">Manual Execution Terminal</h1>
           <p className="text-[10px] font-medium text-[#787B86]">Direct Equity & Options Order Placement</p>
