@@ -119,13 +119,15 @@ def health() -> Dict[str, Any]:
 
 
 @app.post("/angel/login")
-def angel_login(req: LoginRequest) -> Dict[str, Any]:
+def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
     try:
+        owner_user_id = request.headers.get("X-Active-User-Id")
         return angel.connect(
             api_key=req.apiKey,
             client_code=req.clientCode,
             mpin=req.mpin,
             totp_secret=req.totpSecret,
+            owner_user_id=owner_user_id,
         )
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=str(e))

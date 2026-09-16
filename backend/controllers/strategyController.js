@@ -1,6 +1,7 @@
 const Strategy = require('../models/Strategy');
 const strategyEngine = require('../services/strategyEngine');
 const strategyStats = require('../services/strategyStats');
+const activeAccountService = require('../services/activeAccountService');
 
 exports.getStrategyCount = async (req, res) => {
     try {
@@ -32,6 +33,7 @@ exports.getAllStrategies = async (req, res) => {
 
 exports.startStrategy = async (req, res) => {
     try {
+        activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
         const config = req.body || {};
         const status = await strategyEngine.startStrategy(req.user._id.toString(), strategyName, config);
@@ -46,6 +48,7 @@ exports.startStrategy = async (req, res) => {
 
 exports.stopStrategy = async (req, res) => {
     try {
+        activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
         const status = strategyEngine.stopStrategy(req.user._id.toString(), strategyName);
         res.status(200).json({
@@ -72,6 +75,7 @@ exports.getStrategyStatus = async (req, res) => {
 
 exports.exitStrategyPosition = async (req, res) => {
     try {
+        activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
         const status = await strategyEngine.manualExitStrategy(req.user._id.toString(), strategyName);
         res.status(200).json({
@@ -89,7 +93,7 @@ exports.exitStrategyPosition = async (req, res) => {
  */
 exports.getConditionReport = (req, res) => {
     try {
-        const report = strategyStats.getReport();
+        const report = strategyStats.getReport(req.user._id);
         res.status(200).json({ status: 'success', data: report });
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });
@@ -102,7 +106,7 @@ exports.getConditionReport = (req, res) => {
  */
 exports.resetConditionReport = (req, res) => {
     try {
-        strategyStats.reset();
+        strategyStats.reset(req.user._id);
         res.status(200).json({ status: 'success', message: 'Statistics counters reset.' });
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import LoginPage from '../pages/LoginPage/LoginPage'
+import RegisterPage from '../pages/RegisterPage/RegisterPage'
 import ExpiryStrategyPage from '../pages/StrategiesPage/ExpiryStrategyPage'
 import FiveMinBreakoutPage from '../pages/StrategiesPage/FiveMinBreakoutPage'
 import IchimokuStrategyPage from '../pages/StrategiesPage/IchimokuStrategyPage'
@@ -20,6 +21,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* Protected Routes Wrapper */}
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

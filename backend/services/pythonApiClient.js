@@ -11,14 +11,17 @@ function getHeaders() {
   };
 }
 
-async function requestPython(path, { method = 'GET', body, signal } = {}) {
+async function requestPython(path, { method = 'GET', body, signal, userId } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), config.API.TIMEOUT_MS);
 
   try {
     const response = await fetch(`${config.API.ANGEL_ONE_API_BASE}${path}`, {
       method,
-      headers: getHeaders(),
+      headers: {
+        ...getHeaders(),
+        ...(userId ? { 'X-Active-User-Id': String(userId) } : {}),
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: signal || controller.signal,
     });

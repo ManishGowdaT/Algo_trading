@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Strategy = require('../models/Strategy');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const signToken = (id) => {
@@ -52,6 +54,55 @@ exports.login = async (req, res, next) => {
         createSendToken(user, 200, res);
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });
+    }
+};
+
+exports.register = async (req, res) => {
+    const session = await mongoose.startSession();
+    try {
+        const rawEmail = typeof req.body.email === 'string' ? req.body.email : '';
+        const email = rawEmail.trim().toLowerCase();
+        const { password, confirmPassword } = req.body;
+
+        if (!email || !password || !confirmPassword) {
+            return res.status(400).json({ status: 'fail', message: 'Please provide email, password, and password confirmation.' });
+        }
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            return res.status(400).json({ status: 'fail', message: 'Please provide a valid email address.' });
+        }
+        if (password.length < 8) {
+            return res.status(400).json({ status: 'fail', message: 'Password must be at least 8 characters long.' });
+        }
+        if (password !== confirmPassword) {
+            return res.status(400).json({ status: 'fail', message: 'Passwords do not match.' });
+        }
+
+        let user;
+        await session.withTransaction(async () => {
+            const existing = await User.findOne({ email }).session(session).select('_id');
+            if (existing) {
+                const error = new Error('An account with this email already exists.');
+                error.code = 'DUPLICATE_EMAIL';
+                throw error;
+            }
+
+            const createdUsers = await User.create([{ email, password }], { session });
+            user = createdUsers[0];
+            await Strategy.insertMany([
+                { name: 'HeikenAshi', userId: user._id },
+                { name: 'ModifiedHeikenAshi', userId: user._id },
+                { name: '5minBreakout', userId: user._id }
+            ], { session });
+        });
+
+        createSendToken(user, 201, res);
+    } catch (err) {
+        if (err.code === 'DUPLICATE_EMAIL' || err.code === 11000) {
+            return res.status(409).json({ status: 'fail', message: 'An account with this email already exists.' });
+        }
+        return res.status(500).json({ status: 'error', message: 'Account registration failed.' });
+    } finally {
+        await session.endSession();
     }
 };
 

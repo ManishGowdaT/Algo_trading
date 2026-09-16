@@ -27,6 +27,7 @@ class BrokerSessionManager:
         self._message = "Broker disconnected"
         self._state = "DISCONNECTED"
         self._session_id: Optional[str] = None
+        self._active_user_id: Optional[str] = None
         self._last_health_check: Optional[str] = None
         self._last_health_success: Optional[str] = None
         self._lock = Lock()
@@ -45,6 +46,7 @@ class BrokerSessionManager:
         client_code: str,
         mpin: str,
         totp_secret: str,
+        owner_user_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         values = {
             "api_key": api_key.strip(),
@@ -72,6 +74,7 @@ class BrokerSessionManager:
             self._message = "Angel One login successful"
             self._state = "CONNECTED"
             self._session_id = str(uuid4())
+            self._active_user_id = str(owner_user_id) if owner_user_id else None
             self._last_health_check = self._connected_at
             self._last_health_success = self._connected_at
 
@@ -94,6 +97,7 @@ class BrokerSessionManager:
             "lastHealthCheck": self._last_health_check,
             "lastHealthSuccess": self._last_health_success,
             "message": self._message,
+            "active_user_id": self._active_user_id,
         }
 
     def get_session_info(self) -> Dict[str, Any]:
@@ -109,6 +113,7 @@ class BrokerSessionManager:
             self._message = "Broker disconnected"
             self._state = "DISCONNECTED"
             self._session_id = None
+            self._active_user_id = None
             self._last_health_check = None
             self._last_health_success = None
             if client is None:
@@ -162,6 +167,7 @@ class BrokerSessionManager:
     def get_internal_session_info(self) -> Dict[str, Any]:
         info = self.get_session_info()
         info["session_id"] = self._session_id
+        info["active_user_id"] = self._active_user_id
         return info
 
     def __getattr__(self, name: str) -> Any:

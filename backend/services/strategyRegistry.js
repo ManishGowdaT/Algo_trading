@@ -76,17 +76,19 @@ class StrategyRegistry {
       const mongoose = require('mongoose');
       if (mongoose.connection.readyState !== 1) return;
 
-      const defaultUser = await User.findOne();
-      if (!defaultUser) return;
+      const users = await User.find({}, { _id: 1 }).lean();
+      if (users.length === 0) return;
 
-      for (const [id, PluginClass] of this.plugins.entries()) {
-        const existing = await StrategyModel.findOne({ name: id });
-        if (!existing) {
-          await StrategyModel.create({
-            name: id,
-            userId: defaultUser._id
-          });
-          console.log(`[StrategyRegistry] Auto-seeded MongoDB Strategy record for "${id}"`);
+      for (const user of users) {
+        for (const [id, PluginClass] of this.plugins.entries()) {
+          const existing = await StrategyModel.findOne({ name: id, userId: user._id });
+          if (!existing) {
+            await StrategyModel.create({
+              name: id,
+              userId: user._id
+            });
+            console.log(`[StrategyRegistry] Auto-seeded MongoDB Strategy record for "${id}" for user ${user._id}`);
+          }
         }
       }
     } catch (err) {

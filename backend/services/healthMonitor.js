@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const mongoose = require('mongoose');
 const config = require('../config');
 const { notifyUrgent } = require('./notificationService');
+const activeAccountService = require('./activeAccountService');
 
 class HealthMonitorService extends EventEmitter {
   constructor() {
@@ -50,6 +51,9 @@ class HealthMonitorService extends EventEmitter {
       console.log(`[HealthMonitor] System health transition: ${label}`, state);
       notifyUrgent(operational ? 'SYSTEM_HEALTH_RESTORED' : 'SYSTEM_HEALTH_DEGRADED', {
         reason: operational ? 'Node, Python, and MongoDB checks are healthy' : 'Python API or MongoDB health check failed',
+        accountLabel: activeAccountService.getActiveAccount()?.accountLabel,
+        userId: activeAccountService.getActiveAccount()?.userId,
+        clientCode: activeAccountService.getActiveAccount()?.clientCode,
       }).catch(err => console.error('[HealthMonitor] Health alert error:', err.message));
       this.lastOperationalState = operational;
     }

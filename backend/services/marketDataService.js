@@ -3,6 +3,7 @@ const config = require('../config');
 const marketSessionManager = require('./marketSessionManager');
 const smartStream = require('./smartStream');
 const orderUpdateService = require('./orderUpdateService');
+const activeAccountService = require('./activeAccountService');
 
 const ANGEL_API_BASE = config.API.ANGEL_ONE_API_BASE;
 
@@ -261,6 +262,13 @@ class MarketDataService extends EventEmitter {
             this.emit('session:restored', data);
           }
           this.sessionAvailable = true;
+          if (data.active_user_id) {
+            activeAccountService.setActiveAccount({
+              userId: data.active_user_id,
+              clientCode: data.client_code,
+              sessionId: data.session_id,
+            });
+          }
           if (this.sessionId && data.session_id && this.sessionId !== data.session_id) {
             console.log(`[MarketDataService] Broker session changed: ${this.sessionId} -> ${data.session_id}. Reconnecting streams.`);
             smartStream.disconnect(false);
@@ -282,6 +290,7 @@ class MarketDataService extends EventEmitter {
         }
         this.sessionAvailable = false;
         this.sessionId = null;
+        activeAccountService.clearActiveAccount();
         smartStream.disconnect(false);
         orderUpdateService.disconnect(false);
         this.stopRestFallback();
@@ -291,6 +300,7 @@ class MarketDataService extends EventEmitter {
         console.warn(`[MarketDataService] Broker session health check failed: ${e.message}`);
         this.emit('session:lost', { reason: 'Broker session service is unreachable' });
         this.sessionAvailable = false;
+        activeAccountService.clearActiveAccount();
       }
     }
   }

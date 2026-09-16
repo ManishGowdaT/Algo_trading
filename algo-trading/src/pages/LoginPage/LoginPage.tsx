@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LogIn, Mail, Lock, ShieldCheck } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
@@ -95,6 +96,9 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="mt-6 text-center">
+          <Link to="/register" className="text-xs font-semibold text-[#0052FF] hover:underline">
+            Create New Account
+          </Link>
           <p className="text-[#787B86] text-[10px] font-bold uppercase tracking-wider">Enterprise Algo Terminal v2.4</p>
         </div>
       </div>

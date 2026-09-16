@@ -1,4 +1,6 @@
 const { requestPython } = require('../services/pythonApiClient');
+const activeAccountService = require('../services/activeAccountService');
+const strategyEngine = require('../services/strategyEngine');
 
 function safeSessionStatus(data) {
   return {
@@ -12,6 +14,7 @@ function safeSessionStatus(data) {
 
 async function proxy(req, res, pythonPath, options = {}) {
   try {
+    activeAccountService.assertActiveUser(req.user._id);
     const query = new URLSearchParams(req.query).toString();
     const path = query ? `${pythonPath}?${query}` : pythonPath;
     const { response, data } = await requestPython(path, {
@@ -51,18 +54,46 @@ function sanitizeLoginResponse(data) {
 
 exports.login = async (req, res) => {
   try {
+    const requestedUserId = req.user._id.toString();
+    const current = activeAccountService.getActiveAccount();
+    if (current && current.userId !== requestedUserId) {
+      await strategyEngine.assertAccountCanSwitch(current.userId);
+      strategyEngine.stopUserRunners(current.userId);
+    }
+
     const { response, data } = await requestPython('/angel/login', {
       method: 'POST',
       body: req.body,
+      userId: requestedUserId,
     });
     if (!response.ok) return res.status(response.status).json(data);
-    return res.status(response.status).json(sanitizeLoginResponse(data));
+    const sanitized = sanitizeLoginResponse(data);
+    if (sanitized.connected) {
+      activeAccountService.setActiveAccount({
+        userId: requestedUserId,
+        email: req.user.email,
+        clientCode: data.client_code,
+        sessionId: data.session_id,
+      });
+    }
+    return res.status(response.status).json(sanitized);
   } catch (err) {
     const status = err.status || (err.name === 'AbortError' ? 504 : 502);
     return res.status(status).json({ status: 'error', message: err.message });
   }
 };
-exports.logout = (req, res) => proxy(req, res, '/angel/logout', { method: 'POST' });
+exports.logout = async (req, res) => {
+  try {
+    activeAccountService.assertActiveUser(req.user._id);
+    const { response, data } = await requestPython('/angel/logout', { method: 'POST' });
+    if (!response.ok) return res.status(response.status).json(data);
+    activeAccountService.clearActiveAccount();
+    return res.status(response.status).json(data);
+  } catch (err) {
+    const status = err.status || (err.name === 'AbortError' ? 504 : 502);
+    return res.status(status).json({ status: 'error', message: err.message });
+  }
+};
 
 exports.status = async (req, res) => {
   try {
@@ -73,6 +104,7 @@ exports.status = async (req, res) => {
       ...data,
       clientCode: data.clientCode || null,
       connected: Boolean(data.connected),
+      activeUserId: data.active_user_id || activeAccountService.getActiveAccount()?.userId || null,
     });
   } catch (err) {
     return res.status(err.status || 502).json({ status: 'error', message: err.message });

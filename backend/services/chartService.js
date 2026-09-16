@@ -2,10 +2,10 @@ const candleService = require('./candleService');
 const indicatorService = require('./indicatorService');
 const tradeOverlayService = require('./tradeOverlayService');
 
-async function getMarketChartData({ underlying, date, interval }) {
+async function getMarketChartData({ underlying, date, interval, userId }) {
   const candles = await candleService.getCandles(underlying, date, interval);
   const indicators = indicatorService.computeChartIndicators(candles);
-  const tradeOverlays = await tradeOverlayService.getTradeOverlays(underlying, date);
+  const tradeOverlays = await tradeOverlayService.getTradeOverlays(underlying, date, userId);
 
   return {
     underlying: (underlying || 'NIFTY').toUpperCase(),

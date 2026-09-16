@@ -6,7 +6,7 @@ const ltpCache = new Map();
 exports.getMarketChartData = async (req, res) => {
   try {
     const { underlying, date, interval } = req.query;
-    const data = await chartService.getMarketChartData({ underlying, date, interval });
+    const data = await chartService.getMarketChartData({ underlying, date, interval, userId: req.user._id });
     res.status(200).json({
       status: 'success',
       data,

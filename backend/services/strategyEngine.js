@@ -283,7 +283,7 @@ class SingleStrategyRunner {
 
   async recoverTrade() {
     try {
-      const strategyDoc = await Strategy.findOne({ name: this.strategyName });
+      const strategyDoc = await Strategy.findOne({ name: this.strategyName, userId: this.userId });
       if (!strategyDoc) return;
 
       const trade = await Trade.findOne({
@@ -433,7 +433,7 @@ class SingleStrategyRunner {
             const PluginClass = strategyRegistry.getPlugin(this.strategyName);
             if (PluginClass) {
               const pluginInstance = new PluginClass(this.config);
-              const signal = pluginInstance.analyze({ items, indicators });
+              const signal = pluginInstance.analyze({ items, indicators, userId: this.userId });
               if (signal.isExit && !this.isExiting) {
                 this.log(`Reversal exit signal detected on closed candle for ${activeContract.tradingsymbol}`);
                 await this.executeExit(activeContract, this.currentLtp || signal.haClose, 'Reversal');
@@ -479,8 +479,8 @@ class SingleStrategyRunner {
           if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
           const fetchEndMs = Date.now();
 
-          const ceEval = pluginInstance.analyze({ items: ceItems, lastProcessedTs: this.lastProcessedCandleTs, indicators });
-          const peEval = pluginInstance.analyze({ items: peItems, lastProcessedTs: this.lastProcessedCandleTs, indicators });
+          const ceEval = pluginInstance.analyze({ items: ceItems, lastProcessedTs: this.lastProcessedCandleTs, indicators, userId: this.userId });
+          const peEval = pluginInstance.analyze({ items: peItems, lastProcessedTs: this.lastProcessedCandleTs, indicators, userId: this.userId });
 
           if (ceEval.nextTs) this.lastProcessedCandleTs = ceEval.nextTs;
           else if (peEval.nextTs) this.lastProcessedCandleTs = peEval.nextTs;
@@ -519,8 +519,8 @@ class SingleStrategyRunner {
           const fetchEndMs = Date.now();
 
           const calcStartMs = Date.now();
-          const ceSignal = pluginInstance.analyze({ items: ceItems, indicators });
-          const peSignal = pluginInstance.analyze({ items: peItems, indicators });
+          const ceSignal = pluginInstance.analyze({ items: ceItems, indicators, userId: this.userId });
+          const peSignal = pluginInstance.analyze({ items: peItems, indicators, userId: this.userId });
           const calcEndMs = Date.now();
 
           // Diagnostic per-candle log output for the specific contract event (CE or PE)
@@ -728,6 +728,7 @@ class SingleStrategyRunner {
 
     if (this.positionState === 'UNPROTECTED') {
       await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
+        userId: this.userId,
         strategyName: this.strategyName,
         symbol: contract.tradingsymbol,
         quantity: qty,
@@ -742,7 +743,7 @@ class SingleStrategyRunner {
     // Record trade to MongoDB
     const dbStartMs = Date.now();
     try {
-      const strategyDoc = await Strategy.findOne({ name: this.strategyName });
+      const strategyDoc = await Strategy.findOne({ name: this.strategyName, userId: this.userId });
       if (strategyDoc) {
         const tradeDoc = await Trade.create({
           userId: this.userId,
@@ -841,6 +842,7 @@ class SingleStrategyRunner {
                         this.state = 'POSITION_UNPROTECTED';
                         this.log(`Trailing stop update failed: ${err.message}`);
                         await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
+                          userId: this.userId,
                           strategyName: this.strategyName,
                           symbol: contract.tradingsymbol,
                           quantity: this.config.quantity || 10,
@@ -1144,6 +1146,7 @@ class SingleStrategyRunner {
       if (!hasBrokerProtection && !this.sessionAlertSent) {
         this.sessionAlertSent = true;
         notifyUrgent('OPEN_POSITION_SESSION_EXPIRED', {
+          userId: this.userId,
           strategyName: this.strategyName,
           symbol: this.activeTradePremium,
           quantity: this.config.quantity || 10,
@@ -1277,6 +1280,46 @@ class StrategyEngineManager {
     const runner = this.getRunner(key);
     await runner.start(config, userId);
     return runner.getStatus();
+  }
+
+  async assertAccountCanSwitch(userId) {
+    const normalized = String(userId);
+    const activeStates = ['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'];
+    const activePositionStates = ['OPEN', 'PROTECTED', 'UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'];
+    for (const [key, runner] of this.runners.entries()) {
+      if (!key.startsWith(`${normalized}_`)) continue;
+      const status = runner.getStatus();
+      if (status.isRunning || status.activeTradeId || activeStates.includes(status.state) || activePositionStates.includes(status.positionState)) {
+        const error = new Error('Account switch blocked while a strategy or position is active. Stop strategies and close all positions first.');
+        error.status = 409;
+        error.code = 'ACCOUNT_SWITCH_BLOCKED';
+        throw error;
+      }
+    }
+
+    const openTrade = await Trade.findOne({
+      userId: normalized,
+      $or: [
+        { exitPrice: { $exists: false } },
+        { positionState: { $in: activePositionStates } },
+      ],
+    }).select('_id').lean();
+    if (openTrade) {
+      const error = new Error('Account switch blocked while an application position is open or pending.');
+      error.status = 409;
+      error.code = 'ACCOUNT_SWITCH_BLOCKED';
+      throw error;
+    }
+  }
+
+  stopUserRunners(userId) {
+    const normalized = String(userId);
+    for (const [key, runner] of this.runners.entries()) {
+      if (key.startsWith(`${normalized}_`)) {
+        runner.stop();
+        this.runners.delete(key);
+      }
+    }
   }
 
   stopStrategy(userId, strategyName) {

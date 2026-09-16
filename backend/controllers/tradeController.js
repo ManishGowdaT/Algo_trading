@@ -6,7 +6,7 @@ exports.recordTrade = async (req, res) => {
         const { strategyName, index, premium, qty, buyPrice } = req.body;
 
         // 1. Find strategy
-        const strategy = await Strategy.findOne({ name: strategyName });
+        const strategy = await Strategy.findOne({ name: strategyName, userId: req.user._id });
         if (!strategy) {
             return res.status(404).json({ status: 'fail', message: 'Strategy not found' });
         }
@@ -36,7 +36,7 @@ exports.updateTradeExit = async (req, res) => {
     try {
         const { tradeId, exitPrice, exitReason } = req.body;
 
-        const trade = await Trade.findById(tradeId);
+        const trade = await Trade.findOne({ _id: tradeId, userId: req.user._id });
         if (!trade) {
             return res.status(404).json({ status: 'fail', message: 'Trade not found' });
         }
@@ -64,7 +64,7 @@ exports.updateTradeExit = async (req, res) => {
 exports.getLatestOpenTrade = async (req, res) => {
     try {
         const { strategyName } = req.query;
-        const strategy = await Strategy.findOne({ name: strategyName });
+        const strategy = await Strategy.findOne({ name: strategyName, userId: req.user._id });
 
         if (!strategy) {
             return res.status(404).json({ status: 'fail', message: 'Strategy not found' });

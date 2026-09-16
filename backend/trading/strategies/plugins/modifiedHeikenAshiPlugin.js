@@ -100,7 +100,7 @@ class ModifiedHeikenAshiPlugin extends BaseStrategy {
       prevCandle: prev
     };
 
-    strategyStats.record(result, 'ModifiedHeikenAshi');
+    strategyStats.record(result, 'ModifiedHeikenAshi', context.userId);
     return result;
   }
 }

@@ -15,10 +15,27 @@
 
 class StrategyStats {
   constructor() {
+    this.userCollectors = new Map();
     this.reset();
   }
 
-  reset() {
+  _getUserCollector(userId) {
+    const key = String(userId);
+    if (!this.userCollectors.has(key)) {
+      const collector = Object.create(StrategyStats.prototype);
+      collector.userCollectors = new Map();
+      collector.reset();
+      this.userCollectors.set(key, collector);
+    }
+    return this.userCollectors.get(key);
+  }
+
+  reset(userId = null) {
+    if (userId !== null && userId !== undefined) {
+      const collector = this._getUserCollector(userId);
+      collector.reset();
+      return;
+    }
     this.startedAt = new Date().toISOString();
     this.totalCandles = 0;
 
@@ -63,7 +80,11 @@ class StrategyStats {
    *                           lastCandle (with open, high, low, close fields).
    * @param {string} strategyName - e.g. 'HeikenAshi' | 'ModifiedHeikenAshi'
    */
-  record(signal, strategyName = 'Unknown') {
+  record(signal, strategyName = 'Unknown', userId = null) {
+    if (userId !== null && userId !== undefined) {
+      this._getUserCollector(userId).record(signal, strategyName);
+      return;
+    }
     if (!signal || typeof signal !== 'object') return;
 
     this.totalCandles++;
@@ -189,7 +210,10 @@ class StrategyStats {
 
   // ── Public report ────────────────────────────────────────────────────────
 
-  getReport() {
+  getReport(userId = null) {
+    if (userId !== null && userId !== undefined) {
+      return this._getUserCollector(userId).getReport();
+    }
     const n = this.totalCandles;
     const pct = (v) => n > 0 ? ((v / n) * 100).toFixed(1) + '%' : '0%';
 

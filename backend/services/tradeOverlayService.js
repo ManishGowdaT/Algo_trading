@@ -1,6 +1,6 @@
 const Trade = require('../models/Trade');
 
-async function getTradeOverlays(underlying, date) {
+async function getTradeOverlays(underlying, date, userId) {
   const und = (underlying || 'NIFTY').toUpperCase();
 
   let startDate, endDate;
@@ -15,6 +15,7 @@ async function getTradeOverlays(underlying, date) {
 
   try {
     const trades = await Trade.find({
+      userId,
       index: und,
       createdAt: { $gte: startDate, $lte: endDate },
     }).lean();

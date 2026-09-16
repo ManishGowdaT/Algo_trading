@@ -1,8 +1,19 @@
 const config = require('../config');
+const activeAccountService = require('./activeAccountService');
 
 function sanitizeDetails(details = {}) {
-  const allowed = ['strategyName', 'symbol', 'quantity', 'state', 'reason', 'lastKnownLtp', 'clientCode'];
-  return Object.fromEntries(allowed.filter((key) => details[key] !== undefined).map((key) => [key, details[key]]));
+  const active = activeAccountService.getActiveAccount();
+  const userId = details.userId || active?.userId;
+  const accountLabel = details.accountLabel || active?.accountLabel || (userId ? `${String(userId).slice(0, 4)}****${String(userId).slice(-4)}` : 'unknown');
+  const clientCode = details.clientCode || active?.clientCode;
+  const allowed = ['strategyName', 'symbol', 'quantity', 'state', 'reason', 'lastKnownLtp'];
+  const sanitized = Object.fromEntries(allowed.filter((key) => details[key] !== undefined).map((key) => [key, details[key]]));
+  return {
+    ...sanitized,
+    accountLabel,
+    accountUserId: userId || null,
+    ...(clientCode ? { clientCode } : {}),
+  };
 }
 
 async function notifyUrgent(event, details = {}) {
