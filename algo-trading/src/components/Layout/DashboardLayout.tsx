@@ -25,7 +25,7 @@ const DashboardLayout: React.FC = () => {
             )}
             <div className="flex-1 flex flex-col min-w-0">
                 <Header onMobileMenuOpen={openMobileNav} />
-                <main className={`flex-1 p-4 md:p-5 max-md:p-3 ${isActionScreen ? 'max-md:pb-20' : 'max-md:pb-24'} overflow-y-auto`}>
+                <main className={`min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 md:p-5 max-md:p-3 ${isActionScreen ? 'max-md:pb-24' : 'max-md:pb-28'}`}>
                     <Outlet />
                 </main>
             </div>

@@ -21,6 +21,10 @@ const createSendToken = (user, statusCode, res) => {
     };
 
     res.cookie('jwt', token, cookieOptions);
+    res.cookie('refresh_jwt', signRefreshToken(user._id), {
+        ...cookieOptions,
+        expires: new Date(Date.now() + Number(process.env.JWT_REFRESH_COOKIE_EXPIRES_IN || 90) * 24 * 60 * 60 * 1000),
+    });
 
     // Remove password from output
     user.password = undefined;
@@ -56,6 +60,10 @@ exports.login = async (req, res, next) => {
         res.status(500).json({ status: 'error', message: err.message });
     }
 };
+
+const signRefreshToken = (id) => jwt.sign({ id, type: 'refresh' }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '90d'
+});
 
 exports.register = async (req, res) => {
     const session = await mongoose.startSession();
@@ -112,7 +120,26 @@ exports.logout = (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         path: '/'
     });
+    res.clearCookie('refresh_jwt', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/'
+    });
     res.status(200).json({ status: 'success' });
+};
+
+exports.refresh = async (req, res) => {
+    try {
+        const token = req.cookies && req.cookies.refresh_jwt;
+        if (!token) return res.status(401).json({ status: 'fail', message: 'Refresh session is unavailable.' });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.type !== 'refresh') return res.status(401).json({ status: 'fail', message: 'Invalid refresh session.' });
+        const user = await User.findById(decoded.id);
+        if (!user) return res.status(401).json({ status: 'fail', message: 'User session is no longer valid.' });
+        createSendToken(user, 200, res);
+    } catch (err) {
+        return res.status(401).json({ status: 'fail', message: 'Refresh session expired. Please sign in again.' });
+    }
 };
 
 exports.protect = async (req, res, next) => {

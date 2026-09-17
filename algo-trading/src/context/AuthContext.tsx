@@ -28,15 +28,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const fetchMe = async () => {
             try {
                 const token = localStorage.getItem('jwt');
-                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-                if (token) {
-                    headers['Authorization'] = `Bearer ${token}`;
-                }
+                const fetchCurrentUser = (accessToken: string | null) => {
+                    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+                    return fetch(`${API_BASE}/me`, { headers, credentials: 'include' });
+                };
 
-                const res = await fetch(`${API_BASE}/me`, {
-                    headers,
-                    credentials: 'include'
-                });
+                let res = await fetchCurrentUser(token);
+                if (res.status === 401) {
+                    const refresh = await fetch(`${API_BASE}/refresh`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                    if (refresh.ok) {
+                        const refreshData = await refresh.json();
+                        if (refreshData.token) localStorage.setItem('jwt', refreshData.token);
+                        res = await fetchCurrentUser(refreshData.token || null);
+                    }
+                }
                 if (res.ok) {
                     const data = await res.json();
                     setUser(data.data.user);

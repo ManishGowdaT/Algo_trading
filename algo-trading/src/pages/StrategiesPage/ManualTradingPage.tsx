@@ -11,6 +11,7 @@ import {
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider';
 import { apiGet } from '../../trading';
+import { startResilientPolling } from '../../utils/resilientPolling';
 
 type MarginData = {
   net: number;
@@ -52,17 +53,19 @@ const ManualTradingPage: React.FC = () => {
             available: parseFloat(d.availablecash || d.availablelimitmargin || '0'),
             used: parseFloat(d.utiliseddebits || '0')
           });
+          return true;
         }
+        return false;
       } catch (err) {
         console.error('Failed to fetch broker margins:', err);
+        return false;
       }
     };
 
-    fetchMargins();
-    const interval = setInterval(fetchMargins, 10000);
+    const stopPolling = startResilientPolling(fetchMargins, { intervalMs: 10000 });
     return () => {
       active = false;
-      clearInterval(interval);
+      stopPolling();
     };
   }, [connectStatus]);
 
@@ -86,16 +89,17 @@ const ManualTradingPage: React.FC = () => {
           'SENSEX': sensex.ltp,
           'BANK NIFTY': banknifty.ltp
         });
+        return [nifty, sensex, banknifty].some((item) => item.ltp > 0);
       } catch (err) {
         console.error('Failed to fetch indices LTP:', err);
+        return false;
       }
     };
 
-    fetchIndices();
-    const interval = setInterval(fetchIndices, 5000);
+    const stopPolling = startResilientPolling(fetchIndices, { intervalMs: 5000 });
     return () => {
       active = false;
-      clearInterval(interval);
+      stopPolling();
     };
   }, [connectStatus]);
 

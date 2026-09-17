@@ -4,6 +4,7 @@ import { ArrowRight, Zap, TrendingUp, BarChart2, Clock, Target, Activity, Cpu } 
 import { apiGet } from '../../trading'
 
 import StrategiesLayout from './StrategiesLayout'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 
 type StrategyCard = {
   title: string
@@ -102,32 +103,39 @@ export default function StrategiesPage() {
         {cards.map((c) => {
           const IconComp = c.icon
           return (
-            <button
+            <Card
               key={c.title}
-              type="button"
+              role="button"
+              tabIndex={0}
               onClick={() => navigate(c.to)}
-              className="group text-left p-4 rounded border border-[#E0E3EB] bg-white hover:border-[#0052FF] hover:shadow-sm transition-all flex flex-col justify-between"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  navigate(c.to)
+                }
+              }}
+              className="group flex cursor-pointer flex-col justify-between transition-all hover:border-[#0052FF] hover:shadow-md focus-visible:border-[#0052FF] focus-visible:ring-4 focus-visible:ring-[#0052FF]/10"
             >
-              <div>
+              <CardHeader className="p-4 pb-2">
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 bg-[#F0F3FA] rounded flex items-center justify-center text-[#0052FF] group-hover:bg-[#0052FF] group-hover:text-white transition-colors">
                       <IconComp className="w-3.5 h-3.5" />
                     </div>
-                    <h2 className="text-xs font-bold text-[#1E222D] tracking-tight">{c.title}</h2>
+                    <CardTitle>{c.title}</CardTitle>
                   </div>
-                  <span className="text-[10px] font-bold text-[#0052FF] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                    Launch <ArrowRight className="w-3 h-3" />
+                  <span className="flex min-h-11 items-center gap-0.5 rounded-lg px-2 text-[10px] font-bold text-[#0052FF] transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                    Launch <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
-                <p className="text-xs text-[#787B86] font-medium leading-relaxed">{c.description}</p>
-              </div>
+                <CardDescription>{c.description}</CardDescription>
+              </CardHeader>
 
-              <div className="mt-4 pt-2.5 border-t border-[#E0E3EB] flex items-center justify-between text-[10px] font-semibold text-[#787B86]">
+              <CardContent className="mt-2 flex items-center justify-between border-t border-[#E0E3EB] pt-3 text-[10px] font-semibold text-[#787B86]">
                 <span>Status: Ready</span>
                 <span className="text-[#089981] font-bold">Institutional Grade</span>
-              </div>
-            </button>
+              </CardContent>
+            </Card>
           )
         })}
       </div>

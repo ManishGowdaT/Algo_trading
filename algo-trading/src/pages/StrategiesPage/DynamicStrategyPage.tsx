@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Play, Square, XCircle } from 'lucide-react'
 import { apiGet, apiPost } from '../../trading'
+import { startResilientPolling } from '../../utils/resilientPolling'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import StrategiesLayout from './StrategiesLayout'
 
@@ -64,11 +65,11 @@ export default function DynamicStrategyPage() {
       try {
         const res = await apiGet<any>(`/strategies/${strategyId}/status`)
         setStatus(res)
-      } catch (e) {}
+        return true
+      } catch { return false }
     }
-    fetchStatus()
-    const interval = setInterval(fetchStatus, 2000)
-    return () => clearInterval(interval)
+    const stopPolling = startResilientPolling(fetchStatus, { intervalMs: 2000 })
+    return () => stopPolling()
   }, [strategyId])
 
   const handleStart = async () => {

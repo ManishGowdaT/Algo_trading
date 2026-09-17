@@ -47,13 +47,13 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     };
 
     return (
-        <header className="h-14 max-md:h-12 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
+        <header className="h-14 max-md:h-14 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
             {/* Left Page Title & Live Badge */}
             <div className="flex items-center gap-2 md:gap-3 min-w-0">
                 <button
                     type="button"
                     aria-label="Open navigation"
-                    className="hidden max-md:flex p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D]"
+                    className="hidden max-md:flex h-11 w-11 items-center justify-center rounded-lg text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D]"
                     onClick={onMobileMenuOpen}
                 >
                     <Menu className="w-5 h-5" />
@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 <button
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
                     className={`
-                        flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-colors border
+                        flex h-11 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors
                         ${connectStatus === 'connected'
                             ? 'bg-[#089981]/10 text-[#089981] border-[#089981]/30 hover:bg-[#089981]/20'
                             : 'bg-[#F23645]/10 text-[#F23645] border-[#F23645]/30 hover:bg-[#F23645]/20'}
@@ -82,33 +82,33 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                     <span className="hidden sm:inline">{connectStatus === 'connected' ? 'Angel One Connected' : 'Connect Angel Broker'}</span>
                 </button>
 
-                <div className="h-4 w-[1px] bg-[#E0E3EB]" />
+                <div className="hidden h-4 w-[1px] bg-[#E0E3EB] sm:block" />
 
                 {/* Theme, Notifications & Settings Quick Actions */}
                 <div className="flex items-center gap-1">
                     <button
                         onClick={toggleTheme}
-                        className="p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors"
+                        className="flex h-11 w-11 items-center justify-center rounded-lg text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors"
                         title="Toggle Theme"
                     >
                         {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
 
-                    <button className="p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors relative">
+                    <button aria-label="Notifications" className="hidden h-11 w-11 rounded-lg text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors relative sm:flex sm:items-center sm:justify-center">
                         <Bell className="w-4 h-4" />
                         <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-[#F23645] rounded-full" />
                     </button>
 
-                    <button className="p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors">
+                    <button aria-label="Settings" className="hidden h-11 w-11 rounded-lg text-[#787B86] hover:bg-[#F0F3FA] hover:text-[#1E222D] transition-colors sm:flex sm:items-center sm:justify-center">
                         <Settings className="w-4 h-4" />
                     </button>
                 </div>
 
-                <div className="h-4 w-[1px] bg-[#E0E3EB]" />
+                <div className="hidden h-4 w-[1px] bg-[#E0E3EB] sm:block" />
 
                 {/* Institutional User Profile Dropdown */}
                 <div className="group relative">
-                    <button className="flex items-center gap-2 py-1 px-1.5 rounded hover:bg-[#F0F3FA] transition-colors border border-transparent hover:border-[#E0E3EB]">
+                    <button aria-label="Open account menu" className="flex h-11 items-center gap-1.5 rounded-lg border border-transparent px-1.5 hover:bg-[#F0F3FA] hover:border-[#E0E3EB] transition-colors">
                         <div className="w-7 h-7 bg-[#0052FF] rounded flex items-center justify-center text-white font-bold text-xs">
                             <UserIcon className="w-4 h-4" />
                         </div>
@@ -116,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                             <p className="text-xs font-bold text-[#1E222D] leading-none">{user?.email?.split('@')[0] || 'Trader'}</p>
                             <p className="text-[9px] font-semibold text-[#787B86] uppercase leading-tight">Angel Pro</p>
                         </div>
-                        <ChevronDown className="w-3.5 h-3.5 text-[#787B86] group-hover:rotate-180 transition-transform duration-200" />
+                        <ChevronDown className="hidden w-3.5 h-3.5 text-[#787B86] transition-transform duration-200 sm:block sm:group-hover:rotate-180" />
                     </button>
 
                     {/* Dropdown Menu */}

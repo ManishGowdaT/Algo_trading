@@ -13,6 +13,9 @@ const chartRoutes = require('./routes/chartRoutes');
 const brokerProxyRoutes = require('./routes/brokerProxyRoutes');
 
 const app = express();
+// Render terminates the public connection before forwarding requests to Node.
+// Trust only that single proxy hop so authentication limits use the real client IP.
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.json());

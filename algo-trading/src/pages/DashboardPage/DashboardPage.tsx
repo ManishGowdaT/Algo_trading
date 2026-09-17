@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 
 import { apiGet } from '../../trading';
+import { startResilientPolling } from '../../utils/resilientPolling';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import TradingViewChart, {
   type CandleItem,
@@ -126,6 +127,7 @@ const DashboardPage: React.FC = () => {
 
       const results: IndexFetchResult[] = await Promise.all(fetchPromises);
       if (!active) return;
+      if (!results.some((item) => !item.isOffline)) throw new Error('Live index service unavailable');
 
       setIndicesData((prev) => {
         const updated: Record<string, IndexData> = { ...prev };
@@ -148,11 +150,10 @@ const DashboardPage: React.FC = () => {
       });
     };
 
-    fetchLiveIndices();
-    const interval = setInterval(fetchLiveIndices, 2000);
+    const stopPolling = startResilientPolling(fetchLiveIndices, { intervalMs: 2000 });
     return () => {
       active = false;
-      clearInterval(interval);
+      stopPolling();
     };
   }, []);
 

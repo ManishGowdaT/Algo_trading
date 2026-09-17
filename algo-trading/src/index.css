@@ -3,9 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    min-width: 320px;
+    background: #F8F9FA;
+  }
+
   body {
     @apply bg-[#F8F9FA] text-[#1E222D] font-sans antialiased selection:bg-[#0052FF]/10 selection:text-[#0052FF];
+    overflow-x: hidden;
   }
+
+  button, input, select, textarea { font: inherit; }
 }
 
 /* Institutional Tabular Numbers for Prices & PnL */
@@ -83,6 +91,11 @@
   input,
   select {
     min-height: 44px;
+  }
+
+  input[type='date'],
+  input[type='time'] {
+    min-width: 0;
   }
 }
 

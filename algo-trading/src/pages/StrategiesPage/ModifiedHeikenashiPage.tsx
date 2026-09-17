@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider'
 import { apiGet, apiPost } from '../../trading'
+import { startResilientPolling } from '../../utils/resilientPolling'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import MobileStrategyActions from '../../components/Layout/MobileStrategyActions'
 
@@ -143,7 +144,7 @@ export default function ModifiedHeikenashiPage() {
                     }
                 }>('/strategies/ModifiedHeikenAshi/status')
 
-                if (!active || !res.data) return
+                if (!active || !res.data) return false
 
                 const d = res.data
                 setIsRunning(d.isRunning)
@@ -157,16 +158,17 @@ export default function ModifiedHeikenashiPage() {
                 setEntryPrice(d.entryPrice)
                 setCurrentLtp(d.currentLtp)
                 setActiveTrailingSl(d.activeTrailingSl)
-            } catch (err) {
+                return true
+            } catch {
                 // Ignore status errors when backend offline
+                return false
             }
         }
 
-        fetchStatus()
-        const interval = setInterval(fetchStatus, 1500)
+        const stopPolling = startResilientPolling(fetchStatus, { intervalMs: 1500 })
         return () => {
             active = false
-            clearInterval(interval)
+            stopPolling()
         }
     }, [])
 
