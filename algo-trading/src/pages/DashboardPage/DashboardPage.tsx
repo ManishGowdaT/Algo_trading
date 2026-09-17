@@ -204,7 +204,7 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-4 max-md:space-y-3 select-none">
       {/* Top Section: Institutional Ticker Watchlist Bar (Angel One Inspired) */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="hidden md:grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {INDICES_CONFIG.map((cfg) => {
           const data = indicesData[cfg.id] || { ltp: null, close: null, isOffline: false };
           const ltp = data.ltp;
@@ -268,6 +268,30 @@ const DashboardPage: React.FC = () => {
                     <span className="text-[10px] font-normal">({isPositive ? '+' : ''}{pctChange.toFixed(2)}%)</span>
                   </div>
                 )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex md:hidden gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
+        {INDICES_CONFIG.map((cfg) => {
+          const data = indicesData[cfg.id] || { ltp: null, close: null, isOffline: false };
+          const ltp = data.ltp;
+          const close = data.close;
+          const change = ltp !== null && close !== null ? ltp - close : null;
+          const hasData = ltp !== null && ltp > 0;
+          const isPositive = (change ?? 0) >= 0;
+
+          return (
+            <div key={cfg.id} className="min-w-[136px] snap-start rounded border border-[#E0E3EB] bg-white px-2.5 py-2 shadow-sm">
+              <div className="flex items-center justify-between gap-2">
+                <span className="truncate text-[10px] font-bold text-[#1E222D]">{cfg.name}</span>
+                <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${data.isOffline ? 'bg-[#FF9800]' : 'bg-[#089981]'}`} />
+              </div>
+              <div className="mt-1 flex items-baseline justify-between gap-2">
+                <span className="text-xs font-bold tabular-nums text-[#1E222D]">{formatNumber(ltp)}</span>
+                {hasData && <span className={`text-[10px] font-semibold tabular-nums ${isPositive ? 'text-[#089981]' : 'text-[#F23645]'}`}>{isPositive ? '+' : ''}{change?.toFixed(2)}</span>}
               </div>
             </div>
           );

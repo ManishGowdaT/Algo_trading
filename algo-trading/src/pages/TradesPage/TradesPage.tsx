@@ -487,7 +487,7 @@ export default function TradesPage() {
             {/* Table Content */}
             <div className="bg-white rounded border border-[#E0E3EB] shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full max-md:min-w-[900px] text-left border-collapse">
+                    <table className="w-full max-md:hidden max-md:min-w-[900px] text-left border-collapse">
                         <thead>
                             <tr className="bg-[#F8F9FA] border-b border-[#E0E3EB]">
                                 <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#787B86]">Entry date &amp; time</th>
@@ -562,6 +562,33 @@ export default function TradesPage() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                <div className="hidden max-md:block space-y-2 p-3">
+                    {loading && <p className="py-8 text-center text-xs font-semibold text-[#787B86]">Fetching Trade Records...</p>}
+                    {!loading && trades.length === 0 && <p className="py-8 text-center text-xs font-semibold text-[#787B86]">No transaction records found</p>}
+                    {!loading && trades.length > 0 && trades.map((trade) => (
+                        <details key={`mobile-${trade._id}`} className="rounded-xl border border-[#E0E3EB] bg-white p-3 shadow-sm">
+                            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                        <span className="truncate text-xs font-bold uppercase text-[#1E222D]">{trade.index}</span>
+                                        <span className="rounded bg-[#0052FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase text-[#0052FF]">{trade.strategyId?.name || 'Manual'}</span>
+                                    </div>
+                                    <p className="mt-1 text-[10px] font-medium text-[#787B86]">{formatDate(trade.createdAt)} · Qty {trade.qty}</p>
+                                </div>
+                                <span className={`shrink-0 text-xs font-bold tabular-nums ${trade.pnl !== undefined ? (trade.pnl >= 0 ? 'text-[#089981]' : 'text-[#F23645]') : 'text-[#787B86]'}`}>
+                                    {trade.pnl !== undefined ? `₹${trade.pnl.toFixed(2)}` : '---'}
+                                </span>
+                            </summary>
+                            <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#E0E3EB] pt-3 text-[10px]">
+                                <div><p className="text-[#787B86]">Premium</p><p className="font-bold text-[#1E222D]">{trade.premium}</p></div>
+                                <div><p className="text-[#787B86]">Reason</p><p className="font-bold uppercase text-[#1E222D]">{trade.exitReason || 'Active'}</p></div>
+                                <div><p className="text-[#787B86]">Entry</p><p className="font-bold text-[#1E222D]">₹{trade.buyPrice.toFixed(2)}</p></div>
+                                <div><p className="text-[#787B86]">Exit</p><p className="font-bold text-[#1E222D]">{trade.exitPrice ? `₹${trade.exitPrice.toFixed(2)}` : '---'}</p></div>
+                            </div>
+                        </details>
+                    ))}
                 </div>
 
                 {/* Pagination */}

@@ -111,7 +111,7 @@ const ManualTradingPage: React.FC = () => {
           <h1 className="text-sm font-bold text-[#1E222D] tracking-tight">Manual Execution Terminal</h1>
           <p className="text-[10px] font-medium text-[#787B86]">Direct Equity & Options Order Placement</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 max-md:hidden">
           <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0052FF] hover:bg-[#0047D0] text-white text-xs font-semibold rounded shadow-sm transition-colors">
             <Plus className="w-3.5 h-3.5" />
             Place Order
@@ -211,6 +211,22 @@ const ManualTradingPage: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div
+        className="fixed inset-x-0 bottom-0 z-[45] hidden gap-2 border-t border-[#E0E3EB] bg-white/95 px-3 pt-2 shadow-[0_-4px_16px_rgba(30,34,45,0.08)] backdrop-blur max-md:flex"
+        style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}
+        role="toolbar"
+        aria-label="Manual trading actions"
+      >
+        <button type="button" className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#0052FF] px-3 text-xs font-bold text-white">
+          <Plus className="h-4 w-4" />
+          Place Order
+        </button>
+        <button type="button" className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#F0F3FA] px-3 text-xs font-bold text-[#434651]">
+          <History className="h-4 w-4" />
+          Order Book
+        </button>
       </div>
     </div>
   );

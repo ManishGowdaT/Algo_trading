@@ -2,9 +2,13 @@ import React, { useCallback, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import MobileBottomNav from './MobileBottomNav';
+import { useLocation } from 'react-router-dom';
 
 const DashboardLayout: React.FC = () => {
     const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+    const location = useLocation();
+    const isActionScreen = ['/strategies/manual-trading', '/strategies/heikenashi', '/strategies/modified-heikenashi', '/strategies/5-min-breakout'].includes(location.pathname);
     const closeMobileNav = useCallback(() => setIsMobileNavOpen(false), []);
     const openMobileNav = useCallback(() => setIsMobileNavOpen(true), []);
 
@@ -21,10 +25,11 @@ const DashboardLayout: React.FC = () => {
             )}
             <div className="flex-1 flex flex-col min-w-0">
                 <Header onMobileMenuOpen={openMobileNav} />
-                <main className="flex-1 p-4 md:p-5 max-md:p-3 overflow-y-auto">
+                <main className={`flex-1 p-4 md:p-5 max-md:p-3 ${isActionScreen ? 'max-md:pb-20' : 'max-md:pb-24'} overflow-y-auto`}>
                     <Outlet />
                 </main>
             </div>
+            {!isActionScreen && <MobileBottomNav />}
         </div>
     );
 };

@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     };
 
     return (
-        <header className="h-14 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
+        <header className="h-14 max-md:h-12 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
             {/* Left Page Title & Live Badge */}
             <div className="flex items-center gap-2 md:gap-3 min-w-0">
                 <button
@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 >
                     <Menu className="w-5 h-5" />
                 </button>
-                <h2 className="text-sm font-bold text-[#1E222D] flex items-center gap-2 tracking-tight capitalize">
+                <h2 className="truncate text-sm font-bold text-[#1E222D] flex items-center gap-2 tracking-tight capitalize">
                     {getPageTitle()}
                 </h2>
                 <span className="hidden sm:inline-flex items-center gap-1 bg-[#089981]/10 text-[#089981] text-[10px] font-bold px-2 py-0.5 rounded border border-[#089981]/20 uppercase tracking-wide">

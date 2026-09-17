@@ -11,6 +11,7 @@ import {
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider'
 import { apiGet, apiPost } from '../../trading'
 import { usePageTitle } from '../../hooks/usePageTitle'
+import MobileStrategyActions from '../../components/Layout/MobileStrategyActions'
 
 type Underlying = 'SENSEX' | 'NIFTY' | 'BANKNIFTY' | 'CRUDEOILM'
 type Exchange = 'BFO' | 'NFO' | 'MCX'
@@ -271,7 +272,7 @@ export default function ModifiedHeikenashiPage() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 max-md:w-full">
+                    <div className="flex items-center gap-2 max-md:hidden">
                         {!isRunning ? (
                             <button
                                 onClick={startStrategy}
@@ -477,7 +478,7 @@ export default function ModifiedHeikenashiPage() {
                         <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] font-bold uppercase text-[#787B86] mb-1.5 block">Strike Preference</label>
-                                <div className="grid grid-cols-3 gap-1.5">
+                                <div className="grid grid-cols-3 max-md:grid-cols-1 gap-1.5">
                                     {(['ITM', 'ATM', 'OTM'] as StrikeMode[]).map((mode) => (
                                         <button
                                             key={mode}
@@ -677,6 +678,14 @@ export default function ModifiedHeikenashiPage() {
                     ))}
                 </div>
             </div>
+            <MobileStrategyActions
+                isRunning={isRunning}
+                hasPosition={['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(state) && Boolean(activeTradeId)}
+                isExiting={isExiting}
+                onStart={() => void startStrategy()}
+                onStop={() => void stopStrategy()}
+                onExit={() => void manualExitPosition()}
+            />
         </div>
     )
 }

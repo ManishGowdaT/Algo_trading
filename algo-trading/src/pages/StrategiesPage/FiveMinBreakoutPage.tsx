@@ -9,6 +9,7 @@ import {
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider'
 import { apiGet, apiPost } from '../../trading'
 import { usePageTitle } from '../../hooks/usePageTitle'
+import MobileStrategyActions from '../../components/Layout/MobileStrategyActions'
 
 type Underlying = 'SENSEX' | 'NIFTY' | 'BANKNIFTY'
 type Exchange = 'BSE' | 'NFO'
@@ -230,7 +231,7 @@ export default function FiveMinBreakoutPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 max-md:hidden">
             {state === 'IN_POSITION' && activeTradeId && (
               <button
                 disabled={isExiting}
@@ -312,7 +313,7 @@ export default function FiveMinBreakoutPage() {
               </div>
 
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 max-md:grid-cols-1 gap-2">
                   <div>
                     <label className="text-[10px] font-bold uppercase text-[#787B86] mb-1 block truncate">Target (Pts)</label>
                     <input
@@ -444,6 +445,14 @@ export default function FiveMinBreakoutPage() {
           </div>
         </div>
       </div>
+      <MobileStrategyActions
+        isRunning={isRunning}
+        hasPosition={state === 'IN_POSITION' && Boolean(activeTradeId)}
+        isExiting={isExiting}
+        onStart={() => void startStrategy()}
+        onStop={() => void stopStrategy()}
+        onExit={() => void manualExitPosition()}
+      />
     </div>
   )
 }

@@ -61,7 +61,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
             <button
               key={tf.value}
               onClick={() => onTimeframeChange(tf.value)}
-              className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
+              className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
                 timeframe === tf.value
                   ? 'bg-white text-[#0052FF] shadow-sm'
                   : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -76,7 +76,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
         <div className="flex items-center bg-[#E0E3EB] p-0.5 rounded">
           <button
             onClick={() => onChartTypeChange('candlestick')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
+            className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
               chartType === 'candlestick'
                 ? 'bg-white text-[#0052FF] shadow-sm'
                 : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -87,7 +87,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
           </button>
           <button
             onClick={() => onChartTypeChange('heikenAshi')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded transition-colors ${
+                className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
               chartType === 'heikenAshi'
                 ? 'bg-white text-[#0052FF] shadow-sm'
                 : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -126,7 +126,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
 
         {/* Indicators Popover Panel */}
         {panelOpen && (
-          <div className="absolute right-0 top-9 w-72 max-md:w-[calc(100vw-2rem)] max-md:max-w-72 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
+          <div className="absolute right-0 top-9 w-72 max-md:fixed max-md:inset-x-2 max-md:bottom-16 max-md:top-auto max-md:right-auto max-md:w-auto max-md:max-w-none max-md:max-h-[calc(100vh-7rem)] max-md:overflow-y-auto max-md:rounded-2xl max-md:p-4 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
             <div className="flex items-center justify-between border-b border-[#E0E3EB] pb-2">
               <h4 className="text-xs font-bold uppercase text-[#1E222D] tracking-wider">
                 Chart Indicators

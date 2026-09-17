@@ -77,3 +77,12 @@
   @apply border-[#787B86] !important;
 }
 
+/* Mobile touch targets only; desktop sizing remains unchanged. */
+@media (max-width: 767px) {
+  button,
+  input,
+  select {
+    min-height: 44px;
+  }
+}
+
