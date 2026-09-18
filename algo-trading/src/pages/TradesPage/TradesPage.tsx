@@ -256,7 +256,7 @@ export default function TradesPage() {
                         {/* Custom Strategy Dropdown */}
                         <div className="relative md:col-span-1">
                             <div
-                                className="w-full bg-[#F0F3FA] border border-[#E0E3EB] rounded px-3 py-1.5 cursor-pointer flex items-center justify-between text-xs font-medium transition-colors hover:border-[#0052FF]"
+                                className="w-full max-md:min-h-11 bg-[#F0F3FA] border border-[#E0E3EB] rounded px-3 py-1.5 cursor-pointer flex items-center justify-between text-xs font-medium transition-colors hover:border-[#0052FF]"
                                 onClick={() => {
                                     setIsStrategyDropdownOpen(!isStrategyDropdownOpen)
                                     setIsExitReasonDropdownOpen(false)
@@ -303,7 +303,7 @@ export default function TradesPage() {
                         {/* Custom Exit Reason Dropdown */}
                         <div className="relative md:col-span-1">
                             <div
-                                className="w-full bg-[#F0F3FA] border border-[#E0E3EB] rounded px-3 py-1.5 cursor-pointer flex items-center justify-between text-xs font-medium transition-colors hover:border-[#0052FF]"
+                                className="w-full max-md:min-h-11 bg-[#F0F3FA] border border-[#E0E3EB] rounded px-3 py-1.5 cursor-pointer flex items-center justify-between text-xs font-medium transition-colors hover:border-[#0052FF]"
                                 onClick={() => {
                                     setIsExitReasonDropdownOpen(!isExitReasonDropdownOpen)
                                     setIsStrategyDropdownOpen(false)
@@ -463,7 +463,7 @@ export default function TradesPage() {
                             </button>
                             <button
                                 onClick={() => fetchTrades()}
-                                className="p-1.5 bg-[#0052FF]/10 hover:bg-[#0052FF]/20 text-[#0052FF] text-xs font-semibold rounded transition-colors"
+                                className="max-md:min-h-11 max-md:min-w-11 p-1.5 bg-[#0052FF]/10 hover:bg-[#0052FF]/20 text-[#0052FF] text-xs font-semibold rounded transition-colors"
                                 title="Refresh"
                             >
                                 <RefreshCw className="w-4 h-4" />
@@ -600,7 +600,7 @@ export default function TradesPage() {
                         <button
                             disabled={page === 1}
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            className="w-7 h-7 flex items-center justify-center bg-white border border-[#E0E3EB] rounded disabled:opacity-30 hover:border-[#0052FF] transition-colors"
+                            className="w-7 h-7 max-md:min-h-11 max-md:min-w-11 flex items-center justify-center bg-white border border-[#E0E3EB] rounded disabled:opacity-30 hover:border-[#0052FF] transition-colors"
                         >
                             <ChevronLeft className="w-4 h-4 text-[#434651]" />
                         </button>
@@ -627,7 +627,7 @@ export default function TradesPage() {
                                         <button
                                             key={`page-${p}`}
                                             onClick={() => setPage(p as number)}
-                                            className={`w-7 h-7 text-xs font-semibold rounded transition-colors ${page === p ? 'bg-[#0052FF] text-white shadow-sm' : 'bg-white border border-[#E0E3EB] text-[#434651] hover:bg-[#F0F3FA]'}`}
+                                            className={`w-7 h-7 max-md:min-h-11 max-md:min-w-11 text-xs font-semibold rounded transition-colors ${page === p ? 'bg-[#0052FF] text-white shadow-sm' : 'bg-white border border-[#E0E3EB] text-[#434651] hover:bg-[#F0F3FA]'}`}
                                         >
                                             {p}
                                         </button>
@@ -638,7 +638,7 @@ export default function TradesPage() {
                         <button
                             disabled={page === totalPages}
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                            className="w-7 h-7 flex items-center justify-center bg-white border border-[#E0E3EB] rounded disabled:opacity-30 hover:border-[#0052FF] transition-colors"
+                            className="w-7 h-7 max-md:min-h-11 max-md:min-w-11 flex items-center justify-center bg-white border border-[#E0E3EB] rounded disabled:opacity-30 hover:border-[#0052FF] transition-colors"
                         >
                             <ChevronRight className="w-4 h-4 text-[#434651]" />
                         </button>

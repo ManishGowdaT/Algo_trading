@@ -13,7 +13,7 @@ const DashboardLayout: React.FC = () => {
     const openMobileNav = useCallback(() => setIsMobileNavOpen(true), []);
 
     return (
-        <div className="flex min-h-screen bg-[#F8F9FA] text-[#1E222D]">
+        <div className="flex min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] text-[#1E222D]">
             <Sidebar isMobileOpen={isMobileNavOpen} onMobileClose={closeMobileNav} />
             {isMobileNavOpen && (
                 <button
@@ -25,7 +25,7 @@ const DashboardLayout: React.FC = () => {
             )}
             <div className="flex-1 flex flex-col min-w-0">
                 <Header onMobileMenuOpen={openMobileNav} />
-                <main className={`min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 md:p-5 max-md:p-3 ${isActionScreen ? 'max-md:pb-24' : 'max-md:pb-28'}`}>
+                <main className={`min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 md:p-5 max-md:p-3 ${isActionScreen ? 'max-md:pb-[calc(5rem+env(safe-area-inset-bottom))]' : 'max-md:pb-[calc(6rem+env(safe-area-inset-bottom))]'}`}>
                     <Outlet />
                 </main>
             </div>

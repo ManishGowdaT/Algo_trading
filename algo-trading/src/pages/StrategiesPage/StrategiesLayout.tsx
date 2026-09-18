@@ -21,7 +21,7 @@ export default function StrategiesLayout({ title, subtitle, backTo, children }: 
   const { connectStatus, connectMessage, openConnect, disconnect } = useAngelConnection()
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+    <div className="min-h-screen max-md:min-h-[100dvh] bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
       <div className="mx-auto max-w-6xl px-4 py-8 max-md:px-0 max-md:py-2">
         <header className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between max-md:rounded-none max-md:border-x-0">
           <div>

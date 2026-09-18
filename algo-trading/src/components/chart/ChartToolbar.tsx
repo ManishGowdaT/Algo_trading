@@ -114,7 +114,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
       <div className="relative flex items-center gap-2">
         <button
           onClick={() => setPanelOpen(!panelOpen)}
-          className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold transition-colors border ${
+          className={`flex items-center gap-1.5 px-3 py-1 max-md:min-h-11 rounded text-xs font-semibold transition-colors border ${
             panelOpen
               ? 'bg-[#0052FF] text-white border-[#0052FF]'
               : 'bg-white text-[#1E222D] border-[#E0E3EB] hover:border-[#0052FF]'
@@ -126,7 +126,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
 
         {/* Indicators Popover Panel */}
         {panelOpen && (
-          <div className="absolute right-0 top-9 w-72 max-md:fixed max-md:inset-x-2 max-md:bottom-16 max-md:top-auto max-md:right-auto max-md:w-auto max-md:max-w-none max-md:max-h-[calc(100vh-7rem)] max-md:overflow-y-auto max-md:rounded-2xl max-md:p-4 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
+          <div className="absolute right-0 top-9 w-72 max-md:fixed max-md:inset-x-2 max-md:bottom-[calc(4.5rem+env(safe-area-inset-bottom))] max-md:top-auto max-md:right-auto max-md:w-auto max-md:max-w-none max-md:max-h-[calc(100vh-8rem)] max-md:max-h-[calc(100dvh-8rem)] max-md:overflow-y-auto max-md:rounded-2xl max-md:p-4 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
             <div className="flex items-center justify-between border-b border-[#E0E3EB] pb-2">
               <h4 className="text-xs font-bold uppercase text-[#1E222D] tracking-wider">
                 Chart Indicators
@@ -186,7 +186,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
             <div className="pt-2 border-t border-[#E0E3EB] space-y-1.5">
               <button
                 onClick={() => onToggleChange('showMha')}
-                className="flex items-center gap-2 text-xs font-medium text-[#1E222D] w-full"
+                className="flex items-center gap-2 max-md:min-h-11 text-xs font-medium text-[#1E222D] w-full"
               >
                 {toggles.showMha ? <Eye className="w-3.5 h-3.5 text-[#0052FF]" /> : <EyeOff className="w-3.5 h-3.5 text-[#787B86]" />}
                 <span>Modified Heiken Ashi Candles</span>
@@ -194,7 +194,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
 
               <button
                 onClick={() => onToggleChange('showMarkers')}
-                className="flex items-center gap-2 text-xs font-medium text-[#1E222D] w-full"
+                className="flex items-center gap-2 max-md:min-h-11 text-xs font-medium text-[#1E222D] w-full"
               >
                 {toggles.showMarkers ? <Eye className="w-3.5 h-3.5 text-[#089981]" /> : <EyeOff className="w-3.5 h-3.5 text-[#787B86]" />}
                 <span>Buy / Sell Trade Markers</span>
@@ -205,13 +205,13 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
             <div className="flex items-center gap-2 pt-2 border-t border-[#E0E3EB]">
               <button
                 onClick={handleReset}
-                className="flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-[#F0F3FA] hover:bg-[#E0E3EB] text-[#434651] text-xs font-semibold rounded transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 px-2 py-1 max-md:min-h-11 bg-[#F0F3FA] hover:bg-[#E0E3EB] text-[#434651] text-xs font-semibold rounded transition-colors"
               >
                 <RotateCcw className="w-3 h-3" /> Reset
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-[#0052FF] hover:bg-[#0047D0] text-white text-xs font-semibold rounded shadow-sm transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 px-2 py-1 max-md:min-h-11 bg-[#0052FF] hover:bg-[#0047D0] text-white text-xs font-semibold rounded shadow-sm transition-colors"
               >
                 <Check className="w-3 h-3" /> Apply
               </button>

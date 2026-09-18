@@ -482,13 +482,13 @@ export default function HeikenashiPage() {
                                         <button
                                             onClick={() => setStrikeDepth(Math.max(1, strikeDepth - 1))}
                                             disabled={isRunning}
-                                            className="w-7 h-7 flex items-center justify-center text-[#434651] font-bold text-base disabled:opacity-50"
+                                            className="w-7 h-7 max-md:min-h-11 max-md:min-w-11 flex items-center justify-center text-[#434651] font-bold text-base disabled:opacity-50"
                                         >-</button>
                                         <span className="text-xs font-bold text-[#1E222D]">{strikeDepth}</span>
                                         <button
                                             onClick={() => setStrikeDepth(strikeDepth + 1)}
                                             disabled={isRunning}
-                                            className="w-7 h-7 flex items-center justify-center text-[#434651] font-bold text-base disabled:opacity-50"
+                                            className="w-7 h-7 max-md:min-h-11 max-md:min-w-11 flex items-center justify-center text-[#434651] font-bold text-base disabled:opacity-50"
                                         >+</button>
                                     </div>
                                 </div>

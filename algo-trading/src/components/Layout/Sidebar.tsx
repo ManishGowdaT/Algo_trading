@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
     const isStrategyActive = strategies.some(s => isActive(s.path));
 
     return (
-        <aside className={`w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[60] max-md:w-72 max-md:transition-transform max-md:duration-200 ${isMobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}`}>
+        <aside className={`w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none max-md:h-[100dvh] max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[60] max-md:w-72 max-md:transition-transform max-md:duration-200 ${isMobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}`}>
             {/* Platform Branding */}
             <div className="h-14 px-4 border-b border-[#E0E3EB] flex items-center gap-2.5">
                 <div className="w-7 h-7 bg-[#0052FF] rounded flex items-center justify-center text-white shadow-sm">
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                 <button
                     type="button"
                     aria-label="Close navigation"
-                    className="ml-auto hidden max-md:block p-1.5 rounded text-[#787B86] hover:bg-[#F0F3FA]"
+                    className="ml-auto hidden max-md:flex max-md:min-h-11 max-md:min-w-11 max-md:items-center max-md:justify-center rounded text-[#787B86] hover:bg-[#F0F3FA]"
                     onClick={onMobileClose}
                 >
                     <X className="w-5 h-5" />
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                     to="/dashboard"
                     onClick={onMobileClose}
                     className={({ isActive }) => `
-                        flex items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
+                        flex max-md:min-h-11 items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
                         ${isActive
                             ? 'bg-[#0052FF]/10 text-[#0052FF]'
                             : 'text-[#434651] hover:bg-[#F0F3FA] hover:text-[#1E222D]'}
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                     to="/trades"
                     onClick={onMobileClose}
                     className={({ isActive }) => `
-                        flex items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
+                        flex max-md:min-h-11 items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors
                         ${isActive
                             ? 'bg-[#0052FF]/10 text-[#0052FF]'
                             : 'text-[#434651] hover:bg-[#F0F3FA] hover:text-[#1E222D]'}
@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                     <button
                         onClick={() => setIsStrategiesOpen(!isStrategiesOpen)}
                         className={`
-                            w-full flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors
+                            w-full max-md:min-h-11 flex items-center justify-between px-3 py-2 rounded text-xs font-semibold transition-colors
                             ${isStrategyActive
                                 ? 'text-[#0052FF]'
                                 : 'text-[#434651] hover:bg-[#F0F3FA] hover:text-[#1E222D]'}
@@ -119,7 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                                     to={strat.path}
                                     onClick={onMobileClose}
                                     className={({ isActive }) => `
-                                        flex items-center gap-2 px-2.5 py-1.5 rounded text-[11px] font-medium transition-colors
+                                        flex max-md:min-h-11 items-center gap-2 px-2.5 py-1.5 rounded text-[11px] font-medium transition-colors
                                         ${isActive
                                             ? 'text-[#0052FF] bg-[#0052FF]/10 font-semibold'
                                             : 'text-[#5D606B] hover:bg-[#F0F3FA] hover:text-[#1E222D]'}

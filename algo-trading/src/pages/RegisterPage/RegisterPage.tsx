@@ -27,7 +27,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
+    <div className="min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
       <div className="max-w-sm w-full">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center p-2.5 bg-[#0052FF] rounded-md shadow-sm mb-3">

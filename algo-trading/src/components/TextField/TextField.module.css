@@ -50,3 +50,10 @@
   font-size: 0.85rem;
   color: var(--color-danger);
 }
+
+@media (max-width: 767px) {
+  .input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+}

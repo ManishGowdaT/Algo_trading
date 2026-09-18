@@ -36,3 +36,9 @@ a {
 #root {
   min-height: 100vh;
 }
+
+@media (max-width: 767px) {
+  #root {
+    min-height: 100dvh;
+  }
+}

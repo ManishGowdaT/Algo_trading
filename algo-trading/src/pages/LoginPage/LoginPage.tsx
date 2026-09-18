@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
+    <div className="min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
       <div className="max-w-sm w-full">
         {/* Header Branding */}
         <div className="text-center mb-6">
