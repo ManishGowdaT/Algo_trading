@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BarChart3, Home, LogOut, UserRound, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -14,10 +14,11 @@ const MobileBottomNav: React.FC = () => {
     const location = useLocation();
     const { user, logout } = useAuth();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout();
-        window.location.href = '/login';
+        navigate('/login', { replace: true });
     };
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../shared/theme/ThemeProvider';
 import {
@@ -25,11 +25,12 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     const { theme, toggleTheme } = useTheme();
     const { connectStatus, openConnect, disconnect } = useAngelConnection();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
             await logout();
-            window.location.href = '/login';
+            navigate('/login', { replace: true });
         } catch (err) {
             console.error('Logout failed:', err);
         }
