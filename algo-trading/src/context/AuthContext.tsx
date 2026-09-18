@@ -99,12 +99,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const logout = async () => {
-        await fetch(`${API_BASE}/logout`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        localStorage.removeItem('jwt');
-        setUser(null);
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 5000);
+        try {
+            await fetch(`${API_BASE}/logout`, {
+                method: 'POST',
+                credentials: 'include',
+                signal: controller.signal,
+            });
+        } catch (err) {
+            // Logout remains local-first even when the server is unavailable.
+            console.warn('Server logout request failed; clearing local session.', err);
+        } finally {
+            window.clearTimeout(timeout);
+            localStorage.removeItem('jwt');
+            setUser(null);
+        }
     };
 
     return (
