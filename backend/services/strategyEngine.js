@@ -358,6 +358,8 @@ class SingleStrategyRunner {
     if (this.peContract) {
       marketDataService.unsubscribe(this.peContract.exchange, this.subscribedPeToken || this.peContract.symboltoken, baseTimeframe);
     }
+    this.subscribedCeToken = null;
+    this.subscribedPeToken = null;
 
     this.ceContract = null;
     this.peContract = null;
@@ -532,6 +534,7 @@ class SingleStrategyRunner {
         }
       }
 
+      try {
       // Handle Reversal exit check when IN_POSITION on closed candle
       if (['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state) && this.activeTradePremium) {
         const activeContract = (this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
@@ -569,7 +572,6 @@ class SingleStrategyRunner {
       const scanStartMs = Date.now();
       const scanStartTs = formatPrecisionTime(new Date(scanStartMs));
 
-      try {
         const PluginClass = strategyRegistry.getPlugin(this.strategyName);
         if (!PluginClass) {
           console.warn(`[${this.strategyName}] Plugin not registered in strategyRegistry`);
