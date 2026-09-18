@@ -11,16 +11,7 @@ function getHeaders() {
   };
 }
 
-function diagnosticBody(data) {
-  if (!data || typeof data !== 'object') return data;
-  const redacted = { ...data };
-  for (const key of ['jwt_token', 'refresh_token', 'feed_token', 'api_key']) {
-    if (key in redacted) redacted[key] = '[REDACTED]';
-  }
-  return redacted;
-}
-
-async function requestPython(path, { method = 'GET', body, signal, userId, diagnosticLabel } = {}) {
+async function requestPython(path, { method = 'GET', body, signal, userId } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), config.API.TIMEOUT_MS);
 
@@ -43,21 +34,8 @@ async function requestPython(path, { method = 'GET', body, signal, userId, diagn
       data = text;
     }
 
-    if (diagnosticLabel) {
-      console.log(
-        `[TEMP ${diagnosticLabel}] Python response timestamp=${new Date().toISOString()} `
-        + `status=${response.status} body=${JSON.stringify(diagnosticBody(data))}`
-      );
-    }
-
     return { response, data };
   } catch (err) {
-    if (diagnosticLabel) {
-      console.log(
-        `[TEMP ${diagnosticLabel}] Python request error timestamp=${new Date().toISOString()} `
-        + `type=${err.name} message=${err.message}`
-      );
-    }
     throw err;
   } finally {
     clearTimeout(timeout);

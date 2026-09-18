@@ -12,15 +12,6 @@ function safeSessionStatus(data) {
   };
 }
 
-function diagnosticResponseBody(data) {
-  if (!data || typeof data !== 'object') return data;
-  const redacted = { ...data };
-  for (const key of ['jwt_token', 'refresh_token', 'feed_token', 'api_key']) {
-    if (key in redacted) redacted[key] = '[REDACTED]';
-  }
-  return redacted;
-}
-
 async function proxy(req, res, pythonPath, options = {}) {
   try {
     activeAccountService.assertActiveUser(req.user._id);
@@ -64,11 +55,6 @@ function sanitizeLoginResponse(data) {
 exports.login = async (req, res) => {
   try {
     const requestedUserId = req.user._id.toString();
-    // TEMPORARY DIAGNOSTIC LOGGING: preserve existing proxy behavior.
-    console.log(
-      `[TEMP AngelLoginDiagnostic] Node request timestamp=${new Date().toISOString()} `
-      + `activeUserId=${requestedUserId}`
-    );
     const current = activeAccountService.getActiveAccount();
     if (current && current.userId !== requestedUserId) {
       await strategyEngine.assertAccountCanSwitch(current.userId);
@@ -79,13 +65,7 @@ exports.login = async (req, res) => {
       method: 'POST',
       body: req.body,
       userId: requestedUserId,
-      diagnosticLabel: 'AngelLoginDiagnostic',
     });
-    console.log(
-      `[TEMP AngelLoginDiagnostic] Node response timestamp=${new Date().toISOString()} `
-      + `activeUserId=${requestedUserId} status=${response.status} `
-      + `body=${JSON.stringify(diagnosticResponseBody(data))}`
-    );
     if (!response.ok) return res.status(response.status).json(data);
     const sanitized = sanitizeLoginResponse(data);
     if (sanitized.connected) {

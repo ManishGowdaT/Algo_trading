@@ -129,14 +129,9 @@ def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
             totp_secret=req.totpSecret,
             owner_user_id=owner_user_id,
         )
-    except Exception as e:  # noqa: BLE001
-        # TEMPORARY DIAGNOSTIC LOGGING: preserve existing error behavior.
-        print(
-            f"[TEMP AngelLoginDiagnostic] timestamp={datetime.now(timezone.utc).isoformat()} "
-            f"exception_type={type(e).__name__} message={e}",
-            flush=True,
-        )
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:  # noqa: BLE001
+        # Do not expose broker/credential-bearing exception text to clients or logs.
+        raise HTTPException(status_code=400, detail="Angel One login failed")
 
 
 @app.get("/angel/session-tokens")

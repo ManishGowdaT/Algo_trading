@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { Eye, EyeOff, X } from 'lucide-react'
 import type { AngelCredentials } from './AngelConnectionProvider'
 
 export default function MpinModal({
@@ -14,9 +14,16 @@ export default function MpinModal({
   const [form, setForm] = useState<AngelCredentials>({ apiKey: '', clientCode: '', mpin: '', totpSecret: '' })
   const [isWorking, setIsWorking] = useState(false)
   const [error, setError] = useState('')
+  const [visibleFields, setVisibleFields] = useState<Record<keyof AngelCredentials, boolean>>({
+    apiKey: false,
+    clientCode: false,
+    mpin: false,
+    totpSecret: false,
+  })
 
   const clearCredentials = () => {
     setForm({ apiKey: '', clientCode: '', mpin: '', totpSecret: '' })
+    setVisibleFields({ apiKey: false, clientCode: false, mpin: false, totpSecret: false })
   }
 
   const closeModal = () => {
@@ -73,14 +80,25 @@ export default function MpinModal({
           ] as const).map(([key, label]) => (
             <label key={key} className="block text-sm font-medium text-slate-700 dark:text-slate-200">
               {label}
-              <input
-                type="password"
-                autoComplete="off"
-                value={form[key]}
-                onChange={(event) => update(key, event.target.value)}
-                disabled={isWorking}
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:ring-4 focus:ring-cyan-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-50"
-              />
+              <div className="relative mt-1">
+                <input
+                  type={visibleFields[key] ? 'text' : 'password'}
+                  autoComplete="off"
+                  value={form[key]}
+                  onChange={(event) => update(key, event.target.value)}
+                  disabled={isWorking}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 pr-11 text-sm text-slate-900 outline-none focus:ring-4 focus:ring-cyan-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisibleFields((current) => ({ ...current, [key]: !current[key] }))}
+                  disabled={isWorking}
+                  className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-60 dark:hover:bg-white/10"
+                  aria-label={visibleFields[key] ? `Hide ${label}` : `Show ${label}`}
+                >
+                  {visibleFields[key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </label>
           ))}
         </div>
