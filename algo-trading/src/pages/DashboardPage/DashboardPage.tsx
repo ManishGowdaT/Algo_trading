@@ -275,7 +275,7 @@ const DashboardPage: React.FC = () => {
         })}
       </div>
 
-      <div className="flex md:hidden gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x">
+      <div className="flex w-full max-w-full md:hidden gap-2 overflow-x-auto overscroll-x-contain pb-1 -mx-1 px-1 snap-x [touch-action:pan-x_pan-y]">
         {INDICES_CONFIG.map((cfg) => {
           const data = indicesData[cfg.id] || { ltp: null, close: null, isOffline: false };
           const ltp = data.ltp;
@@ -285,7 +285,7 @@ const DashboardPage: React.FC = () => {
           const isPositive = (change ?? 0) >= 0;
 
           return (
-            <div key={cfg.id} className="min-w-[136px] snap-start rounded border border-[#E0E3EB] bg-white px-2.5 py-2 shadow-sm">
+            <div key={cfg.id} className="min-w-[136px] shrink-0 snap-start rounded border border-[#E0E3EB] bg-white px-2.5 py-2 shadow-sm">
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-[10px] font-bold text-[#1E222D]">{cfg.name}</span>
                 <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${data.isOffline ? 'bg-[#FF9800]' : 'bg-[#089981]'}`} />

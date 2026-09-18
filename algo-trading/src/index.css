@@ -101,5 +101,16 @@
   input[type='time'] {
     min-width: 0;
   }
+
+  /* Keep Trade History's custom calendar above the fixed mobile navigation. */
+  .trade-history-datepicker-popper {
+    z-index: 60 !important;
+    max-width: calc(100vw - 1.5rem);
+  }
+
+  .trade-history-datepicker-popper .react-datepicker {
+    max-height: calc(100dvh - 7rem);
+    overflow-y: auto;
+  }
 }
 

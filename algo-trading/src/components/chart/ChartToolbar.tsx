@@ -52,16 +52,16 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-2 max-md:p-1.5 bg-[#F8F9FA] rounded border border-[#E0E3EB] mb-3 relative select-none">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-2 max-md:flex-col max-md:items-stretch max-md:p-1.5 bg-[#F8F9FA] rounded border border-[#E0E3EB] mb-3 relative select-none">
       {/* Timeframe, Chart Type & Date */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 max-md:w-full max-md:flex-col max-md:items-stretch max-md:gap-2">
         {/* Timeframe Selector */}
-        <div className="flex items-center bg-[#E0E3EB] p-0.5 rounded">
+        <div className="flex items-center bg-[#E0E3EB] p-0.5 rounded max-md:w-full">
           {timeframes.map((tf) => (
             <button
               key={tf.value}
               onClick={() => onTimeframeChange(tf.value)}
-              className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
+              className={`px-2.5 py-1 max-md:min-h-11 max-md:flex-1 text-xs font-semibold rounded transition-colors ${
                 timeframe === tf.value
                   ? 'bg-white text-[#0052FF] shadow-sm'
                   : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -73,10 +73,10 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
         </div>
 
         {/* Chart Type Selector */}
-        <div className="flex items-center bg-[#E0E3EB] p-0.5 rounded">
+        <div className="flex items-center bg-[#E0E3EB] p-0.5 rounded max-md:w-full">
           <button
             onClick={() => onChartTypeChange('candlestick')}
-            className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
+            className={`px-2.5 py-1 max-md:min-h-11 max-md:flex-1 text-xs font-semibold rounded transition-colors ${
               chartType === 'candlestick'
                 ? 'bg-white text-[#0052FF] shadow-sm'
                 : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -87,7 +87,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
           </button>
           <button
             onClick={() => onChartTypeChange('heikenAshi')}
-                className={`px-2.5 py-1 max-md:min-h-11 text-xs font-semibold rounded transition-colors ${
+                className={`px-2.5 py-1 max-md:min-h-11 max-md:flex-1 text-xs font-semibold rounded transition-colors ${
               chartType === 'heikenAshi'
                 ? 'bg-white text-[#0052FF] shadow-sm'
                 : 'text-[#5D606B] hover:text-[#1E222D]'
@@ -99,22 +99,22 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
         </div>
 
         {/* Date Picker */}
-        <div className="flex items-center gap-1.5 bg-white border border-[#E0E3EB] px-2.5 py-1 rounded">
+        <div className="flex items-center gap-1.5 bg-white border border-[#E0E3EB] px-2.5 py-1 rounded max-md:w-full">
           <Calendar className="w-3.5 h-3.5 text-[#0052FF]" />
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => onDateChange(e.target.value)}
-            className="bg-transparent text-xs font-medium text-[#1E222D] outline-none border-none cursor-pointer"
+            className="min-w-0 bg-transparent text-xs font-medium text-[#1E222D] outline-none border-none cursor-pointer max-md:flex-1"
           />
         </div>
       </div>
 
       {/* Indicators Panel Button & Controls */}
-      <div className="relative flex items-center gap-2">
+      <div className="relative flex items-center gap-2 max-md:w-full">
         <button
           onClick={() => setPanelOpen(!panelOpen)}
-          className={`flex items-center gap-1.5 px-3 py-1 max-md:min-h-11 rounded text-xs font-semibold transition-colors border ${
+          className={`flex items-center gap-1.5 px-3 py-1 max-md:min-h-11 max-md:w-full max-md:justify-center rounded text-xs font-semibold transition-colors border ${
             panelOpen
               ? 'bg-[#0052FF] text-white border-[#0052FF]'
               : 'bg-white text-[#1E222D] border-[#E0E3EB] hover:border-[#0052FF]'

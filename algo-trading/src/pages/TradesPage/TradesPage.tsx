@@ -364,6 +364,7 @@ export default function TradesPage() {
                                     }}
                                     dateFormat="yyyy-MM-dd"
                                     placeholderText="Start Date"
+                                    popperClassName="trade-history-datepicker-popper"
                                     className="bg-[#F0F3FA] border border-[#E0E3EB] rounded pl-8 pr-2 py-1.5 text-xs text-[#1E222D] outline-none focus:border-[#0052FF] font-medium w-full"
                                 />
                             </div>
@@ -382,6 +383,7 @@ export default function TradesPage() {
                                     }}
                                     dateFormat="yyyy-MM-dd"
                                     placeholderText="End Date"
+                                    popperClassName="trade-history-datepicker-popper"
                                     className="bg-[#F0F3FA] border border-[#E0E3EB] rounded pl-8 pr-2 py-1.5 text-xs text-[#1E222D] outline-none focus:border-[#0052FF] font-medium w-full"
                                 />
                             </div>
