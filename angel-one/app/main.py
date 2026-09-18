@@ -130,6 +130,12 @@ def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
             owner_user_id=owner_user_id,
         )
     except Exception as e:  # noqa: BLE001
+        # TEMPORARY DIAGNOSTIC LOGGING: preserve existing error behavior.
+        print(
+            f"[TEMP AngelLoginDiagnostic] timestamp={datetime.now(timezone.utc).isoformat()} "
+            f"exception_type={type(e).__name__} message={e}",
+            flush=True,
+        )
         raise HTTPException(status_code=400, detail=str(e))
 
 
