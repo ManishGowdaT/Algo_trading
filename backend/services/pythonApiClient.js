@@ -34,8 +34,25 @@ async function requestPython(path, { method = 'GET', body, signal, userId } = {}
       data = text;
     }
 
+    if (path === '/angel/login') {
+      // TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
+      const outcome = response.ok ? 'success' : 'http_error';
+      console.log(
+        `[TEMP AngelLoginDiagnostic] Node-to-Python ${outcome} timestamp=${new Date().toISOString()} `
+        + `status=${response.status}`
+      );
+    }
+
     return { response, data };
   } catch (err) {
+    if (path === '/angel/login') {
+      // TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
+      const outcome = err.name === 'AbortError' ? 'timeout' : 'error';
+      console.log(
+        `[TEMP AngelLoginDiagnostic] Node-to-Python ${outcome} timestamp=${new Date().toISOString()} `
+        + `type=${err.name} message=${err.message}`
+      );
+    }
     throw err;
   } finally {
     clearTimeout(timeout);

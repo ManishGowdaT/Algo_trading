@@ -129,8 +129,17 @@ def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
             totp_secret=req.totpSecret,
             owner_user_id=owner_user_id,
         )
-    except Exception:  # noqa: BLE001
-        # Do not expose broker/credential-bearing exception text to clients or logs.
+    except Exception as exc:  # noqa: BLE001
+        # TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
+        diagnostic_message = str(exc)
+        for credential in (req.apiKey, req.clientCode, req.mpin, req.totpSecret):
+            if credential:
+                diagnostic_message = diagnostic_message.replace(credential, "[REDACTED]")
+        print(
+            f"[TEMP AngelLoginDiagnostic] timestamp={datetime.now(timezone.utc).isoformat()} "
+            f"exception_type={type(exc).__name__} message={diagnostic_message}",
+            flush=True,
+        )
         raise HTTPException(status_code=400, detail="Angel One login failed")
 
 

@@ -52,9 +52,28 @@ function sanitizeLoginResponse(data) {
   };
 }
 
+function redactLoginDiagnosticBody(data, credentials = []) {
+  if (typeof data === 'string') {
+    return credentials.reduce((text, credential) => credential ? text.split(credential).join('[REDACTED]') : text, data);
+  }
+  if (Array.isArray(data)) return data.map((value) => redactLoginDiagnosticBody(value, credentials));
+  if (!data || typeof data !== 'object') return data;
+
+  const sensitiveKeys = /api.?key|mpin|totp|secret|password|token|client.?code/i;
+  return Object.fromEntries(Object.entries(data).map(([key, value]) => [
+    key,
+    sensitiveKeys.test(key) ? '[REDACTED]' : redactLoginDiagnosticBody(value, credentials),
+  ]));
+}
+
 exports.login = async (req, res) => {
   try {
     const requestedUserId = req.user._id.toString();
+    // TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
+    console.log(
+      `[TEMP AngelLoginDiagnostic] Node request timestamp=${new Date().toISOString()} `
+      + `activeUserId=${requestedUserId}`
+    );
     const current = activeAccountService.getActiveAccount();
     if (current && current.userId !== requestedUserId) {
       await strategyEngine.assertAccountCanSwitch(current.userId);
@@ -66,6 +85,11 @@ exports.login = async (req, res) => {
       body: req.body,
       userId: requestedUserId,
     });
+    console.log(
+      `[TEMP AngelLoginDiagnostic] Node response timestamp=${new Date().toISOString()} `
+      + `activeUserId=${requestedUserId} status=${response.status} `
+      + `body=${JSON.stringify(redactLoginDiagnosticBody(data, Object.values(req.body || {}).filter((value) => typeof value === 'string')))}`
+    );
     if (!response.ok) return res.status(response.status).json(data);
     const sanitized = sanitizeLoginResponse(data);
     if (sanitized.connected) {
