@@ -1,9 +1,52 @@
 const Trade = require('../models/Trade');
 const Strategy = require('../models/Strategy');
+const mongoose = require('mongoose');
+const {
+    escapeRegexLiteral,
+    InputValidationError,
+    isIsoDate,
+    parseBoundedInteger,
+} = require('../utils/inputValidation');
+const { respondWithApiError } = require('../middleware/apiErrors');
+
+function requireText(value, name, maxLength) {
+    if (typeof value !== 'string' || value.trim() === '' || value.length > maxLength) {
+        throw new InputValidationError(`${name} must be a non-empty string of at most ${maxLength} characters.`);
+    }
+    return value;
+}
+
+function requireFiniteNumber(value, name, { integer = false, min = 0, max = 1_000_000_000 } = {}) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max || (integer && !Number.isInteger(value))) {
+        throw new InputValidationError(`${name} must be a ${integer ? 'whole' : 'finite'} number between ${min} and ${max}.`);
+    }
+    return value;
+}
+
+function requireQueryString(value, name, maxLength) {
+    if (value === undefined) return undefined;
+    if (value === '') return value;
+    if (typeof value !== 'string' || value.length > maxLength) {
+        throw new InputValidationError(`${name} must be at most ${maxLength} characters.`);
+    }
+    return requireText(value, name, maxLength);
+}
+
+function sendFailure(req, res, err) {
+    return respondWithApiError(req, res, err);
+}
 
 exports.recordTrade = async (req, res) => {
     try {
+        if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+            throw new InputValidationError('Trade request must be a JSON object.');
+        }
         const { strategyName, index, premium, qty, buyPrice } = req.body;
+        requireText(strategyName, 'strategyName', 64);
+        requireText(index, 'index', 32);
+        requireText(premium, 'premium', 64);
+        requireFiniteNumber(qty, 'qty', { integer: true, min: 1, max: 1_000_000 });
+        requireFiniteNumber(buyPrice, 'buyPrice', { min: 0.01 });
 
         // 1. Find strategy
         const strategy = await Strategy.findOne({ name: strategyName, userId: req.user._id });
@@ -28,13 +71,24 @@ exports.recordTrade = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
 exports.updateTradeExit = async (req, res) => {
     try {
+        if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+            throw new InputValidationError('Trade exit request must be a JSON object.');
+        }
         const { tradeId, exitPrice, exitReason } = req.body;
+        if (typeof tradeId !== 'string' || !mongoose.isValidObjectId(tradeId)) {
+            throw new InputValidationError('tradeId must be a valid trade id.');
+        }
+        requireFiniteNumber(exitPrice, 'exitPrice', { min: 0.01 });
+        const allowedExitReasons = Trade.schema.path('exitReason').enumValues;
+        if (typeof exitReason !== 'string' || !allowedExitReasons.includes(exitReason)) {
+            throw new InputValidationError('exitReason is not supported.');
+        }
 
         const trade = await Trade.findOne({ _id: tradeId, userId: req.user._id });
         if (!trade) {
@@ -57,13 +111,14 @@ exports.updateTradeExit = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
 exports.getLatestOpenTrade = async (req, res) => {
     try {
         const { strategyName } = req.query;
+        requireText(strategyName, 'strategyName', 64);
         const strategy = await Strategy.findOne({ name: strategyName, userId: req.user._id });
 
         if (!strategy) {
@@ -83,7 +138,7 @@ exports.getLatestOpenTrade = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 exports.getStats = async (req, res) => {
@@ -114,12 +169,21 @@ exports.getStats = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 exports.getAllTrades = async (req, res) => {
     try {
-        const { strategyId, startDate, endDate, page = 1, limit = 10, searchQuery, exitReason, timeFrom, timeTo } = req.query;
+        const { strategyId, startDate, endDate, page: rawPage, limit: rawLimit, searchQuery, exitReason, timeFrom, timeTo } = req.query;
+        const page = parseBoundedInteger(rawPage, { name: 'page', defaultValue: 1, min: 1, max: 10_000 });
+        const limit = parseBoundedInteger(rawLimit, { name: 'limit', defaultValue: 10, min: 1, max: 100 });
+        requireQueryString(strategyId, 'strategyId', 24);
+        requireQueryString(startDate, 'startDate', 10);
+        requireQueryString(endDate, 'endDate', 10);
+        const safeSearchQuery = requireQueryString(searchQuery, 'searchQuery', 100);
+        const safeExitReason = requireQueryString(exitReason, 'exitReason', 64);
+        const safeTimeFrom = requireQueryString(timeFrom, 'timeFrom', 5);
+        const safeTimeTo = requireQueryString(timeTo, 'timeTo', 5);
         const query = { userId: req.user._id };
 
         const parseTimeToMinutes = (value) => {
@@ -133,13 +197,13 @@ exports.getAllTrades = async (req, res) => {
             return hours * 60 + minutes;
         };
 
-        const timeFromMinutes = parseTimeToMinutes(timeFrom);
-        const timeToMinutes = parseTimeToMinutes(timeTo);
+        const timeFromMinutes = parseTimeToMinutes(safeTimeFrom);
+        const timeToMinutes = parseTimeToMinutes(safeTimeTo);
 
-        if (timeFrom && timeFromMinutes === null) {
+        if (safeTimeFrom && timeFromMinutes === null) {
             return res.status(400).json({ status: 'fail', message: 'Invalid timeFrom. Expected HH:mm' });
         }
-        if (timeTo && timeToMinutes === null) {
+        if (safeTimeTo && timeToMinutes === null) {
             return res.status(400).json({ status: 'fail', message: 'Invalid timeTo. Expected HH:mm' });
         }
         if (timeFromMinutes !== null && timeToMinutes !== null && timeFromMinutes > timeToMinutes) {
@@ -147,26 +211,36 @@ exports.getAllTrades = async (req, res) => {
         }
 
         if (strategyId) {
-            const mongoose = require('mongoose');
+            if (!mongoose.isValidObjectId(strategyId)) {
+                throw new InputValidationError('strategyId must be a valid strategy id.');
+            }
             query.strategyId = new mongoose.Types.ObjectId(strategyId);
         }
 
-        if (searchQuery) {
+        if (safeSearchQuery) {
+            const literalSearch = escapeRegexLiteral(safeSearchQuery);
             query.$or = [
-                { index: { $regex: searchQuery, $options: "i" } },
-                { premium: { $regex: searchQuery, $options: "i" } }
+                { index: { $regex: literalSearch, $options: 'i' } },
+                { premium: { $regex: literalSearch, $options: 'i' } }
             ];
 
-            if (!isNaN(searchQuery)) {
-                query.$or.push({ premium: Number(searchQuery) });
+            const numericSearch = Number(safeSearchQuery);
+            if (safeSearchQuery.trim() !== '' && Number.isFinite(numericSearch)) {
+                query.$or.push({ premium: numericSearch });
             }
         }
 
-        if (exitReason) {
-            query.exitReason = { $regex: new RegExp(`^${exitReason}$`, 'i') };
+        if (safeExitReason) {
+            const allowedExitReasons = Trade.schema.path('exitReason').enumValues;
+            const matchedReason = allowedExitReasons.find((reason) => reason.toLowerCase() === safeExitReason.toLowerCase());
+            if (!matchedReason) throw new InputValidationError('exitReason is not supported.');
+            query.exitReason = matchedReason;
         }
 
         if (startDate || endDate) {
+            if (startDate && !isIsoDate(startDate)) throw new InputValidationError('startDate must use YYYY-MM-DD format.');
+            if (endDate && !isIsoDate(endDate)) throw new InputValidationError('endDate must use YYYY-MM-DD format.');
+            if (startDate && endDate && startDate > endDate) throw new InputValidationError('startDate must not be after endDate.');
             query.createdAt = {};
             if (startDate) query.createdAt.$gte = new Date(`${startDate}T00:00:00.000+05:30`);
             if (endDate) query.createdAt.$lte = new Date(`${endDate}T23:59:59.999+05:30`);
@@ -198,13 +272,11 @@ exports.getAllTrades = async (req, res) => {
             query.$expr = { $and: exprConditions };
         }
 
-        console.log("Trades Query Built:", JSON.stringify(query, null, 2));
-
         const trades = await Trade.find(query)
             .populate('strategyId', 'name')
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
-            .limit(parseInt(limit));
+            .limit(limit);
 
         // Calculate analytics based on the SAME query used for filtering
         const analytics = await Trade.aggregate([
@@ -253,6 +325,6 @@ exports.getAllTrades = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };

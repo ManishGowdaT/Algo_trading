@@ -2,6 +2,23 @@ const Strategy = require('../models/Strategy');
 const strategyEngine = require('../services/strategyEngine');
 const strategyStats = require('../services/strategyStats');
 const activeAccountService = require('../services/activeAccountService');
+const strategyRegistry = require('../services/strategyRegistry');
+const { InputValidationError, validateStrategyConfig } = require('../utils/inputValidation');
+const { respondWithApiError } = require('../middleware/apiErrors');
+
+async function requireRegisteredStrategy(strategyName) {
+    if (typeof strategyName !== 'string' || strategyName.length > 64 || !strategyName.trim()) {
+        throw new InputValidationError('A valid strategy name is required.');
+    }
+    await strategyRegistry.init();
+    if (!strategyRegistry.hasPlugin(strategyName)) {
+        throw new InputValidationError('Unsupported strategy.');
+    }
+}
+
+function sendFailure(req, res, err) {
+    return respondWithApiError(req, res, err);
+}
 
 exports.getStrategyCount = async (req, res) => {
     try {
@@ -13,7 +30,7 @@ exports.getStrategyCount = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 
@@ -27,7 +44,7 @@ exports.getAllStrategies = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 
@@ -35,14 +52,15 @@ exports.startStrategy = async (req, res) => {
     try {
         activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
-        const config = req.body || {};
+        await requireRegisteredStrategy(strategyName);
+        const config = validateStrategyConfig(strategyName, req.body === undefined ? {} : req.body);
         const status = await strategyEngine.startStrategy(req.user._id.toString(), strategyName, config);
         res.status(200).json({
             status: 'success',
             data: status
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
@@ -50,26 +68,28 @@ exports.stopStrategy = async (req, res) => {
     try {
         activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
+        await requireRegisteredStrategy(strategyName);
         const status = strategyEngine.stopStrategy(req.user._id.toString(), strategyName);
         res.status(200).json({
             status: 'success',
             data: status
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
 exports.getStrategyStatus = async (req, res) => {
     try {
         const { strategyName } = req.params;
+        await requireRegisteredStrategy(strategyName);
         const status = strategyEngine.getStrategyStatus(req.user._id.toString(), strategyName);
         res.status(200).json({
             status: 'success',
             data: status
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
@@ -77,13 +97,14 @@ exports.exitStrategyPosition = async (req, res) => {
     try {
         activeAccountService.assertActiveUser(req.user._id);
         const { strategyName } = req.params;
+        await requireRegisteredStrategy(strategyName);
         const status = await strategyEngine.manualExitStrategy(req.user._id.toString(), strategyName);
         res.status(200).json({
             status: 'success',
             data: status
         });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        sendFailure(req, res, err);
     }
 };
 
@@ -96,7 +117,7 @@ exports.getConditionReport = (req, res) => {
         const report = strategyStats.getReport(req.user._id);
         res.status(200).json({ status: 'success', data: report });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 
@@ -109,7 +130,7 @@ exports.resetConditionReport = (req, res) => {
         strategyStats.reset(req.user._id);
         res.status(200).json({ status: 'success', message: 'Statistics counters reset.' });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 
@@ -123,6 +144,6 @@ exports.getManifests = (req, res) => {
         const manifests = strategyRegistry.getManifests();
         res.status(200).json({ status: 'success', data: { manifests } });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };

@@ -1,5 +1,6 @@
 const chartService = require('../services/chartService');
 const config = require('../config');
+const { respondWithApiError } = require('../middleware/apiErrors');
 
 const ltpCache = new Map();
 
@@ -12,11 +13,7 @@ exports.getMarketChartData = async (req, res) => {
       data,
     });
   } catch (err) {
-    console.error('Error in getMarketChartData controller:', err.message);
-    res.status(500).json({
-      status: 'error',
-      message: err.message || 'Failed to fetch market chart data',
-    });
+    respondWithApiError(req, res, err);
   }
 };
 
@@ -50,6 +47,6 @@ exports.getIndexLtp = async (req, res) => {
     ltpCache.set(underlying, { timestamp: Date.now(), data });
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    respondWithApiError(req, res, err);
   }
 };

@@ -1,0 +1,34 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const express = require('express');
+const { createUserRateLimiter } = require('../middleware/rateLimiters');
+
+test('authenticated limiter returns 429 at the configured user limit and isolates users', async (t) => {
+  const app = express();
+  app.use((req, res, next) => {
+    req.user = { _id: req.get('x-test-user') };
+    next();
+  });
+  app.get('/limited', createUserRateLimiter({ windowMs: 60_000, limit: 2 }), (req, res) => {
+    res.status(200).json({ ok: true });
+  });
+
+  const server = await new Promise((resolve) => {
+    const listeningServer = app.listen(0, '127.0.0.1', () => resolve(listeningServer));
+  });
+  t.after(() => new Promise((resolve, reject) => {
+    server.close((err) => err ? reject(err) : resolve());
+  }));
+
+  const url = `http://127.0.0.1:${server.address().port}/limited`;
+  const requestAs = (userId) => fetch(url, { headers: { 'x-test-user': userId } });
+
+  assert.equal((await requestAs('user-a')).status, 200);
+  assert.equal((await requestAs('user-a')).status, 200);
+  const limited = await requestAs('user-a');
+  assert.equal(limited.status, 429);
+  assert.ok(limited.headers.get('ratelimit'));
+  assert.ok(limited.headers.get('retry-after'));
+
+  assert.equal((await requestAs('user-b')).status, 200);
+});

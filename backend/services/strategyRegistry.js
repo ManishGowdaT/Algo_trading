@@ -11,6 +11,7 @@ class StrategyRegistry {
   constructor() {
     this.plugins = new Map(); // strategyId -> PluginClass
     this.isLoaded = false;
+    this.initPromise = null;
   }
 
   /**
@@ -18,10 +19,18 @@ class StrategyRegistry {
    */
   async init() {
     if (this.isLoaded) return;
-    console.log('[StrategyRegistry] Initializing startup strategy plugin discovery...');
-    this.discoverPlugins();
-    await this.syncDatabaseRecords();
-    this.isLoaded = true;
+    if (!this.initPromise) {
+      this.initPromise = (async () => {
+        console.log('[StrategyRegistry] Initializing startup strategy plugin discovery...');
+        this.discoverPlugins();
+        await this.syncDatabaseRecords();
+        this.isLoaded = true;
+      })().catch((err) => {
+        this.initPromise = null;
+        throw err;
+      });
+    }
+    await this.initPromise;
   }
 
   /**

@@ -1,7 +1,4 @@
-const configuredApiBase = import.meta.env.VITE_API_BASE ?? import.meta.env.VITE_API_URL;
-const API_BASE = configuredApiBase
-  ? `${configuredApiBase.replace(/\/+$/, '')}${configuredApiBase.replace(/\/+$/, '').endsWith('/api/v1') ? '' : '/api/v1'}`
-  : 'http://localhost:5000/api/v1';
+import { API_BASE } from '../config/apiBase';
 const AUTH_BASE = `${API_BASE}/users`;
 let refreshInFlight: Promise<boolean> | null = null;
 
@@ -31,6 +28,26 @@ async function readResponseBody(response: Response): Promise<unknown> {
   } catch {
     return text;
   }
+}
+
+function errorMessage(data: unknown, status: number): string {
+  if (typeof data === 'string' && data.trim()) return data.trim();
+  if (data && typeof data === 'object') {
+    const body = data as { message?: unknown; detail?: unknown; requestId?: unknown };
+    const detail = typeof body.message === 'string'
+      ? body.message
+      : typeof body.detail === 'string'
+        ? body.detail
+        : Array.isArray(body.detail)
+          ? body.detail.map((item) => {
+              if (item && typeof item === 'object' && 'msg' in item && typeof item.msg === 'string') return item.msg;
+              return '';
+            }).filter(Boolean).join('. ')
+          : '';
+    const requestReference = typeof body.requestId === 'string' ? ` (Reference: ${body.requestId})` : '';
+    if (detail) return `${detail}${requestReference}`;
+  }
+  return `Request failed with status ${status}.`;
 }
 
 async function refreshAccessToken(): Promise<boolean> {
@@ -73,7 +90,7 @@ export async function apiGet<T>(path: string): Promise<T> {
     redirectToLoginWithReturnPath();
     throw new Error('Authentication session expired');
   }
-  if (!res.ok) throw new Error(typeof data === 'string' ? data : JSON.stringify(data));
+  if (!res.ok) throw new Error(errorMessage(data, res.status));
   return data as T;
 }
 
@@ -101,6 +118,6 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
     redirectToLoginWithReturnPath();
     throw new Error('Authentication session expired');
   }
-  if (!res.ok) throw new Error(typeof data === 'string' ? data : JSON.stringify(data));
+  if (!res.ok) throw new Error(errorMessage(data, res.status));
   return data as T;
 }

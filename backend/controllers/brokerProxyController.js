@@ -2,6 +2,15 @@ const { requestPython } = require('../services/pythonApiClient');
 const activeAccountService = require('../services/activeAccountService');
 const strategyEngine = require('../services/strategyEngine');
 const config = require('../config');
+const { respondWithApiError } = require('../middleware/apiErrors');
+
+function respondWithPythonTransportError(req, res, err) {
+  const timedOut = err && err.name === 'AbortError';
+  return respondWithApiError(req, res, err, {
+    status: err.status || (timedOut ? 504 : 502),
+    message: timedOut ? 'Python service request timed out.' : 'Python service is unavailable.',
+  });
+}
 
 function safeSessionStatus(data) {
   return {
@@ -37,8 +46,7 @@ async function proxy(req, res, pythonPath, options = {}) {
     if (!response.ok) return res.status(response.status).json(data);
     return res.status(response.status).json(data);
   } catch (err) {
-    const status = err.status || (err.name === 'AbortError' ? 504 : 502);
-    return res.status(status).json({ status: 'error', message: err.message });
+    return respondWithPythonTransportError(req, res, err);
   }
 }
 
@@ -104,8 +112,7 @@ exports.login = async (req, res) => {
     }
     return res.status(response.status).json(sanitized);
   } catch (err) {
-    const status = err.status || (err.name === 'AbortError' ? 504 : 502);
-    return res.status(status).json({ status: 'error', message: err.message });
+    return respondWithPythonTransportError(req, res, err);
   }
 };
 exports.logout = async (req, res) => {
@@ -116,8 +123,7 @@ exports.logout = async (req, res) => {
     activeAccountService.clearActiveAccount();
     return res.status(response.status).json(data);
   } catch (err) {
-    const status = err.status || (err.name === 'AbortError' ? 504 : 502);
-    return res.status(status).json({ status: 'error', message: err.message });
+    return respondWithPythonTransportError(req, res, err);
   }
 };
 
@@ -133,7 +139,7 @@ exports.status = async (req, res) => {
       activeUserId: data.active_user_id || activeAccountService.getActiveAccount()?.userId || null,
     });
   } catch (err) {
-    return res.status(err.status || 502).json({ status: 'error', message: err.message });
+    return respondWithPythonTransportError(req, res, err);
   }
 };
 

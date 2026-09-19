@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE as API_ROOT } from '../config/apiBase';
 
 interface User {
     _id: string;
@@ -15,10 +16,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const configuredApiBase = import.meta.env.VITE_API_BASE ?? import.meta.env.VITE_API_URL;
-const API_BASE = `${configuredApiBase
-    ? `${configuredApiBase.replace(/\/+$/, '')}${configuredApiBase.replace(/\/+$/, '').endsWith('/api/v1') ? '' : '/api/v1'}`
-    : 'http://localhost:5000/api/v1'}/users`;
+const API_BASE = `${API_ROOT}/users`;
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);

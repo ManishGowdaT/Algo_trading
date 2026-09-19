@@ -13,29 +13,33 @@ The application is structured into three main directories/services:
 ## 🛠️ Prerequisites
 
 Make sure you have the following installed on your machine:
-- **Node.js** (v18 or higher recommended)
-- **Python** (v3.10 or higher)
+- **Node.js** 24.x (the frontend and backend dependencies require Node 20.19+; use the pinned 24.x runtime)
+- **Python** 3.12 (the Python service runtime is pinned to the version used for local validation)
 - **MongoDB** (running locally on port `27017` or an active MongoDB Atlas URI)
 
 ---
 
 ## ⚙️ Configuration & Environment Setup
 
-The service `.env` files contain application and internal-service settings. Example files are available at `backend/.env.example`, `angel-one/.env.example`, and `algo-trading/.env.example`. Enter Angel One account credentials through the application’s connection form after signing in.
+The service `.env` files contain application and internal-service settings. Example files are available at `backend/.env.example`, `angel-one/.env.example`, and `algo-trading/.env.example`. Keep real `.env` files local or in your hosting provider's secret store; never commit them. Enter Angel One account credentials through the application’s connection form after signing in.
 
 ### 1. Node.js Backend Configuration (`backend/.env`)
 Create or edit `backend/.env` with:
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/algo-trading
-JWT_SECRET=super-secret-key-for-jwt-signing-12345
+JWT_SECRET=replace-with-a-unique-random-secret
 JWT_EXPIRES_IN=90d
 JWT_COOKIE_EXPIRES_IN=90
 CORS_ORIGIN=http://localhost:5173
 NODE_ENV=development
 ANGEL_ONE_API_BASE=http://localhost:8000
-INTERNAL_SERVICE_KEY=replace-with-a-long-random-value
+INTERNAL_SERVICE_KEY=replace-with-the-same-random-value-used-by-angel-one
 ```
+
+Generate a new JWT secret for each environment rather than reusing an example value. With Node.js, run `node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"` and replace the placeholder above with the output. Use a separate random value for `INTERNAL_SERVICE_KEY`, and configure that same internal key in both backend and Python service.
+
+The refresh cookie defaults to `SameSite=Lax`, which is appropriate when the frontend and API are same-site (including a same-origin proxy). If they are hosted on different sites, set `AUTH_REFRESH_COOKIE_SAME_SITE=none` on the Node service and keep both sites on HTTPS; `None` automatically requires `Secure`. Keep `CORS_ORIGIN` restricted to the exact frontend origin(s). The access-token cookie remains `Lax`; the frontend's normal bearer-token flow is unchanged.
 
 ### 2. Python FastAPI Configuration (`angel-one/.env`)
 Create or edit `angel-one/.env` with the Python service settings:
@@ -49,6 +53,8 @@ ANGEL_BASE_URL=https://apiconnect.angelone.in
 
 Enter Angel One API key, Client ID, MPIN, and TOTP secret through the **Connect to Angel One** form after signing in. Do not store those account credentials in `.env` files.
 
+`INTERNAL_SERVICE_KEY` is the canonical name for the shared Node/Python key. Existing deployments using `ANGEL_ONE_INTERNAL_SECRET` on Node or `INTERNAL_API_SECRET` on Python remain supported for compatibility; migrate those provider settings only after confirming the canonical key is configured in both services.
+
 Optional backend alerting can be enabled with `ALERT_WEBHOOK_URL` in `backend/.env`. If it is not configured, alert events remain in backend logs.
 
 ### 3. Frontend Configuration (`algo-trading/.env`)
@@ -58,6 +64,10 @@ VITE_API_BASE=http://localhost:5000/api/v1
 VITE_ENABLE_LIVE_TRADING=false
 
 ```
+
+Only public frontend configuration belongs in variables prefixed with `VITE_`: Vite embeds those values into the client build. Never put JWT, MongoDB, Angel One, webhook, or internal-service credentials in frontend environment variables. `VITE_API_URL` is still accepted as a legacy API-base alias; use `VITE_API_BASE` for new setups.
+
+For production frontend builds, set `VITE_API_BASE` to the Node API's HTTPS URL (or a same-origin relative API path). The Vite production build rejects non-loopback HTTP API URLs to prevent mixed-content requests. The localhost URL above is for local development only.
 
 ---
 
@@ -76,15 +86,13 @@ net start MongoDB
 1. Navigate to the `backend` folder.
 2. Install dependencies:
    ```bash
-   npm install
+   npm ci
    ```
-3. Seed the database with the default user and default strategies:
+3. Account registration creates the default strategies automatically. If you need a separate local seed account, add `ALLOW_DATABASE_SEED=true`, `SEED_EMAIL`, and a unique `SEED_PASSWORD` to your ignored `backend/.env` file, then run:
    ```bash
    node scripts/seed.js
    ```
-   *Note: This creates a default user with:*
-   - **Email:** `mithun@gmail.com`
-   - **Password:** `mithun@1234`
+   The seed command is disabled on production/Render, preserves existing users and strategies, and only creates the requested local account and any missing default strategies. It never resets an existing account's password. Never use production credentials for local development.
 4. Start the backend:
    ```bash
    npm run dev
@@ -108,7 +116,7 @@ net start MongoDB
 1. Navigate to the `algo-trading` folder.
 2. Install dependencies:
    ```bash
-   npm install
+   npm ci
    ```
 3. Start the Vite development server:
    ```bash
@@ -131,7 +139,8 @@ npm run test
 To run Pytest tests in the Python microservice:
 ```bash
 cd angel-one
-python -m pytest
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest
 ```
 
 ## Operations

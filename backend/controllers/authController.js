@@ -2,9 +2,25 @@ const User = require('../models/User');
 const Strategy = require('../models/Strategy');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const { respondWithApiError } = require('../middleware/apiErrors');
+
+const legacyJwtSecret = process.env.JWT_SECRET;
+const accessTokenSecret = process.env.JWT_ACCESS_SECRET || legacyJwtSecret;
+const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || legacyJwtSecret;
+const refreshCookieSameSite = (process.env.AUTH_REFRESH_COOKIE_SAME_SITE || 'lax').toLowerCase();
+if (!['lax', 'strict', 'none'].includes(refreshCookieSameSite)) {
+    throw new Error('AUTH_REFRESH_COOKIE_SAME_SITE must be lax, strict, or none.');
+}
+
+const refreshCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production' || refreshCookieSameSite === 'none',
+    sameSite: refreshCookieSameSite,
+    path: '/',
+};
 
 const signToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id, type: 'access' }, accessTokenSecret, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 };
@@ -17,17 +33,18 @@ const createSendToken = (user, statusCode, res) => {
         ),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         path: '/'
     };
 
     res.cookie('jwt', token, cookieOptions);
     res.cookie('refresh_jwt', signRefreshToken(user._id), {
-        ...cookieOptions,
+        ...refreshCookieOptions,
         expires: new Date(Date.now() + Number(process.env.JWT_REFRESH_COOKIE_EXPIRES_IN || 90) * 24 * 60 * 60 * 1000),
     });
 
     // Remove password from output
-    user.password = undefined;
+    delete user.password;
 
     res.status(statusCode).json({
         status: 'success',
@@ -57,13 +74,22 @@ exports.login = async (req, res, next) => {
         // 3) If everything ok, send token to client
         createSendToken(user, 200, res);
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        respondWithApiError(req, res, err);
     }
 };
 
-const signRefreshToken = (id) => jwt.sign({ id, type: 'refresh' }, process.env.JWT_SECRET, {
+const signRefreshToken = (id) => jwt.sign({ id, type: 'refresh' }, refreshTokenSecret, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '90d'
 });
+
+function verifyTokenWithLegacyFallback(token, primarySecret) {
+    try {
+        return jwt.verify(token, primarySecret);
+    } catch (err) {
+        if (primarySecret === legacyJwtSecret) throw err;
+        return jwt.verify(token, legacyJwtSecret);
+    }
+}
 
 exports.register = async (req, res) => {
     const session = await mongoose.startSession();
@@ -118,12 +144,11 @@ exports.logout = (req, res) => {
     res.clearCookie('jwt', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         path: '/'
     });
     res.clearCookie('refresh_jwt', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/'
+        ...refreshCookieOptions,
     });
     res.status(200).json({ status: 'success' });
 };
@@ -132,7 +157,7 @@ exports.refresh = async (req, res) => {
     try {
         const token = req.cookies && req.cookies.refresh_jwt;
         if (!token) return res.status(401).json({ status: 'fail', message: 'Refresh session is unavailable.' });
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = verifyTokenWithLegacyFallback(token, refreshTokenSecret);
         if (decoded.type !== 'refresh') return res.status(401).json({ status: 'fail', message: 'Invalid refresh session.' });
         const user = await User.findById(decoded.id);
         if (!user) return res.status(401).json({ status: 'fail', message: 'User session is no longer valid.' });
@@ -157,7 +182,12 @@ exports.protect = async (req, res, next) => {
         }
 
         // 2) Verification token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = verifyTokenWithLegacyFallback(token, accessTokenSecret);
+        // Older access tokens had no type claim; accept those until expiry.
+        // Explicit refresh tokens must never authorize a protected API request.
+        if (decoded.type && decoded.type !== 'access') {
+            return res.status(401).json({ status: 'fail', message: 'Invalid token type.' });
+        }
 
         // 3) Check if user still exists
         const currentUser = await User.findById(decoded.id);
@@ -174,10 +204,15 @@ exports.protect = async (req, res, next) => {
 };
 
 exports.getMe = (req, res) => {
+    const user = req.user && typeof req.user.toJSON === 'function'
+        ? req.user.toJSON()
+        : { ...req.user };
+    if (user) delete user.password;
+
     res.status(200).json({
         status: 'success',
         data: {
-            user: req.user
+            user
         }
     });
 };

@@ -1,15 +1,16 @@
 const express = require('express');
 const tradeController = require('../controllers/tradeController');
 const authController = require('../controllers/authController');
+const { tradeReadLimiter, tradeWriteLimiter } = require('../middleware/rateLimiters');
 
 const router = express.Router();
 
 router.use(authController.protect); // All trade routes are protected
+router.get('/', tradeReadLimiter, tradeController.getAllTrades);
+router.get('/stats', tradeReadLimiter, tradeController.getStats);
+router.get('/latest-open', tradeReadLimiter, tradeController.getLatestOpenTrade);
 
-router.post('/record', tradeController.recordTrade);
-router.post('/update-exit', tradeController.updateTradeExit);
-router.get('/latest-open', tradeController.getLatestOpenTrade);
-router.get('/', tradeController.getAllTrades);
-router.get('/stats', tradeController.getStats);
+router.post('/record', tradeWriteLimiter, tradeController.recordTrade);
+router.post('/update-exit', tradeWriteLimiter, tradeController.updateTradeExit);
 
 module.exports = router;

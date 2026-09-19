@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const createSecurityHeaders = require('./middleware/securityHeaders');
+const { errorHandler, requestContext } = require('./middleware/apiErrors');
 
 dotenv.config();
 // Force reload on .env change
@@ -18,10 +20,16 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Middleware
+app.use(createSecurityHeaders());
+app.use(requestContext);
 app.use(express.json());
 app.use(cookieParser());
+const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 app.use(cors({
-    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:3000',
+    origin: corsOrigins,
     credentials: true
 }));
 
@@ -37,13 +45,9 @@ app.get('/', (req, res) => {
     res.send('Option-Algo Backend API is running...');
 });
 
-// JSON Body Parser Error Handler
-app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-        return res.status(400).json({ status: 'fail', message: 'Malformed JSON payload' });
-    }
-    next(err);
-});
+// Keep malformed request errors actionable while preventing unexpected
+// internal exceptions from being returned to API clients.
+app.use(errorHandler);
 
 
 // Database Connection
