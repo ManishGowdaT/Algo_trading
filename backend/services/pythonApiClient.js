@@ -11,9 +11,9 @@ function getHeaders() {
   };
 }
 
-async function requestPython(path, { method = 'GET', body, signal, userId } = {}) {
+async function requestPython(path, { method = 'GET', body, signal, userId, timeoutMs = config.API.TIMEOUT_MS } = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), config.API.TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(`${config.API.ANGEL_ONE_API_BASE}${path}`, {

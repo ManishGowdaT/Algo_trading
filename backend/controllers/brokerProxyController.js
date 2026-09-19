@@ -1,6 +1,7 @@
 const { requestPython } = require('../services/pythonApiClient');
 const activeAccountService = require('../services/activeAccountService');
 const strategyEngine = require('../services/strategyEngine');
+const config = require('../config');
 
 function safeSessionStatus(data) {
   return {
@@ -84,6 +85,7 @@ exports.login = async (req, res) => {
       method: 'POST',
       body: req.body,
       userId: requestedUserId,
+      timeoutMs: config.API.PYTHON_COLD_START_TIMEOUT_MS,
     });
     console.log(
       `[TEMP AngelLoginDiagnostic] Node response timestamp=${new Date().toISOString()} `
