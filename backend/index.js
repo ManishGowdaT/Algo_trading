@@ -57,10 +57,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 const marketDataService = require('./services/marketDataService');
 const healthMonitor = require('./services/healthMonitor');
+const pythonWarmup = require('./services/pythonWarmup');
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`App running on port ${port}...`);
+    // Wake the independently sleeping Python service without delaying Node startup.
+    pythonWarmup.start();
     healthMonitor.start();
     // Auto-poll Python wrapper for active session tokens
     setInterval(() => {
