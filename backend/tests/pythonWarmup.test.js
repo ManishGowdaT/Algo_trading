@@ -31,7 +31,9 @@ test('startup warm-up calls the public health endpoint once and accepts a delaye
   const first = warmup.start();
   const second = warmup.start();
   assert.equal(first, second);
+  assert.equal(warmup.getInFlight(), first);
   assert.equal(await first, true);
+  assert.equal(warmup.getInFlight(), null);
   assert.equal(calls, 1);
   assert.match(logger.messages[0], /ready after \d+ms/);
 });

@@ -69,6 +69,8 @@ app.listen(port, () => {
     healthMonitor.start();
     // Auto-poll Python wrapper for active session tokens
     setInterval(() => {
-        marketDataService.autoInitSession();
+        if (healthMonitor.getStatus().pythonApi) {
+            marketDataService.autoInitSession();
+        }
     }, 10000);
 });

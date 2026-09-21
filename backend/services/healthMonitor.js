@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const { notifyUrgent } = require('./notificationService');
 const activeAccountService = require('./activeAccountService');
+const pythonWarmup = require('./pythonWarmup');
 
 class HealthMonitorService extends EventEmitter {
   constructor() {
@@ -15,9 +16,19 @@ class HealthMonitorService extends EventEmitter {
       rttMs: 0
     };
     this.lastOperationalState = null;
+    this.checkPromise = null;
   }
 
-  async checkHealth() {
+  checkHealth() {
+    if (this.checkPromise) return this.checkPromise;
+
+    this.checkPromise = this.performHealthCheck().finally(() => {
+      this.checkPromise = null;
+    });
+    return this.checkPromise;
+  }
+
+  async performHealthCheck() {
     const state = {
       pythonApi: false,
       mongoDb: false,
@@ -31,17 +42,23 @@ class HealthMonitorService extends EventEmitter {
     // 2. Check Python Wrapper /health endpoint
     const startMs = Date.now();
     try {
-      const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/health`, {
-        signal: AbortSignal.timeout(3000),
-        headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
-      });
-      if (res.ok) {
-        state.pythonApi = true;
-        state.rttMs = Date.now() - startMs;
+      const startupProbe = pythonWarmup.getInFlight();
+      if (startupProbe) {
+        state.pythonApi = await startupProbe;
+        if (state.pythonApi) state.rttMs = Date.now() - startMs;
       } else {
-        console.warn(
-          `[HealthMonitor] Python health check returned HTTP ${res.status} after ${Date.now() - startMs}ms`
-        );
+        const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/health`, {
+          signal: AbortSignal.timeout(3000),
+          headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
+        });
+        if (res.ok) {
+          state.pythonApi = true;
+          state.rttMs = Date.now() - startMs;
+        } else {
+          console.warn(
+            `[HealthMonitor] Python health check returned HTTP ${res.status} after ${Date.now() - startMs}ms`
+          );
+        }
       }
     } catch (err) {
       state.pythonApi = false;

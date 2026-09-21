@@ -49,6 +49,7 @@ class MarketDataService extends EventEmitter {
     this.isRestFallbackActive = false;
     this.sessionId = null;
     this.sessionAvailable = false;
+    this.sessionCheckPromise = null;
 
     smartStream.on('tick', (tick) => this.handleTick(tick));
     smartStream.on('disconnected', () => this.handleStreamDisconnect());
@@ -249,7 +250,16 @@ class MarketDataService extends EventEmitter {
     }
   }
 
-  async autoInitSession() {
+  autoInitSession() {
+    if (this.sessionCheckPromise) return this.sessionCheckPromise;
+
+    this.sessionCheckPromise = this.performAutoInitSession().finally(() => {
+      this.sessionCheckPromise = null;
+    });
+    return this.sessionCheckPromise;
+  }
+
+  async performAutoInitSession() {
     try {
       const res = await fetch(`${ANGEL_API_BASE}/angel/session-tokens`, {
         headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },

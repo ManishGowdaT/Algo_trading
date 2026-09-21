@@ -7,6 +7,7 @@ function createPythonWarmup({
   logger = console,
 }) {
   let warmupPromise = null;
+  let inFlightPromise = null;
 
   async function probe() {
     const controller = new AbortController();
@@ -44,9 +45,16 @@ function createPythonWarmup({
   return {
     start() {
       if (!warmupPromise) {
-        warmupPromise = probe();
+        inFlightPromise = probe();
+        warmupPromise = inFlightPromise;
+        inFlightPromise.finally(() => {
+          inFlightPromise = null;
+        });
       }
       return warmupPromise;
+    },
+    getInFlight() {
+      return inFlightPromise;
     },
   };
 }
