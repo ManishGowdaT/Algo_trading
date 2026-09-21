@@ -38,9 +38,15 @@ class HealthMonitorService extends EventEmitter {
       if (res.ok) {
         state.pythonApi = true;
         state.rttMs = Date.now() - startMs;
+      } else {
+        console.warn(
+          `[HealthMonitor] Python health check returned HTTP ${res.status} after ${Date.now() - startMs}ms`
+        );
       }
     } catch (err) {
       state.pythonApi = false;
+      const failure = err.name === 'AbortError' || err.name === 'TimeoutError' ? 'timeout' : 'network error';
+      console.warn(`[HealthMonitor] Python health check ${failure} after ${Date.now() - startMs}ms`);
     }
 
     this.lastHealthState = state;

@@ -23,7 +23,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
-    const { connectStatus, openConnect, disconnect } = useAngelConnection();
+    const { connectStatus, backendReady, openConnect, disconnect } = useAngelConnection();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -72,11 +72,14 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 {/* Angel One Broker Connection Button */}
                 <button
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
+                    disabled={connectStatus !== 'connected' && (!backendReady || connectStatus === 'connecting')}
+                    title={connectStatus !== 'connected' && !backendReady ? 'Server is starting up, please wait a moment.' : undefined}
                     className={`
                         flex h-11 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors
                         ${connectStatus === 'connected'
                             ? 'bg-[#089981]/10 text-[#089981] border-[#089981]/30 hover:bg-[#089981]/20'
                             : 'bg-[#F23645]/10 text-[#F23645] border-[#F23645]/30 hover:bg-[#F23645]/20'}
+                        disabled:cursor-not-allowed disabled:opacity-60
                     `}
                 >
                     <Unplug className="w-3.5 h-3.5" />

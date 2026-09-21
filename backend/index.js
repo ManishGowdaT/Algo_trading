@@ -13,6 +13,7 @@ const tradeRoutes = require('./routes/tradeRoutes');
 const strategyRoutes = require('./routes/strategyRoutes');
 const chartRoutes = require('./routes/chartRoutes');
 const brokerProxyRoutes = require('./routes/brokerProxyRoutes');
+const systemRoutes = require('./routes/systemRoutes');
 
 const app = express();
 // Render terminates the public connection before forwarding requests to Node.
@@ -39,6 +40,7 @@ app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/strategies', strategyRoutes);
 app.use('/api/v1/chart', chartRoutes);
 app.use('/api/v1', brokerProxyRoutes);
+app.use('/api/v1/system', systemRoutes);
 
 // Root Route
 app.get('/', (req, res) => {

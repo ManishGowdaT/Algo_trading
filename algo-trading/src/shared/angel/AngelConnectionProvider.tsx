@@ -19,11 +19,16 @@ type AngelLoginResponse = {
   message?: string
 }
 
+type SystemHealthResponse = {
+  ready: boolean
+}
+
 type ConnectStatus = 'idle' | 'connecting' | 'connected' | 'error'
 
 type AngelConnectionContextValue = {
   connectStatus: ConnectStatus
   connectMessage: string
+  backendReady: boolean
   openConnect: () => void
   disconnect: () => Promise<void>
 }
@@ -34,11 +39,16 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
   const [connectStatus, setConnectStatus] = useState<ConnectStatus>('idle')
   const [connectMessage, setConnectMessage] = useState('')
+  const [backendReady, setBackendReady] = useState(false)
   const [mpinOpen, setMpinOpen] = useState(false)
 
   const openConnect = useCallback(() => {
+    if (!backendReady) {
+      setConnectMessage('Server is starting up, please wait a moment.')
+      return
+    }
     setMpinOpen(true)
-  }, [])
+  }, [backendReady])
 
   const disconnect = useCallback(async () => {
     try {
@@ -79,14 +89,43 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       })
   }, [user])
 
+  useEffect(() => {
+    if (!user) {
+      setBackendReady(false)
+      return
+    }
+
+    let active = true
+    const checkHealth = async () => {
+      try {
+        const health = await apiGet<SystemHealthResponse>('/system/health')
+        if (!active) return
+        setBackendReady(health.ready)
+        setConnectMessage((current) => health.ready && current === 'Server is starting up, please wait a moment.' ? '' : current)
+      } catch {
+        if (!active) return
+        setBackendReady(false)
+        setConnectMessage((current) => current || 'Server is starting up, please wait a moment.')
+      }
+    }
+
+    void checkHealth()
+    const interval = window.setInterval(() => void checkHealth(), 3_000)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+    }
+  }, [user])
+
   const value = useMemo<AngelConnectionContextValue>(
     () => ({
       connectStatus,
       connectMessage,
+      backendReady,
       openConnect,
       disconnect,
     }),
-    [connectMessage, connectStatus, disconnect, openConnect],
+    [backendReady, connectMessage, connectStatus, disconnect, openConnect],
   )
 
   return (

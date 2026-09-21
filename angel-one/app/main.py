@@ -50,6 +50,17 @@ def _safe_http_detail(detail: Any) -> Any:
     return message[:500]
 
 
+def _is_rate_limited(message: str) -> bool:
+    lowered = message.lower()
+    return any(marker in lowered for marker in (
+        "too many request",
+        "rate limit",
+        "exceeding access rate",
+        "status code 429",
+        "http 429",
+    ))
+
+
 class PlaceOrderRequest(BaseModel):
     payload: Dict[str, Any] = Field(default_factory=dict)
 
@@ -284,6 +295,11 @@ def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
             f"exception_type={type(exc).__name__} message={diagnostic_message}",
             flush=True,
         )
+        if _is_rate_limited(diagnostic_message):
+            raise HTTPException(
+                status_code=429,
+                detail="Angel One is temporarily rate limiting connection attempts. Please wait before trying again.",
+            )
         raise HTTPException(status_code=400, detail="Angel One login failed")
 
 

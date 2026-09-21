@@ -37,9 +37,11 @@ async function requestPython(path, { method = 'GET', body, signal, userId, timeo
     if (path === '/angel/login') {
       // TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
       const outcome = response.ok ? 'success' : 'http_error';
+      const retryAfter = response.headers.get('retry-after') || 'none';
+      const contentType = response.headers.get('content-type') || 'unknown';
       console.log(
         `[TEMP AngelLoginDiagnostic] Node-to-Python ${outcome} timestamp=${new Date().toISOString()} `
-        + `status=${response.status}`
+        + `status=${response.status} contentType=${contentType} retryAfter=${retryAfter}`
       );
     }
 

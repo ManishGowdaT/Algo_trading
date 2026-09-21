@@ -18,7 +18,7 @@ export default function StrategiesLayout({ title, subtitle, backTo, children }: 
   usePageTitle(title)
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
-  const { connectStatus, connectMessage, openConnect, disconnect } = useAngelConnection()
+  const { connectStatus, connectMessage, backendReady, openConnect, disconnect } = useAngelConnection()
 
   return (
     <div className="min-h-screen max-md:min-h-[100dvh] bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
@@ -69,7 +69,8 @@ export default function StrategiesLayout({ title, subtitle, backTo, children }: 
                 type="button"
                 size="sm"
                 onClick={openConnect}
-                disabled={connectStatus === 'connecting'}
+                disabled={!backendReady || connectStatus === 'connecting'}
+                title={!backendReady ? 'Server is starting up, please wait a moment.' : undefined}
               >
                 {connectStatus === 'connecting' ? 'Connecting…' : 'Connect'}
               </Button>

@@ -35,6 +35,21 @@ function createUserRateLimiter({ windowMs = apiWindowMs, limit, message }) {
       status: 'fail',
       message: message || 'Too many requests. Please wait a moment and try again.',
     },
+    handler: (req, res, _next, options) => {
+      const retryAfterSeconds = Number(res.getHeader('Retry-After')) || undefined;
+      const userId = req.user && (req.user._id || req.user.id);
+      console.warn(
+        `[RateLimit] route=${req.originalUrl} userId=${userId ? userId.toString() : 'unknown'} `
+        + `retryAfterSeconds=${retryAfterSeconds || 'unknown'}`
+      );
+      return res.status(options.statusCode).json({
+        status: 'fail',
+        code: 'APPLICATION_RATE_LIMITED',
+        message: options.message.message,
+        ...(retryAfterSeconds ? { retryAfterSeconds } : {}),
+        ...(req.requestId ? { requestId: req.requestId } : {}),
+      });
+    },
   });
 }
 

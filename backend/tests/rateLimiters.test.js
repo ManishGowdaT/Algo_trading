@@ -29,6 +29,12 @@ test('authenticated limiter returns 429 at the configured user limit and isolate
   assert.equal(limited.status, 429);
   assert.ok(limited.headers.get('ratelimit'));
   assert.ok(limited.headers.get('retry-after'));
+  assert.deepEqual(await limited.json(), {
+    status: 'fail',
+    code: 'APPLICATION_RATE_LIMITED',
+    message: 'Too many requests. Please wait a moment and try again.',
+    retryAfterSeconds: 60,
+  });
 
   assert.equal((await requestAs('user-b')).status, 200);
 });
