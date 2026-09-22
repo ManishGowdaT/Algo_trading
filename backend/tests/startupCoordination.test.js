@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
+process.env.INTERNAL_SERVICE_KEY = 'test-internal-key';
 const marketDataService = require('../services/marketDataService');
 
 test('concurrent broker session checks share one Python request', async (t) => {

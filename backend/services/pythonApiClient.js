@@ -13,7 +13,9 @@ function getHeaders() {
 
 async function requestPython(path, { method = 'GET', body, signal, userId, timeoutMs = config.API.TIMEOUT_MS } = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const timeout = Number.isFinite(timeoutMs) && timeoutMs > 0
+    ? setTimeout(() => controller.abort(), timeoutMs)
+    : null;
 
   try {
     const response = await fetch(`${config.API.ANGEL_ONE_API_BASE}${path}`, {
@@ -45,7 +47,7 @@ async function requestPython(path, { method = 'GET', body, signal, userId, timeo
       );
     }
 
-    return { response, data };
+    return { response, data, text };
   } catch (err) {
     if (path === '/angel/login') {
       // TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
@@ -57,7 +59,7 @@ async function requestPython(path, { method = 'GET', body, signal, userId, timeo
     }
     throw err;
   } finally {
-    clearTimeout(timeout);
+    if (timeout) clearTimeout(timeout);
   }
 }
 

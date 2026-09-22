@@ -41,4 +41,14 @@ test('system health reports ready only when Python and MongoDB are both healthy'
   const startingResponse = responseCapture();
   health({}, startingResponse);
   assert.equal(startingResponse.result.body.ready, false);
+
+  healthMonitor.getStatus = () => ({
+    pythonApi: false,
+    pythonStatus: 'authentication_misconfigured',
+    mongoDb: true,
+    lastCheck: null,
+  });
+  const configurationResponse = responseCapture();
+  health({}, configurationResponse);
+  assert.equal(configurationResponse.result.body.pythonStatus, 'authentication_misconfigured');
 });

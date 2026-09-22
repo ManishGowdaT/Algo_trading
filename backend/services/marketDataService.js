@@ -1,11 +1,9 @@
 const EventEmitter = require('events');
-const config = require('../config');
 const marketSessionManager = require('./marketSessionManager');
 const smartStream = require('./smartStream');
 const orderUpdateService = require('./orderUpdateService');
 const activeAccountService = require('./activeAccountService');
-
-const ANGEL_API_BASE = config.API.ANGEL_ONE_API_BASE;
+const { requestPython } = require('./pythonApiClient');
 
 const EXCH_TYPE_MAP = {
   NSE: 1,
@@ -126,12 +124,11 @@ class MarketDataService extends EventEmitter {
 
     for (const [streamKey, sub] of this.streamSubscribers.entries()) {
       try {
-        const url = `${ANGEL_API_BASE}/market/ltp?exchange=${encodeURIComponent(sub.exchange)}&tradingsymbol=&symboltoken=${encodeURIComponent(sub.token)}`;
-        const res = await fetch(url, {
-          headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
-        });
+        const { response: res, data: json } = await requestPython(
+          `/market/ltp?exchange=${encodeURIComponent(sub.exchange)}&tradingsymbol=&symboltoken=${encodeURIComponent(sub.token)}`,
+          { timeoutMs: null },
+        );
         if (res.ok) {
-          const json = await res.json();
           if (json && json.ltp > 0) {
           this.handleTick({
             token: sub.token,
@@ -261,11 +258,8 @@ class MarketDataService extends EventEmitter {
 
   async performAutoInitSession() {
     try {
-      const res = await fetch(`${ANGEL_API_BASE}/angel/session-tokens`, {
-        headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
-      });
+      const { response: res, data } = await requestPython('/angel/session-tokens', { timeoutMs: null });
       if (res.ok) {
-        const data = await res.json();
         if (data && data.status && data.client_code && data.feed_token) {
           if (!this.sessionAvailable) {
             console.log(`[MarketDataService] Broker session restored${data.session_id ? ` (session ${data.session_id})` : ''}`);
@@ -361,14 +355,13 @@ class MarketDataService extends EventEmitter {
       // Backfill historical candles via REST
       try {
         const targetDate = new Date().toISOString().split('T')[0];
-        const url = `${ANGEL_API_BASE}/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${targetDate}`;
-        const res = await fetch(url, {
-          headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
-        });
+        const { response: res, data } = await requestPython(
+          `/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${encodeURIComponent(targetDate)}`,
+          { timeoutMs: null },
+        );
         if (res.ok) {
-          const json = await res.json();
-          if (Array.isArray(json.items)) {
-            const parsed = json.items.map(c => ({
+          if (Array.isArray(data?.items)) {
+            const parsed = data.items.map(c => ({
               time: Math.floor(new Date(c.ts.includes('+') ? c.ts : `${c.ts.replace(' ', 'T')}+05:30`).getTime() / 1000),
               open: Number(c.open),
               high: Number(c.high),

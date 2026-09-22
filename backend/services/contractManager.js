@@ -1,8 +1,5 @@
 const EventEmitter = require('events');
-const config = require('../config');
-
-const ANGEL_API_BASE = config.API.ANGEL_ONE_API_BASE;
-const INTERNAL_SERVICE_KEY = config.API.INTERNAL_SERVICE_KEY;
+const { requestPython } = require('./pythonApiClient');
 
 const INDEX_CONFIG = {
   SENSEX: { qty: 20, step: 20, exchange: 'BFO' },
@@ -12,23 +9,15 @@ const INDEX_CONFIG = {
 };
 
 async function callAngelApi(endpoint, method = 'GET', body = null) {
-  const url = `${ANGEL_API_BASE}${endpoint}`;
-  const options = {
+  const { response, data, text } = await requestPython(endpoint, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Internal-Service-Key': INTERNAL_SERVICE_KEY,
-    }
-  };
-  if (body !== null) {
-    options.body = JSON.stringify(body);
+    body: body === null ? undefined : body,
+    timeoutMs: null,
+  });
+  if (!response.ok) {
+    throw new Error(`Angel API Error [${response.status}]: ${text}`);
   }
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Angel API Error [${res.status}]: ${text}`);
-  }
-  return await res.json();
+  return data;
 }
 
 function asIsoDate(d = new Date()) {

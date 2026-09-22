@@ -1,7 +1,5 @@
 const candleCache = require('./candleCache');
-
-const ANGEL_API_URL = process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000';
-const INTERNAL_SERVICE_KEY = process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '';
+const { requestPython } = require('./pythonApiClient');
 
 const INDEX_SPOT_TOKENS = {
   SENSEX: { exchange: 'BSE', symboltoken: '99919000' },
@@ -39,20 +37,13 @@ async function getCandles(underlying, date, interval = '5m') {
   // 3. Fetch from Python Angel One wrapper with 6-second timeout
   let rawItems = [];
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 6000);
-    const url = `${ANGEL_API_URL}/market/candles?exchange=${info.exchange}&symboltoken=${info.symboltoken}&interval=${iv}&date=${targetDate}`;
+    const path = `/market/candles?exchange=${encodeURIComponent(info.exchange)}&symboltoken=${encodeURIComponent(info.symboltoken)}&interval=${encodeURIComponent(iv)}&date=${encodeURIComponent(targetDate)}`;
     
     console.log(`[candleService] Fetching candles for ${und} (Token: ${info.symboltoken}) date: ${targetDate} interval: ${iv}`);
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { 'X-Internal-Service-Key': INTERNAL_SERVICE_KEY },
-    });
-    clearTimeout(timer);
+    const { response: res, data } = await requestPython(path, { timeoutMs: 6000 });
 
     if (res.ok) {
-      const json = await res.json();
-      rawItems = Array.isArray(json.items) ? json.items : [];
+      rawItems = Array.isArray(data?.items) ? data.items : [];
     } else {
       console.warn(`[candleService] Angel wrapper returned HTTP ${res.status} for ${und}`);
     }

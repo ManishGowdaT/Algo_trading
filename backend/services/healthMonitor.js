@@ -11,6 +11,7 @@ class HealthMonitorService extends EventEmitter {
     this.checkTimer = null;
     this.lastHealthState = {
       pythonApi: false,
+      pythonStatus: 'starting',
       mongoDb: false,
       lastCheck: null,
       rttMs: 0
@@ -31,6 +32,7 @@ class HealthMonitorService extends EventEmitter {
   async performHealthCheck() {
     const state = {
       pythonApi: false,
+      pythonStatus: 'starting',
       mongoDb: false,
       lastCheck: new Date().toISOString(),
       rttMs: 0
@@ -39,31 +41,43 @@ class HealthMonitorService extends EventEmitter {
     // 1. Check MongoDB
     state.mongoDb = mongoose.connection.readyState === 1;
 
-    // 2. Check Python Wrapper /health endpoint
+    // 2. Confirm Python liveness and authenticated readiness
     const startMs = Date.now();
     try {
       const startupProbe = pythonWarmup.getInFlight();
       if (startupProbe) {
         state.pythonApi = await startupProbe;
-        if (state.pythonApi) state.rttMs = Date.now() - startMs;
-      } else {
-        const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/health`, {
+        if (!state.pythonApi) {
+          state.pythonStatus = 'starting';
+        }
+      }
+
+      if (state.pythonApi || !startupProbe) {
+        const res = await fetch(`${config.API.ANGEL_ONE_API_BASE}/internal/ready`, {
           signal: AbortSignal.timeout(3000),
           headers: { 'X-Internal-Service-Key': config.API.INTERNAL_SERVICE_KEY },
         });
         if (res.ok) {
           state.pythonApi = true;
+          state.pythonStatus = 'ready';
           state.rttMs = Date.now() - startMs;
         } else {
+          state.pythonApi = false;
+          state.pythonStatus = res.status === 401 || res.status === 403
+            ? 'authentication_misconfigured'
+            : res.status === 429
+              ? 'edge_rate_limited'
+              : 'unavailable';
           console.warn(
-            `[HealthMonitor] Python health check returned HTTP ${res.status} after ${Date.now() - startMs}ms`
+            `[HealthMonitor] Python readiness check returned HTTP ${res.status} after ${Date.now() - startMs}ms`
           );
         }
       }
     } catch (err) {
       state.pythonApi = false;
-      const failure = err.name === 'AbortError' || err.name === 'TimeoutError' ? 'timeout' : 'network error';
-      console.warn(`[HealthMonitor] Python health check ${failure} after ${Date.now() - startMs}ms`);
+      state.pythonStatus = err.name === 'AbortError' || err.name === 'TimeoutError' ? 'timeout' : 'unavailable';
+      const failure = state.pythonStatus === 'timeout' ? 'timeout' : 'network error';
+      console.warn(`[HealthMonitor] Python readiness check ${failure} after ${Date.now() - startMs}ms`);
     }
 
     this.lastHealthState = state;

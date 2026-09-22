@@ -5,14 +5,12 @@ const marketDataService = require('./marketDataService');
 const orderUpdateService = require('./orderUpdateService');
 const marketSessionManager = require('./marketSessionManager');
 const { notifyUrgent } = require('./notificationService');
+const { requestPython } = require('./pythonApiClient');
 marketSessionManager.startMonitoring();
 
 const strategyRegistry = require('./strategyRegistry');
 const indicators = require('../trading/indicators');
 strategyRegistry.init().catch(err => console.error('[StrategyEngine] Registry init error:', err.message));
-
-const ANGEL_API_BASE = process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000';
-const INTERNAL_SERVICE_KEY = process.env.INTERNAL_SERVICE_KEY || process.env.ANGEL_ONE_INTERNAL_SECRET || '';
 
 const INDEX_CONFIG = {
   SENSEX: { qty: 20, step: 20, exchange: 'BFO' },
@@ -23,23 +21,15 @@ const INDEX_CONFIG = {
 
 // Helper: HTTP request to Python Angel One Wrapper
 async function callAngelApi(endpoint, method = 'GET', body = null) {
-  const url = `${ANGEL_API_BASE}${endpoint}`;
-  const options = {
+  const { response, data, text } = await requestPython(endpoint, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Internal-Service-Key': INTERNAL_SERVICE_KEY,
-    }
-  };
-  if (body !== null) {
-    options.body = JSON.stringify(body);
+    body: body === null ? undefined : body,
+    timeoutMs: null,
+  });
+  if (!response.ok) {
+    throw new Error(`Angel API Error [${response.status}]: ${text}`);
   }
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Angel API Error [${res.status}]: ${text}`);
-  }
-  return await res.json();
+  return data;
 }
 
 function formatPrecisionTime(d = new Date()) {

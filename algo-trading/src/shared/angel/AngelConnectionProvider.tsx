@@ -21,6 +21,31 @@ type AngelLoginResponse = {
 
 type SystemHealthResponse = {
   ready: boolean
+  pythonStatus?: 'starting' | 'ready' | 'authentication_misconfigured' | 'edge_rate_limited' | 'timeout' | 'unavailable'
+}
+
+const DEFAULT_BACKEND_MESSAGE = 'Server is starting up, please wait a moment.'
+const BACKEND_MESSAGES = new Set([
+  DEFAULT_BACKEND_MESSAGE,
+  'Server configuration is incomplete. Please contact support.',
+  'The hosting platform is limiting server wake-up requests. Please try again shortly.',
+  'The server did not respond in time. Please try again shortly.',
+  'The Python service is unavailable. Please try again shortly.',
+])
+
+function messageForPythonStatus(status?: SystemHealthResponse['pythonStatus']): string {
+  switch (status) {
+    case 'authentication_misconfigured':
+      return 'Server configuration is incomplete. Please contact support.'
+    case 'edge_rate_limited':
+      return 'The hosting platform is limiting server wake-up requests. Please try again shortly.'
+    case 'timeout':
+      return 'The server did not respond in time. Please try again shortly.'
+    case 'unavailable':
+      return 'The Python service is unavailable. Please try again shortly.'
+    default:
+      return DEFAULT_BACKEND_MESSAGE
+  }
 }
 
 type ConnectStatus = 'idle' | 'connecting' | 'connected' | 'error'
@@ -29,6 +54,7 @@ type AngelConnectionContextValue = {
   connectStatus: ConnectStatus
   connectMessage: string
   backendReady: boolean
+  backendMessage: string
   openConnect: () => void
   disconnect: () => Promise<void>
 }
@@ -40,15 +66,16 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const [connectStatus, setConnectStatus] = useState<ConnectStatus>('idle')
   const [connectMessage, setConnectMessage] = useState('')
   const [backendReady, setBackendReady] = useState(false)
+  const [backendMessage, setBackendMessage] = useState(DEFAULT_BACKEND_MESSAGE)
   const [mpinOpen, setMpinOpen] = useState(false)
 
   const openConnect = useCallback(() => {
     if (!backendReady) {
-      setConnectMessage('Server is starting up, please wait a moment.')
+      setConnectMessage(backendMessage)
       return
     }
     setMpinOpen(true)
-  }, [backendReady])
+  }, [backendMessage, backendReady])
 
   const disconnect = useCallback(async () => {
     try {
@@ -92,6 +119,7 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user) {
       setBackendReady(false)
+      setBackendMessage(DEFAULT_BACKEND_MESSAGE)
       return
     }
 
@@ -100,12 +128,18 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       try {
         const health = await apiGet<SystemHealthResponse>('/system/health')
         if (!active) return
+        const message = messageForPythonStatus(health.pythonStatus)
         setBackendReady(health.ready)
-        setConnectMessage((current) => health.ready && current === 'Server is starting up, please wait a moment.' ? '' : current)
+        setBackendMessage(message)
+        setConnectMessage((current) => {
+          if (health.ready) return BACKEND_MESSAGES.has(current) ? '' : current
+          return !current || BACKEND_MESSAGES.has(current) ? message : current
+        })
       } catch {
         if (!active) return
         setBackendReady(false)
-        setConnectMessage((current) => current || 'Server is starting up, please wait a moment.')
+        setBackendMessage(DEFAULT_BACKEND_MESSAGE)
+        setConnectMessage((current) => current || DEFAULT_BACKEND_MESSAGE)
       }
     }
 
@@ -122,10 +156,11 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       connectStatus,
       connectMessage,
       backendReady,
+      backendMessage,
       openConnect,
       disconnect,
     }),
-    [backendReady, connectMessage, connectStatus, disconnect, openConnect],
+    [backendMessage, backendReady, connectMessage, connectStatus, disconnect, openConnect],
   )
 
   return (

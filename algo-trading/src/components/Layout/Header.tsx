@@ -23,7 +23,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
-    const { connectStatus, backendReady, openConnect, disconnect } = useAngelConnection();
+    const { connectStatus, backendReady, backendMessage, openConnect, disconnect } = useAngelConnection();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 <button
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
                     disabled={connectStatus !== 'connected' && (!backendReady || connectStatus === 'connecting')}
-                    title={connectStatus !== 'connected' && !backendReady ? 'Server is starting up, please wait a moment.' : undefined}
+                    title={connectStatus !== 'connected' && !backendReady ? backendMessage : undefined}
                     className={`
                         flex h-11 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors
                         ${connectStatus === 'connected'

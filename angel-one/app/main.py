@@ -249,7 +249,8 @@ INTERNAL_SERVICE_KEY = (
 async def require_internal_service_key(request: Request, call_next):
     """Keep broker/data endpoints private behind the Node API."""
     protected_prefixes = ("/angel", "/market", "/instruments")
-    if request.method != "OPTIONS" and request.url.path.startswith(protected_prefixes):
+    protected_path = request.url.path == "/internal/ready"
+    if request.method != "OPTIONS" and (request.url.path.startswith(protected_prefixes) or protected_path):
         supplied = request.headers.get("X-Internal-Service-Key", "")
         if not INTERNAL_SERVICE_KEY or not hmac.compare_digest(
             supplied.encode("utf-8"), INTERNAL_SERVICE_KEY.encode("utf-8")
@@ -271,6 +272,17 @@ def shutdown_services() -> None:
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {"ok": True}
+
+
+@app.get("/internal/ready")
+def internal_ready() -> Dict[str, Any]:
+    """Authenticated readiness probe for the Node service.
+
+    The public /health endpoint remains the Render liveness probe. This
+    endpoint additionally verifies that Node and Python share the internal
+    service key, without requiring an Angel broker session.
+    """
+    return {"ready": True}
 
 
 @app.post("/angel/login")

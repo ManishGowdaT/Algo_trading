@@ -19,6 +19,7 @@ import TradingViewChart, {
 } from '../../components/chart/TradingViewChart';
 import { ChartToolbar } from '../../components/chart/ChartToolbar';
 import { computeLocalEMA, computeLocalJMA } from '../../utils/indicatorUtils';
+import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider';
 
 type IndexConfig = {
   id: string;
@@ -71,6 +72,7 @@ type ChartDataResponse = {
 
 const DashboardPage: React.FC = () => {
   usePageTitle('Dashboard');
+  const { backendReady } = useAngelConnection();
 
   // Selected Chart Controls
   const [selectedUnderlying, setSelectedUnderlying] = useState<string>('NIFTY');
@@ -105,6 +107,17 @@ const DashboardPage: React.FC = () => {
 
   // Poll live indices data every 2 seconds with error resilience
   useEffect(() => {
+    if (!backendReady) {
+      setIndicesData((previous) => {
+        const offline = { ...previous };
+        INDICES_CONFIG.forEach(({ id }) => {
+          offline[id] = { ...offline[id], isOffline: true };
+        });
+        return offline;
+      });
+      return;
+    }
+
     let active = true;
 
     const fetchLiveIndices = async () => {
@@ -155,10 +168,15 @@ const DashboardPage: React.FC = () => {
       active = false;
       stopPolling();
     };
-  }, []);
+  }, [backendReady]);
 
   // Fetch Chart Market Data from Backend
   useEffect(() => {
+    if (!backendReady) {
+      setChartLoading(false);
+      return;
+    }
+
     let active = true;
     const fetchChart = async () => {
       setChartLoading(true);
@@ -177,7 +195,7 @@ const DashboardPage: React.FC = () => {
 
     fetchChart();
     return () => { active = false; };
-  }, [selectedUnderlying, timeframe, selectedDate]);
+  }, [backendReady, selectedUnderlying, timeframe, selectedDate]);
 
   // Client-Side Visualization Indicator Computation (< 1ms recalculation)
   const localEma = useMemo(() => {
