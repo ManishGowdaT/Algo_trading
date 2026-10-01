@@ -1454,6 +1454,14 @@ class StrategyEngineManager {
     return runner.getStatus();
   }
 
+  isTradeActive(userId, tradeId) {
+    const ownerId = String(userId);
+    const targetTradeId = String(tradeId);
+    return Array.from(this.runners.values()).some((runner) =>
+      String(runner.userId) === ownerId && String(runner.activeTradeId) === targetTradeId
+    );
+  }
+
   handleBrokerSessionLost(reason) {
     for (const runner of this.runners.values()) runner.handleBrokerSessionLost(reason);
   }

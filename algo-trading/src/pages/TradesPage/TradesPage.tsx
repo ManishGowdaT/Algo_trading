@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
     Search,
     Filter,
@@ -11,11 +11,12 @@ import {
     RefreshCw,
     ChevronDown,
     Check,
-    Download
+    Download,
+    Trash2
 } from 'lucide-react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { apiGet } from '../../trading'
+import { apiDelete, apiGet } from '../../trading'
 import { buildTradesUrl, validateTradesTimeRange } from './tradesQuery'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { generateTradesPdf } from './generateTradesPdf'
@@ -33,6 +34,7 @@ type Trade = {
     exitPrice?: number
     pnl?: number
     exitReason?: string
+    positionState?: string
     createdAt: string
 }
 
@@ -54,6 +56,7 @@ type TradesResponse = {
 
 export default function TradesPage() {
     usePageTitle('Trades');
+    const deleteDialogRef = useRef<HTMLDialogElement>(null)
     const [trades, setTrades] = useState<Trade[]>([])
     const [strategies, setStrategies] = useState<{ _id: string, name: string }[]>([])
     const [loading, setLoading] = useState(true)
@@ -89,6 +92,9 @@ export default function TradesPage() {
     const [isExporting, setIsExporting] = useState(false)
     const [pdfMessage, setPdfMessage] = useState<string | null>(null)
     const [filterMessage, setFilterMessage] = useState<string | null>(null)
+    const [deleteMessage, setDeleteMessage] = useState<string | null>(null)
+    const [tradeToDelete, setTradeToDelete] = useState<Trade | null>(null)
+    const [deletingTradeId, setDeletingTradeId] = useState<string | null>(null)
 
     const [analytics, setAnalytics] = useState({
         totalPnl: 0,
@@ -96,6 +102,13 @@ export default function TradesPage() {
         taxes: 0,
         netPnl: 0
     })
+
+    useEffect(() => {
+        const dialog = deleteDialogRef.current
+        if (!dialog) return
+        if (tradeToDelete && !dialog.open) dialog.showModal()
+        else if (!tradeToDelete && dialog.open) dialog.close()
+    }, [tradeToDelete])
 
     const handleDownloadPdf = async () => {
         setPdfMessage(null)
@@ -167,6 +180,35 @@ export default function TradesPage() {
             setLoading(false)
         }
     }, [page, appliedFilters])
+
+    const isClosedTrade = (trade: Trade) => {
+        const activePositionStates = ['PROTECTED', 'UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED']
+        return typeof trade.exitPrice === 'number'
+            && Number.isFinite(trade.exitPrice)
+            && trade.exitPrice > 0
+            && !activePositionStates.includes(String(trade.positionState || '').toUpperCase())
+    }
+
+    const confirmDeleteTrade = async () => {
+        if (!tradeToDelete || deletingTradeId) return
+
+        const trade = tradeToDelete
+        setDeletingTradeId(trade._id)
+        setDeleteMessage(null)
+        try {
+            await apiDelete<{ status: string }>(`/trades/${encodeURIComponent(trade._id)}`)
+            setTradeToDelete(null)
+            if (trades.length === 1 && page > 1) {
+                setPage((currentPage) => Math.max(1, currentPage - 1))
+            } else {
+                await fetchTrades()
+            }
+        } catch (error) {
+            setDeleteMessage(error instanceof Error ? error.message : 'Unable to delete this trade. Please try again.')
+        } finally {
+            setDeletingTradeId(null)
+        }
+    }
 
     useEffect(() => {
         fetchTrades()
@@ -501,12 +543,13 @@ export default function TradesPage() {
                                 <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#787B86] text-right">Exit</th>
                                 <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#787B86] text-right">Total PNL</th>
                                 <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#787B86]">Reason</th>
+                                <th className="px-4 py-2.5 text-center text-[11px] font-bold uppercase tracking-wider text-[#787B86]">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#E0E3EB]">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={9} className="px-4 py-12 text-center">
+                                    <td colSpan={10} className="px-4 py-12 text-center">
                                         <div className="flex flex-col items-center gap-2">
                                             <RefreshCw className="w-5 h-5 text-[#0052FF] animate-spin" />
                                             <p className="text-xs font-semibold text-[#787B86]">Fetching Trade Records...</p>
@@ -515,7 +558,7 @@ export default function TradesPage() {
                                 </tr>
                             ) : trades.length === 0 ? (
                                 <tr>
-                                    <td colSpan={9} className="px-4 py-12 text-center">
+                                    <td colSpan={10} className="px-4 py-12 text-center">
                                         <p className="text-xs font-semibold text-[#787B86]">No transaction records found</p>
                                     </td>
                                 </tr>
@@ -559,6 +602,20 @@ export default function TradesPage() {
                                                 {trade.exitReason || 'Active'}
                                             </span>
                                         </td>
+                                        <td className="px-4 py-2 text-center">
+                                            {isClosedTrade(trade) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => { setDeleteMessage(null); setTradeToDelete(trade) }}
+                                                    disabled={deletingTradeId === trade._id}
+                                                    className="inline-flex min-h-9 min-w-9 items-center justify-center rounded text-[#F23645] hover:bg-[#F23645]/10 disabled:opacity-50"
+                                                    aria-label={`Delete closed trade ${trade.premium}`}
+                                                    title="Delete trade from history"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))
                             )}
@@ -589,6 +646,17 @@ export default function TradesPage() {
                                 <div><p className="text-[#787B86]">Entry</p><p className="font-bold text-[#1E222D]">₹{trade.buyPrice.toFixed(2)}</p></div>
                                 <div><p className="text-[#787B86]">Exit</p><p className="font-bold text-[#1E222D]">{trade.exitPrice ? `₹${trade.exitPrice.toFixed(2)}` : '---'}</p></div>
                             </div>
+                            {isClosedTrade(trade) && (
+                                <button
+                                    type="button"
+                                    onClick={() => { setDeleteMessage(null); setTradeToDelete(trade) }}
+                                    disabled={deletingTradeId === trade._id}
+                                    className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded border border-[#F23645]/30 px-3 text-xs font-semibold text-[#F23645] hover:bg-[#F23645]/5 disabled:opacity-50"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                    Delete from history
+                                </button>
+                            )}
                         </details>
                     ))}
                 </div>
@@ -647,6 +715,49 @@ export default function TradesPage() {
                     </div>
                 </div>
             </div>
+
+            <dialog
+                ref={deleteDialogRef}
+                className="w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#E0E3EB] bg-white p-5 text-[#1E222D] shadow-xl backdrop:bg-slate-950/50"
+                aria-labelledby="delete-trade-title"
+                aria-describedby="delete-trade-description"
+                onCancel={(event) => {
+                    event.preventDefault()
+                    if (!deletingTradeId) setTradeToDelete(null)
+                }}
+            >
+                {tradeToDelete && (
+                    <div>
+                        <h2 id="delete-trade-title" className="text-base font-bold text-[#1E222D]">Delete this trade?</h2>
+                        <p id="delete-trade-description" className="mt-2 text-sm text-[#434651]">
+                            This permanently removes <span className="font-semibold">{tradeToDelete.premium}</span> from trade history. History totals and future PDF exports will change. This does not cancel or change any broker order.
+                        </p>
+                        <p className="mt-2 text-xs text-[#787B86]">
+                            {formatDate(tradeToDelete.createdAt)} · {tradeToDelete.strategyId?.name || 'Manual'} · Qty {tradeToDelete.qty} · Exit {tradeToDelete.exitPrice ? `₹${tradeToDelete.exitPrice.toFixed(2)}` : '—'}
+                        </p>
+                        {deleteMessage && <p role="alert" className="mt-3 rounded bg-[#FFF2F2] p-2 text-xs font-semibold text-[#F23645]">{deleteMessage}</p>}
+                        <div className="mt-5 flex justify-end gap-2">
+                            <button
+                                type="button"
+                                autoFocus
+                                disabled={Boolean(deletingTradeId)}
+                                onClick={() => { setDeleteMessage(null); setTradeToDelete(null) }}
+                                className="min-h-11 rounded bg-[#F0F3FA] px-4 text-sm font-semibold text-[#434651] disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                disabled={Boolean(deletingTradeId)}
+                                onClick={() => void confirmDeleteTrade()}
+                                className="min-h-11 rounded bg-[#F23645] px-4 text-sm font-semibold text-white disabled:opacity-50"
+                            >
+                                {deletingTradeId ? 'Deleting…' : 'Delete trade'}
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </dialog>
         </div>
     )
 }

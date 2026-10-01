@@ -12,5 +12,6 @@ router.get('/latest-open', tradeReadLimiter, tradeController.getLatestOpenTrade)
 
 router.post('/record', tradeWriteLimiter, tradeController.recordTrade);
 router.post('/update-exit', tradeWriteLimiter, tradeController.updateTradeExit);
+router.delete('/:tradeId', tradeWriteLimiter, tradeController.deleteTrade);
 
 module.exports = router;

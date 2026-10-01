@@ -1,6 +1,7 @@
 const Trade = require('../models/Trade');
 const Strategy = require('../models/Strategy');
 const mongoose = require('mongoose');
+const strategyEngine = require('../services/strategyEngine');
 const {
     escapeRegexLiteral,
     InputValidationError,
@@ -112,6 +113,48 @@ exports.updateTradeExit = async (req, res) => {
         });
     } catch (err) {
         sendFailure(req, res, err);
+    }
+};
+
+exports.deleteTrade = async (req, res) => {
+    try {
+        const { tradeId } = req.params;
+        if (typeof tradeId !== 'string' || !mongoose.isValidObjectId(tradeId)) {
+            throw new InputValidationError('tradeId must be a valid trade id.');
+        }
+
+        const ownerId = req.user._id;
+        const trade = await Trade.findOne({ _id: tradeId, userId: ownerId });
+        if (!trade) {
+            return res.status(404).json({ status: 'fail', message: 'Trade not found' });
+        }
+
+        const exitPrice = trade.exitPrice;
+        if (typeof exitPrice !== 'number' || !Number.isFinite(exitPrice) || exitPrice <= 0) {
+            return res.status(409).json({ status: 'fail', message: 'Only closed trades can be deleted.' });
+        }
+
+        const activePositionStates = ['PROTECTED', 'UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'];
+        if (activePositionStates.includes(String(trade.positionState || '').toUpperCase())
+            || strategyEngine.isTradeActive(ownerId, tradeId)) {
+            return res.status(409).json({ status: 'fail', message: 'This trade is still active or requires reconciliation and cannot be deleted.' });
+        }
+
+        // Recheck persisted state atomically in case the position changed after the initial read.
+        const deletedTrade = await Trade.findOneAndDelete({
+            _id: tradeId,
+            userId: ownerId,
+            exitPrice: { $gt: 0 },
+            positionState: { $nin: activePositionStates },
+        }).select('_id');
+
+        if (!deletedTrade) {
+            return res.status(409).json({ status: 'fail', message: 'Trade status changed. Refresh history and try again.' });
+        }
+
+        return res.status(200).json({ status: 'success', data: { tradeId: String(deletedTrade._id) } });
+    } catch (err) {
+        return sendFailure(req, res, err);
     }
 };
 

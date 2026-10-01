@@ -121,3 +121,26 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
   if (!res.ok) throw new Error(errorMessage(data, res.status));
   return data as T;
 }
+
+export async function apiDelete<T>(path: string): Promise<T> {
+  const url = getUrl(path);
+  const requestOptions: RequestInit = {
+    method: 'DELETE',
+    headers: authHeaders(),
+    credentials: 'include',
+  };
+
+  let res = await fetch(url, requestOptions);
+  let data = await readResponseBody(res);
+  if (isConfirmedAuthFailure(res, data)) {
+    if (await refreshAccessToken()) {
+      res = await fetch(url, { ...requestOptions, headers: authHeaders() });
+      data = await readResponseBody(res);
+      if (res.ok) return data as T;
+    }
+    redirectToLoginWithReturnPath();
+    throw new Error('Authentication session expired');
+  }
+  if (!res.ok) throw new Error(errorMessage(data, res.status));
+  return data as T;
+}
