@@ -22,7 +22,7 @@ function sendFailure(req, res, err) {
 
 exports.getStrategyCount = async (req, res) => {
     try {
-        const count = await Strategy.countDocuments({ userId: req.user._id });
+        const count = await Strategy.countDocuments({ userId: req.user._id, internalExecutionOnly: { $ne: true } });
         res.status(200).json({
             status: 'success',
             data: {
@@ -36,7 +36,7 @@ exports.getStrategyCount = async (req, res) => {
 
 exports.getAllStrategies = async (req, res) => {
     try {
-        const strategies = await Strategy.find({ userId: req.user._id }).select('_id name');
+        const strategies = await Strategy.find({ userId: req.user._id, internalExecutionOnly: { $ne: true } }).select('_id name');
         res.status(200).json({
             status: 'success',
             data: {
@@ -50,10 +50,12 @@ exports.getAllStrategies = async (req, res) => {
 
 exports.startStrategy = async (req, res) => {
     try {
-        activeAccountService.assertActiveUser(req.user._id);
+        activeAccountService.assertActiveUser(req.user._id, req.accountContext?.brokerAccountId);
+        await require('../services/startupRecovery').assertStrategyStartAllowed(req.accountContext);
         const { strategyName } = req.params;
         await requireRegisteredStrategy(strategyName);
         const config = validateStrategyConfig(strategyName, req.body === undefined ? {} : req.body);
+        await require('../services/strategySettingsService').save(req.accountContext, strategyName, config);
         const status = await strategyEngine.startStrategy(req.user._id.toString(), strategyName, config);
         res.status(200).json({
             status: 'success',
@@ -66,10 +68,10 @@ exports.startStrategy = async (req, res) => {
 
 exports.stopStrategy = async (req, res) => {
     try {
-        activeAccountService.assertActiveUser(req.user._id);
+        activeAccountService.assertActiveUser(req.user._id, req.accountContext?.brokerAccountId);
         const { strategyName } = req.params;
         await requireRegisteredStrategy(strategyName);
-        const status = strategyEngine.stopStrategy(req.user._id.toString(), strategyName);
+        const status = strategyEngine.stopStrategy(req.user._id.toString(), strategyName, req.accountContext);
         res.status(200).json({
             status: 'success',
             data: status
@@ -83,7 +85,7 @@ exports.getStrategyStatus = async (req, res) => {
     try {
         const { strategyName } = req.params;
         await requireRegisteredStrategy(strategyName);
-        const status = strategyEngine.getStrategyStatus(req.user._id.toString(), strategyName);
+        const status = strategyEngine.getStrategyStatus(req.user._id.toString(), strategyName, req.accountContext);
         res.status(200).json({
             status: 'success',
             data: status
@@ -95,7 +97,7 @@ exports.getStrategyStatus = async (req, res) => {
 
 exports.exitStrategyPosition = async (req, res) => {
     try {
-        activeAccountService.assertActiveUser(req.user._id);
+        activeAccountService.assertActiveUser(req.user._id, req.accountContext?.brokerAccountId);
         const { strategyName } = req.params;
         await requireRegisteredStrategy(strategyName);
         const status = await strategyEngine.manualExitStrategy(req.user._id.toString(), strategyName);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     Activity,
     ShieldAlert,
@@ -9,10 +9,14 @@ import {
     XCircle
 } from 'lucide-react'
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider'
-import { apiGet, apiPost } from '../../trading'
+import { apiGet, apiPost, isApiScopeCurrent } from '../../trading'
+import { retainedStopStatus, type StrategyStopStatus } from '../../trading/strategyStopStatus'
 import { startResilientPolling } from '../../utils/resilientPolling'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import MobileStrategyActions from '../../components/Layout/MobileStrategyActions'
+import { useAuth } from '../../context/AuthContext'
+import { readAccountSetting, writeAccountSetting } from '../../trading/accountSettings'
+import { AccountSettingsSaveQueue, canStartStrategy, loadValidatedStrategySettings } from '../../trading/strategySettingsLifecycle'
 
 type Underlying = 'SENSEX' | 'NIFTY' | 'BANKNIFTY' | 'CRUDEOILM'
 type Exchange = 'BFO' | 'NFO' | 'MCX'
@@ -24,7 +28,15 @@ const INDEX_CONFIG: Record<Underlying, { qty: number, step: number, exchange: Ex
     CRUDEOILM: { qty: 1, step: 1, exchange: 'MCX' },
 }
 
-type StrategyState = 'WAITING' | 'SCANNING' | 'IN_POSITION' | 'COOLDOWN' | 'STOPPED'
+export default function ModifiedHeikenashiPage() {
+    const { user } = useAuth()
+    const { brokerAccountId } = useAngelConnection()
+    if (!user || !brokerAccountId) return <ModifiedHeikenashiPageInner scope="unavailable" userId="" accountId="" />
+    const scope = `${user._id}:${brokerAccountId}`
+    return <ModifiedHeikenashiPageInner key={scope} scope={scope} userId={user._id} accountId={brokerAccountId} />
+}
+
+type StrategyState = 'WAITING' | 'SCANNING' | 'IN_POSITION' | 'COOLDOWN' | 'STOPPED' | 'POSITION_PROTECTED' | 'POSITION_UNPROTECTED' | 'EXIT_PENDING' | 'RECONCILIATION_REQUIRED'
 type Trend = 'BULLISH' | 'BEARISH' | 'NEUTRAL'
 type StrikeMode = 'ATM' | 'ITM' | 'OTM'
 type ExitStrategy = 'CANDLES' | 'TARGET' | 'TRAILING_SL'
@@ -37,51 +49,47 @@ const TIMEFRAME_OPTIONS = [
     { label: '30m', value: 'THIRTY_MINUTE' },
 ]
 
-function getSavedState<T>(key: string, fallback: T): T {
+function getSavedState<T>(scope: string, key: string, fallback: T): T {
     try {
-        const item = localStorage.getItem(key)
-        if (item === null) return fallback
-        try {
-            return JSON.parse(item) as T
-        } catch {
-            return item as unknown as T
-        }
+        const [userId, accountId] = scope.split(':')
+        return readAccountSetting(userId, accountId, key, fallback)
     } catch {
         return fallback
     }
 }
 
-export default function ModifiedHeikenashiPage() {
+function ModifiedHeikenashiPageInner({ scope, userId, accountId }: { scope: string; userId: string; accountId: string }) {
     usePageTitle('Modified Heikenashi')
     const { connectStatus } = useAngelConnection()
+    const settingsSaveQueue = useRef(new AccountSettingsSaveQueue(scope))
 
-    const [isRunning, setIsRunning] = useState<boolean>(() => getSavedState('mha_isRunning', false))
-    const [state, setState] = useState<StrategyState>(() => getSavedState('mha_state', 'STOPPED'))
+    const [isRunning, setIsRunning] = useState<boolean>(false)
+    const [state, setState] = useState<StrategyState>('STOPPED')
     const [message, setMessage] = useState<string>('')
     const [trend, setTrend] = useState<Trend>('NEUTRAL')
 
     // Core Configuration
-    const [underlying, setUnderlying] = useState<Underlying>(() => getSavedState('mha_underlying', 'SENSEX'))
-    const [quantity, setQuantity] = useState<number>(() => getSavedState('mha_quantity', INDEX_CONFIG.SENSEX.qty))
-    const [baseTimeframe, setBaseTimeframe] = useState<string>(() => getSavedState('mha_baseTimeframe', 'FIVE_MINUTE'))
-    const [needConfirmation, setNeedConfirmation] = useState<boolean>(() => getSavedState('mha_needConfirmation', false))
-    const [confirmationTimeframe, setConfirmationTimeframe] = useState<string>(() => getSavedState('mha_confirmationTimeframe', 'FIFTEEN_MINUTE'))
+    const [underlying, setUnderlying] = useState<Underlying>(() => getSavedState(scope, 'mha_underlying', 'SENSEX'))
+    const [quantity, setQuantity] = useState<number>(() => getSavedState(scope, 'mha_quantity', INDEX_CONFIG.SENSEX.qty))
+    const [baseTimeframe, setBaseTimeframe] = useState<string>(() => getSavedState(scope, 'mha_baseTimeframe', 'FIVE_MINUTE'))
+    const [needConfirmation, setNeedConfirmation] = useState<boolean>(() => getSavedState(scope, 'mha_needConfirmation', false))
+    const [confirmationTimeframe, setConfirmationTimeframe] = useState<string>(() => getSavedState(scope, 'mha_confirmationTimeframe', 'FIFTEEN_MINUTE'))
 
     // Strike Selection
-    const [strikeMode, setStrikeMode] = useState<StrikeMode>(() => getSavedState('mha_strikeMode', 'ATM'))
-    const [strikeDepth, setStrikeDepth] = useState<number>(() => getSavedState('mha_strikeDepth', 1))
-    const [premiumMin, setPremiumMin] = useState<number>(() => getSavedState('mha_premiumMin', 300))
-    const [premiumMax, setPremiumMax] = useState<number>(() => getSavedState('mha_premiumMax', 400))
+    const [strikeMode, setStrikeMode] = useState<StrikeMode>(() => getSavedState(scope, 'mha_strikeMode', 'ATM'))
+    const [strikeDepth, setStrikeDepth] = useState<number>(() => getSavedState(scope, 'mha_strikeDepth', 1))
+    const [premiumMin, setPremiumMin] = useState<number>(() => getSavedState(scope, 'mha_premiumMin', 300))
+    const [premiumMax, setPremiumMax] = useState<number>(() => getSavedState(scope, 'mha_premiumMax', 400))
 
     // Exit Strategy Configuration
-    const [exitStrategy, setExitStrategy] = useState<ExitStrategy>(() => getSavedState('mha_exitStrategy', 'CANDLES'))
-    const [targetPoints, setTargetPoints] = useState<number>(() => getSavedState('mha_targetPoints', 20))
-    const [slPoints, setSlPoints] = useState<number>(() => getSavedState('mha_slPoints', 30))
-    const [trailingStopPoints, setTrailingStopPoints] = useState<number>(() => getSavedState('mha_trailingStopPoints', 20))
-    const [initialSlPoints, setInitialSlPoints] = useState<number>(() => getSavedState('mha_initialSlPoints', 30))
-    const [finalTargetPoints, setFinalTargetPoints] = useState<number>(() => getSavedState('mha_finalTargetPoints', 100))
+    const [exitStrategy, setExitStrategy] = useState<ExitStrategy>(() => getSavedState(scope, 'mha_exitStrategy', 'CANDLES'))
+    const [targetPoints, setTargetPoints] = useState<number>(() => getSavedState(scope, 'mha_targetPoints', 20))
+    const [slPoints, setSlPoints] = useState<number>(() => getSavedState(scope, 'mha_slPoints', 30))
+    const [trailingStopPoints, setTrailingStopPoints] = useState<number>(() => getSavedState(scope, 'mha_trailingStopPoints', 20))
+    const [initialSlPoints, setInitialSlPoints] = useState<number>(() => getSavedState(scope, 'mha_initialSlPoints', 30))
+    const [finalTargetPoints, setFinalTargetPoints] = useState<number>(() => getSavedState(scope, 'mha_finalTargetPoints', 100))
 
-    const [liveTradingConsent, setLiveTradingConsent] = useState<boolean>(() => getSavedState('mha_liveTradingConsent', false))
+    const [liveTradingConsent, setLiveTradingConsent] = useState<boolean>(() => getSavedState(scope, 'mha_liveTradingConsent', false))
 
     // Dynamic Live Monitor States from Backend Status
     const [monitoredPremiums, setMonitoredPremiums] = useState<{ ce: string, pe: string }>({ ce: '---', pe: '---' })
@@ -99,28 +107,46 @@ export default function ModifiedHeikenashiPage() {
     const [currentLtp, setCurrentLtp] = useState<number | null>(null)
     const [activeTrailingSl, setActiveTrailingSl] = useState<number | null>(null)
     const [isExiting, setIsExiting] = useState<boolean>(false)
+    const [settingsReady, setSettingsReady] = useState(false)
+
+    useEffect(() => {
+        let active = true
+        setSettingsReady(false)
+        if (!userId || !accountId) { setSettingsReady(true); return () => { active = false } }
+        loadValidatedStrategySettings('ModifiedHeikenAshi', () => apiGet<{ data?: { config?: Record<string, unknown> | null } }>('/strategies/settings/ModifiedHeikenAshi'))
+            .then((config) => {
+                if (!active) return
+                setUnderlying(config.underlying as Underlying ?? 'SENSEX')
+                setQuantity(Number(config.quantity ?? INDEX_CONFIG.SENSEX.qty))
+                setBaseTimeframe(String(config.baseTimeframe ?? 'FIVE_MINUTE'))
+                setNeedConfirmation(Boolean(config.needConfirmation))
+                setConfirmationTimeframe(String(config.confirmationTimeframe ?? 'FIFTEEN_MINUTE'))
+                setStrikeMode(config.strikeMode as StrikeMode ?? 'ATM'); setStrikeDepth(Number(config.strikeDepth ?? 1))
+                setPremiumMin(Number(config.premiumMin ?? 300)); setPremiumMax(Number(config.premiumMax ?? 400))
+                setExitStrategy(config.exitStrategy as ExitStrategy ?? 'CANDLES')
+                setTargetPoints(Number(config.targetPoints ?? 20)); setSlPoints(Number(config.slPoints ?? 30))
+                setTrailingStopPoints(Number(config.trailingStopPoints ?? 20)); setInitialSlPoints(Number(config.initialSlPoints ?? 30))
+                setFinalTargetPoints(Number(config.finalTargetPoints ?? 100)); setLiveTradingConsent(Boolean(config.liveTradingConsent))
+                setSettingsReady(true)
+            })
+            .catch((error) => { if (active) setMessage(error instanceof Error ? `Could not load saved settings: ${error.message}` : 'Could not load saved settings.') })
+        return () => { active = false }
+    }, [scope])
+    useEffect(() => {
+        settingsSaveQueue.current.activate()
+        return () => settingsSaveQueue.current.dispose()
+    }, [])
 
     // Local Storage Sync
     useEffect(() => {
-        localStorage.setItem('mha_isRunning', JSON.stringify(isRunning))
-        localStorage.setItem('mha_state', JSON.stringify(state))
-        localStorage.setItem('mha_underlying', JSON.stringify(underlying))
-        localStorage.setItem('mha_quantity', JSON.stringify(quantity))
-        localStorage.setItem('mha_baseTimeframe', JSON.stringify(baseTimeframe))
-        localStorage.setItem('mha_needConfirmation', JSON.stringify(needConfirmation))
-        localStorage.setItem('mha_confirmationTimeframe', JSON.stringify(confirmationTimeframe))
-        localStorage.setItem('mha_strikeMode', JSON.stringify(strikeMode))
-        localStorage.setItem('mha_strikeDepth', JSON.stringify(strikeDepth))
-        localStorage.setItem('mha_premiumMin', JSON.stringify(premiumMin))
-        localStorage.setItem('mha_premiumMax', JSON.stringify(premiumMax))
-        localStorage.setItem('mha_exitStrategy', JSON.stringify(exitStrategy))
-        localStorage.setItem('mha_targetPoints', JSON.stringify(targetPoints))
-        localStorage.setItem('mha_slPoints', JSON.stringify(slPoints))
-        localStorage.setItem('mha_trailingStopPoints', JSON.stringify(trailingStopPoints))
-        localStorage.setItem('mha_initialSlPoints', JSON.stringify(initialSlPoints))
-        localStorage.setItem('mha_finalTargetPoints', JSON.stringify(finalTargetPoints))
-        localStorage.setItem('mha_liveTradingConsent', JSON.stringify(liveTradingConsent))
-    }, [isRunning, state, underlying, quantity, baseTimeframe, needConfirmation, confirmationTimeframe, strikeMode, strikeDepth, premiumMin, premiumMax, exitStrategy, targetPoints, slPoints, trailingStopPoints, initialSlPoints, finalTargetPoints, liveTradingConsent])
+        if (!settingsReady || !userId || !accountId) return
+        const config = { underlying, quantity, baseTimeframe, needConfirmation, confirmationTimeframe, strikeMode, strikeDepth, premiumMin, premiumMax, exitStrategy, targetPoints, slPoints, trailingStopPoints, initialSlPoints, finalTargetPoints, liveTradingConsent }
+        Object.entries(config).forEach(([key, value]) => writeAccountSetting(userId, accountId, `mha_${key}`, value))
+        const timer = window.setTimeout(() => {
+            settingsSaveQueue.current.enqueue(config, (_scope, snapshot) => apiPost('/strategies/settings/ModifiedHeikenAshi', { config: snapshot }), isApiScopeCurrent)
+        }, 350)
+        return () => window.clearTimeout(timer)
+    }, [settingsReady, userId, accountId, underlying, quantity, baseTimeframe, needConfirmation, confirmationTimeframe, strikeMode, strikeDepth, premiumMin, premiumMax, exitStrategy, targetPoints, slPoints, trailingStopPoints, initialSlPoints, finalTargetPoints, liveTradingConsent])
 
     // Poll Strategy Status from Backend Engine
     useEffect(() => {
@@ -178,6 +204,7 @@ export default function ModifiedHeikenashiPage() {
     }
 
     const startStrategy = async () => {
+        if (!canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') || !userId || !accountId) return
         try {
             setMessage('Launching algorithm on backend engine...')
             const payload = {
@@ -210,8 +237,14 @@ export default function ModifiedHeikenashiPage() {
     const stopStrategy = async () => {
         try {
             setMessage('Halting algorithm on backend engine...')
-            await apiPost('/strategies/ModifiedHeikenAshi/stop')
+            const stopped = await apiPost<{ data?: StrategyStopStatus }>('/strategies/ModifiedHeikenAshi/stop')
             setIsRunning(false)
+            if (retainedStopStatus(stopped.data)) {
+                setState(stopped.data!.state as StrategyState)
+                setActiveTradeId(stopped.data!.activeTradeId || null)
+                setMessage('New entries stopped. Open or unresolved positions remain managed.')
+                return
+            }
             setState('STOPPED')
             setTrend('NEUTRAL')
             setActiveTradeId(null)
@@ -278,7 +311,7 @@ export default function ModifiedHeikenashiPage() {
                         {!isRunning ? (
                             <button
                                 onClick={startStrategy}
-                                disabled={connectStatus !== 'connected'}
+                                disabled={!canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') || !userId || !accountId}
                                 className="flex items-center justify-center gap-1.5 px-4 py-2 max-md:w-full bg-[#089981] hover:bg-[#07806c] disabled:opacity-50 text-white text-xs font-semibold rounded shadow-sm transition-colors"
                             >
                                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -452,7 +485,7 @@ export default function ModifiedHeikenashiPage() {
                                     </div>
                                 </div>
 
-                                {['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(state) && activeTradeId && (
+                                {['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'].includes(state) && activeTradeId && (
                                     <div className="mt-4 pt-3 border-t border-[#E0E3EB] flex justify-end">
                                         <button
                                             onClick={manualExitPosition}
@@ -682,8 +715,9 @@ export default function ModifiedHeikenashiPage() {
             </div>
             <MobileStrategyActions
                 isRunning={isRunning}
-                hasPosition={['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(state) && Boolean(activeTradeId)}
+                hasPosition={['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'].includes(state) && Boolean(activeTradeId)}
                 isExiting={isExiting}
+            canStart={canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') && Boolean(userId && accountId)}
                 onStart={() => void startStrategy()}
                 onStop={() => void stopStrategy()}
                 onExit={() => void manualExitPosition()}

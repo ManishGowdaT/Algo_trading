@@ -4,7 +4,8 @@ class CandleCache {
   }
 
   getKey(underlying, date, interval) {
-    return `${underlying.toUpperCase()}:${date}:${interval.toUpperCase()}`;
+    const context = require('./accountContext').current();
+    return `${context.brokerAccountId}:${context.sessionGeneration}:${underlying.toUpperCase()}:${date}:${interval.toUpperCase()}`;
   }
 
   get(underlying, date, interval) {

@@ -12,9 +12,11 @@ class OrderUpdateService extends EventEmitter {
     this.isConnecting = false;
     this.reconnectAttempts = 0;
     this.isExplicitDisconnect = false;
+    this.connectionGeneration = 0;
+    this.accountIdentity = null;
   }
 
-  connect(jwtToken) {
+  connect(jwtToken, accountIdentity = this.accountIdentity) {
     if (jwtToken) {
       this.jwtToken = jwtToken;
     }
@@ -32,6 +34,9 @@ class OrderUpdateService extends EventEmitter {
 
     this.disconnect(false);
     this.isExplicitDisconnect = false;
+    this.accountIdentity = accountIdentity ? { ...accountIdentity } : null;
+    const connectionIdentity = this.accountIdentity ? { ...this.accountIdentity } : null;
+    const connectionGeneration = ++this.connectionGeneration;
 
     try {
       const WebSocketImpl = globalThis.WebSocket || require('ws');
@@ -39,13 +44,15 @@ class OrderUpdateService extends EventEmitter {
 
       console.log('[OrderUpdateService] Connecting to Order Update WebSocket...');
       this.isConnecting = true;
-      this.ws = new WebSocketImpl(wsUrl, {
+      const socket = new WebSocketImpl(wsUrl, {
         headers: {
           Authorization: `Bearer ${this.jwtToken}`
         }
       });
+      this.ws = socket;
 
-      this.ws.onopen = () => {
+      socket.onopen = () => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.log('[OrderUpdateService] Order Update WebSocket connected');
         this.isConnected = true;
         this.isConnecting = false;
@@ -54,15 +61,18 @@ class OrderUpdateService extends EventEmitter {
         this.emit('connected');
       };
 
-      this.ws.onmessage = (event) => {
-        this.handleMessage(event.data);
+      socket.onmessage = (event) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
+        this.handleMessage(event.data, connectionIdentity);
       };
 
-      this.ws.onerror = (err) => {
+      socket.onerror = (err) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.error('[OrderUpdateService] WebSocket error:', err.message || err);
       };
 
-      this.ws.onclose = (event) => {
+      socket.onclose = (event) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.warn(`[OrderUpdateService] WebSocket closed (code: ${event.code})`);
         this.cleanup();
         if (!this.isExplicitDisconnect) {
@@ -89,8 +99,13 @@ class OrderUpdateService extends EventEmitter {
     }, 10000);
   }
 
-  handleMessage(data) {
+  handleMessage(data, accountIdentity = this.accountIdentity) {
     if (data === 'pong' || data === 'ping') return;
+    if (!accountIdentity || !this.accountIdentity
+      || accountIdentity.userId !== this.accountIdentity.userId
+      || accountIdentity.brokerAccountId !== this.accountIdentity.brokerAccountId
+      || accountIdentity.sessionId !== this.accountIdentity.sessionId
+      || accountIdentity.sessionGeneration !== this.accountIdentity.sessionGeneration) return;
 
     try {
       const payload = typeof data === 'string' ? JSON.parse(data) : JSON.parse(data.toString());
@@ -99,7 +114,7 @@ class OrderUpdateService extends EventEmitter {
         const orderId = orderData.orderid || orderData.orderId || orderData.uniqueorderid || 'N/A';
         const status = orderData.status || orderData.orderstatus || orderData.orderStatus || 'N/A';
         console.log(`[OrderUpdateService] Order Update: ${orderId} -> Status: ${status}`);
-        this.emit('order:update', orderData);
+        this.emit('order:update', orderData, accountIdentity ? { ...accountIdentity } : null);
       }
     } catch (err) {
       console.error('[OrderUpdateService] Error parsing order message:', err.message);
@@ -111,9 +126,12 @@ class OrderUpdateService extends EventEmitter {
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
     console.log(`[OrderUpdateService] Scheduling reconnect in ${delay}ms (Attempt ${this.reconnectAttempts})`);
+    const connectionGeneration = this.connectionGeneration;
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      this.connect();
+      if (this.connectionGeneration === connectionGeneration && !this.isExplicitDisconnect) {
+        this.connect(undefined, this.accountIdentity);
+      }
     }, delay);
   }
 
@@ -127,6 +145,7 @@ class OrderUpdateService extends EventEmitter {
   }
 
   disconnect(clearToken = true) {
+    this.connectionGeneration++;
     this.isExplicitDisconnect = true;
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
@@ -145,8 +164,11 @@ class OrderUpdateService extends EventEmitter {
     }
     if (clearToken) {
       this.jwtToken = null;
+      this.accountIdentity = null;
     }
   }
 }
 
-module.exports = new OrderUpdateService();
+const defaultInstance = new OrderUpdateService();
+defaultInstance.OrderUpdateService = OrderUpdateService;
+module.exports = defaultInstance;

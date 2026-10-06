@@ -1,8 +1,9 @@
-import { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
 import MpinModal from './MpinModal'
 import { apiGet, apiPost } from '../../trading'
+import { setApiAccountScope } from '../../trading/api'
 import { useAuth } from '../../context/AuthContext'
 
 export type AngelCredentials = {
@@ -16,6 +17,7 @@ type AngelLoginResponse = {
   status: boolean
   connected?: boolean
   clientCode?: string | null
+  brokerAccountId?: string | null
   message?: string
 }
 
@@ -55,6 +57,7 @@ type AngelConnectionContextValue = {
   connectMessage: string
   backendReady: boolean
   backendMessage: string
+  brokerAccountId: string | null
   openConnect: () => void
   disconnect: () => Promise<void>
 }
@@ -63,8 +66,11 @@ const AngelConnectionContext = createContext<AngelConnectionContextValue | null>
 
 export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
+  const userIdRef = useRef(user?._id ?? null)
+  userIdRef.current = user?._id ?? null
   const [connectStatus, setConnectStatus] = useState<ConnectStatus>('idle')
   const [connectMessage, setConnectMessage] = useState('')
+  const [brokerAccountId, setBrokerAccountId] = useState<string | null>(null)
   const [backendReady, setBackendReady] = useState(false)
   const [backendMessage, setBackendMessage] = useState(DEFAULT_BACKEND_MESSAGE)
   const [mpinOpen, setMpinOpen] = useState(false)
@@ -78,42 +84,57 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   }, [backendMessage, backendReady])
 
   const disconnect = useCallback(async () => {
-    try {
-      await apiPost<Record<string, unknown>>('/angel/logout')
-    } catch {
-      // ignore
-    }
+    await apiPost<Record<string, unknown>>('/angel/logout')
+    setApiAccountScope(null)
+    setBrokerAccountId(null)
     setConnectStatus('idle')
     setConnectMessage('Disconnected')
   }, [])
 
   const submitCredentials = useCallback(async (credentials: AngelCredentials) => {
+    const ownerId = user?._id
+    if (!ownerId) throw new Error('Sign in before connecting a broker account.')
     setConnectStatus('connecting')
     setConnectMessage('')
     try {
       const login = await apiPost<AngelLoginResponse>('/angel/login', credentials)
+      if (ownerId !== userIdRef.current) return
+      if (!login.brokerAccountId) throw new Error('Broker connection did not return a verified account.')
+      setBrokerAccountId(login.brokerAccountId)
+      setApiAccountScope(login.brokerAccountId)
       setConnectStatus('connected')
       setConnectMessage(login.message ?? 'Connected')
       setMpinOpen(false)
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Connect failed'
+      if (ownerId !== userIdRef.current) return
       setConnectStatus('error')
       setConnectMessage('')
       throw new Error(msg)
     }
-  }, [])
+  }, [user?._id])
 
   // Restore the broker connection indicator after an application refresh.
   useEffect(() => {
-    if (!user) return
-    apiGet<{ connected: boolean; message?: string }>('/angel/status')
+    let active = true
+    setApiAccountScope(null)
+    setBrokerAccountId(null)
+    setConnectStatus('idle')
+    setConnectMessage('')
+    if (!user) return () => { active = false }
+    apiGet<{ connected: boolean; message?: string; brokerAccountId?: string | null }>('/angel/status')
       .then((status) => {
+        if (!active) return
+        const accountId = status.brokerAccountId || null
+        setBrokerAccountId(accountId)
+        setApiAccountScope(accountId)
         setConnectStatus(status.connected ? 'connected' : 'idle')
         if (status.message) setConnectMessage(status.message)
       })
       .catch(() => {
-        setConnectStatus('idle')
+        if (active) setConnectStatus('idle')
       })
+    return () => { active = false }
   }, [user])
 
   useEffect(() => {
@@ -157,10 +178,11 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       connectMessage,
       backendReady,
       backendMessage,
+      brokerAccountId,
       openConnect,
       disconnect,
     }),
-    [backendMessage, backendReady, connectMessage, connectStatus, disconnect, openConnect],
+    [backendMessage, backendReady, brokerAccountId, connectMessage, connectStatus, disconnect, openConnect],
   )
 
   return (

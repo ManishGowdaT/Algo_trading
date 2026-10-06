@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { API_BASE as API_ROOT } from '../config/apiBase';
+import { setApiIdentity } from '../trading/api';
+import { AuthSessionMutationQueue, clearTokenForCurrentSession } from '../trading/authSessionLifecycle';
 
 interface User {
     _id: string;
@@ -21,97 +23,123 @@ const API_BASE = `${API_ROOT}/users`;
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const authGeneration = useRef(0);
+    const sessionMutations = useRef(new AuthSessionMutationQueue());
 
     useEffect(() => {
+        const generation = ++authGeneration.current;
+        const controller = new AbortController();
         const fetchMe = async () => {
             try {
                 const token = localStorage.getItem('jwt');
                 const fetchCurrentUser = (accessToken: string | null) => {
                     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
                     if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
-                    return fetch(`${API_BASE}/me`, { headers, credentials: 'include' });
+                    return fetch(`${API_BASE}/me`, { headers, credentials: 'include', signal: controller.signal });
                 };
 
                 let res = await fetchCurrentUser(token);
                 if (res.status === 401) {
                     const refresh = await fetch(`${API_BASE}/refresh`, {
                         method: 'POST',
-                        credentials: 'include'
+                        credentials: 'include',
+                        signal: controller.signal,
                     });
                     if (refresh.ok) {
                         const refreshData = await refresh.json();
+                        if (generation !== authGeneration.current) return;
                         if (refreshData.token) localStorage.setItem('jwt', refreshData.token);
                         res = await fetchCurrentUser(refreshData.token || null);
                     }
                 }
+                if (generation !== authGeneration.current) return;
                 if (res.ok) {
                     const data = await res.json();
-                    setUser(data.data.user);
+                    if (generation !== authGeneration.current) return;
+                    const nextUser = data.data.user as User;
+                    setApiIdentity(nextUser?._id ?? null);
+                    setUser(nextUser);
                 }
             } catch (err) {
-                console.error('Failed to fetch user:', err);
+                if (!controller.signal.aborted) console.error('Failed to fetch user:', err);
             } finally {
-                setLoading(false);
+                if (generation === authGeneration.current) setLoading(false);
             }
         };
         fetchMe();
+        return () => controller.abort();
     }, []);
 
     const login = async (email: string, password: string) => {
-        const res = await fetch(`${API_BASE}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-            credentials: 'include'
-        });
-
-        if (!res.ok) {
+        const generation = ++authGeneration.current;
+        setApiIdentity(null);
+        setUser(null);
+        localStorage.removeItem('jwt');
+        await sessionMutations.current.run(async () => {
+            if (generation !== authGeneration.current) return;
+            const res = await fetch(`${API_BASE}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include',
+            });
+            if (generation !== authGeneration.current) return;
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.message || 'Login failed');
+            }
             const data = await res.json();
-            throw new Error(data.message || 'Login failed');
-        }
-
-        const data = await res.json();
-        if (data.token) {
-            localStorage.setItem('jwt', data.token);
-        }
-        setUser(data.data.user);
+            if (generation !== authGeneration.current) return;
+            if (data.token) localStorage.setItem('jwt', data.token);
+            const nextUser = data.data.user as User;
+            setApiIdentity(nextUser?._id ?? null);
+            setUser(nextUser);
+        });
     };
 
     const register = async (email: string, password: string, confirmPassword: string) => {
-        const res = await fetch(`${API_BASE}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, confirmPassword }),
-            credentials: 'include'
+        const generation = ++authGeneration.current;
+        setApiIdentity(null);
+        setUser(null);
+        localStorage.removeItem('jwt');
+        await sessionMutations.current.run(async () => {
+            if (generation !== authGeneration.current) return;
+            const res = await fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, confirmPassword }),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (generation !== authGeneration.current) return;
+            if (!res.ok) throw new Error(data.message || 'Registration failed');
+            if (data.token) localStorage.setItem('jwt', data.token);
+            const nextUser = data.data.user as User;
+            setApiIdentity(nextUser?._id ?? null);
+            setUser(nextUser);
         });
-
-        const data = await res.json();
-        if (!res.ok) {
-            throw new Error(data.message || 'Registration failed');
-        }
-
-        if (data.token) {
-            localStorage.setItem('jwt', data.token);
-        }
-        setUser(data.data.user);
     };
 
     const logout = async () => {
-        const controller = new AbortController();
-        const timeout = window.setTimeout(() => controller.abort(), 5000);
+        const generation = ++authGeneration.current;
+        setApiIdentity(null);
+        setUser(null);
+        localStorage.removeItem('jwt');
         try {
-            await fetch(`${API_BASE}/logout`, {
-                method: 'POST',
-                credentials: 'include',
-                signal: controller.signal,
+            await sessionMutations.current.run(async () => {
+                const controller = new AbortController();
+                const timeout = window.setTimeout(() => controller.abort(), 5000);
+                try {
+                    await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include', signal: controller.signal });
+                } finally {
+                    window.clearTimeout(timeout);
+                }
             });
         } catch (err) {
             // Logout remains local-first even when the server is unavailable.
             console.warn('Server logout request failed; clearing local session.', err);
         } finally {
-            window.clearTimeout(timeout);
-            localStorage.removeItem('jwt');
-            setUser(null);
+            clearTokenForCurrentSession(generation, authGeneration.current, () => localStorage.removeItem('jwt'));
         }
     };
 

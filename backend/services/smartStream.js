@@ -10,11 +10,13 @@ class SmartStreamService extends EventEmitter {
     this.isConnected = false;
     this.isConnecting = false;
     this.reconnectAttempts = 0;
-    this.subscribedTokens = new Map(); // token -> exchangeType
+    this.subscribedTokens = new Map(); // exchangeType:token -> { token, exchangeType }
     this.isExplicitDisconnect = false;
+    this.connectionGeneration = 0;
+    this.accountIdentity = null;
   }
 
-  connect(credentials) {
+  connect(credentials, accountIdentity = this.accountIdentity) {
     if (credentials) {
       this.credentials = credentials;
     }
@@ -32,6 +34,9 @@ class SmartStreamService extends EventEmitter {
 
     this.disconnect(false);
     this.isExplicitDisconnect = false;
+    this.accountIdentity = accountIdentity ? { ...accountIdentity } : null;
+    const connectionIdentity = this.accountIdentity ? { ...this.accountIdentity } : null;
+    const connectionGeneration = ++this.connectionGeneration;
 
     try {
       const WebSocketImpl = globalThis.WebSocket || require('ws');
@@ -55,10 +60,12 @@ class SmartStreamService extends EventEmitter {
         headers['x-feed-token'] = this.credentials.feedToken;
       }
 
-      this.ws = new WebSocketImpl(wsUrl, { headers });
-      this.ws.binaryType = 'arraybuffer';
+      const socket = new WebSocketImpl(wsUrl, { headers });
+      this.ws = socket;
+      socket.binaryType = 'arraybuffer';
 
-      this.ws.onopen = () => {
+      socket.onopen = () => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.log('[SmartStreamService] Smart Stream WebSocket connected');
         this.isConnected = true;
         this.isConnecting = false;
@@ -68,15 +75,18 @@ class SmartStreamService extends EventEmitter {
         this.emit('connected');
       };
 
-      this.ws.onmessage = (event) => {
-        this.handleMessage(event.data);
+      socket.onmessage = (event) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
+        this.handleMessage(event.data, connectionIdentity);
       };
 
-      this.ws.onerror = (err) => {
+      socket.onerror = (err) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.error('[SmartStreamService] WebSocket error:', err.message || err);
       };
 
-      this.ws.onclose = (event) => {
+      socket.onclose = (event) => {
+        if (this.ws !== socket || this.connectionGeneration !== connectionGeneration) return;
         console.warn(`[SmartStreamService] WebSocket closed (code: ${event.code})`);
         this.cleanup();
         if (!this.isExplicitDisconnect) {
@@ -109,7 +119,7 @@ class SmartStreamService extends EventEmitter {
     for (const item of tokenList) {
       const exchType = Number(item.exchangeType);
       for (const token of item.tokens) {
-        this.subscribedTokens.set(String(token), exchType);
+        this.subscribedTokens.set(`${exchType}:${String(token)}`, { token: String(token), exchangeType: exchType });
       }
     }
 
@@ -131,7 +141,7 @@ class SmartStreamService extends EventEmitter {
 
     for (const item of tokenList) {
       for (const token of item.tokens) {
-        this.subscribedTokens.delete(String(token));
+        this.subscribedTokens.delete(`${Number(item.exchangeType)}:${String(token)}`);
       }
     }
 
@@ -152,9 +162,9 @@ class SmartStreamService extends EventEmitter {
     if (this.subscribedTokens.size === 0) return;
 
     const byExch = new Map();
-    for (const [token, exchType] of this.subscribedTokens.entries()) {
-      if (!byExch.has(exchType)) byExch.set(exchType, []);
-      byExch.get(exchType).push(token);
+    for (const { token, exchangeType } of this.subscribedTokens.values()) {
+      if (!byExch.has(exchangeType)) byExch.set(exchangeType, []);
+      byExch.get(exchangeType).push(token);
     }
 
     const tokenList = [];
@@ -165,7 +175,12 @@ class SmartStreamService extends EventEmitter {
     this.subscribe(tokenList);
   }
 
-  handleMessage(data) {
+  handleMessage(data, accountIdentity = this.accountIdentity) {
+    if (!accountIdentity || !this.accountIdentity
+      || accountIdentity.userId !== this.accountIdentity.userId
+      || accountIdentity.brokerAccountId !== this.accountIdentity.brokerAccountId
+      || accountIdentity.sessionId !== this.accountIdentity.sessionId
+      || accountIdentity.sessionGeneration !== this.accountIdentity.sessionGeneration) return;
     if (typeof data === 'string') {
       if (data === 'pong' || data === 'ping') return;
       try {
@@ -211,7 +226,7 @@ class SmartStreamService extends EventEmitter {
           timestamp: exchangeTimestamp > 0 ? exchangeTimestamp : Date.now(),
           sequenceNumber
         };
-        this.emit('tick', tick);
+        this.emit('tick', tick, accountIdentity ? { ...accountIdentity } : null);
       }
     } catch (err) {
       console.error('[SmartStreamService] Error decoding binary packet:', err.message);
@@ -223,9 +238,12 @@ class SmartStreamService extends EventEmitter {
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
     console.log(`[SmartStreamService] Scheduling reconnect in ${delay}ms (Attempt ${this.reconnectAttempts})`);
+    const connectionGeneration = this.connectionGeneration;
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      this.connect();
+      if (this.connectionGeneration === connectionGeneration && !this.isExplicitDisconnect) {
+        this.connect(undefined, this.accountIdentity);
+      }
     }, delay);
   }
 
@@ -240,6 +258,7 @@ class SmartStreamService extends EventEmitter {
   }
 
   disconnect(clearCredentials = true) {
+    this.connectionGeneration++;
     this.isExplicitDisconnect = true;
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
@@ -259,8 +278,11 @@ class SmartStreamService extends EventEmitter {
     if (clearCredentials) {
       this.credentials = null;
       this.subscribedTokens.clear();
+      this.accountIdentity = null;
     }
   }
 }
 
-module.exports = new SmartStreamService();
+const defaultInstance = new SmartStreamService();
+defaultInstance.SmartStreamService = SmartStreamService;
+module.exports = defaultInstance;

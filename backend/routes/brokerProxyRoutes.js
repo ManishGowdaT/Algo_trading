@@ -14,6 +14,11 @@ router.use(authController.protect);
 router.post('/angel/login', angelLoginLimiter, proxy.login);
 router.post('/angel/logout', proxy.logout);
 router.get('/angel/status', brokerReadLimiter, proxy.status);
+router.post('/angel/offboard', brokerReadLimiter, require('../services/accountContext').readMiddleware, proxy.offboard);
+router.use((req, res, next) => {
+  if (/^\/(angel|market|instruments)(\/|$)/.test(req.path)) return require('../services/accountContext').middleware(req, res, next);
+  next();
+});
 
 router.get('/angel/margins', brokerReadLimiter, proxy.forwardGet('/angel/margins'));
 router.post('/angel/margins/required', brokerReadLimiter, proxy.forwardPost('/angel/margins/required'));

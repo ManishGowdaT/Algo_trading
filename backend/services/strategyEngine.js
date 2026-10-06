@@ -2,7 +2,7 @@ const Trade = require('../models/Trade');
 const Strategy = require('../models/Strategy');
 const contractManager = require('./contractManager');
 const marketDataService = require('./marketDataService');
-const orderUpdateService = require('./orderUpdateService');
+const legacyOrderUpdateService = require('./orderUpdateService');
 const marketSessionManager = require('./marketSessionManager');
 const { notifyUrgent } = require('./notificationService');
 const { requestPython } = require('./pythonApiClient');
@@ -20,16 +20,25 @@ const INDEX_CONFIG = {
 };
 
 // Helper: HTTP request to Python Angel One Wrapper
-async function callAngelApi(endpoint, method = 'GET', body = null) {
+async function callAngelApi(endpoint, method = 'GET', body = null, timeoutMs = null) {
   const { response, data, text } = await requestPython(endpoint, {
     method,
     body: body === null ? undefined : body,
-    timeoutMs: null,
+    timeoutMs,
   });
   if (!response.ok) {
     throw new Error(`Angel API Error [${response.status}]: ${text}`);
   }
   return data;
+}
+
+function ownedTradeFilter(runner, tradeId) {
+  return { _id: tradeId, userId: runner.userId, brokerAccountId: runner.accountContext.brokerAccountId };
+}
+function updateRunnerTrade(runner, update) {
+  return runner.accountContext
+    ? Trade.findOneAndUpdate(ownedTradeFilter(runner, runner.activeTradeId), update)
+    : Trade.findByIdAndUpdate(runner.activeTradeId, update);
 }
 
 function formatPrecisionTime(d = new Date()) {
@@ -110,6 +119,7 @@ class SingleStrategyRunner {
     this.strategyName = strategyName;
     this.userId = null;
     this.isRunning = false;
+    this.shutdownDraining = false;
     this.state = 'STOPPED';
     this.message = 'Initialized';
     this.trend = 'NEUTRAL';
@@ -180,16 +190,26 @@ class SingleStrategyRunner {
 
     this.brokerReady = true;
     this.isRunning = true;
+    this.feedScanReady = false;
     this.state = this.strategyName === '5minBreakout' ? 'WAITING' : 'SCANNING';
     this.log('Strategy execution started on Node.js');
 
-    // Attempt trade recovery
-    await this.recoverTrade();
-
-    // Start background tasks
-    this.startContractLoop();
-    this.startScanLoop();
-    this.startHeartbeatLoop();
+    try {
+      if (typeof marketDataService.ensureReady === 'function') await marketDataService.ensureReady();
+      if (!this.isRunning) return;
+      // Register before subscriptions/backfill can deliver a closed candle.
+      await this.startScanLoop();
+      await this.recoverTrade();
+      if (!this.isRunning) return;
+      await this.startContractLoop();
+      if (this.isRunning) {
+        this.feedScanReady = true;
+        this.startHeartbeatLoop();
+      }
+    } catch (error) {
+      this.stop();
+      throw error;
+    }
   }
 
   isHeikenAshiWarmupStrategy() {
@@ -289,7 +309,8 @@ class SingleStrategyRunner {
   getCalculationCandles(contract, currentCandles, side) {
     if (!this.isHeikenAshiWarmupStrategy()) return currentCandles;
 
-    const historical = this.previousDayCandles[side] || [];
+    const historical = this.accountContext && contract?.symboltoken === this.activeTradeContract?.symboltoken && this.heldWarmupCandles
+      ? this.heldWarmupCandles : this.previousDayCandles[side] || [];
     const current = Array.isArray(currentCandles) ? currentCandles : [];
     const merged = [...historical, ...current]
       .filter(candle => candle && Number.isFinite(Number(candle.time)))
@@ -332,21 +353,36 @@ class SingleStrategyRunner {
   }
 
   stop() {
+    const managed = this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure();
     this.isRunning = false;
+    this.feedScanReady = false;
     this.state = 'STOPPED';
     this.log('Strategy execution halted.');
-    this.clearAllIntervals();
+    if (managed) {
+      if (this.contractInterval) clearInterval(this.contractInterval);
+      if (this.scanInterval) clearInterval(this.scanInterval);
+      if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
+      this.contractInterval = this.scanInterval = this.heartbeatInterval = null;
+      this.state = this.positionState === 'PROTECTED' ? 'POSITION_PROTECTED' : this.positionState === 'UNPROTECTED' ? 'POSITION_UNPROTECTED' : 'RECONCILIATION_REQUIRED';
+      this.message = 'New entries stopped; held and unresolved positions remain managed.';
+    } else this.clearAllIntervals();
 
     const baseTimeframe = this.getBaseTimeframe();
-    if (this.candleListener) {
+    if (this.candleListener && !managed) {
       marketDataService.removeListener('candle:closed', this.candleListener);
       this.candleListener = null;
     }
     if (this.ceContract) {
-      marketDataService.unsubscribe(this.ceContract.exchange, this.subscribedCeToken || this.ceContract.symboltoken, baseTimeframe);
+      this.releaseFeed(this.ceContract.exchange, this.subscribedCeToken || this.ceContract.symboltoken, baseTimeframe, 'scanner');
     }
     if (this.peContract) {
-      marketDataService.unsubscribe(this.peContract.exchange, this.subscribedPeToken || this.peContract.symboltoken, baseTimeframe);
+      this.releaseFeed(this.peContract.exchange, this.subscribedPeToken || this.peContract.symboltoken, baseTimeframe, 'scanner');
+    }
+    this.subscribedCeToken = null;
+    this.subscribedPeToken = null;
+    if (managed) return;
+    if (this.activeTradeContract && typeof marketDataService.unsubscribe === 'function') {
+      this.releaseFeed(this.activeTradeContract.exchange, this.activeTradeContract.symboltoken, 'ONE_MINUTE', 'position');
     }
     this.subscribedCeToken = null;
     this.subscribedPeToken = null;
@@ -386,12 +422,14 @@ class SingleStrategyRunner {
   }
 
   async recoverTrade() {
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).resume();
     try {
       const strategyDoc = await Strategy.findOne({ name: this.strategyName, userId: this.userId });
       if (!strategyDoc) return;
 
       const trade = await Trade.findOne({
         userId: this.userId,
+        ...(this.accountContext ? { brokerAccountId: this.accountContext.brokerAccountId } : {}),
         strategyId: strategyDoc._id,
         exitPrice: { $exists: false }
       }).sort({ createdAt: -1 });
@@ -437,6 +475,7 @@ class SingleStrategyRunner {
               if (contract) {
                 this.activeTradeContract = contract;
                 this.log(`Successfully recovered option contract details for ${trade.premium} (Token: ${contract.symboltoken})`);
+                this.subscribeHeldPosition(contract);
               }
             }
           } catch (e) {
@@ -467,6 +506,7 @@ class SingleStrategyRunner {
         const strikeDepth = this.config.strikeDepth || 1;
 
         const resolved = await contractManager.resolveContracts(underlying, strikeMode, strikeDepth);
+        if (!this.isRunning) return;
 
         if (!this.selectedExpiry) {
           this.selectedExpiry = resolved.selectedExpiry;
@@ -485,17 +525,20 @@ class SingleStrategyRunner {
           const baseTimeframe = this.getBaseTimeframe();
           if (!this.subscribedCeToken || this.subscribedCeToken !== this.ceContract.symboltoken) {
             if (this.subscribedCeToken) {
-              marketDataService.unsubscribe(this.ceContract.exchange, this.subscribedCeToken, baseTimeframe);
+              this.releaseFeed(this.ceContract.exchange, this.subscribedCeToken, baseTimeframe, 'scanner');
             }
-            await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, baseTimeframe);
+            await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol });
+            if (!this.isRunning) return;
             this.subscribedCeToken = this.ceContract.symboltoken;
             await this.loadPreviousDayWarmup(this.ceContract, 'ce');
+            if (!this.isRunning) return;
           }
           if (!this.subscribedPeToken || this.subscribedPeToken !== this.peContract.symboltoken) {
             if (this.subscribedPeToken) {
-              marketDataService.unsubscribe(this.peContract.exchange, this.subscribedPeToken, baseTimeframe);
+              this.releaseFeed(this.peContract.exchange, this.subscribedPeToken, baseTimeframe, 'scanner');
             }
-            await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, baseTimeframe);
+            await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol });
+            if (!this.isRunning) return;
             this.subscribedPeToken = this.peContract.symboltoken;
             await this.loadPreviousDayWarmup(this.peContract, 'pe');
           }
@@ -506,14 +549,14 @@ class SingleStrategyRunner {
     };
 
     await resolveContracts();
-    this.contractInterval = setInterval(resolveContracts, 60_000);
+    if (this.isRunning) this.contractInterval = setInterval(resolveContracts, 60_000);
   }
 
   async startScanLoop() {
     if (this.candleListener) return;
 
     const runScan = async (eventData = null) => {
-      if (!this.isRunning) return;
+      if ((!this.isRunning || this.feedScanReady === false) && !(this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure())) return;
       if (this.state === 'COOLDOWN') {
         if (this.cooldownUntil && Date.now() >= this.cooldownUntil) {
           this.state = this.strategyName === '5minBreakout' ? 'WAITING' : 'SCANNING';
@@ -526,17 +569,18 @@ class SingleStrategyRunner {
 
       try {
       // Handle Reversal exit check when IN_POSITION on closed candle
-      if (['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state) && this.activeTradePremium) {
-        const activeContract = (this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
+      if ((['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state)
+        || (this.accountContext && ['RECONCILIATION_REQUIRED', 'EXIT_PENDING'].includes(this.state))) && this.activeTradePremium) {
+        const activeContract = this.activeTradeContract || ((this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
           ? this.ceContract
           : (this.peContract && this.peContract.tradingsymbol === this.activeTradePremium)
             ? this.peContract
-            : null;
+            : null);
 
         if (activeContract) {
           const baseTimeframe = this.getBaseTimeframe();
-          const currentItems = marketDataService.getBuffer(activeContract.exchange, activeContract.symboltoken, baseTimeframe);
-          const activeSide = activeContract.symboltoken === this.peContract?.symboltoken ? 'pe' : 'ce';
+          const currentItems = marketDataService.getBuffer(activeContract.exchange, activeContract.symboltoken, baseTimeframe, this.accountContext ? 'position' : 'scanner');
+          const activeSide = this.heldSide || (activeContract.symboltoken === this.peContract?.symboltoken ? 'pe' : 'ce');
           const items = this.getCalculationCandles(activeContract, currentItems, activeSide);
           if (items && items.length >= 2) {
             const PluginClass = strategyRegistry.getPlugin(this.strategyName);
@@ -555,6 +599,7 @@ class SingleStrategyRunner {
       }
 
       if (this.state !== 'SCANNING' && this.state !== 'WAITING') return;
+      if (!this.isRunning || this.feedScanReady === false) return;
       if (!this.brokerReady) return;
       if (this.activeTradeId) return;
       if (!this.ceContract || !this.peContract) return;
@@ -579,10 +624,10 @@ class SingleStrategyRunner {
           let peItems = marketDataService.getBuffer(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE');
 
           if (!ceItems || ceItems.length < requiredCandles) {
-            try { ceItems = await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, 'ONE_MINUTE', 20); } catch (err) { return; }
+            try { ceItems = await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, 'ONE_MINUTE', 20, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol }); } catch (err) { return; }
           }
           if (!peItems || peItems.length < requiredCandles) {
-            try { peItems = await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE', 20); } catch (err) { return; }
+            try { peItems = await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE', 20, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol }); } catch (err) { return; }
           }
           if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
           const fetchEndMs = Date.now();
@@ -619,11 +664,11 @@ class SingleStrategyRunner {
 
           if (!ceItems || (ceItems.length < requiredCandles &&
             (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.ce.length === 0))) {
-            try { ceItems = await marketDataService.subscribe(scanExchange, this.ceContract.symboltoken, baseTimeframe); } catch (err) { return; }
+            try { ceItems = await marketDataService.subscribe(scanExchange, this.ceContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol }); } catch (err) { return; }
           }
           if (!peItems || (peItems.length < requiredCandles &&
             (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.pe.length === 0))) {
-            try { peItems = await marketDataService.subscribe(scanExchange, this.peContract.symboltoken, baseTimeframe); } catch (err) { return; }
+            try { peItems = await marketDataService.subscribe(scanExchange, this.peContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol }); } catch (err) { return; }
           }
           ceItems = this.getCalculationCandles(this.ceContract, ceItems, 'ce');
           peItems = this.getCalculationCandles(this.peContract, peItems, 'pe');
@@ -693,8 +738,13 @@ class SingleStrategyRunner {
     };
 
     this.candleListener = async (eventData) => {
-      if (this.ceContract && this.peContract) {
-        if (eventData.symboltoken === this.ceContract.symboltoken || eventData.symboltoken === this.peContract.symboltoken) {
+      if (this.accountContext && (eventData.userId !== this.accountContext.userId
+        || eventData.brokerAccountId !== this.accountContext.brokerAccountId
+        || eventData.sessionGeneration !== this.accountContext.sessionGeneration
+        || eventData.sessionId !== this.accountContext.sessionId)) return;
+      if ((this.ceContract && this.peContract) || this.activeTradeContract) {
+        if (eventData.symboltoken === this.ceContract?.symboltoken || eventData.symboltoken === this.peContract?.symboltoken
+          || eventData.symboltoken === this.activeTradeContract?.symboltoken) {
           await runScan(eventData);
         }
       }
@@ -704,6 +754,8 @@ class SingleStrategyRunner {
   }
 
   async executeEntry(contract, signalPrice, trendSide, timingInfo = {}) {
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).entry(contract, signalPrice, trendSide);
+    if (this.accountContext) await require('./accountContext').validate(this.accountContext);
     if (!this.brokerReady) {
       this.log('Entry blocked because the Angel One session is unavailable.');
       return;
@@ -794,6 +846,7 @@ class SingleStrategyRunner {
     this.entryOrderId = entryOrderId;
     this.activeTradePremium = contract.tradingsymbol;
     this.activeTradeContract = contract;
+    this.subscribeHeldPosition(contract);
     this.state = 'IN_POSITION';
     this.trend = trendSide;
 
@@ -841,6 +894,7 @@ class SingleStrategyRunner {
     if (this.positionState === 'UNPROTECTED') {
       await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
         userId: this.userId,
+        brokerAccountId: this.accountContext?.brokerAccountId,
         strategyName: this.strategyName,
         symbol: contract.tradingsymbol,
         quantity: qty,
@@ -859,6 +913,7 @@ class SingleStrategyRunner {
       if (strategyDoc) {
         const tradeDoc = await Trade.create({
           userId: this.userId,
+          ...(this.accountContext ? { brokerAccountId: this.accountContext.brokerAccountId } : {}),
           strategyId: strategyDoc._id,
           index: this.config.underlying || 'SENSEX',
           premium: contract.tradingsymbol,
@@ -885,7 +940,9 @@ class SingleStrategyRunner {
     if (this.monitorInterval) clearInterval(this.monitorInterval);
 
     const monitor = async () => {
-      if (!this.isRunning || !['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state) || !this.activeTradePremium) return;
+      const heldState = ['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED'].includes(this.state)
+        || (this.accountContext && ['RECONCILIATION_REQUIRED', 'EXIT_PENDING'].includes(this.state));
+      if ((!this.isRunning && !this.accountContext && !this.shutdownDraining) || !heldState || !this.activeTradePremium) return;
       // Do not make exit decisions from stale prices while the broker session is down.
       // A confirmed broker-side protective order remains active during this period.
       if (!this.brokerReady) return;
@@ -901,9 +958,18 @@ class SingleStrategyRunner {
       if (!contract) return;
 
         try {
-          const ltpRes = await callAngelApi(`/market/ltp?exchange=${encodeURIComponent(contract.exchange)}&tradingsymbol=${encodeURIComponent(contract.tradingsymbol)}&symboltoken=${encodeURIComponent(contract.symboltoken)}`);
+          const ltpRes = await callAngelApi(`/market/ltp?exchange=${encodeURIComponent(contract.exchange)}&tradingsymbol=${encodeURIComponent(contract.tradingsymbol)}&symboltoken=${encodeURIComponent(contract.symboltoken)}${this.accountContext ? '&requireFresh=true' : ''}`, 'GET', null, 5000);
           const livePrice = ltpRes.ltp;
+          if (!Number.isFinite(livePrice) || livePrice <= 0) throw new Error('Invalid quote; position monitoring is degraded.');
+          if (this.accountContext) {
+            const age = Date.now() - ltpRes.quoteTimestamp;
+            const maxAge = Math.max(5000, Number(process.env.STALE_POSITION_QUOTE_MS) || 20000);
+            if (!Number.isFinite(ltpRes.quoteTimestamp) || age > maxAge || age < -5000) {
+              throw new Error('Missing, stale or future exchange quote timestamp; position monitoring is degraded.');
+            }
+          }
           this.currentLtp = livePrice;
+          this.lastQuoteReceivedAt = Date.now();
 
           if (this.entryPrice) {
             const pnl = (livePrice - this.entryPrice) * (this.config.quantity || 10);
@@ -946,7 +1012,8 @@ class SingleStrategyRunner {
                     const proposedSl = this.entryPrice + (steps * trailingStopPoints) - initialSlPoints;
                     if (proposedSl > this.activeTrailingSl) {
                       try {
-                        await this.replaceProtectiveStop(contract, proposedSl);
+                        const replaced = await this.replaceProtectiveStop(contract, proposedSl);
+                        if (!replaced) return;
                         this.activeTrailingSl = proposedSl;
                         this.log(`Trailed SL up to ₹${proposedSl}`);
                       } catch (err) {
@@ -955,6 +1022,7 @@ class SingleStrategyRunner {
                         this.log(`Trailing stop update failed: ${err.message}`);
                         await notifyUrgent('OPEN_POSITION_UNPROTECTED', {
                           userId: this.userId,
+                          brokerAccountId: this.accountContext?.brokerAccountId,
                           strategyName: this.strategyName,
                           symbol: contract.tradingsymbol,
                           quantity: this.config.quantity || 10,
@@ -998,14 +1066,36 @@ class SingleStrategyRunner {
           }
 
       } catch (err) {
+        this.message = `Position monitoring degraded: ${err.message}`;
         console.error(`[${this.strategyName}] Monitor error:`, err.message);
       }
     };
 
-    this.monitorInterval = setInterval(monitor, 1000);
+    const monitorContext = this.accountContext;
+    this.monitorInterval = setInterval(async () => {
+      if (this.monitorInFlight) return;
+      this.monitorInFlight = true;
+      try {
+        await (monitorContext ? require('./accountContext').run(monitorContext, monitor) : monitor());
+      } finally { this.monitorInFlight = false; }
+    }, 1000);
+  }
+
+  subscribeHeldPosition(contract) {
+    if (typeof marketDataService.subscribe !== 'function' || !contract?.exchange || !contract?.symboltoken) return;
+    marketDataService.subscribe(contract.exchange, contract.symboltoken, 'ONE_MINUTE', null,
+      { role: 'position', tradingsymbol: contract.tradingsymbol })
+      .catch(err => this.log(`Position feed subscription unavailable; existing monitor remains active: ${err.message}`));
+  }
+
+  releaseFeed(exchange, token, interval, role) {
+    if (typeof marketDataService.unsubscribe !== 'function') return;
+    try { marketDataService.unsubscribe(exchange, token, interval, role); }
+    catch (error) { console.warn(`[${this.strategyName}] Feed cleanup failed: ${error.message}`); }
   }
 
   async replaceProtectiveStop(contract, stopPrice) {
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).trailing(stopPrice);
     if (!this.config.liveTradingConsent) return true;
     if (!contract || !Number.isFinite(stopPrice) || stopPrice <= 0) {
       throw new Error('Invalid protective stop details');
@@ -1034,7 +1124,7 @@ class SingleStrategyRunner {
     this.positionState = 'PROTECTED';
     this.state = 'POSITION_PROTECTED';
     if (this.activeTradeId) {
-      Trade.findByIdAndUpdate(this.activeTradeId, {
+      updateRunnerTrade(this, {
         protectiveOrderId: orderId,
         protectiveStopPrice: stopPrice,
         positionState: 'PROTECTED',
@@ -1045,6 +1135,26 @@ class SingleStrategyRunner {
   }
 
   async executeExit(contract, price, exitReason) {
+    if (this.accountContext) {
+      const owned = this.activeTradeId && await Trade.findOne(ownedTradeFilter(this, this.activeTradeId));
+      if (!owned) throw require('./accountContext').denied('Position ownership could not be verified.', 404);
+      if (this.config.liveTradingConsent && (!contract || contract.tradingsymbol !== owned.premium)) {
+        throw require('./accountContext').denied('Exit instrument does not match the owned position.');
+      }
+      return require('./positionExecution').forRunner(this, { feed: marketDataService }).exit(exitReason, price);
+    }
+    if (this.accountContext) {
+      await require('./accountContext').validate(this.accountContext);
+      const ownedTrade = this.activeTradeId && await Trade.findOne(ownedTradeFilter(this, this.activeTradeId));
+      if (!ownedTrade) {
+        throw require('./accountContext').denied('Position ownership could not be verified.', 404);
+      }
+      if (this.config.liveTradingConsent && (!contract || contract.tradingsymbol !== ownedTrade.premium
+        || (this.activeTradeContract && ['exchange', 'symboltoken'].some(key =>
+          String(contract[key]) !== String(this.activeTradeContract[key]))))) {
+        throw require('./accountContext').denied('Exit instrument does not match the owned position.');
+      }
+    }
     if (this.exitInProgress) {
       this.log('Exit order execution already in progress. Skipping duplicate call.');
       return;
@@ -1078,9 +1188,16 @@ class SingleStrategyRunner {
         if (orderId) {
           let handleOrderUpdate = null;
           let fallbackTimer = null;
+          const orderUpdates = this.accountContext
+            ? await marketDataService.getOrderUpdateService()
+            : legacyOrderUpdateService;
 
           const orderPromise = new Promise((resolve, reject) => {
-            handleOrderUpdate = (data) => {
+            handleOrderUpdate = (data, identity) => {
+              if (this.accountContext && (!identity || identity.userId !== this.accountContext.userId
+                || identity.brokerAccountId !== this.accountContext.brokerAccountId
+                || identity.sessionGeneration !== this.accountContext.sessionGeneration
+                || identity.sessionId !== this.accountContext.sessionId)) return;
               if (String(data.orderid) === String(orderId)) {
                 const status = (data.status || data.orderstatus || '').toLowerCase();
                 if (status === 'complete' || status === 'executed') {
@@ -1091,8 +1208,7 @@ class SingleStrategyRunner {
                 }
               }
             };
-
-            orderUpdateService.on('order:update', handleOrderUpdate);
+            orderUpdates.on('order:update', handleOrderUpdate);
 
             fallbackTimer = setTimeout(async () => {
               try {
@@ -1118,7 +1234,7 @@ class SingleStrategyRunner {
             actualExitPx = confirmedPrice;
             exitSuccess = true;
           } finally {
-            if (handleOrderUpdate) orderUpdateService.off('order:update', handleOrderUpdate);
+            if (handleOrderUpdate) orderUpdates.off('order:update', handleOrderUpdate);
             if (fallbackTimer) clearTimeout(fallbackTimer);
           }
         } else if (brokerStatus === false && brokerError) {
@@ -1149,7 +1265,9 @@ class SingleStrategyRunner {
 
       if (this.activeTradeId) {
         try {
-          const trade = await Trade.findById(this.activeTradeId);
+          const trade = this.accountContext
+            ? await Trade.findOne(ownedTradeFilter(this, this.activeTradeId))
+            : await Trade.findById(this.activeTradeId);
           if (trade) {
             const pnl = (actualExitPx - trade.buyPrice) * trade.qty;
             trade.exitPrice = actualExitPx;
@@ -1165,6 +1283,9 @@ class SingleStrategyRunner {
         }
       }
 
+      if (this.activeTradeContract && typeof marketDataService.unsubscribe === 'function') {
+        this.releaseFeed(this.activeTradeContract.exchange, this.activeTradeContract.symboltoken, 'ONE_MINUTE', 'position');
+      }
       this.activeTradeId = null;
       this.activeTradePremium = null;
       this.entryPrice = null;
@@ -1212,6 +1333,7 @@ class SingleStrategyRunner {
   }
 
   async manualExit() {
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).exit('Manual', this.currentLtp || this.entryPrice);
     if (!this.activeTradePremium) return;
     const contract = (this.ceContract && this.ceContract.tradingsymbol === this.activeTradePremium)
       ? this.ceContract
@@ -1238,6 +1360,10 @@ class SingleStrategyRunner {
 
   handleBrokerSessionLost(reason = 'Broker session expired') {
     this.brokerReady = false;
+    if (this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure()) {
+      require('./positionExecution').forRunner(this, { feed: marketDataService }).degraded(new Error('Broker session unavailable; protection status cannot currently be verified.'));
+      return;
+    }
     if (!this.isRunning) return;
 
     if (this.activeTradePremium) {
@@ -1249,7 +1375,7 @@ class SingleStrategyRunner {
         : `URGENT: broker session lost with an unprotected position ${this.activeTradePremium}.`;
 
       if (this.activeTradeId) {
-        Trade.findByIdAndUpdate(this.activeTradeId, {
+        updateRunnerTrade(this, {
           positionState: this.positionState,
           lastBrokerSyncAt: new Date()
         }).catch(err => console.error(`[${this.strategyName}] Session-loss DB sync error:`, err.message));
@@ -1275,6 +1401,10 @@ class SingleStrategyRunner {
   handleBrokerSessionRestored() {
     this.brokerReady = true;
     this.sessionAlertSent = false;
+    if (this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure()) {
+      this.reconcileProtectiveOrder().catch(err => this.log(`Position reconciliation failed: ${err.message}`));
+      return;
+    }
     if (!this.isRunning) return;
 
     if (this.activeTradePremium) {
@@ -1291,6 +1421,7 @@ class SingleStrategyRunner {
   }
 
   async reconcileProtectiveOrder() {
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).reconcile();
     if (!this.protectiveOrderId || !this.config.liveTradingConsent) return;
     const orderbook = await callAngelApi('/angel/orderbook');
     const order = (orderbook?.data || []).find(item => String(item.orderid) === String(this.protectiveOrderId));
@@ -1299,7 +1430,7 @@ class SingleStrategyRunner {
 
     const exitPrice = Number(order.averageprice || order.price || this.protectiveStopPrice || this.currentLtp || this.entryPrice);
     if (this.activeTradeId) {
-      await Trade.findByIdAndUpdate(this.activeTradeId, {
+      await updateRunnerTrade(this, {
         exitPrice,
         exitReason: 'SL',
         pnl: (exitPrice - this.entryPrice) * (this.config.quantity || 10),
@@ -1309,6 +1440,7 @@ class SingleStrategyRunner {
     }
     this.log(`Protective stop ${this.protectiveOrderId} was executed while disconnected. Position reconciled.`);
     this.lastCompletedTrade = { exitPrice, exitReason: 'SL' };
+    if (this.activeTradeContract) this.releaseFeed(this.activeTradeContract.exchange, this.activeTradeContract.symboltoken, 'ONE_MINUTE', 'position');
     this.activeTradeId = null;
     this.activeTradePremium = null;
     this.activeTradeContract = null;
@@ -1352,6 +1484,7 @@ class SingleStrategyRunner {
       activeTradePremium: this.activeTradePremium,
       entryPrice: this.entryPrice,
       currentLtp: this.currentLtp,
+      lastQuoteReceivedAt: this.lastQuoteReceivedAt ?? null,
       activeTrailingSl: this.activeTrailingSl,
       stopLoss: this.stopLoss,
       target: this.target,
@@ -1364,6 +1497,9 @@ class SingleStrategyRunner {
       lastExitAttemptTime: this.lastExitAttemptTime,
       brokerReady: this.brokerReady,
       positionState: this.positionState,
+      remainingQuantity: this.remainingQuantity ?? null,
+      pendingEntryQuantity: this.pendingEntryQuantity ?? null,
+      completionPending: this.completionPending ?? false,
       entryOrderId: this.entryOrderId,
       protectiveOrderId: this.protectiveOrderId,
       protectiveStopPrice: this.protectiveStopPrice,
@@ -1387,9 +1523,50 @@ class StrategyEngineManager {
     return this.runners.get(key);
   }
 
-  async startStrategy(userId, strategyName, config) {
+  replaceForRecovery(userId, strategyName) {
     const key = `${userId}_${strategyName}`;
-    const runner = this.getRunner(key);
+    const runner = new SingleStrategyRunner(strategyName);
+    this.runners.set(key, runner);
+    return runner;
+  }
+
+  async startStrategy(userId, strategyName, config) {
+    return require('./accountContext').exclusive(`strategy-start:${userId}:${strategyName}`,
+      () => this.startStrategyLocked(userId, strategyName, config));
+  }
+
+  async startStrategyLocked(userId, strategyName, config) {
+    const key = `${userId}_${strategyName}`;
+    let runner = this.getRunner(key);
+    const context = require('./accountContext').current();
+    if (context) {
+      await require('./accountContext').validate(context);
+      if (context.userId !== String(userId)) throw require('./accountContext').denied();
+      if (runner.isRunning && runner.accountContext && (runner.accountContext.brokerAccountId !== context.brokerAccountId
+        || runner.accountContext.sessionId !== context.sessionId || runner.accountContext.sessionGeneration !== context.sessionGeneration)) {
+        throw require('./accountContext').denied('Runner belongs to an earlier broker session.');
+      }
+    }
+    if (runner.accountContext && require('./positionExecution').forRunner(runner, { feed: marketDataService }).hasExposure()) {
+      throw require('./accountContext').denied('Position settings and mode cannot change while exposure or an order is unresolved.');
+    }
+    if (runner.isRunning) return runner.getStatus();
+    if (context) {
+      if (context.userId !== String(userId)) throw require('./accountContext').denied();
+      const unverified = await Trade.findOne({ userId, exitPrice: { $exists: false }, executionMode: { $ne: 'PAPER' },
+        $or: [{ brokerAccountId: { $exists: false } }, { brokerAccountId: { $ne: context.brokerAccountId } }] }).select('_id').lean();
+      if (unverified) throw require('./accountContext').denied('Unresolved legacy position needs verified broker ownership before Start.');
+      if (runner.accountContext && (runner.accountContext.brokerAccountId !== context.brokerAccountId
+        || runner.accountContext.sessionGeneration !== context.sessionGeneration)) {
+        if (runner.isRunning || runner.activeTradeId || runner.activeTradePremium || runner.exitInProgress) {
+          throw require('./accountContext').denied('Runner belongs to an earlier broker session.');
+        }
+        // Retire the instance instead of rebinding late callbacks to a new session.
+        runner = new SingleStrategyRunner(strategyName);
+        this.runners.set(key, runner);
+      }
+      runner.accountContext = context;
+    }
     await runner.start(config, userId);
     return runner.getStatus();
   }
@@ -1429,14 +1606,73 @@ class StrategyEngineManager {
     for (const [key, runner] of this.runners.entries()) {
       if (key.startsWith(`${normalized}_`)) {
         runner.stop();
-        this.runners.delete(key);
+        if (!runner.accountContext || !require('./positionExecution').forRunner(runner, { feed: marketDataService }).hasExposure()) this.runners.delete(key);
       }
     }
   }
 
-  stopStrategy(userId, strategyName) {
+  stopAllForShutdown() {
+    let stopped = 0;
+    let managed = 0;
+    for (const runner of this.runners.values()) {
+      const execution = runner.accountContext && require('./positionExecution').forRunner(runner, { feed: marketDataService });
+      const hasExposure = Boolean((execution && execution.hasExposure()) || runner.activeTradeId || runner.activeTradePremium
+        || runner.exitInProgress || ['OPEN', 'PROTECTED', 'UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'].includes(runner.positionState));
+      if (hasExposure && !runner.accountContext) {
+        // Keep the legacy single-user monitor alive for the grace window while
+        // removing every path that can discover or submit a new strategy entry.
+        runner.shutdownDraining = true;
+        runner.isRunning = false;
+        runner.feedScanReady = false;
+        for (const timer of [runner.contractInterval, runner.scanInterval, runner.heartbeatInterval]) if (timer) clearInterval(timer);
+        runner.contractInterval = runner.scanInterval = runner.heartbeatInterval = null;
+        if (runner.candleListener) marketDataService.removeListener('candle:closed', runner.candleListener);
+        runner.candleListener = null;
+        if (runner.ceContract) runner.releaseFeed(runner.ceContract.exchange, runner.subscribedCeToken || runner.ceContract.symboltoken, runner.getBaseTimeframe(), 'scanner');
+        if (runner.peContract) runner.releaseFeed(runner.peContract.exchange, runner.subscribedPeToken || runner.peContract.symboltoken, runner.getBaseTimeframe(), 'scanner');
+      } else runner.stop();
+      stopped += 1;
+      if (hasExposure) managed += 1;
+    }
+    return { stopped, positionsStillManaged: managed };
+  }
+
+  async finishShutdownHandoff() {
+    let quiesced = true;
+    for (const runner of this.runners.values()) {
+      if (runner.accountContext) {
+        const execution = require('./positionExecution').forRunner(runner, { feed: marketDataService });
+        if (!await execution.quiesceForShutdown()) quiesced = false;
+      } else {
+        if (runner.monitorInterval) clearInterval(runner.monitorInterval);
+        runner.monitorInterval = null;
+        const deadline = Date.now() + 5_000;
+        while (runner.monitorInFlight && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
+        if (runner.monitorInFlight) quiesced = false;
+      }
+    }
+    if (!quiesced) return { handedOff: false, reason: 'A position reconciliation is still active.' };
+    const releasedLeases = await require('./executionLeaseService').releaseOwned();
+    return { handedOff: true, releasedLeases: releasedLeases.length };
+  }
+
+  getRuntimePositionHealth() {
+    return [...this.runners.values()].filter(runner => runner.accountContext && (runner.activeTradeId || runner.activeTradePremium))
+      .map(runner => {
+        const execution = require('./positionExecution').forRunner(runner, { feed: marketDataService });
+        return { userId: String(runner.accountContext.userId), brokerAccountId: String(runner.accountContext.brokerAccountId),
+          positionId: execution.positionId ? String(execution.positionId) : null,
+          lastQuoteReceivedAt: Number(runner.lastQuoteReceivedAt) || null, state: runner.positionState || runner.state };
+      });
+  }
+
+  stopStrategy(userId, strategyName, context = require('./accountContext').optional()) {
     const key = `${userId}_${strategyName}`;
     const runner = this.getRunner(key);
+    if (context && runner.accountContext && (runner.accountContext.userId !== context.userId
+      || runner.accountContext.brokerAccountId !== context.brokerAccountId)) {
+      throw require('./accountContext').denied('Strategy runner belongs to another broker account.');
+    }
     runner.stop();
     return runner.getStatus();
   }
@@ -1444,13 +1680,28 @@ class StrategyEngineManager {
   async manualExitStrategy(userId, strategyName) {
     const key = `${userId}_${strategyName}`;
     const runner = this.getRunner(key);
+    const context = require('./accountContext').current();
+    if (!runner.activeTradeId && !runner.activeTradePremium) return runner.getStatus();
+    if (!runner.accountContext || runner.accountContext.userId !== context.userId
+      || runner.accountContext.brokerAccountId !== context.brokerAccountId
+      || runner.accountContext.sessionGeneration !== context.sessionGeneration) {
+      throw require('./accountContext').denied('Position does not belong to this broker session.');
+    }
+    if (runner.activeTradeId) {
+      const trade = await Trade.findOne({ _id: runner.activeTradeId, userId: context.userId, brokerAccountId: context.brokerAccountId });
+      if (!trade) throw require('./accountContext').denied('Position ownership could not be verified.', 404);
+    }
     await runner.manualExit();
     return runner.getStatus();
   }
 
-  getStrategyStatus(userId, strategyName) {
+  getStrategyStatus(userId, strategyName, context = require('./accountContext').optional()) {
     const key = `${userId}_${strategyName}`;
     const runner = this.getRunner(key);
+    if (context && (!runner.accountContext || runner.accountContext.userId !== context.userId
+      || runner.accountContext.brokerAccountId !== context.brokerAccountId)) {
+      return new SingleStrategyRunner(strategyName).getStatus();
+    }
     return runner.getStatus();
   }
 
@@ -1462,27 +1713,55 @@ class StrategyEngineManager {
     );
   }
 
-  handleBrokerSessionLost(reason) {
-    for (const runner of this.runners.values()) runner.handleBrokerSessionLost(reason);
+  handleBrokerSessionLost(reason, brokerAccountId = null, userId = null, sessionGeneration = null) {
+    for (const runner of this.runners.values()) {
+      const runnerAccountId = runner.accountContext?.brokerAccountId || null;
+      const runnerUserId = runner.accountContext?.userId || null;
+      const runnerGeneration = runner.accountContext?.sessionGeneration ?? null;
+      if (brokerAccountId ? runnerAccountId === brokerAccountId && (!userId || runnerUserId === String(userId))
+        && (sessionGeneration == null || runnerGeneration === sessionGeneration) : runnerAccountId === null) {
+        runner.handleBrokerSessionLost(reason);
+      }
+    }
   }
 
-  handleBrokerSessionRestored() {
-    for (const runner of this.runners.values()) runner.handleBrokerSessionRestored();
+  handleBrokerSessionRestored(brokerAccountId = null, userId = null, sessionGeneration = null) {
+    for (const runner of this.runners.values()) {
+      const runnerAccountId = runner.accountContext?.brokerAccountId || null;
+      const runnerUserId = runner.accountContext?.userId || null;
+      const runnerGeneration = runner.accountContext?.sessionGeneration ?? null;
+      if (brokerAccountId ? runnerAccountId === brokerAccountId && (!userId || runnerUserId === String(userId))
+        && (sessionGeneration == null || runnerGeneration === sessionGeneration) : runnerAccountId === null) {
+        runner.handleBrokerSessionRestored();
+      }
+    }
   }
 }
 
+// EventEmitter callbacks may originate outside request async scope. Bind every
+// runner method to the context captured at Start, including timers and recovery.
+for (const name of Object.getOwnPropertyNames(SingleStrategyRunner.prototype)) {
+  if (name === 'constructor') continue;
+  const original = SingleStrategyRunner.prototype[name];
+  if (typeof original !== 'function') continue;
+  SingleStrategyRunner.prototype[name] = function (...args) {
+    return this.accountContext
+      ? require('./accountContext').run(this.accountContext, () => original.apply(this, args))
+      : original.apply(this, args);
+  };
+}
 const manager = new StrategyEngineManager();
-marketDataService.on('session:lost', ({ reason }) => {
+marketDataService.on('session:lost', ({ reason, userId, brokerAccountId, sessionGeneration }) => {
   console.warn(`[StrategyEngine] Broker session lost: ${reason}`);
-  manager.handleBrokerSessionLost(reason);
-  notifyUrgent('BROKER_SESSION_LOST', { reason }).catch(err => {
+  manager.handleBrokerSessionLost(reason, brokerAccountId || null, userId || null, sessionGeneration ?? null);
+  notifyUrgent('BROKER_SESSION_LOST', { reason, userId, brokerAccountId }).catch(err => {
     console.error('[StrategyEngine] Session-loss alert error:', err.message);
   });
 });
-marketDataService.on('session:restored', () => {
+marketDataService.on('session:restored', ({ broker_account_id: brokerAccountId, brokerAccountId: scopedAccountId, userId, sessionGeneration } = {}) => {
   console.log('[StrategyEngine] Broker session restored');
-  manager.handleBrokerSessionRestored();
-  notifyUrgent('BROKER_SESSION_RESTORED').catch(err => {
+  manager.handleBrokerSessionRestored(scopedAccountId || brokerAccountId || null, userId || null, sessionGeneration ?? null);
+  notifyUrgent('BROKER_SESSION_RESTORED', { userId, brokerAccountId: scopedAccountId || brokerAccountId }).catch(err => {
     console.error('[StrategyEngine] Session-restored alert error:', err.message);
   });
 });

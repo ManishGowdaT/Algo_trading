@@ -9,6 +9,10 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 from uuid import uuid4
+import anyio
+from time import monotonic
+from uuid import uuid4
+from app.services.account_dispatch import AccountCapacityError, AccountContext, AccountDispatch
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
@@ -103,6 +107,11 @@ class SimpleOrderRequest(BaseModel):
 
 class CancelOrderRequest(BaseModel):
     variety: str = Field(default="NORMAL", min_length=1, max_length=16)
+
+
+class ExecutionOwnerRequest(BaseModel):
+    ownerId: str = Field(min_length=1, max_length=160)
+    generation: int = Field(ge=1)
 
 
 class ExitPositionRequest(BaseModel):
@@ -243,22 +252,150 @@ INTERNAL_SERVICE_KEY = (
     or os.getenv("INTERNAL_API_SECRET")
     or ""
 ).strip()
+_broker_request_counts: Dict[str, int] = {}
+
+
+@app.on_event("startup")
+def validate_deployment_security() -> None:
+    production = os.getenv("APP_ENV", cfg.env).strip().lower() in {"prod", "production"} or os.getenv("RENDER", "").strip().lower() == "true"
+    if not production:
+        return
+    if len(INTERNAL_SERVICE_KEY) < 32:
+        raise RuntimeError("INTERNAL_SERVICE_KEY must contain at least 32 characters in production")
+    if not cfg.angel.base_url.startswith("https://"):
+        raise RuntimeError("ANGEL_BASE_URL must use HTTPS in production")
+    if not cfg.cors_origins or any(not origin.startswith("https://") for origin in cfg.cors_origins):
+        raise RuntimeError("CORS_ORIGINS must contain explicit HTTPS origins in production")
 
 
 @app.middleware("http")
 async def require_internal_service_key(request: Request, call_next):
     """Keep broker/data endpoints private behind the Node API."""
     protected_prefixes = ("/angel", "/market", "/instruments")
-    protected_path = request.url.path == "/internal/ready"
+    protected_path = request.url.path in {"/internal/ready", "/internal/execution-fence"}
     if request.method != "OPTIONS" and (request.url.path.startswith(protected_prefixes) or protected_path):
         supplied = request.headers.get("X-Internal-Service-Key", "")
         if not INTERNAL_SERVICE_KEY or not hmac.compare_digest(
             supplied.encode("utf-8"), INTERNAL_SERVICE_KEY.encode("utf-8")
         ):
+            logger.warning("internal_auth_rejected request_id=%s path=%s", _request_id(request), request.url.path.split("?")[0])
             return JSONResponse(status_code=401, content={"detail": "Internal service authentication required"})
-    return await call_next(request)
+    if request.method != 'OPTIONS' and request.url.path.startswith(protected_prefixes):
+        login_request_id = str(uuid4()) if request.url.path == '/angel/login' else None
+        execution_mutation = ((request.url.path.startswith('/angel/orders/') and request.method != 'GET')
+            or (request.url.path == '/angel/orders' and request.method == 'POST')
+            or (request.url.path == '/angel/positions/exit' and request.method == 'POST'))
+        try:
+            context = AccountContext.from_headers(request.headers)
+            if execution_mutation and (not context.execution_owner_id or context.execution_lease_generation is None):
+                raise PermissionError('Durable execution owner context required')
+            lifecycle = request.url.path in {'/angel/login', '/angel/logout'} or execution_mutation
+            deadline = monotonic() + 30
+            while True:
+                try:
+                    worker = dispatch.acquire(context, lifecycle, request.url.path == '/angel/login', wait=False, request_id=login_request_id)
+                    break
+                except BlockingIOError:
+                    if monotonic() >= deadline:
+                        raise TimeoutError('Broker account is busy')
+                    await anyio.sleep(0.01)
+        except AccountCapacityError as exc:
+            return JSONResponse(status_code=503, content={'detail': str(exc)})
+        except PermissionError as exc:
+            if 'context' in locals() and request.url.path == '/angel/login':
+                manager = dispatch.abort_login(context, login_request_id)
+                if manager is not None:
+                    await anyio.to_thread.run_sync(manager.shutdown)
+            return JSONResponse(status_code=403, content={'detail': str(exc)})
+        except TimeoutError as exc:
+            if 'context' in locals() and request.url.path == '/angel/login':
+                manager = dispatch.abort_login(context, login_request_id)
+                if manager is not None:
+                    await anyio.to_thread.run_sync(manager.shutdown)
+            return JSONResponse(status_code=503, content={'detail': str(exc)})
+        except BaseException:
+            if 'context' in locals() and request.url.path == '/angel/login':
+                manager = dispatch.abort_login(context, login_request_id)
+                if manager is not None:
+                    with anyio.CancelScope(shield=True):
+                        await anyio.to_thread.run_sync(manager.shutdown)
+            raise
+        request.state.account_context = context
+        request.state.broker_worker = worker
+        request.state.broker_session = worker.manager
+        token = dispatch.bind_current(worker)
+        try:
+            with anyio.CancelScope(shield=True):
+                response = await call_next(request)
+            if request.url.path == '/angel/login' and (response.status_code >= 400 or worker.session_id is None):
+                manager = dispatch.finish_failed_login(worker, context, response.status_code, login_request_id)
+                if manager is not None:
+                    await anyio.to_thread.run_sync(manager.shutdown)
+            if request.url.path == '/angel/logout' and response.status_code < 400:
+                manager = dispatch.finish_logout(worker, context)
+                if manager is not None:
+                    await anyio.to_thread.run_sync(manager.shutdown)
+            return response
+        except BaseException:
+            if request.url.path == '/angel/login':
+                manager = dispatch.finish_failed_login(worker, context, None, login_request_id)
+                if manager is not None:
+                    with anyio.CancelScope(shield=True):
+                        await anyio.to_thread.run_sync(manager.shutdown)
+            raise
+        finally:
+            dispatch.reset_current(token)
+            dispatch.release(worker, lifecycle)
+    response = await call_next(request)
+    return response
 
-angel = BrokerSessionManager()
+
+@app.middleware("http")
+async def instrument_broker_requests(request: Request, call_next):
+    """Observe broker routes outside auth/dispatch so every return path counts."""
+    protected_prefixes = ("/angel", "/market", "/instruments")
+    if request.method == "OPTIONS" or not request.url.path.startswith(protected_prefixes):
+        return await call_next(request)
+    started = monotonic()
+    response = None
+    try:
+        response = await call_next(request)
+        return response
+    finally:
+        route = re.sub(r"/orders/[^/]+/", "/orders/:orderId/", request.url.path).split("?")[0][:120]
+        _broker_request_counts[route] = _broker_request_counts.get(route, 0) + 1
+        context = getattr(request.state, "account_context", None)
+        logger.info(
+            "broker_audit request_id=%s user_id=%s broker_account_id=%s session_generation=%s method=%s route=%s status=%s duration_ms=%s",
+            _request_id(request), context.user_id if context else "unknown",
+            context.account_id if context else "unknown", context.session_generation if context else "unknown",
+            request.method, route, response.status_code if response else 500,
+            round((monotonic() - started) * 1000),
+        )
+
+
+dispatch = AccountDispatch(BrokerSessionManager)
+
+
+@app.post('/internal/execution-fence')
+def install_execution_fence(req: ExecutionOwnerRequest, request: Request) -> Dict[str, Any]:
+    try:
+        context = AccountContext.from_headers(request.headers)
+        dispatch.install_execution_owner(context, req.ownerId, req.generation)
+        return {'accepted': True, 'ownerGeneration': req.generation}
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except TimeoutError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+class CurrentBrokerSession:
+    """Request-local facade; account credentials live only in their workers."""
+    def __getattr__(self, name):
+        return getattr(dispatch.current_manager(), name)
+
+
+angel = CurrentBrokerSession()
 
 store = OrderStore(db_path=str(BASE_DIR / "orders.sqlite"))
 instruments = InstrumentMasterCache()
@@ -266,7 +403,7 @@ instruments = InstrumentMasterCache()
 
 @app.on_event("shutdown")
 def shutdown_services() -> None:
-    angel.shutdown()
+    dispatch.shutdown()
 
 
 @app.get("/health")
@@ -287,26 +424,28 @@ def internal_ready() -> Dict[str, Any]:
 
 @app.post("/angel/login")
 def angel_login(req: LoginRequest, request: Request) -> Dict[str, Any]:
+    context = request.state.account_context
+    if req.clientCode.strip().upper() != context.client_id:
+        raise HTTPException(status_code=403, detail='Broker client identity mismatch')
     try:
         owner_user_id = request.headers.get("X-Active-User-Id")
-        return angel.connect(
+        info = angel.connect(
             api_key=req.apiKey,
             client_code=req.clientCode,
             mpin=req.mpin,
             totp_secret=req.totpSecret,
             owner_user_id=owner_user_id,
         )
+        worker = request.state.broker_worker
+        dispatch.complete_login(context=context, worker=worker, session_id=worker.manager._session_id)
+        info['session_id'] = worker.manager._session_id
+        return info
     except Exception as exc:  # noqa: BLE001
-        # TEMPORARY DIAGNOSTIC LOGGING: remove after SmartAPI rate-limit investigation.
         diagnostic_message = str(exc)
         for credential in (req.apiKey, req.clientCode, req.mpin, req.totpSecret):
             if credential:
                 diagnostic_message = diagnostic_message.replace(credential, "[REDACTED]")
-        print(
-            f"[TEMP AngelLoginDiagnostic] timestamp={datetime.now(timezone.utc).isoformat()} "
-            f"exception_type={type(exc).__name__} message={diagnostic_message}",
-            flush=True,
-        )
+        logger.warning("broker_login_failed request_id=%s type=%s rate_limited=%s", _request_id(request), type(exc).__name__, _is_rate_limited(diagnostic_message))
         if _is_rate_limited(diagnostic_message):
             raise HTTPException(
                 status_code=429,
@@ -418,9 +557,13 @@ def market_ltp(
     exchange: str = Query(..., min_length=1, max_length=10),
     tradingsymbol: str = Query(..., min_length=1, max_length=64),
     symboltoken: str = Query(..., min_length=1, max_length=32),
+    requireFresh: bool = Query(False),
 ) -> Dict[str, Any]:
     try:
-        return angel.get_ltp(exchange=exchange, tradingsymbol=tradingsymbol, symboltoken=symboltoken)
+        args = dict(exchange=exchange, tradingsymbol=tradingsymbol, symboltoken=symboltoken)
+        if requireFresh:
+            args['require_fresh'] = True
+        return angel.get_ltp(**args)
     except Exception as e:  # noqa: BLE001
         msg = str(e)
         if "Not logged in" in msg:
@@ -513,7 +656,7 @@ def angel_positions() -> Dict[str, Any]:
 
 
 @app.post("/angel/positions/exit")
-def angel_exit_position(req: ExitPositionRequest) -> Dict[str, Any]:
+def angel_exit_position(req: ExitPositionRequest, request: Request) -> Dict[str, Any]:
     tx = req.transactiontype.strip().upper()
     if tx not in {"BUY", "SELL"}:
         raise HTTPException(status_code=400, detail="Invalid transactiontype")
@@ -545,7 +688,8 @@ def angel_exit_position(req: ExitPositionRequest) -> Dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=str(e))
 
-    attempt = store.add(id=str(uuid4()), request=payload, response=response)
+    context = request.state.account_context
+    attempt = store.add(id=str(uuid4()), request=payload, response=response, user_id=context.user_id, account_id=context.account_id)
     return {"item": store.to_dict(attempt)}
 
 
@@ -652,14 +796,16 @@ def index_ltp(underlying: str = Query(..., min_length=1, max_length=32)) -> Dict
 
 
 @app.get("/angel/orders")
-def list_orders(limit: int = Query(50, ge=1, le=500)) -> Dict[str, Any]:
-    attempts = store.list(limit=limit)
+def list_orders(request: Request, limit: int = Query(50, ge=1, le=500)) -> Dict[str, Any]:
+    context = request.state.account_context
+    attempts = store.list(limit=limit, user_id=context.user_id, account_id=context.account_id)
     return {"items": [store.to_dict(a) for a in attempts]}
 
 
 @app.delete("/angel/orders")
-def clear_orders() -> Dict[str, Any]:
-    deleted = store.clear()
+def clear_orders(request: Request) -> Dict[str, Any]:
+    context = request.state.account_context
+    deleted = store.clear(user_id=context.user_id, account_id=context.account_id)
     return {"deleted": deleted}
 
 
@@ -672,19 +818,20 @@ def angel_logout() -> Dict[str, Any]:
 
 
 @app.post("/angel/orders")
-def place_order(req: PlaceOrderRequest) -> Dict[str, Any]:
+def place_order(req: PlaceOrderRequest, request: Request) -> Dict[str, Any]:
     attempt_id = str(uuid4())
     try:
         response = angel.place_order(req.payload)
     except Exception as e:  # noqa: BLE001
-        response = {"status": False, "error": _safe_http_detail(str(e))}
+        response = {"status": False, "outcome": "UNKNOWN", "error": _safe_http_detail(str(e))}
 
-    attempt = store.add(id=attempt_id, request=req.payload, response=response)
+    context = request.state.account_context
+    attempt = store.add(id=attempt_id, request=req.payload, response=response, user_id=context.user_id, account_id=context.account_id)
     return {"item": store.to_dict(attempt)}
 
 
 @app.post("/angel/orders/simple")
-def place_simple_order(req: SimpleOrderRequest) -> Dict[str, Any]:
+def place_simple_order(req: SimpleOrderRequest, request: Request) -> Dict[str, Any]:
     attempt_id = str(uuid4())
 
     qty = int(req.quantity)
@@ -744,7 +891,8 @@ def place_simple_order(req: SimpleOrderRequest) -> Dict[str, Any]:
     try:
         response = angel.place_order(payload)
     except Exception as e:  # noqa: BLE001
-        response = {"status": False, "error": _safe_http_detail(str(e))}
+        response = {"status": False, "outcome": "UNKNOWN", "error": _safe_http_detail(str(e))}
 
-    attempt = store.add(id=attempt_id, request=payload, response=response)
+    context = request.state.account_context
+    attempt = store.add(id=attempt_id, request=payload, response=response, user_id=context.user_id, account_id=context.account_id)
     return {"item": store.to_dict(attempt)}

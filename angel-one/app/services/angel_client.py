@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import inspect
+import math
+from threading import Lock
+from time import monotonic
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -24,6 +28,10 @@ class AngelClient:
         self._totp_secret = totp_secret
         self._smart = SmartConnect(api_key=self._api_key)
         self._session: Optional[AngelSession] = None
+        self._quote_lock = Lock()
+        self._quote_symbols = {}
+        self._quote_cache = {}
+        self._quote_last_attempt = float('-inf')
 
     @property
     def is_logged_in(self) -> bool:
@@ -99,20 +107,14 @@ class AngelClient:
 
         raw_post = getattr(self._smart, "_postRequest", None)
         if callable(raw_post):
-            try:
-                full = raw_post("api.order.placefullresponse", clean_payload)
-                if isinstance(full, dict):
-                    return full
-                if full is None:
-                    return {"status": False, "message": "SmartAPI returned empty response"}
-                return {"status": True, "data": {"orderid": str(full)}}
-            except Exception:
-                placed = raw_post("api.order.place", clean_payload)
-                if isinstance(placed, dict):
-                    return placed
-                if placed is None:
-                    return {"status": False, "message": "SmartAPI returned empty response"}
-                return {"status": True, "data": {"orderid": str(placed)}}
+            # An exception can follow an accepted order. Never submit again
+            # through another endpoint; Node owns durable reconciliation.
+            full = raw_post("api.order.placefullresponse", clean_payload)
+            if isinstance(full, dict):
+                return full
+            if full is None:
+                return {"status": False, "outcome": "UNKNOWN", "message": "SmartAPI returned empty response"}
+            return {"status": True, "data": {"orderid": str(full)}}
 
         place_full = getattr(self._smart, "placeOrderFullResponse", None)
         if callable(place_full):
@@ -120,14 +122,14 @@ class AngelClient:
             if isinstance(result, dict):
                 return result
             if result is None:
-                return {"status": False, "message": "SmartAPI returned empty response"}
+                return {"status": False, "outcome": "UNKNOWN", "message": "SmartAPI returned empty response"}
             return {"status": True, "data": {"orderid": str(result)}}
 
         result = self._smart.placeOrder(payload)
         if isinstance(result, dict):
             return result
         if result is None:
-            return {"status": False, "message": "SmartAPI returned empty response"}
+            return {"status": False, "outcome": "UNKNOWN", "message": "SmartAPI returned empty response"}
         return {"status": True, "data": {"orderid": str(result)}}
 
     def order_book(self) -> Dict[str, Any]:
@@ -157,10 +159,14 @@ class AngelClient:
 
         fn = getattr(self._smart, "cancelOrder", None)
         if callable(fn):
+            # Resolve calling convention before mutation, never by retrying an
+            # exception that may have occurred after the broker accepted it.
             try:
-                result = fn(order_id=oid, variety=variety)
+                inspect.signature(fn).bind(order_id=oid, variety=variety)
             except TypeError:
                 result = fn(oid, variety)
+            else:
+                result = fn(order_id=oid, variety=variety)
             if not isinstance(result, dict):
                 raise RuntimeError("Unexpected cancel order response from SmartAPI")
             return result
@@ -194,13 +200,15 @@ class AngelClient:
 
         raise RuntimeError("positions are not supported by the installed SmartAPI client")
 
-    def get_ltp(self, *, exchange: str, tradingsymbol: str, symboltoken: str) -> Dict[str, Any]:
+    def get_ltp(self, *, exchange: str, tradingsymbol: str, symboltoken: str, require_fresh: bool = False) -> Dict[str, Any]:
         self._require_session()
         ex = exchange.strip().upper()
         ts = tradingsymbol.strip()
         token = symboltoken.strip()
         if not ex or not ts or not token:
             raise RuntimeError("Invalid ltp request")
+        if require_fresh:
+            return self._get_timestamped_quote(ex, ts, token)
 
         fn = getattr(self._smart, "ltpData", None)
         if fn is None:
@@ -236,6 +244,51 @@ class AngelClient:
             "high": high_val,
             "low": low_val,
         }
+
+    def _get_timestamped_quote(self, exchange: str, symbol: str, token: str) -> Dict[str, Any]:
+        # Account-local state: at most 50 instruments, no waiting broker retry,
+        # and at most one FULL request per second across concurrent monitors.
+        with self._quote_lock:
+            now = monotonic()
+            self._quote_symbols = {key: value for key, value in self._quote_symbols.items() if now - value[1] < 60}
+            key = (exchange, token)
+            if key not in self._quote_symbols and len(self._quote_symbols) >= 50:
+                raise RuntimeError('Timestamped quote instrument capacity reached')
+            self._quote_symbols[key] = (symbol, now)
+            if now - self._quote_last_attempt >= 1:
+                self._quote_last_attempt = now
+                self._quote_cache.clear()  # A failed refresh cannot resurrect old quotes.
+                fn = getattr(self._smart, 'getMarketData', None)
+                if fn is None:
+                    raise RuntimeError('Timestamped FULL quotes are not supported by this SmartAPI client')
+                tokens = {}
+                for ex, instrument in self._quote_symbols:
+                    tokens.setdefault(ex, []).append(instrument)
+                result = fn('FULL', tokens)
+                if not isinstance(result, dict) or result.get('status') is not True:
+                    raise RuntimeError('Timestamped broker quote unavailable')
+                for row in (result.get('data') or {}).get('fetched', []):
+                    row_key = (str(row.get('exchange', '')).upper(), str(row.get('symbolToken', '')))
+                    expected = self._quote_symbols.get(row_key)
+                    if not expected or row.get('tradingSymbol') != expected[0]:
+                        continue
+                    try:
+                        price = float(row['ltp'])
+                        # Broker exchange time is India local time; never use
+                        # the server's timezone or response receipt time.
+                        timestamp = datetime.strptime(row['exchFeedTime'], '%d-%b-%Y %H:%M:%S').replace(
+                            tzinfo=timezone(timedelta(hours=5, minutes=30))).timestamp() * 1000
+                        if not math.isfinite(price) or price <= 0:
+                            continue
+                    except (KeyError, TypeError, ValueError):
+                        continue
+                    self._quote_cache[row_key] = { 'exchange': row_key[0], 'tradingsymbol': expected[0],
+                        'symboltoken': row_key[1], 'ltp': price, 'quoteTimestamp': timestamp,
+                        'quoteSource': 'ANGEL_FULL', **{field: row.get(field, 0) for field in ['open', 'high', 'low', 'close']} }
+            quote = self._quote_cache.get(key)
+            if quote is None or quote['tradingsymbol'] != symbol:
+                raise RuntimeError('Verified timestamped quote is not yet available; monitoring is degraded')
+            return dict(quote)
 
     def get_candles(
         self,

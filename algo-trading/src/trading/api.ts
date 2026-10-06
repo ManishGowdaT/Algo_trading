@@ -1,12 +1,51 @@
 import { API_BASE } from '../config/apiBase';
 const AUTH_BASE = `${API_BASE}/users`;
 let refreshInFlight: Promise<boolean> | null = null;
+let apiIdentity = ''
+let apiAccountId = ''
+let identityGeneration = 0
+const activeRequests = new Set<AbortController>()
+
+export function setApiIdentity(userId: string | null): void {
+  const next = userId || ''
+  if (next === apiIdentity) return
+  apiIdentity = next
+  apiAccountId = ''
+  identityGeneration += 1
+  for (const controller of activeRequests) controller.abort()
+  activeRequests.clear()
+  refreshInFlight = null
+}
+
+export function setApiAccountScope(brokerAccountId: string | null): void {
+  const next = brokerAccountId || ''
+  if (next === apiAccountId) return
+  apiAccountId = next
+  identityGeneration += 1
+  for (const controller of activeRequests) controller.abort()
+  activeRequests.clear()
+  refreshInFlight = null
+}
+
+export function isApiScopeCurrent(scope: string): boolean {
+  return `${apiIdentity}:${apiAccountId}` === scope
+}
 
 function getUrl(path: string): string {
+  let url: string
   if (path.startsWith('/market/index-ltp')) {
-    return `${API_BASE}/chart/index-ltp${path.replace('/market/index-ltp', '')}`;
+    url = `${API_BASE}/chart/index-ltp${path.replace('/market/index-ltp', '')}`
+  } else {
+    url = `${API_BASE}${path}`
   }
-  return `${API_BASE}${path}`;
+  const accountPath = path.split('?')[0]
+  const accountScoped = /^\/(angel\/(?:status|logout|orders|positions)|strategies\/(?:settings\/[^/]+|[^/]+\/(?:status|start|stop|exit))|trades(?:\/|$))/.test(accountPath)
+  if (apiAccountId && accountScoped) {
+    const parsed = new URL(url, window.location.origin)
+    parsed.searchParams.set('brokerAccountId', apiAccountId)
+    return parsed.toString()
+  }
+  return url
 }
 
 function isConfirmedAuthFailure(response: Response, data: unknown): boolean {
@@ -50,22 +89,32 @@ function errorMessage(data: unknown, status: number): string {
   return `Request failed with status ${status}.`;
 }
 
-async function refreshAccessToken(): Promise<boolean> {
+function assertCurrent(generation: number): void {
+  if (generation !== identityGeneration) throw new DOMException('Request belongs to an old user or account.', 'AbortError')
+}
+
+async function refreshAccessToken(generation: number): Promise<boolean> {
   if (!refreshInFlight) {
+    const controller = new AbortController()
+    activeRequests.add(controller)
     refreshInFlight = fetch(`${AUTH_BASE}/refresh`, {
       method: 'POST',
       credentials: 'include',
+      signal: controller.signal,
     })
       .then(async (response) => {
+        assertCurrent(generation)
         if (!response.ok) return false;
         const data = await response.json();
+        assertCurrent(generation)
         if (!data?.token) return false;
         localStorage.setItem('jwt', data.token);
         return true;
       })
       .catch(() => false)
       .finally(() => {
-        refreshInFlight = null;
+        activeRequests.delete(controller)
+        if (generation === identityGeneration) refreshInFlight = null;
       });
   }
   return refreshInFlight;
@@ -77,70 +126,49 @@ function authHeaders(): Record<string, string> {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const url = getUrl(path);
-
-  let res = await fetch(url, { headers: authHeaders(), credentials: 'include' });
-  let data = await readResponseBody(res);
-  if (isConfirmedAuthFailure(res, data)) {
-    if (await refreshAccessToken()) {
-      res = await fetch(url, { headers: authHeaders(), credentials: 'include' });
-      data = await readResponseBody(res);
-      if (res.ok) return data as T;
-    }
-    redirectToLoginWithReturnPath();
-    throw new Error('Authentication session expired');
-  }
-  if (!res.ok) throw new Error(errorMessage(data, res.status));
-  return data as T;
+  return request<T>(path, { method: 'GET' })
 }
 
 export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
-  const url = getUrl(path);
-
-  const requestOptions: RequestInit = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: body === undefined ? undefined : JSON.stringify(body),
-    credentials: 'include',
-  };
-
-  let res = await fetch(url, requestOptions);
-  let data = await readResponseBody(res);
-  if (isConfirmedAuthFailure(res, data)) {
-    if (await refreshAccessToken()) {
-      res = await fetch(url, {
-        ...requestOptions,
-        headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      });
-      data = await readResponseBody(res);
-      if (res.ok) return data as T;
-    }
-    redirectToLoginWithReturnPath();
-    throw new Error('Authentication session expired');
-  }
-  if (!res.ok) throw new Error(errorMessage(data, res.status));
-  return data as T;
+  return request<T>(path, { method: 'POST', body })
 }
 
 export async function apiDelete<T>(path: string): Promise<T> {
-  const url = getUrl(path);
-  const requestOptions: RequestInit = {
-    method: 'DELETE',
-    headers: authHeaders(),
-    credentials: 'include',
-  };
+  return request<T>(path, { method: 'DELETE' })
+}
 
-  let res = await fetch(url, requestOptions);
-  let data = await readResponseBody(res);
-  if (isConfirmedAuthFailure(res, data)) {
-    if (await refreshAccessToken()) {
-      res = await fetch(url, { ...requestOptions, headers: authHeaders() });
-      data = await readResponseBody(res);
-      if (res.ok) return data as T;
+async function request<T>(path: string, options: { method: string; body?: unknown }): Promise<T> {
+  if (!apiIdentity) throw new DOMException('No signed-in user owns this request.', 'AbortError')
+  const generation = identityGeneration
+  const controller = new AbortController()
+  activeRequests.add(controller)
+  const url = getUrl(path)
+  const requestOptions = (): RequestInit => ({
+    method: options.method,
+    headers: { ...(options.body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...authHeaders() },
+    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    credentials: 'include',
+    signal: controller.signal,
+  })
+  try {
+    let res = await fetch(url, requestOptions())
+    let data = await readResponseBody(res)
+    assertCurrent(generation)
+    if (isConfirmedAuthFailure(res, data)) {
+      const refreshed = await refreshAccessToken(generation)
+      assertCurrent(generation)
+      if (refreshed) {
+        res = await fetch(url, requestOptions())
+        data = await readResponseBody(res)
+        assertCurrent(generation)
+        if (res.ok) return data as T
+      }
+      redirectToLoginWithReturnPath()
+      throw new Error('Authentication session expired')
     }
-    redirectToLoginWithReturnPath();
-    throw new Error('Authentication session expired');
+    if (!res.ok) throw new Error(errorMessage(data, res.status))
+    return data as T
+  } finally {
+    activeRequests.delete(controller)
   }
-  if (!res.ok) throw new Error(errorMessage(data, res.status));
-  return data as T;
 }

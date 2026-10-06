@@ -1,17 +1,20 @@
 from fastapi.testclient import TestClient
 
-from app.main import app, angel
+from app.main import app
+from app.services.broker_session import BrokerSessionManager
 
 
 def test_login_returns_clear_429_for_provider_rate_limit(monkeypatch) -> None:
-    def raise_rate_limit(**_kwargs):
+    def raise_rate_limit(_self, **_kwargs):
         raise RuntimeError("Too Many Requests")
 
-    monkeypatch.setattr(angel, "connect", raise_rate_limit)
+    monkeypatch.setattr(BrokerSessionManager, "connect", raise_rate_limit)
     client = TestClient(app)
     response = client.post(
         "/angel/login",
-        headers={"X-Internal-Service-Key": "test-internal-key"},
+        headers={"X-Internal-Service-Key": "test-internal-key",
+                 "X-Active-User-Id": "test-user", "X-Broker-Account-Id": "test-account",
+                 "X-Broker-Client-Id": "CLIENT-CODE", "X-Session-Generation": "1", "X-Owner-Generation": "0"},
         json={
             "apiKey": "test-api-key",
             "clientCode": "client-code",

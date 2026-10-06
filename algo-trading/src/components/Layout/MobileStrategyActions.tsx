@@ -5,6 +5,7 @@ interface MobileStrategyActionsProps {
     isRunning: boolean;
     hasPosition: boolean;
     isExiting: boolean;
+    canStart?: boolean;
     onStart: () => void;
     onStop: () => void;
     onExit: () => void;
@@ -14,6 +15,7 @@ const MobileStrategyActions: React.FC<MobileStrategyActionsProps> = ({
     isRunning,
     hasPosition,
     isExiting,
+    canStart = true,
     onStart,
     onStop,
     onExit,
@@ -36,7 +38,7 @@ const MobileStrategyActions: React.FC<MobileStrategyActionsProps> = ({
                 Stop Strategy
             </button>
         ) : (
-            <button type="button" onClick={onStart} className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#089981] px-3 text-xs font-bold text-white">
+            <button type="button" onClick={onStart} disabled={!canStart} className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#089981] px-3 text-xs font-bold text-white disabled:opacity-60">
                 <Play className="h-4 w-4 fill-current" />
                 Start Strategy
             </button>

@@ -18,13 +18,18 @@ test('authenticated limiter returns 429 at the configured user limit and isolate
   });
   t.after(() => new Promise((resolve, reject) => {
     server.close((err) => err ? reject(err) : resolve());
+    server.closeAllConnections();
   }));
 
   const url = `http://127.0.0.1:${server.address().port}/limited`;
   const requestAs = (userId) => fetch(url, { headers: { 'x-test-user': userId } });
 
-  assert.equal((await requestAs('user-a')).status, 200);
-  assert.equal((await requestAs('user-a')).status, 200);
+  const first = await requestAs('user-a');
+  assert.equal(first.status, 200);
+  await first.arrayBuffer();
+  const second = await requestAs('user-a');
+  assert.equal(second.status, 200);
+  await second.arrayBuffer();
   const limited = await requestAs('user-a');
   assert.equal(limited.status, 429);
   assert.ok(limited.headers.get('ratelimit'));
@@ -36,5 +41,7 @@ test('authenticated limiter returns 429 at the configured user limit and isolate
     retryAfterSeconds: 60,
   });
 
-  assert.equal((await requestAs('user-b')).status, 200);
+  const otherUser = await requestAs('user-b');
+  assert.equal(otherUser.status, 200);
+  await otherUser.arrayBuffer();
 });

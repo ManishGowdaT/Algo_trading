@@ -1,9 +1,9 @@
 const EventEmitter = require('events');
 const mongoose = require('mongoose');
 const config = require('../config');
-const { notifyUrgent } = require('./notificationService');
-const activeAccountService = require('./activeAccountService');
 const pythonWarmup = require('./pythonWarmup');
+const notifyUrgent = require('./notificationService').notifyUrgent;
+const activeAccountService = require('./activeAccountService');
 
 class HealthMonitorService extends EventEmitter {
   constructor() {
@@ -17,6 +17,7 @@ class HealthMonitorService extends EventEmitter {
       rttMs: 0
     };
     this.lastOperationalState = null;
+    this.accountOperationalStates = new Map();
     this.checkPromise = null;
   }
 
@@ -86,14 +87,9 @@ class HealthMonitorService extends EventEmitter {
     if (this.lastOperationalState !== operational) {
       const label = operational ? 'HEALTHY' : 'DEGRADED';
       console.log(`[HealthMonitor] System health transition: ${label}`, state);
-      notifyUrgent(operational ? 'SYSTEM_HEALTH_RESTORED' : 'SYSTEM_HEALTH_DEGRADED', {
-        reason: operational ? 'Node, Python, and MongoDB checks are healthy' : 'Python API or MongoDB health check failed',
-        accountLabel: activeAccountService.getActiveAccount()?.accountLabel,
-        userId: activeAccountService.getActiveAccount()?.userId,
-        clientCode: activeAccountService.getActiveAccount()?.clientCode,
-      }).catch(err => console.error('[HealthMonitor] Health alert error:', err.message));
       this.lastOperationalState = operational;
     }
+    await this.notifyAccountHealth(operational, state);
 
     if (!state.pythonApi || !state.mongoDb) {
       console.warn('[HealthMonitor] System Health Warning:', state);
@@ -103,6 +99,28 @@ class HealthMonitorService extends EventEmitter {
     }
 
     return state;
+  }
+
+  async notifyAccountHealth(operational, state) {
+    const accounts = activeAccountService.listActiveAccounts();
+    const activeKeys = new Set(accounts.map(account => `${account.userId}:${account.brokerAccountId}`));
+    for (const key of this.accountOperationalStates.keys()) {
+      if (!activeKeys.has(key)) this.accountOperationalStates.delete(key);
+    }
+    await Promise.all(accounts.map(async account => {
+      const key = `${account.userId}:${account.brokerAccountId}`;
+      if (this.accountOperationalStates.get(key) === operational) return;
+      this.accountOperationalStates.set(key, operational);
+      const event = operational ? 'SYSTEM_HEALTH_RESTORED' : 'SYSTEM_HEALTH_DEGRADED';
+      const reason = operational
+        ? 'Node, Python, and MongoDB checks are healthy'
+        : `Python status: ${state.pythonStatus}; database ${state.mongoDb ? 'ready' : 'unavailable'}`;
+      try {
+        await notifyUrgent(event, { userId: account.userId, brokerAccountId: account.brokerAccountId, reason });
+      } catch (err) {
+        console.error(`[HealthMonitor] Account-scoped health alert failed for ${key}:`, err.message);
+      }
+    }));
   }
 
   start(intervalMs = 15_000) {

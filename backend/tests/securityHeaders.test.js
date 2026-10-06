@@ -9,6 +9,7 @@ async function createTestServer(t, app) {
   });
   t.after(() => new Promise((resolve, reject) => {
     server.close((err) => err ? reject(err) : resolve());
+    server.closeAllConnections();
   }));
   return `http://127.0.0.1:${server.address().port}`;
 }
@@ -41,4 +42,5 @@ test('production HSTS is emitted only when the trusted proxy reports HTTPS', asy
 
   assert.match(secureResponse.headers.get('strict-transport-security') || '', /max-age=15552000/);
   assert.equal(insecureResponse.headers.get('strict-transport-security'), null);
+  await Promise.all([secureResponse.arrayBuffer(), insecureResponse.arrayBuffer()]);
 });

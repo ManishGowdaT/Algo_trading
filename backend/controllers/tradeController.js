@@ -9,6 +9,8 @@ const {
     parseBoundedInteger,
 } = require('../utils/inputValidation');
 const { respondWithApiError } = require('../middleware/apiErrors');
+const brokerAccounts = require('../services/accountContext');
+const BrokerAccount = require('../models/BrokerAccount');
 
 function requireText(value, name, maxLength) {
     if (typeof value !== 'string' || value.trim() === '' || value.length > maxLength) {
@@ -37,12 +39,27 @@ function sendFailure(req, res, err) {
     return respondWithApiError(req, res, err);
 }
 
+async function tradeAccountId(req) {
+    const selector = req.query?.brokerAccountId || req.body?.brokerAccountId;
+    if (selector) return (await brokerAccounts.owned(req.user._id, selector))._id;
+    const account = await BrokerAccount.findOne({ userId: req.user._id, broker: 'ANGEL_ONE' }).select('_id').lean();
+    return account?._id || null;
+}
+
+function applyTradeAccountFilter(query, accountId) {
+    if (!accountId) return;
+    query.$and ||= [];
+    // Include pre-ownership history without assigning it to a different user.
+    query.$and.push({ $or: [{ brokerAccountId: accountId }, { brokerAccountId: { $exists: false } }] });
+}
+
 exports.recordTrade = async (req, res) => {
     try {
         if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
             throw new InputValidationError('Trade request must be a JSON object.');
         }
         const { strategyName, index, premium, qty, buyPrice } = req.body;
+        const accountId = await tradeAccountId(req);
         requireText(strategyName, 'strategyName', 64);
         requireText(index, 'index', 32);
         requireText(premium, 'premium', 64);
@@ -58,6 +75,7 @@ exports.recordTrade = async (req, res) => {
         // 2. Create trade log
         const trade = await Trade.create({
             userId: req.user._id,
+            ...(accountId ? { brokerAccountId: accountId } : {}),
             strategyId: strategy._id,
             index,
             premium,
@@ -91,7 +109,9 @@ exports.updateTradeExit = async (req, res) => {
             throw new InputValidationError('exitReason is not supported.');
         }
 
-        const trade = await Trade.findOne({ _id: tradeId, userId: req.user._id });
+        const accountId = await tradeAccountId(req);
+        const trade = await Trade.findOne({ _id: tradeId, userId: req.user._id,
+            ...(accountId ? { $or: [{ brokerAccountId: accountId }, { brokerAccountId: { $exists: false } }] } : {}) });
         if (!trade) {
             return res.status(404).json({ status: 'fail', message: 'Trade not found' });
         }
@@ -124,7 +144,9 @@ exports.deleteTrade = async (req, res) => {
         }
 
         const ownerId = req.user._id;
-        const trade = await Trade.findOne({ _id: tradeId, userId: ownerId });
+        const accountId = await tradeAccountId(req);
+        const accountFilter = accountId ? { $or: [{ brokerAccountId: accountId }, { brokerAccountId: { $exists: false } }] } : {};
+        const trade = await Trade.findOne({ _id: tradeId, userId: ownerId, ...accountFilter });
         if (!trade) {
             return res.status(404).json({ status: 'fail', message: 'Trade not found' });
         }
@@ -144,6 +166,7 @@ exports.deleteTrade = async (req, res) => {
         const deletedTrade = await Trade.findOneAndDelete({
             _id: tradeId,
             userId: ownerId,
+            ...accountFilter,
             exitPrice: { $gt: 0 },
             positionState: { $nin: activePositionStates },
         }).select('_id');
@@ -168,11 +191,14 @@ exports.getLatestOpenTrade = async (req, res) => {
             return res.status(404).json({ status: 'fail', message: 'Strategy not found' });
         }
 
-        const trade = await Trade.findOne({
+        const accountId = await tradeAccountId(req);
+        const query = {
             userId: req.user._id,
             strategyId: strategy._id,
             exitPrice: { $exists: false }
-        }).sort({ createdAt: -1 });
+        };
+        applyTradeAccountFilter(query, accountId);
+        const trade = await Trade.findOne(query).sort({ createdAt: -1 });
 
         res.status(200).json({
             status: 'success',
@@ -186,8 +212,10 @@ exports.getLatestOpenTrade = async (req, res) => {
 };
 exports.getStats = async (req, res) => {
     try {
+        const query = { userId: req.user._id, pnl: { $exists: true } };
+        applyTradeAccountFilter(query, await tradeAccountId(req));
         const stats = await Trade.aggregate([
-            { $match: { userId: req.user._id, pnl: { $exists: true } } },
+            { $match: query },
             {
                 $group: {
                     _id: null,
@@ -228,6 +256,7 @@ exports.getAllTrades = async (req, res) => {
         const safeTimeFrom = requireQueryString(timeFrom, 'timeFrom', 5);
         const safeTimeTo = requireQueryString(timeTo, 'timeTo', 5);
         const query = { userId: req.user._id };
+        applyTradeAccountFilter(query, await tradeAccountId(req));
 
         const parseTimeToMinutes = (value) => {
             if (typeof value !== 'string' || value.trim() === '') return null;

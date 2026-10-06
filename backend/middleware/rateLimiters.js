@@ -36,10 +36,11 @@ function createUserRateLimiter({ windowMs = apiWindowMs, limit, message }) {
       message: message || 'Too many requests. Please wait a moment and try again.',
     },
     handler: (req, res, _next, options) => {
+      require('../services/productionHardening').increment('http_rate_limited_total');
       const retryAfterSeconds = Number(res.getHeader('Retry-After')) || undefined;
       const userId = req.user && (req.user._id || req.user.id);
       console.warn(
-        `[RateLimit] route=${req.originalUrl} userId=${userId ? userId.toString() : 'unknown'} `
+        `[RateLimit] route=${req.path} userId=${userId ? userId.toString() : 'unknown'} brokerAccountId=${req.accountContext?.brokerAccountId || 'unresolved'} `
         + `retryAfterSeconds=${retryAfterSeconds || 'unknown'}`
       );
       return res.status(options.statusCode).json({

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Play,
   Square,
@@ -7,10 +7,14 @@ import {
   Target
 } from 'lucide-react'
 import { useAngelConnection } from '../../shared/angel/AngelConnectionProvider'
-import { apiGet, apiPost } from '../../trading'
+import { apiGet, apiPost, isApiScopeCurrent } from '../../trading'
+import { retainedStopStatus, type StrategyStopStatus } from '../../trading/strategyStopStatus'
 import { startResilientPolling } from '../../utils/resilientPolling'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import MobileStrategyActions from '../../components/Layout/MobileStrategyActions'
+import { useAuth } from '../../context/AuthContext'
+import { readAccountSetting, writeAccountSetting } from '../../trading/accountSettings'
+import { AccountSettingsSaveQueue, canStartStrategy, loadValidatedStrategySettings } from '../../trading/strategySettingsLifecycle'
 
 type Underlying = 'SENSEX' | 'NIFTY' | 'BANKNIFTY'
 type Exchange = 'BSE' | 'NFO'
@@ -21,46 +25,50 @@ const INDEX_CONFIG: Record<Underlying, { qty: number, step: number, exchange: Ex
   BANKNIFTY: { qty: 15, step: 15, exchange: 'NFO' },
 }
 
-type StrategyState = 'WAITING' | 'SIGNAL' | 'IN_POSITION' | 'COOLDOWN' | 'EXITED' | 'STOPPED'
+export default function FiveMinBreakoutPage() {
+  const { user } = useAuth()
+  const { brokerAccountId } = useAngelConnection()
+  if (!user || !brokerAccountId) return <FiveMinBreakoutPageInner scope="unavailable" userId="" accountId="" />
+  const scope = `${user._id}:${brokerAccountId}`
+  return <FiveMinBreakoutPageInner key={scope} scope={scope} userId={user._id} accountId={brokerAccountId} />
+}
+
+type StrategyState = 'WAITING' | 'SIGNAL' | 'IN_POSITION' | 'COOLDOWN' | 'EXITED' | 'STOPPED' | 'POSITION_PROTECTED' | 'POSITION_UNPROTECTED' | 'EXIT_PENDING' | 'RECONCILIATION_REQUIRED'
 type StrikeMode = 'ATM' | 'ITM' | 'OTM'
 
-function getSavedState<T>(key: string, fallback: T): T {
+function getSavedState<T>(scope: string, key: string, fallback: T): T {
   try {
-    const item = localStorage.getItem(key)
-    if (item === null) return fallback
-    try {
-      return JSON.parse(item) as T
-    } catch {
-      return item as unknown as T
-    }
+    const [userId, accountId] = scope.split(':')
+    return readAccountSetting(userId, accountId, key, fallback)
   } catch {
     return fallback
   }
 }
 
-export default function FiveMinBreakoutPage() {
+function FiveMinBreakoutPageInner({ scope, userId, accountId }: { scope: string; userId: string; accountId: string }) {
   usePageTitle('5 Min Breakout')
   const { connectStatus } = useAngelConnection()
+  const settingsSaveQueue = useRef(new AccountSettingsSaveQueue(scope))
 
-  const [isRunning, setIsRunning] = useState<boolean>(() => getSavedState('fmb_isRunning', false))
-  const [state, setState] = useState<StrategyState>(() => getSavedState('fmb_state', 'STOPPED'))
+  const [isRunning, setIsRunning] = useState<boolean>(false)
+  const [state, setState] = useState<StrategyState>('STOPPED')
   const [message, setMessage] = useState<string>('')
 
-  const [lookback, setLookback] = useState<4 | 5>(() => getSavedState('fmb_lookback', 5))
-  const [underlying, setUnderlying] = useState<Underlying>(() => getSavedState('fmb_underlying', 'SENSEX'))
-  const [exchange, setExchange] = useState<Exchange>(() => getSavedState('fmb_exchange', 'BSE'))
-  const [quantity, setQuantity] = useState<number>(() => getSavedState('fmb_quantity', INDEX_CONFIG.SENSEX.qty))
-  const [liveTradingConsent, setLiveTradingConsent] = useState(() => getSavedState('fmb_liveTradingConsent', false))
+  const [lookback, setLookback] = useState<4 | 5>(() => getSavedState(scope, 'fmb_lookback', 5))
+  const [underlying, setUnderlying] = useState<Underlying>(() => getSavedState(scope, 'fmb_underlying', 'SENSEX'))
+  const [exchange, setExchange] = useState<Exchange>(() => getSavedState(scope, 'fmb_exchange', 'BSE'))
+  const [quantity, setQuantity] = useState<number>(() => getSavedState(scope, 'fmb_quantity', INDEX_CONFIG.SENSEX.qty))
+  const [liveTradingConsent, setLiveTradingConsent] = useState(() => getSavedState(scope, 'fmb_liveTradingConsent', false))
 
-  const [targetPoints, setTargetPoints] = useState<number>(() => getSavedState('fmb_targetPoints', 20))
-  const [bufferPoints, setBufferPoints] = useState<number>(() => getSavedState('fmb_bufferPoints', 2))
-  const [maxRangeLimit, setMaxRangeLimit] = useState<number>(() => getSavedState('fmb_maxRangeLimit', 30))
+  const [targetPoints, setTargetPoints] = useState<number>(() => getSavedState(scope, 'fmb_targetPoints', 20))
+  const [bufferPoints, setBufferPoints] = useState<number>(() => getSavedState(scope, 'fmb_bufferPoints', 2))
+  const [maxRangeLimit, setMaxRangeLimit] = useState<number>(() => getSavedState(scope, 'fmb_maxRangeLimit', 30))
 
-  const [premiumMin] = useState<number>(() => getSavedState('fmb_premiumMin', 300))
-  const [premiumMax] = useState<number>(() => getSavedState('fmb_premiumMax', 400))
+  const [premiumMin, setPremiumMin] = useState<number>(() => getSavedState(scope, 'fmb_premiumMin', 300))
+  const [premiumMax, setPremiumMax] = useState<number>(() => getSavedState(scope, 'fmb_premiumMax', 400))
 
-  const [strikeMode] = useState<StrikeMode>(() => getSavedState('fmb_strikeMode', 'ATM'))
-  const [strikeDepth] = useState<number>(() => getSavedState('fmb_strikeDepth', 1))
+  const [strikeMode, setStrikeMode] = useState<StrikeMode>(() => getSavedState(scope, 'fmb_strikeMode', 'ATM'))
+  const [strikeDepth, setStrikeDepth] = useState<number>(() => getSavedState(scope, 'fmb_strikeDepth', 1))
 
   // Live Monitor State from Backend
   const [monitoredPremiums, setMonitoredPremiums] = useState<{ ce: string, pe: string }>({ ce: '---', pe: '---' })
@@ -79,22 +87,41 @@ export default function FiveMinBreakoutPage() {
   const [activeTradeId, setActiveTradeId] = useState<string | null>(null)
   const [isExiting, setIsExiting] = useState(false)
 
+  const [settingsReady, setSettingsReady] = useState(false)
   useEffect(() => {
-    localStorage.setItem('fmb_isRunning', JSON.stringify(isRunning))
-    localStorage.setItem('fmb_state', JSON.stringify(state))
-    localStorage.setItem('fmb_lookback', JSON.stringify(lookback))
-    localStorage.setItem('fmb_underlying', JSON.stringify(underlying))
-    localStorage.setItem('fmb_exchange', JSON.stringify(exchange))
-    localStorage.setItem('fmb_quantity', JSON.stringify(quantity))
-    localStorage.setItem('fmb_targetPoints', JSON.stringify(targetPoints))
-    localStorage.setItem('fmb_bufferPoints', JSON.stringify(bufferPoints))
-    localStorage.setItem('fmb_maxRangeLimit', JSON.stringify(maxRangeLimit))
-    localStorage.setItem('fmb_liveTradingConsent', JSON.stringify(liveTradingConsent))
-    localStorage.setItem('fmb_strikeMode', JSON.stringify(strikeMode))
-    localStorage.setItem('fmb_strikeDepth', JSON.stringify(strikeDepth))
-    localStorage.setItem('fmb_premiumMin', JSON.stringify(premiumMin))
-    localStorage.setItem('fmb_premiumMax', JSON.stringify(premiumMax))
-  }, [isRunning, state, lookback, underlying, exchange, quantity, targetPoints, bufferPoints, maxRangeLimit, liveTradingConsent, strikeMode, strikeDepth, premiumMin, premiumMax])
+    let active = true
+    setSettingsReady(false)
+    if (!userId || !accountId) { setSettingsReady(true); return () => { active = false } }
+    loadValidatedStrategySettings('5minBreakout', () => apiGet<{ data?: { config?: Record<string, unknown> | null } }>('/strategies/settings/5minBreakout'))
+      .then((config) => {
+        if (!active) return
+        setLookback(Number(config.lookback ?? 5) as 4 | 5)
+        setUnderlying(config.underlying as Underlying ?? 'SENSEX')
+        setExchange(config.exchange as Exchange ?? INDEX_CONFIG.SENSEX.exchange)
+        setQuantity(Number(config.quantity ?? INDEX_CONFIG.SENSEX.qty))
+        setTargetPoints(Number(config.targetPoints ?? 20)); setBufferPoints(Number(config.bufferPoints ?? 2))
+        setMaxRangeLimit(Number(config.maxRangeLimit ?? 30)); setLiveTradingConsent(Boolean(config.liveTradingConsent))
+        setStrikeMode(config.strikeMode as StrikeMode ?? 'ATM'); setStrikeDepth(Number(config.strikeDepth ?? 1))
+        setPremiumMin(Number(config.premiumMin ?? 300)); setPremiumMax(Number(config.premiumMax ?? 400))
+        setSettingsReady(true)
+      })
+      .catch((error) => { if (active) setMessage(error instanceof Error ? `Could not load saved settings: ${error.message}` : 'Could not load saved settings.') })
+    return () => { active = false }
+  }, [scope])
+  useEffect(() => {
+    settingsSaveQueue.current.activate()
+    return () => settingsSaveQueue.current.dispose()
+  }, [])
+
+  useEffect(() => {
+    if (!settingsReady || !userId || !accountId) return
+    const config = { lookback, underlying, exchange, quantity, targetPoints, bufferPoints, maxRangeLimit, liveTradingConsent, strikeMode, strikeDepth, premiumMin, premiumMax }
+    Object.entries(config).forEach(([key, value]) => writeAccountSetting(userId, accountId, `fmb_${key}`, value))
+    const timer = window.setTimeout(() => {
+      settingsSaveQueue.current.enqueue(config, (_scope, snapshot) => apiPost('/strategies/settings/5minBreakout', { config: snapshot }), isApiScopeCurrent)
+    }, 350)
+    return () => window.clearTimeout(timer)
+  }, [settingsReady, userId, accountId, lookback, underlying, exchange, quantity, targetPoints, bufferPoints, maxRangeLimit, liveTradingConsent, strikeMode, strikeDepth, premiumMin, premiumMax])
 
   // Poll Backend Status
   useEffect(() => {
@@ -151,6 +178,7 @@ export default function FiveMinBreakoutPage() {
   }
 
   const startStrategy = async () => {
+    if (!canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') || !userId || !accountId) return
     try {
       setMessage('Starting breakout engine on backend...')
       const payload = {
@@ -179,8 +207,14 @@ export default function FiveMinBreakoutPage() {
   const stopStrategy = async () => {
     try {
       setMessage('Halting strategy on backend...')
-      await apiPost('/strategies/5minBreakout/stop')
+      const stopped = await apiPost<{ data?: StrategyStopStatus }>('/strategies/5minBreakout/stop')
       setIsRunning(false)
+      if (retainedStopStatus(stopped.data)) {
+        setState(stopped.data!.state as StrategyState)
+        setActiveTradeId(stopped.data!.activeTradeId || null)
+        setMessage('New entries stopped. Open or unresolved positions remain managed.')
+        return
+      }
       setState('STOPPED')
       setActiveTradeId(null)
       setEntryPrice(null)
@@ -234,7 +268,7 @@ export default function FiveMinBreakoutPage() {
           </div>
 
           <div className="flex items-center gap-2 max-md:hidden">
-            {state === 'IN_POSITION' && activeTradeId && (
+            {['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'].includes(state) && activeTradeId && (
               <button
                 disabled={isExiting}
                 onClick={manualExitPosition}
@@ -246,7 +280,7 @@ export default function FiveMinBreakoutPage() {
             {!isRunning ? (
               <button
                 onClick={startStrategy}
-                disabled={connectStatus !== 'connected'}
+                disabled={!canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') || !userId || !accountId}
                 className="flex items-center gap-1.5 px-4 py-2 bg-[#089981] hover:bg-[#07806c] disabled:opacity-50 text-white text-xs font-semibold rounded shadow-sm transition-colors"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -449,8 +483,9 @@ export default function FiveMinBreakoutPage() {
       </div>
       <MobileStrategyActions
         isRunning={isRunning}
-        hasPosition={state === 'IN_POSITION' && Boolean(activeTradeId)}
+        hasPosition={['IN_POSITION', 'POSITION_PROTECTED', 'POSITION_UNPROTECTED', 'EXIT_PENDING', 'RECONCILIATION_REQUIRED'].includes(state) && Boolean(activeTradeId)}
         isExiting={isExiting}
+        canStart={canStartStrategy(settingsReady, settingsReady, connectStatus === 'connected') && Boolean(userId && accountId)}
         onStart={() => void startStrategy()}
         onStop={() => void stopStrategy()}
         onExit={() => void manualExitPosition()}

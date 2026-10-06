@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const strategySchema = new mongoose.Schema({
+    internalExecutionOnly: { type: Boolean, default: false },
     name: {
         type: String,
         required: true

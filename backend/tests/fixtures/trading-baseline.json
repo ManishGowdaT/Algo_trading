@@ -1,0 +1,45 @@
+{
+  "revision": "30b763b1fb4140426508fb6be2620a6109316d03",
+  "strategies": {
+    "HeikenAshi": {
+      "underlying": "SENSEX",
+      "quantity": 20,
+      "targetPoints": 20,
+      "slPoints": 30,
+      "expectedSignal": "two bullish no-lower-wick HA candles with JMA > EMA and close > JMA enter; two bearish HA candles exit"
+    },
+    "ModifiedHeikenAshi": {
+      "underlying": "CRUDEOILM",
+      "quantity": 1,
+      "exitStrategy": "TRAILING_SL",
+      "initialSlPoints": 30,
+      "trailingStopPoints": 20,
+      "finalTargetPoints": 100,
+      "expectedTrailingSequence": [100, 70, 120, 90, "Trailing SL"]
+    },
+    "5minBreakout": {
+      "underlying": "NIFTY",
+      "quantity": 65,
+      "lookback": 5,
+      "maxRangeLimit": 30,
+      "bufferPoints": 2,
+      "targetPoints": 20,
+      "expectedEntryRule": "close-only breakout above valid premium range high; stopLoss is rangeLow - bufferPoints"
+    }
+  },
+  "engineExpectations": {
+    "defaultQuantity": { "SENSEX": 20, "NIFTY": 65, "BANKNIFTY": 30, "CRUDEOILM": 1 },
+    "cooldownMinutes": { "breakoutAnyExit": 1, "stopLoss": 4, "target": 2, "trailingStop": 2 },
+    "api": [
+      ["GET", "/", "authenticated strategy list"],
+      ["GET", "/count", "authenticated strategy count"],
+      ["GET", "/manifests", "authenticated plugin manifests"],
+      ["GET", "/stats/report", "authenticated condition report"],
+      ["POST", "/stats/reset", "authenticated condition report reset"],
+      ["POST", "/:strategyName/start", "authenticated and active-account guarded start"],
+      ["POST", "/:strategyName/stop", "authenticated and active-account guarded stop"],
+      ["GET", "/:strategyName/status", "authenticated status"],
+      ["POST", "/:strategyName/exit", "authenticated and active-account guarded manual exit"]
+    ]
+  }
+}

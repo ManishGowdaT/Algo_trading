@@ -20,7 +20,8 @@ exports.getMarketChartData = async (req, res) => {
 exports.getIndexLtp = async (req, res) => {
   try {
     const underlying = (req.query.underlying || 'NIFTY').toUpperCase();
-    const cached = ltpCache.get(underlying);
+    const cacheKey = `${req.accountContext.brokerAccountId}:${req.accountContext.sessionGeneration}:${underlying}`;
+    const cached = ltpCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < 2000) {
       return res.status(200).json(cached.data);
     }
@@ -43,7 +44,7 @@ exports.getIndexLtp = async (req, res) => {
       }
       return res.status(response.status).send(text);
     }
-    ltpCache.set(underlying, { timestamp: Date.now(), data });
+    ltpCache.set(cacheKey, { timestamp: Date.now(), data });
     res.status(200).json(data);
   } catch (err) {
     respondWithApiError(req, res, err);

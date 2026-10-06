@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from threading import Event, Lock, Thread
+from threading import Event, Lock, Thread, current_thread
 from typing import Any, Dict, Optional
 from uuid import uuid4
 
@@ -18,7 +18,7 @@ class BrokerStatus:
 
 
 class BrokerSessionManager:
-    """Owns the single runtime Angel One connection for this deployment."""
+    """Owns one account worker's Angel One connection and health lifecycle."""
 
     def __init__(self) -> None:
         self._client: Optional[AngelClient] = None
@@ -125,6 +125,7 @@ class BrokerSessionManager:
             client = self._client
             if client is None:
                 return self.get_status()
+            checked_session = self._session_id
             self._last_health_check = datetime.now(timezone.utc).isoformat()
 
         try:
@@ -135,6 +136,8 @@ class BrokerSessionManager:
             message = str(exc)
             lowered = message.lower()
             with self._lock:
+                if self._client is not client or self._session_id != checked_session:
+                    return self.get_status()
                 if any(value in lowered for value in ("unauthorized", "invalid token", "session", "not logged in", "token expired")):
                     self._state = "SESSION_EXPIRED"
                     self._message = "Angel One session expired. Reconnect required."
@@ -144,6 +147,8 @@ class BrokerSessionManager:
             return self.get_status()
 
         with self._lock:
+            if self._client is not client or self._session_id != checked_session:
+                return self.get_status()
             self._state = "CONNECTED"
             self._message = "Angel One connection healthy"
             self._last_health_success = self._last_health_check
@@ -156,6 +161,21 @@ class BrokerSessionManager:
 
     def shutdown(self) -> None:
         self._stop_event.set()
+        if self._health_thread.is_alive() and current_thread() is not self._health_thread:
+            self._health_thread.join(timeout=2)
+        with self._lock:
+            client = self._client
+            self._client = None
+            self._session_id = None
+            self._active_user_id = None
+            self._client_code = None
+            self._state = 'DISCONNECTED'
+            self._message = 'Broker worker stopped'
+        if client is not None:
+            try:
+                client.logout()
+            except Exception:
+                pass
 
     def _require_client(self) -> AngelClient:
         if self._client is None or not self._client.is_logged_in:

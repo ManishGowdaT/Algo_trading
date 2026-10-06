@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const mongoose = require('mongoose');
 const Trade = require('../models/Trade');
+const BrokerAccount = require('../models/BrokerAccount');
 const strategyEngine = require('../services/strategyEngine');
 const tradeController = require('../controllers/tradeController');
 const marketSessionManager = require('../services/marketSessionManager');
@@ -17,11 +18,13 @@ function createResponse() {
 
 test('trade deletion only removes the authenticated owner’s closed, inactive trade', async (t) => {
   const originalFindOne = Trade.findOne;
+  const originalBrokerFindOne = BrokerAccount.findOne;
   const originalFindOneAndDelete = Trade.findOneAndDelete;
   const originalIsTradeActive = strategyEngine.isTradeActive;
   const originalConsoleError = console.error;
   t.after(() => {
     Trade.findOne = originalFindOne;
+    BrokerAccount.findOne = originalBrokerFindOne;
     Trade.findOneAndDelete = originalFindOneAndDelete;
     strategyEngine.isTradeActive = originalIsTradeActive;
     console.error = originalConsoleError;
@@ -29,6 +32,7 @@ test('trade deletion only removes the authenticated owner’s closed, inactive t
   });
 
   const tradeId = new mongoose.Types.ObjectId().toString();
+  BrokerAccount.findOne = () => ({ select: () => ({ lean: async () => null }) });
   const ownerId = new mongoose.Types.ObjectId();
   const closedTrade = { _id: tradeId, userId: ownerId, exitPrice: 196.55, positionState: 'CLOSED' };
   let findFilter;
@@ -62,11 +66,13 @@ test('trade deletion only removes the authenticated owner’s closed, inactive t
 
 test('trade deletion refuses malformed IDs, unclosed positions, active states, and active runner records', async (t) => {
   const originalFindOne = Trade.findOne;
+  const originalBrokerFindOne = BrokerAccount.findOne;
   const originalFindOneAndDelete = Trade.findOneAndDelete;
   const originalIsTradeActive = strategyEngine.isTradeActive;
   const originalConsoleError = console.error;
   t.after(() => {
     Trade.findOne = originalFindOne;
+    BrokerAccount.findOne = originalBrokerFindOne;
     Trade.findOneAndDelete = originalFindOneAndDelete;
     strategyEngine.isTradeActive = originalIsTradeActive;
     console.error = originalConsoleError;
@@ -74,6 +80,7 @@ test('trade deletion refuses malformed IDs, unclosed positions, active states, a
   });
 
   const tradeId = new mongoose.Types.ObjectId().toString();
+  BrokerAccount.findOne = () => ({ select: () => ({ lean: async () => null }) });
   const ownerId = new mongoose.Types.ObjectId();
   let deleteCalls = 0;
   Trade.findOneAndDelete = () => {
@@ -108,11 +115,13 @@ test('trade deletion refuses malformed IDs, unclosed positions, active states, a
 
 test('trade deletion returns not found for another owner and refuses a changed database state', async (t) => {
   const originalFindOne = Trade.findOne;
+  const originalBrokerFindOne = BrokerAccount.findOne;
   const originalFindOneAndDelete = Trade.findOneAndDelete;
   const originalIsTradeActive = strategyEngine.isTradeActive;
   const originalConsoleError = console.error;
   t.after(() => {
     Trade.findOne = originalFindOne;
+    BrokerAccount.findOne = originalBrokerFindOne;
     Trade.findOneAndDelete = originalFindOneAndDelete;
     strategyEngine.isTradeActive = originalIsTradeActive;
     console.error = originalConsoleError;
@@ -120,6 +129,7 @@ test('trade deletion returns not found for another owner and refuses a changed d
   });
 
   const tradeId = new mongoose.Types.ObjectId().toString();
+  BrokerAccount.findOne = () => ({ select: () => ({ lean: async () => null }) });
   const ownerId = new mongoose.Types.ObjectId();
   let deleteCalls = 0;
   Trade.findOne = async () => null;

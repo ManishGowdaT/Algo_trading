@@ -63,7 +63,8 @@ class ContractManagerService extends EventEmitter {
   }
 
   async resolveContracts(underlying = 'SENSEX', strikeMode = 'ATM', strikeDepth = 1) {
-    const key = `${underlying}_${strikeMode}_${strikeDepth}`;
+    const context = require('./accountContext').current();
+    const key = `${context.brokerAccountId}:${context.sessionGeneration}:${underlying}_${strikeMode}_${strikeDepth}`;
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < 60_000) {
       return cached.data;
@@ -114,7 +115,8 @@ class ContractManagerService extends EventEmitter {
       };
 
       this.cache.set(key, { timestamp: Date.now(), data });
-      this.emit('contracts:updated', data);
+      this.emit('contracts:updated', { ...data, userId: context.userId, brokerAccountId: context.brokerAccountId,
+        sessionGeneration: context.sessionGeneration, sessionId: context.sessionId });
       return data;
     } catch (err) {
       console.error(`[ContractManager] Error resolving contracts for ${underlying}:`, err.message);
