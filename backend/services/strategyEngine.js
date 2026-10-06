@@ -155,6 +155,7 @@ class SingleStrategyRunner {
     this.logs = [];
     this.lastEntryTime = null;
     this.lastProcessedCandleTs = null;
+    this.lastProcessedBreakoutCandles = new Map();
     this.isExiting = false;
     this.exitInProgress = false;
     this.exitTriggered = false;
@@ -632,8 +633,13 @@ class SingleStrategyRunner {
           if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
           const fetchEndMs = Date.now();
 
-          const ceEval = pluginInstance.analyze({ items: ceItems, lastProcessedTs: this.lastProcessedCandleTs, indicators, userId: this.userId });
-          const peEval = pluginInstance.analyze({ items: peItems, lastProcessedTs: this.lastProcessedCandleTs, indicators, userId: this.userId });
+          const ceKey = `${this.ceContract.exchange}:${this.ceContract.symboltoken}`;
+          const peKey = `${this.peContract.exchange}:${this.peContract.symboltoken}`;
+          const ceEval = pluginInstance.analyze({ items: ceItems, lastProcessedTs: this.lastProcessedBreakoutCandles.get(ceKey) ?? null, indicators, userId: this.userId });
+          const peEval = pluginInstance.analyze({ items: peItems, lastProcessedTs: this.lastProcessedBreakoutCandles.get(peKey) ?? null, indicators, userId: this.userId });
+
+          if (ceEval.nextTs) this.lastProcessedBreakoutCandles.set(ceKey, ceEval.nextTs);
+          if (peEval.nextTs) this.lastProcessedBreakoutCandles.set(peKey, peEval.nextTs);
 
           if (ceEval.nextTs) this.lastProcessedCandleTs = ceEval.nextTs;
           else if (peEval.nextTs) this.lastProcessedCandleTs = peEval.nextTs;

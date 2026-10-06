@@ -87,11 +87,159 @@
 
 /* Mobile touch targets only; desktop sizing remains unchanged. */
 @media (max-width: 767px) {
+  :root {
+    --mobile-nav-height: 64px;
+    --mobile-actions-height: 60px;
+  }
+
   button,
   input,
-  select {
+  select,
+  textarea {
+    min-height: 44px !important;
+  }
+
+  button { min-width: 44px !important; }
+
+  input[type='checkbox'], input[type='radio'] {
+    min-height: 18px !important;
+    min-width: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .mobile-checkbox-target {
+    display: inline-flex;
+    width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  label:has(input[type='radio']) { min-height: 44px; }
+
+  .mobile-layout main a[href*='tradingview'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
     min-height: 44px;
   }
+
+  select, textarea { font-size: 16px !important; }
+
+  .mobile-layout main {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + 16px);
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-layout-with-actions main {
+    padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-actions-height) + env(safe-area-inset-bottom) + 16px);
+  }
+
+  .mobile-bottom-nav {
+    height: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+    padding-top: 4px;
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+
+  .mobile-bottom-nav > div { height: 60px; }
+
+  .mobile-trading-actions {
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+    min-height: var(--mobile-actions-height);
+    padding-bottom: 8px !important;
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .mobile-app-header {
+    height: calc(56px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    flex-shrink: 0;
+  }
+
+  .mobile-sidebar {
+    width: min(288px, calc(100vw - 44px));
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .mobile-account-sheet {
+    max-height: calc(100dvh - env(safe-area-inset-top) - 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-auth-page {
+    padding-top: calc(16px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-auth-link { display: inline-flex; min-height: 44px; align-items: center; }
+
+  .mobile-connect-overlay {
+    z-index: 80;
+    padding-top: calc(8px + env(safe-area-inset-top));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+
+  .mobile-connect-panel {
+    max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px);
+    overscroll-behavior: contain;
+  }
+
+  .mobile-chart-panel {
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom) + 8px);
+    max-height: calc(100dvh - var(--mobile-nav-height) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 24px);
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-chart-tooltip {
+    left: 8px !important;
+    max-width: calc(100% - 16px);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-chart-viewport { flex: none; height: clamp(280px, 55dvh, 420px); }
+
+  .mobile-pagination {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    width: 100%;
+  }
+
+  .mobile-filter-option { min-height: 44px; display: flex; align-items: center; }
+
+  .mobile-filter-menu { max-height: min(320px, 50dvh); overflow-y: auto; overscroll-behavior: contain; }
+
+  /* Seven 44px calendar columns fit inside a 360px viewport. */
+  .react-datepicker__day-name, .react-datepicker__day {
+    width: 44px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .react-datepicker__day { height: 44px !important; line-height: 44px !important; }
+  .react-datepicker__navigation { width: 44px; height: 44px; }
+  .react-datepicker__current-month { min-height: 40px; display: flex; align-items: center; justify-content: center; }
+  .react-datepicker__time-list-item { min-height: 44px !important; }
 
   input:not([type='checkbox']):not([type='radio']) {
     font-size: 16px;

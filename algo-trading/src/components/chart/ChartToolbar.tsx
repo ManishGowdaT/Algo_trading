@@ -126,7 +126,7 @@ export const ChartToolbar: React.FC<ChartToolbarProps> = ({
 
         {/* Indicators Popover Panel */}
         {panelOpen && (
-          <div className="absolute right-0 top-9 w-72 max-md:fixed max-md:inset-x-2 max-md:bottom-[calc(4.5rem+env(safe-area-inset-bottom))] max-md:top-auto max-md:right-auto max-md:w-auto max-md:max-w-none max-md:max-h-[calc(100vh-8rem)] max-md:max-h-[calc(100dvh-8rem)] max-md:overflow-y-auto max-md:rounded-2xl max-md:p-4 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
+          <div className="mobile-chart-panel absolute right-0 top-9 w-72 max-md:fixed max-md:inset-x-2 max-md:bottom-[calc(4.5rem+env(safe-area-inset-bottom))] max-md:top-auto max-md:right-auto max-md:w-auto max-md:max-w-none max-md:max-h-[calc(100vh-8rem)] max-md:max-h-[calc(100dvh-8rem)] max-md:overflow-y-auto max-md:rounded-2xl max-md:p-4 bg-white border border-[#E0E3EB] shadow-xl rounded p-3.5 z-50 space-y-3">
             <div className="flex items-center justify-between border-b border-[#E0E3EB] pb-2">
               <h4 className="text-xs font-bold uppercase text-[#1E222D] tracking-wider">
                 Chart Indicators

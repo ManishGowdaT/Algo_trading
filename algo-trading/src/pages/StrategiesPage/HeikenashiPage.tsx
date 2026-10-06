@@ -366,7 +366,7 @@ function HeikenashiPageInner({ scope, userId, accountId }: { scope: string; user
                                 </div>
 
                                 <div className="pt-1">
-                                    <div className="flex items-center justify-between p-2.5 bg-[#F8F9FA] rounded border border-[#E0E3EB]">
+                                    <div className="flex items-center justify-between max-md:gap-2 max-md:flex-wrap p-2.5 bg-[#F8F9FA] rounded border border-[#E0E3EB]">
                                         <div className="flex items-center gap-2">
                                             <ShieldAlert className="w-4 h-4 text-[#0052FF]" />
                                             <div>
@@ -374,13 +374,15 @@ function HeikenashiPageInner({ scope, userId, accountId }: { scope: string; user
                                                 <p className="text-[10px] text-[#787B86] font-medium">Dual Candle Validation</p>
                                             </div>
                                         </div>
-                                        <input
-                                            type="checkbox"
-                                            checked={needConfirmation}
-                                            onChange={(e) => setNeedConfirmation(e.target.checked)}
-                                            disabled={isRunning}
-                                            className="w-4 h-4 text-[#0052FF] rounded border-[#E0E3EB]"
-                                        />
+                                        <label className="mobile-checkbox-target contents" aria-label="Enable higher timeframe confirmation">
+                                            <input
+                                                type="checkbox"
+                                                checked={needConfirmation}
+                                                onChange={(e) => setNeedConfirmation(e.target.checked)}
+                                                disabled={isRunning}
+                                                className="w-4 h-4 text-[#0052FF] rounded border-[#E0E3EB]"
+                                            />
+                                        </label>
                                     </div>
 
                                     {needConfirmation && (
@@ -410,18 +412,20 @@ function HeikenashiPageInner({ scope, userId, accountId }: { scope: string; user
                                     <p className="text-[10px] text-[#787B86] font-medium">Transmit real orders to broker API</p>
                                 </div>
                             </div>
-                            <input
-                                type="checkbox"
-                                checked={liveTradingConsent}
-                                onChange={(e) => setLiveTradingConsent(e.target.checked)}
-                                disabled={isRunning}
-                                className="w-4 h-4 text-[#F23645] rounded border-[#E0E3EB]"
-                            />
+                            <label className="mobile-checkbox-target contents" aria-label="Enable live trading">
+                                <input
+                                    type="checkbox"
+                                    checked={liveTradingConsent}
+                                    onChange={(e) => setLiveTradingConsent(e.target.checked)}
+                                    disabled={isRunning}
+                                    className="w-4 h-4 text-[#F23645] rounded border-[#E0E3EB]"
+                                />
+                            </label>
                         </div>
 
                         {state !== 'STOPPED' && (
                             <div className="mt-4 bg-white p-4 rounded border border-[#E0E3EB] shadow-sm">
-                                <div className="flex items-center justify-between mb-3 border-b border-[#E0E3EB] pb-2">
+                                <div className="flex items-center justify-between max-md:gap-2 max-md:flex-wrap mb-3 border-b border-[#E0E3EB] pb-2">
                                     <h3 className="text-xs font-bold uppercase text-[#0052FF]">Position Monitor</h3>
                                     <span className="text-[10px] font-semibold text-[#089981]">Active Engine Feed</span>
                                 </div>
@@ -506,7 +510,7 @@ function HeikenashiPageInner({ scope, userId, accountId }: { scope: string; user
                             {strikeMode !== 'ATM' && (
                                 <div>
                                     <label className="text-[10px] font-bold uppercase text-[#787B86] mb-1 block">Strike Offset Depth</label>
-                                    <div className="flex items-center justify-between p-1 bg-[#F0F3FA] border border-[#E0E3EB] rounded">
+                                    <div className="flex items-center justify-between max-md:gap-2 max-md:flex-wrap p-1 bg-[#F0F3FA] border border-[#E0E3EB] rounded">
                                         <button
                                             onClick={() => setStrikeDepth(Math.max(1, strikeDepth - 1))}
                                             disabled={isRunning}

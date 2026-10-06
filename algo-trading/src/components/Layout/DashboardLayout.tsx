@@ -13,7 +13,7 @@ const DashboardLayout: React.FC = () => {
     const openMobileNav = useCallback(() => setIsMobileNavOpen(true), []);
 
     return (
-        <div className="flex min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] text-[#1E222D]">
+        <div className={`mobile-layout ${isActionScreen ? 'mobile-layout-with-actions' : ''} flex min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] text-[#1E222D]`}>
             <Sidebar isMobileOpen={isMobileNavOpen} onMobileClose={closeMobileNav} />
             {isMobileNavOpen && (
                 <button
@@ -29,7 +29,7 @@ const DashboardLayout: React.FC = () => {
                     <Outlet />
                 </main>
             </div>
-            {!isActionScreen && <MobileBottomNav />}
+            <MobileBottomNav />
         </div>
     );
 };

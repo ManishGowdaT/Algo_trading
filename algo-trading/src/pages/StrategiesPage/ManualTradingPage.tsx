@@ -176,10 +176,10 @@ const ManualTradingPage: React.FC = () => {
               </div>
               <Activity className="w-3.5 h-3.5 text-[#089981]" />
             </div>
-            <p className="text-2xl font-bold tabular-nums tracking-tight">
+            <p className="text-2xl max-md:text-xl max-md:break-words font-bold tabular-nums tracking-tight">
               {connectStatus === 'connected' && margins ? formatRupees(margins.net) : 'Broker Disconnected'}
             </p>
-            <div className="mt-4 flex items-center justify-between pt-3 border-t border-[#434651]/40 text-xs">
+            <div className="mt-4 flex max-md:flex-wrap max-md:gap-3 items-center justify-between pt-3 border-t border-[#434651]/40 text-xs">
               <div>
                 <p className="text-[10px] font-medium text-[#787B86] uppercase">Margin Used</p>
                 <p className="font-bold tabular-nums mt-0.5">
@@ -218,7 +218,7 @@ const ManualTradingPage: React.FC = () => {
       </div>
 
       <div
-        className="fixed inset-x-0 bottom-0 z-[45] hidden gap-2 border-t border-[#E0E3EB] bg-white/95 px-3 pt-2 shadow-[0_-4px_16px_rgba(30,34,45,0.08)] backdrop-blur max-md:flex"
+        className="mobile-trading-actions fixed inset-x-0 bottom-0 z-[45] hidden gap-2 border-t border-[#E0E3EB] bg-white/95 px-3 pt-2 shadow-[0_-4px_16px_rgba(30,34,45,0.08)] backdrop-blur max-md:flex"
         style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}
         role="toolbar"
         aria-label="Manual trading actions"

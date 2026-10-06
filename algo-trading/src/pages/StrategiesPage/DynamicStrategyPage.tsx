@@ -124,12 +124,12 @@ export default function DynamicStrategyPage() {
     <StrategiesLayout title={manifest.name} subtitle={manifest.description} backTo="/strategies">
       <div className="space-y-6">
         {/* Controls Header */}
-        <div className="flex items-center justify-between bg-white rounded border border-[#E0E3EB] p-4 shadow-sm">
+        <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-3 bg-white rounded border border-[#E0E3EB] p-4 shadow-sm">
           <div>
             <span className="text-xs font-bold text-[#787B86] uppercase tracking-wider">Engine v{manifest.engineVersion}</span>
             <h2 className="text-sm font-bold text-[#1E222D]">{manifest.name}</h2>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 max-md:flex-wrap max-md:[&>button]:flex-1">
             {!status?.isRunning ? (
               <button
                 type="button"
@@ -189,7 +189,7 @@ export default function DynamicStrategyPage() {
             {status.logs && status.logs.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-xs font-semibold text-[#787B86]">Execution Logs</h4>
-                <div className="p-3 bg-[#1E222D] text-white rounded text-[11px] font-mono max-h-48 overflow-y-auto space-y-1">
+                <div className="p-3 bg-[#1E222D] text-white rounded text-[11px] font-mono max-h-48 overflow-y-auto max-md:whitespace-pre-wrap max-md:break-words space-y-1">
                   {status.logs.map((log: string, idx: number) => (
                     <div key={idx}>{log}</div>
                   ))}

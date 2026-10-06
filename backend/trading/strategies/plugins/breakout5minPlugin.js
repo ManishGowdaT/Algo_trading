@@ -81,7 +81,13 @@ class Breakout5minPlugin extends BaseStrategy {
       return new Date(m[1], m[2] - 1, m[3], m[4], m[5], m[6] || 0).getTime();
     };
 
-    const completed = candles.filter(c => {
+    // Feed buffers use Unix seconds; retain support for existing REST ts candles.
+    const normalized = candles.map(c => {
+      if (c.ts || !Number.isFinite(c.time)) return c;
+      const date = new Date(c.time * 1000);
+      return Number.isFinite(date.getTime()) ? { ...c, ts: date.toISOString() } : c;
+    });
+    const completed = normalized.filter(c => {
       const ms = parseCandleTsMs(c.ts);
       return ms !== null && ms < currentMinuteStartMs;
     });

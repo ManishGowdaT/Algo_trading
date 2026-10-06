@@ -313,9 +313,9 @@ export default function TradesPage() {
                             {isStrategyDropdownOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[100]" onClick={() => setIsStrategyDropdownOpen(false)} />
-                                    <div className="absolute top-[105%] left-0 w-full z-[110] bg-white border border-[#E0E3EB] rounded shadow-xl py-1">
+                                    <div className="mobile-filter-menu absolute top-[105%] left-0 w-full z-[110] bg-white border border-[#E0E3EB] rounded shadow-xl py-1">
                                         <div
-                                            className={`px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${!strategyIdFilter ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
+                                            className={`mobile-filter-option px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${!strategyIdFilter ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
                                             onClick={() => {
                                                 setStrategyIdFilter('');
                                                 setIsStrategyDropdownOpen(false);
@@ -327,7 +327,7 @@ export default function TradesPage() {
                                         {strategies.map(s => (
                                             <div
                                                 key={s._id}
-                                                className={`px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${strategyIdFilter === s._id ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
+                                                className={`mobile-filter-option px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${strategyIdFilter === s._id ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
                                                 onClick={() => {
                                                     setStrategyIdFilter(s._id);
                                                     setIsStrategyDropdownOpen(false);
@@ -360,7 +360,7 @@ export default function TradesPage() {
                             {isExitReasonDropdownOpen && (
                                 <>
                                     <div className="fixed inset-0 z-[100]" onClick={() => setIsExitReasonDropdownOpen(false)} />
-                                    <div className="absolute top-[105%] left-0 w-full z-[110] bg-white border border-[#E0E3EB] rounded shadow-xl py-1">
+                                    <div className="mobile-filter-menu absolute top-[105%] left-0 w-full z-[110] bg-white border border-[#E0E3EB] rounded shadow-xl py-1">
                                         {[
                                             { value: '', label: 'All Exit Reasons' },
                                             { value: 'Target', label: 'Target' },
@@ -371,7 +371,7 @@ export default function TradesPage() {
                                         ].map(option => (
                                             <div
                                                 key={option.value}
-                                                className={`px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${exitReasonFilter === option.value ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
+                                                className={`mobile-filter-option px-3 py-1.5 hover:bg-[#F0F3FA] cursor-pointer text-xs font-semibold flex items-center justify-between transition-colors ${exitReasonFilter === option.value ? 'text-[#0052FF] bg-[#0052FF]/10' : 'text-[#434651]'}`}
                                                 onClick={() => {
                                                     setExitReasonFilter(option.value);
                                                     setIsExitReasonDropdownOpen(false);
@@ -429,7 +429,7 @@ export default function TradesPage() {
                                     className="bg-[#F0F3FA] border border-[#E0E3EB] rounded pl-8 pr-2 py-1.5 text-xs text-[#1E222D] outline-none focus:border-[#0052FF] font-medium w-full"
                                 />
                             </div>
-                            <div className="relative z-[90]">
+                            <div className="relative z-[90] max-md:z-auto">
                                 <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#787B86] z-10" />
                                 <input
                                     type="time"
@@ -438,7 +438,7 @@ export default function TradesPage() {
                                     className="bg-[#F0F3FA] border border-[#E0E3EB] rounded pl-8 pr-2 py-1.5 text-xs text-[#1E222D] outline-none focus:border-[#0052FF] font-medium w-full"
                                 />
                             </div>
-                            <div className="relative z-[90]">
+                            <div className="relative z-[90] max-md:z-auto">
                                 <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#787B86] z-10" />
                                 <input
                                     type="time"
@@ -450,7 +450,7 @@ export default function TradesPage() {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex w-full xl:w-auto items-center gap-2">
+                        <div className="flex w-full xl:w-auto items-center gap-2 max-md:grid max-md:grid-cols-2">
                             <button
                                 onClick={() => {
                                     const timeError = validateTradesTimeRange(timeFrom, timeTo)
@@ -566,7 +566,7 @@ export default function TradesPage() {
                                 trades.map((trade) => (
                                     <tr key={trade._id} className="hover:bg-[#F8F9FA] transition-colors">
                                         <td className="px-4 py-2 text-xs font-medium text-[#434651]">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 max-md:flex-wrap">
                                                 <Clock className="w-3 h-3 text-[#787B86]" />
                                                 <span>{formatDate(trade.createdAt)}</span>
                                             </div>
@@ -630,7 +630,7 @@ export default function TradesPage() {
                         <details key={`mobile-${trade._id}`} className="rounded-xl border border-[#E0E3EB] bg-white p-3 shadow-sm">
                             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
                                 <div className="min-w-0">
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 max-md:flex-wrap">
                                         <span className="truncate text-xs font-bold uppercase text-[#1E222D]">{trade.index}</span>
                                         <span className="rounded bg-[#0052FF]/10 px-1.5 py-0.5 text-[9px] font-bold uppercase text-[#0052FF]">{trade.strategyId?.name || 'Manual'}</span>
                                     </div>
@@ -666,7 +666,7 @@ export default function TradesPage() {
                     <p className="text-[11px] font-semibold text-[#787B86]">
                         Showing <span className="text-[#1E222D] font-bold">{trades.length}</span> of <span className="text-[#1E222D] font-bold">{totalResults}</span> Trades
                     </p>
-                    <div className="flex items-center gap-1.5">
+                    <div className="mobile-pagination flex items-center gap-1.5 max-md:max-w-full max-md:flex-wrap max-md:justify-center">
                         <button
                             disabled={page === 1}
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -674,7 +674,7 @@ export default function TradesPage() {
                         >
                             <ChevronLeft className="w-4 h-4 text-[#434651]" />
                         </button>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 max-md:max-w-full max-md:flex-wrap max-md:justify-center">
                             {(() => {
                                 const pages: (number | string)[] = [];
                                 if (totalPages <= 5) {
@@ -718,7 +718,7 @@ export default function TradesPage() {
 
             <dialog
                 ref={deleteDialogRef}
-                className="w-[calc(100%-2rem)] max-w-md rounded-lg border border-[#E0E3EB] bg-white p-5 text-[#1E222D] shadow-xl backdrop:bg-slate-950/50"
+                className="w-[calc(100%-2rem)] max-w-md max-md:max-h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-2rem)] max-md:overflow-y-auto rounded-lg border border-[#E0E3EB] bg-white p-5 text-[#1E222D] shadow-xl backdrop:bg-slate-950/50"
                 aria-labelledby="delete-trade-title"
                 aria-describedby="delete-trade-description"
                 onCancel={(event) => {

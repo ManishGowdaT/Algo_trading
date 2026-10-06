@@ -303,7 +303,7 @@ const DashboardPage: React.FC = () => {
           const isPositive = (change ?? 0) >= 0;
 
           return (
-            <div key={cfg.id} className="min-w-[136px] shrink-0 snap-start rounded border border-[#E0E3EB] bg-white px-2.5 py-2 shadow-sm">
+            <button type="button" key={cfg.id} onClick={() => setSelectedUnderlying(cfg.underlying)} aria-pressed={selectedUnderlying === cfg.underlying} className={`min-w-[136px] shrink-0 snap-start rounded border text-left bg-white px-2.5 py-2 shadow-sm ${selectedUnderlying === cfg.underlying ? 'border-[#0052FF]' : 'border-[#E0E3EB]'}`}>
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-[10px] font-bold text-[#1E222D]">{cfg.name}</span>
                 <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${data.isOffline ? 'bg-[#FF9800]' : 'bg-[#089981]'}`} />
@@ -312,7 +312,7 @@ const DashboardPage: React.FC = () => {
                 <span className="text-xs font-bold tabular-nums text-[#1E222D]">{formatNumber(ltp)}</span>
                 {hasData && <span className={`text-[10px] font-semibold tabular-nums ${isPositive ? 'text-[#089981]' : 'text-[#F23645]'}`}>{isPositive ? '+' : ''}{change?.toFixed(2)}</span>}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -358,7 +358,7 @@ const DashboardPage: React.FC = () => {
         />
 
         {/* Institutional Chart Container */}
-        <div className="w-full flex-1 h-[calc(100vh-210px)] min-h-[720px] max-md:h-[clamp(280px,55dvh,420px)] max-md:min-h-[280px] relative rounded border border-[#E0E3EB] overflow-hidden bg-white">
+        <div className="mobile-chart-viewport w-full flex-1 h-[calc(100vh-210px)] min-h-[720px] max-md:h-[clamp(280px,55dvh,420px)] max-md:min-h-[280px] relative rounded border border-[#E0E3EB] overflow-hidden bg-white">
           {chartLoading && (
             <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex items-center justify-center z-10">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E0E3EB] rounded shadow-md text-xs font-semibold text-[#1E222D]">

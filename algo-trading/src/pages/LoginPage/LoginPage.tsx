@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
+    <div className="mobile-auth-page min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
       <div className="max-w-sm w-full">
         {/* Header Branding */}
         <div className="text-center mb-6">
@@ -79,13 +79,13 @@ const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-10 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]"
+                  className="w-full pl-9 pr-10 max-md:pr-12 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]"
+                  className="absolute right-1 top-1/2 flex h-9 w-9 max-md:h-11 max-md:w-11 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -111,7 +111,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="mt-6 text-center">
-          <Link to="/register" className="text-xs font-semibold text-[#0052FF] hover:underline">
+          <Link to="/register" className="mobile-auth-link text-xs font-semibold text-[#0052FF] hover:underline">
             Create New Account
           </Link>
           <p className="text-[#787B86] text-[10px] font-bold uppercase tracking-wider">Enterprise Algo Terminal v2.4</p>

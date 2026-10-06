@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
     const isStrategyActive = strategies.some(s => isActive(s.path));
 
     return (
-        <aside className={`w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none max-md:h-[100dvh] max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[60] max-md:w-72 max-md:transition-transform max-md:duration-200 ${isMobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}`}>
+        <aside className={`mobile-sidebar w-56 bg-white border-r border-[#E0E3EB] h-screen flex flex-col sticky top-0 z-40 select-none max-md:h-[100dvh] max-md:fixed max-md:left-0 max-md:top-0 max-md:bottom-0 max-md:z-[60] max-md:w-72 max-md:transition-transform max-md:duration-200 ${isMobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}`}>
             {/* Platform Branding */}
             <div className="h-14 px-4 border-b border-[#E0E3EB] flex items-center gap-2.5">
                 <div className="w-7 h-7 bg-[#0052FF] rounded flex items-center justify-center text-white shadow-sm">

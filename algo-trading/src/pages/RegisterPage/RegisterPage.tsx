@@ -29,7 +29,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
+    <div className="mobile-auth-page min-h-screen max-md:min-h-[100dvh] bg-[#F8F9FA] flex items-center justify-center p-4 select-none">
       <div className="max-w-sm w-full">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center p-2.5 bg-[#0052FF] rounded-md shadow-sm mb-3">
@@ -59,8 +59,8 @@ const RegisterPage: React.FC = () => {
               Password
               <div className="relative mt-1">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#787B86]" />
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} placeholder="At least 8 characters" className="w-full pl-9 pr-10 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]" />
-                <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} placeholder="At least 8 characters" className="w-full pl-9 pr-10 max-md:pr-12 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]" />
+                <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute right-1 top-1/2 flex h-9 w-9 max-md:h-11 max-md:w-11 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]" aria-label={showPassword ? 'Hide password' : 'Show password'}>
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -70,8 +70,8 @@ const RegisterPage: React.FC = () => {
               Confirm Password
               <div className="relative mt-1">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#787B86]" />
-                <input type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} placeholder="Repeat password" className="w-full pl-9 pr-10 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]" />
-                <button type="button" onClick={() => setShowConfirmPassword((visible) => !visible)} className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]" aria-label={showConfirmPassword ? 'Hide password confirmation' : 'Show password confirmation'}>
+                <input type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} placeholder="Repeat password" className="w-full pl-9 pr-10 max-md:pr-12 py-2 bg-[#F0F3FA] border border-[#E0E3EB] rounded text-xs font-semibold text-[#1E222D] outline-none focus:border-[#0052FF]" />
+                <button type="button" onClick={() => setShowConfirmPassword((visible) => !visible)} className="absolute right-1 top-1/2 flex h-9 w-9 max-md:h-11 max-md:w-11 -translate-y-1/2 items-center justify-center rounded text-[#787B86] hover:bg-[#E0E3EB]" aria-label={showConfirmPassword ? 'Hide password confirmation' : 'Show password confirmation'}>
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -84,7 +84,7 @@ const RegisterPage: React.FC = () => {
         </div>
 
         <div className="mt-5 text-center">
-          <Link to="/login" className="text-xs font-semibold text-[#0052FF] hover:underline">Back to Sign In</Link>
+          <Link to="/login" className="mobile-auth-link text-xs font-semibold text-[#0052FF] hover:underline">Back to Sign In</Link>
         </div>
       </div>
     </div>

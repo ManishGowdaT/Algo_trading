@@ -59,14 +59,14 @@ export default function MpinModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 max-md:p-2" role="dialog" aria-modal="true" aria-label="Connect to Angel One">
-      <div className="w-full max-w-md max-h-[calc(100vh-2rem)] max-md:max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 max-md:p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+    <div className="mobile-connect-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 max-md:p-2" role="dialog" aria-modal="true" aria-label="Connect to Angel One">
+      <div className="mobile-connect-panel w-full max-w-md max-h-[calc(100vh-2rem)] max-md:max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 max-md:p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-base font-semibold">Connect to Angel One</h3>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Credentials are used for this connection only.</p>
           </div>
-          <button type="button" onClick={closeModal} disabled={isWorking} className="rounded-xl p-1 text-slate-500 hover:bg-slate-100 disabled:opacity-60" aria-label="Close">
+          <button type="button" onClick={closeModal} disabled={isWorking} className="rounded-xl p-1 max-md:shrink-0 max-md:min-h-11 max-md:min-w-11 max-md:flex max-md:items-center max-md:justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-60" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -87,13 +87,13 @@ export default function MpinModal({
                   value={form[key]}
                   onChange={(event) => update(key, event.target.value)}
                   disabled={isWorking}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 pr-11 text-sm text-slate-900 outline-none focus:ring-4 focus:ring-cyan-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-50"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 pr-11 max-md:pr-12 text-sm text-slate-900 outline-none focus:ring-4 focus:ring-cyan-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-50"
                 />
                 <button
                   type="button"
                   onClick={() => setVisibleFields((current) => ({ ...current, [key]: !current[key] }))}
                   disabled={isWorking}
-                  className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-60 dark:hover:bg-white/10"
+                  className="absolute right-1 top-1/2 flex h-9 w-9 max-md:h-11 max-md:w-11 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-60 dark:hover:bg-white/10"
                   aria-label={visibleFields[key] ? `Hide ${label}` : `Show ${label}`}
                 >
                   {visibleFields[key] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -105,7 +105,7 @@ export default function MpinModal({
 
         {error && <p className="mt-3 text-sm text-red-600" role="alert">{error}</p>}
 
-        <div className="mt-6 flex justify-end gap-2">
+        <div className="mt-6 flex justify-end gap-2 max-md:[&>button]:flex-1">
           <button type="button" onClick={closeModal} disabled={isWorking} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-100 disabled:opacity-70">Cancel</button>
           <button type="button" onClick={() => void handleSubmit()} disabled={isWorking} className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300 disabled:opacity-70">{isWorking ? 'Connecting…' : 'Connect'}</button>
         </div>

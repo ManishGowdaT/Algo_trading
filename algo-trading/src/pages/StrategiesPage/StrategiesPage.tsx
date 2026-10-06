@@ -118,7 +118,7 @@ export default function StrategiesPage() {
             >
               <CardHeader className="p-4 pb-2">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 max-md:min-w-0">
                     <div className="w-7 h-7 bg-[#F0F3FA] rounded flex items-center justify-center text-[#0052FF] group-hover:bg-[#0052FF] group-hover:text-white transition-colors">
                       <IconComp className="w-3.5 h-3.5" />
                     </div>
@@ -131,7 +131,7 @@ export default function StrategiesPage() {
                 <CardDescription>{c.description}</CardDescription>
               </CardHeader>
 
-              <CardContent className="mt-2 flex items-center justify-between border-t border-[#E0E3EB] pt-3 text-[10px] font-semibold text-[#787B86]">
+              <CardContent className="mt-2 flex items-center justify-between max-md:flex-wrap max-md:gap-2 border-t border-[#E0E3EB] pt-3 text-[10px] font-semibold text-[#787B86]">
                 <span>Status: Ready</span>
                 <span className="text-[#089981] font-bold">Institutional Grade</span>
               </CardContent>

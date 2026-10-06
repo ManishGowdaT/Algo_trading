@@ -390,13 +390,15 @@ function FiveMinBreakoutPageInner({ scope, userId, accountId }: { scope: string;
                       <p className="text-[10px] text-[#787B86] font-medium">Transmit real orders to broker API</p>
                     </div>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={liveTradingConsent}
-                    onChange={(e) => setLiveTradingConsent(e.target.checked)}
-                    disabled={isRunning}
-                    className="w-4 h-4 text-[#F23645] rounded border-[#E0E3EB]"
-                  />
+                  <label className="mobile-checkbox-target contents" aria-label="Enable live trading">
+                      <input
+                          type="checkbox"
+                          checked={liveTradingConsent}
+                          onChange={(e) => setLiveTradingConsent(e.target.checked)}
+                          disabled={isRunning}
+                          className="w-4 h-4 text-[#F23645] rounded border-[#E0E3EB]"
+                      />
+                  </label>
                 </div>
               </div>
             </div>
@@ -404,7 +406,7 @@ function FiveMinBreakoutPageInner({ scope, userId, accountId }: { scope: string;
             {/* Position Monitor Panel */}
             {state !== 'STOPPED' && (
               <div className="mt-4 bg-white p-4 rounded border border-[#E0E3EB] shadow-sm">
-                <div className="flex items-center justify-between mb-3 border-b border-[#E0E3EB] pb-2">
+                <div className="flex items-center justify-between max-md:gap-2 max-md:flex-wrap mb-3 border-b border-[#E0E3EB] pb-2">
                   <h3 className="text-xs font-bold uppercase text-[#0052FF]">Breakout Trade Monitor</h3>
                   <span className="text-[10px] font-semibold text-[#089981]">Active Engine Feed</span>
                 </div>
@@ -452,7 +454,7 @@ function FiveMinBreakoutPageInner({ scope, userId, accountId }: { scope: string;
             </h3>
 
             <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
                 <div className="bg-[#F8F9FA] border border-[#E0E3EB] p-3 rounded">
                   <p className="text-[10px] font-bold text-[#0052FF] uppercase mb-1">CE Premium</p>
                   <p className="text-xs font-bold text-[#1E222D]">{monitoredPremiums.ce}</p>

@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
     };
 
     return (
-        <header className="h-14 max-md:h-14 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
+        <header className="mobile-app-header h-14 max-md:h-14 bg-white border-b border-[#E0E3EB] px-5 max-md:px-3 flex items-center justify-between sticky top-0 z-30 select-none">
             {/* Left Page Title & Live Badge */}
             <div className="flex items-center gap-2 md:gap-3 min-w-0">
                 <button
@@ -71,6 +71,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
             <div className="flex items-center gap-2 md:gap-4 shrink-0">
                 {/* Angel One Broker Connection Button */}
                 <button
+                    aria-label={connectStatus === 'connected' ? 'Disconnect Angel One broker' : 'Connect Angel One broker'}
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
                     disabled={connectStatus !== 'connected' && (!backendReady || connectStatus === 'connecting')}
                     title={connectStatus !== 'connected' && !backendReady ? backendMessage : undefined}
@@ -111,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 <div className="hidden h-4 w-[1px] bg-[#E0E3EB] sm:block" />
 
                 {/* Institutional User Profile Dropdown */}
-                <div className="group relative">
+                <div className="group relative max-md:hidden">
                     <button aria-label="Open account menu" className="flex h-11 items-center gap-1.5 rounded-lg border border-transparent px-1.5 hover:bg-[#F0F3FA] hover:border-[#E0E3EB] transition-colors">
                         <div className="w-7 h-7 bg-[#0052FF] rounded flex items-center justify-center text-white font-bold text-xs">
                             <UserIcon className="w-4 h-4" />

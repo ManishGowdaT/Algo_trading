@@ -460,7 +460,7 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
       {activeTooltip && (
         <div
           style={{ left: `${activeTooltip.x}px`, top: `${activeTooltip.y}px` }}
-          className="absolute z-30 pointer-events-none bg-white/95 backdrop-blur-md border border-[#E0E3EB] shadow-xl rounded-lg p-2.5 text-xs text-[#1E222D] min-w-[200px] max-w-[calc(100vw-2rem)] space-y-1.5 transition-all duration-150"
+          className="mobile-chart-tooltip absolute z-30 pointer-events-none bg-white/95 backdrop-blur-md border border-[#E0E3EB] shadow-xl rounded-lg p-2.5 text-xs text-[#1E222D] min-w-[200px] max-w-[calc(100vw-2rem)] space-y-1.5 transition-all duration-150"
         >
           <div className="flex items-center justify-between gap-2 border-b border-[#E0E3EB] pb-1">
             <span

@@ -21,7 +21,7 @@ const MobileStrategyActions: React.FC<MobileStrategyActionsProps> = ({
     onExit,
 }) => (
     <div
-        className="fixed inset-x-0 bottom-0 z-[45] hidden gap-2 border-t border-[#E0E3EB] bg-white/95 px-3 pt-2 shadow-[0_-4px_16px_rgba(30,34,45,0.08)] backdrop-blur max-md:flex"
+        className="mobile-trading-actions fixed inset-x-0 bottom-0 z-[45] hidden gap-2 border-t border-[#E0E3EB] bg-white/95 px-3 pt-2 shadow-[0_-4px_16px_rgba(30,34,45,0.08)] backdrop-blur max-md:flex"
         style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}
         role="toolbar"
         aria-label="Strategy actions"
