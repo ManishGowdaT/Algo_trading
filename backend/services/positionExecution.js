@@ -45,8 +45,16 @@ class PositionExecution {
     if (this.suspended) throw unresolved('Execution manager was suspended for recovery.');
     return coordinate(this.context, () => accounts.run(this.context, async () => {
       if (this.suspended) throw unresolved('Execution manager was suspended for recovery.');
-      await accounts.validate(this.context);
-      await this.prepareOwnership();
+      try {
+        await accounts.validate(this.context);
+        await this.prepareOwnership();
+      } catch (error) {
+        // This gate runs before callback work and before OrderIntent creation.
+        // Marking it lets the scanner retain a still-fresh signal for a later
+        // admission attempt without ever retrying an ambiguous broker submit.
+        error.executionAdmissionFailure = true;
+        throw error;
+      }
       const owner = owners.get(this.key);
       if (owner && owner !== this && owner.hasExposure()) throw unresolved('Position already has an execution owner.');
       owners.set(this.key, this);
@@ -454,7 +462,8 @@ class PositionExecution {
     }).catch(error => { if (this.hasExposure()) this.degraded(error); }).finally(() => { this.eventsPromise = null; });
   }
   async entry(contract, signalPrice, trendSide) {
-    return this.run(async () => {
+    try {
+      return await this.run(async () => {
       if (!this.runner.isRunning || !this.runner.brokerReady || this.hasExposure()) return;
       const strategyId = await this.strategy();
       const existing = await Position.findOne({ ...this.scope(), strategyId, status: { $ne: 'CLOSED' } });
@@ -499,7 +508,14 @@ class PositionExecution {
       if (!position && terminal.has(intent.status)) { this.clearEmptyEntry(); return; }
       if (!terminal.has(intent.status)) throw unresolved('BUY remains open, partially filled or unknown.');
       if (position) await this.protect(position, this.initialStop(position));
-    });
+      return { accepted: true, status: this.entryIntentId ? 'MANAGED' : 'COMPLETED' };
+      });
+    } catch (error) {
+      if (error.executionAdmissionFailure && !this.entryIntentId && !this.positionId) {
+        return { accepted: false, retryableBeforeSubmit: true, reason: error.code || 'EXECUTION_ADMISSION_UNAVAILABLE' };
+      }
+      throw error;
+    }
   }
   async cancel(target, position, book) {
     await this.observe(target, book);

@@ -30,7 +30,7 @@ async function fixture(t, { readyFeed = true } = {}) {
   rows.forEach((row, i) => active.setActiveAccount({ userId: row.userId, brokerAccountId: row._id,
     clientCode: row.brokerClientId, sessionId: sessions[i], sessionGeneration: 1, ownerGeneration: 0 }));
   const orders = new Map(rows.map(row => [String(row._id), []]));
-  const state = { calls: [], onPlace: null, onCancel: null, quote: 100, quoteTimestamp: () => Date.now(), bookFailure: false };
+  const state = { calls: [], onPlace: null, onCancel: null, quote: 100, quoteTimestamp: () => Date.now(), bookFailure: false, failFence: false };
   const server = http.createServer(async (req, res) => {
     try {
       const row = rows.find(item => String(item._id) === req.headers['x-broker-account-id']);
@@ -41,7 +41,10 @@ async function fixture(t, { readyFeed = true } = {}) {
       state.calls.push({ account: String(row._id), path: url.pathname, body, headers: req.headers });
       const list = orders.get(String(row._id));
       const respond = data => { res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(data)); };
-      if (url.pathname === '/internal/execution-fence') return respond({ accepted: true, ownerGeneration: body.generation });
+      if (url.pathname === '/internal/execution-fence') {
+        if (state.failFence) { res.statusCode = 503; return respond({ accepted: false }); }
+        return respond({ accepted: true, ownerGeneration: body.generation });
+      }
       if (url.pathname === '/angel/session-tokens') return respond({ status: true, active_user_id: String(row.userId), session_id: sessions[rows.indexOf(row)],
         client_code: row.brokerClientId, feed_token: 'test', jwt_token: 'test', api_key: 'test' });
       if (url.pathname === '/angel/status') return respond({ connected: true });

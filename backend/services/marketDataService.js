@@ -292,6 +292,10 @@ class AccountMarketDataService extends EventEmitter {
         exchange: builder.exchange,
         symboltoken: builder.symboltoken,
         interval: builder.interval,
+        role: builder.role,
+        closedAt: builder.activeCandle.candleStartMs + intervalMs,
+        deliveredAt: Date.now(),
+        synthetic: false,
         candle: closedCandle,
         candles: builder.candles
       });
@@ -315,6 +319,10 @@ class AccountMarketDataService extends EventEmitter {
           exchange: builder.exchange,
           symboltoken: builder.symboltoken,
           interval: builder.interval,
+          role: builder.role,
+          closedAt: ghostStartMs + intervalMs,
+          deliveredAt: Date.now(),
+          synthetic: true,
           candle: ghostCandle,
           candles: builder.candles
         });
@@ -454,6 +462,7 @@ class AccountMarketDataService extends EventEmitter {
         exchangeType: exchType,
         symboltoken: token,
         interval,
+        role,
         candles: [],
         activeCandle: null,
         lastProcessedTs: 0
@@ -469,14 +478,33 @@ class AccountMarketDataService extends EventEmitter {
         );
         if (res.ok && !this.destroyed && this.candleBuilders.get(key) === builder) {
           if (Array.isArray(data?.items)) {
+            const intervalMs = this.getIntervalMs(interval);
+            const timestampOf = value => {
+              if (Number.isFinite(Number(value)) && String(value).trim() !== '') {
+                const numeric = Number(value);
+                return numeric > 1e10 ? Math.floor(numeric / 1000) : numeric;
+              }
+              const text = String(value || '').trim();
+              const zoned = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(text);
+              return Math.floor(new Date(zoned ? text : `${text.replace(' ', 'T')}+05:30`).getTime() / 1000);
+            };
             const parsed = data.items.map(c => ({
-              time: Math.floor(new Date(c.ts.includes('+') ? c.ts : `${c.ts.replace(' ', 'T')}+05:30`).getTime() / 1000),
+              time: timestampOf(c.ts ?? c.time),
               open: Number(c.open),
               high: Number(c.high),
               low: Number(c.low),
               close: Number(c.close)
-            })).sort((a, b) => a.time - b.time);
-            builder.candles = parsed;
+            })).filter(c => Number.isFinite(c.time) && Number.isFinite(c.open) && Number.isFinite(c.high)
+              && Number.isFinite(c.low) && Number.isFinite(c.close)
+              && c.high >= Math.max(c.open, c.close) && c.low <= Math.min(c.open, c.close) && c.high >= c.low
+              && (c.time * 1000 + intervalMs <= Date.now()))
+              .sort((a, b) => a.time - b.time);
+            // Historical data may have been in flight while live ticks closed
+            // bars. Prefer live bars on overlap and never replace the active
+            // candle with an incomplete REST row.
+            const merged = new Map(parsed.map(candle => [candle.time, candle]));
+            for (const candle of builder.candles) merged.set(candle.time, candle);
+            builder.candles = [...merged.values()].sort((a, b) => a.time - b.time).slice(-200);
           }
         }
       } catch (err) {

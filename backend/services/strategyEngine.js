@@ -284,7 +284,7 @@ class SingleStrategyRunner {
       for (let offset = 1; offset <= 7; offset++) {
         const dateIso = this.shiftIsoDate(todayIso, -offset);
         try {
-          const response = await callAngelApi(`/market/candles?exchange=${encodeURIComponent(contract.exchange)}&symboltoken=${encodeURIComponent(token)}&interval=FIVE_MINUTE&date=${dateIso}`);
+          const response = await callAngelApi(`/market/candles?exchange=${encodeURIComponent(contract.exchange)}&symboltoken=${encodeURIComponent(token)}&interval=FIVE_MINUTE&date=${dateIso}`, 'GET', null, 5000);
           const candles = this.normalizeHistoricalCandles(response?.items);
           if (candles.length > 0) {
             this.previousDayCandles[side] = candles;
@@ -293,6 +293,10 @@ class SingleStrategyRunner {
           }
         } catch (err) {
           console.warn(`[${this.strategyName}] Previous-day candle warm-up failed for ${side.toUpperCase()} ${dateIso}:`, err.message);
+          // An error does not prove that this date was a holiday or had no
+          // candles. Do not silently initialize indicators from an older day
+          // after a rate limit, timeout or upstream outage.
+          break;
         }
       }
 
@@ -638,13 +642,7 @@ class SingleStrategyRunner {
           const ceEval = pluginInstance.analyze({ items: ceItems, lastProcessedTs: this.lastProcessedBreakoutCandles.get(ceKey) ?? null, indicators, userId: this.userId });
           const peEval = pluginInstance.analyze({ items: peItems, lastProcessedTs: this.lastProcessedBreakoutCandles.get(peKey) ?? null, indicators, userId: this.userId });
 
-          if (ceEval.nextTs) this.lastProcessedBreakoutCandles.set(ceKey, ceEval.nextTs);
-          if (peEval.nextTs) this.lastProcessedBreakoutCandles.set(peKey, peEval.nextTs);
-
-          if (ceEval.nextTs) this.lastProcessedCandleTs = ceEval.nextTs;
-          else if (peEval.nextTs) this.lastProcessedCandleTs = peEval.nextTs;
-
-          if (ceEval.isBreakout || peEval.isBreakout) {
+          if (!eventData?.synthetic && (ceEval.isBreakout || peEval.isBreakout)) {
             const isCE = ceEval.isBreakout;
             const activeEval = isCE ? ceEval : peEval;
             const contractToTrade = isCE ? this.ceContract : this.peContract;
@@ -654,14 +652,29 @@ class SingleStrategyRunner {
             this.target = activeEval.target;
 
             const signalMs = Date.now();
-            await this.executeEntry(contractToTrade, activeEval.entryPrice, isCE ? 'BULLISH' : 'BEARISH', {
+            let outcome;
+            try {
+              outcome = await this.submitSignalEntry(contractToTrade, activeEval.entryPrice, isCE ? 'BULLISH' : 'BEARISH', activeEval.nextTs, {
               candleDetectedTs: scanStartTs,
               signalGeneratedMs: signalMs,
               signalGeneratedTs: formatPrecisionTime(new Date(signalMs)),
               fetchMs: fetchEndMs - fetchStartMs,
               calcMs: 0
             });
+            } finally {
+              // An exception can follow durable submission. Consume both
+              // evaluated legs unless admission explicitly proved no submit.
+              if (!outcome?.retryableBeforeSubmit) {
+                if (ceEval.nextTs) this.lastProcessedBreakoutCandles.set(ceKey, ceEval.nextTs);
+                if (peEval.nextTs) this.lastProcessedBreakoutCandles.set(peKey, peEval.nextTs);
+              }
+            }
+          } else {
+            if (ceEval.nextTs) this.lastProcessedBreakoutCandles.set(ceKey, ceEval.nextTs);
+            if (peEval.nextTs) this.lastProcessedBreakoutCandles.set(peKey, peEval.nextTs);
           }
+          if (ceEval.nextTs) this.lastProcessedCandleTs = ceEval.nextTs;
+          else if (peEval.nextTs) this.lastProcessedCandleTs = peEval.nextTs;
         } else {
           const scanExchange = this.ceContract.exchange;
           const fetchStartMs = Date.now();
@@ -714,25 +727,25 @@ class SingleStrategyRunner {
           const ceLastClosedTs = ceItems.length >= 1 ? (ceItems[ceItems.length - 1].time ?? null) : null;
           const peLastClosedTs = peItems.length >= 1 ? (peItems[peItems.length - 1].time ?? null) : null;
 
-          if (ceSignal.isEntry && ceLastClosedTs !== this.lastEntryTime) {
-            this.lastEntryTime = ceLastClosedTs;
+          if (!eventData?.synthetic && ceSignal.isEntry && ceLastClosedTs !== this.lastEntryTime) {
             const signalMs = Date.now();
-            await this.executeEntry(this.ceContract, ceSignal.haClose, 'BULLISH', {
+            await this.submitSignalEntry(this.ceContract, ceSignal.haClose, 'BULLISH', ceLastClosedTs, {
               candleDetectedTs: scanStartTs,
               signalGeneratedMs: signalMs,
               signalGeneratedTs: formatPrecisionTime(new Date(signalMs)),
               fetchMs: fetchEndMs - fetchStartMs,
-              calcMs: calcEndMs - calcStartMs
+              calcMs: calcEndMs - calcStartMs,
+              candleClosedAt: eventData?.closedAt || null,
             });
-          } else if (peSignal.isEntry && peLastClosedTs !== this.lastEntryTime) {
-            this.lastEntryTime = peLastClosedTs;
+          } else if (!eventData?.synthetic && peSignal.isEntry && peLastClosedTs !== this.lastEntryTime) {
             const signalMs = Date.now();
-            await this.executeEntry(this.peContract, peSignal.haClose, 'BEARISH', {
+            await this.submitSignalEntry(this.peContract, peSignal.haClose, 'BEARISH', peLastClosedTs, {
               candleDetectedTs: scanStartTs,
               signalGeneratedMs: signalMs,
               signalGeneratedTs: formatPrecisionTime(new Date(signalMs)),
               fetchMs: fetchEndMs - fetchStartMs,
-              calcMs: calcEndMs - calcStartMs
+              calcMs: calcEndMs - calcStartMs,
+              candleClosedAt: eventData?.closedAt || null,
             });
           } else {
             this.trend = ceSignal.trend;
@@ -744,10 +757,17 @@ class SingleStrategyRunner {
     };
 
     this.candleListener = async (eventData) => {
+      const hasExposure = Boolean(this.activeTradeId || this.activeTradeContract
+        || (this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure()));
+      const expectedRole = hasExposure ? 'position' : 'scanner';
+      const expectedInterval = this.getBaseTimeframe();
       if (this.accountContext && (eventData.userId !== this.accountContext.userId
         || eventData.brokerAccountId !== this.accountContext.brokerAccountId
         || eventData.sessionGeneration !== this.accountContext.sessionGeneration
         || eventData.sessionId !== this.accountContext.sessionId)) return;
+      if (eventData.exchange && eventData.exchange !== (this.activeTradeContract || this.ceContract)?.exchange) return;
+      if (eventData.interval && eventData.interval !== expectedInterval) return;
+      if (eventData.role && eventData.role !== expectedRole) return;
       if ((this.ceContract && this.peContract) || this.activeTradeContract) {
         if (eventData.symboltoken === this.ceContract?.symboltoken || eventData.symboltoken === this.peContract?.symboltoken
           || eventData.symboltoken === this.activeTradeContract?.symboltoken) {
@@ -759,8 +779,31 @@ class SingleStrategyRunner {
     marketDataService.on('candle:closed', this.candleListener);
   }
 
+  async submitSignalEntry(contract, signalPrice, trendSide, candleTime, timingInfo) {
+    if (this.entryAttemptInFlight) return { accepted: false, retryableBeforeSubmit: true, reason: 'ENTRY_ATTEMPT_IN_FLIGHT' };
+    this.entryAttemptInFlight = String(candleTime);
+    try {
+      const outcome = await this.executeEntry(contract, signalPrice, trendSide, timingInfo);
+      if (outcome?.retryableBeforeSubmit) {
+        this.message = 'Entry is waiting for verified execution ownership; the signal remains eligible for re-evaluation.';
+        this.log(`Entry deferred before broker submission (${outcome.reason}).`);
+        return outcome;
+      }
+      // Consume only after the execution path has either accepted the request
+      // or returned a non-retryable result. Durable/unknown submissions must
+      // never be replayed as another BUY from this signal.
+      this.lastEntryTime = candleTime;
+      return outcome;
+    } catch (error) {
+      this.lastEntryTime = candleTime;
+      throw error;
+    } finally {
+      this.entryAttemptInFlight = null;
+    }
+  }
+
   async executeEntry(contract, signalPrice, trendSide, timingInfo = {}) {
-    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).entry(contract, signalPrice, trendSide);
+    if (this.accountContext) return require('./positionExecution').forRunner(this, { feed: marketDataService }).entry(contract, signalPrice, trendSide, timingInfo);
     if (this.accountContext) await require('./accountContext').validate(this.accountContext);
     if (!this.brokerReady) {
       this.log('Entry blocked because the Angel One session is unavailable.');
