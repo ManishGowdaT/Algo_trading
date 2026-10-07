@@ -48,7 +48,10 @@ async function fixture(t, { readyFeed = true } = {}) {
       if (url.pathname === '/angel/session-tokens') return respond({ status: true, active_user_id: String(row.userId), session_id: sessions[rows.indexOf(row)],
         client_code: row.brokerClientId, feed_token: 'test', jwt_token: 'test', api_key: 'test' });
       if (url.pathname === '/angel/status') return respond({ connected: true });
-      if (url.pathname === '/market/candles') return respond({ items: [] });
+      if (url.pathname === '/market/candles') {
+        if (state.onHistory && await state.onHistory({ row, url, req, res, respond })) return;
+        return respond({ items: [] });
+      }
       if (url.pathname === '/market/ltp') return respond({ ltp: state.quote, quoteTimestamp: state.quoteTimestamp() });
       if (url.pathname === '/angel/orderbook') {
         if (state.bookFailure) { res.statusCode = 503; return respond({ status: false }); }

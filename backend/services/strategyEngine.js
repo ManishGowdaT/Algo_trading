@@ -27,7 +27,10 @@ async function callAngelApi(endpoint, method = 'GET', body = null, timeoutMs = n
     timeoutMs,
   });
   if (!response.ok) {
-    throw new Error(`Angel API Error [${response.status}]: ${text}`);
+    const retryAfter = response.headers?.get('retry-after');
+    const seconds = Number(retryAfter);
+    const retryMs = retryAfter ? (Number.isFinite(seconds) ? seconds * 1000 : Date.parse(retryAfter) - Date.now()) : 0;
+    throw Object.assign(new Error(`Angel API Error [${response.status}]: ${text}`), { status: response.status, retryMs });
   }
   return data;
 }
@@ -165,6 +168,8 @@ class SingleStrategyRunner {
     this.lastExitAttemptTime = 0;
     this.brokerReady = false;
     this.sessionAlertSent = false;
+    this.warmupRecovery = {};
+    this.dataReadiness = 'WARMING_UP';
 
     this.contractInterval = null;
     this.scanInterval = null;
@@ -275,6 +280,9 @@ class SingleStrategyRunner {
     const token = String(contract.symboltoken);
     if (this.warmupTokens[side] === token && this.previousDayCandles[side].length > 0) return;
     if (this.warmupRequests[side]?.token === token) return this.warmupRequests[side].promise;
+    const recovery = this.warmupRecovery[side];
+    if (recovery?.token === token && Date.now() < recovery.nextAttemptAt) return;
+    if (recovery?.token !== token) delete this.warmupRecovery[side];
 
     this.warmupTokens[side] = token;
     this.previousDayCandles[side] = [];
@@ -288,19 +296,24 @@ class SingleStrategyRunner {
           const candles = this.normalizeHistoricalCandles(response?.items);
           if (candles.length > 0) {
             this.previousDayCandles[side] = candles;
+            delete this.warmupRecovery[side];
             this.log(`Loaded ${candles.length} previous trading-day candles for ${side.toUpperCase()} warm-up (${dateIso})`);
             return;
           }
         } catch (err) {
-          console.warn(`[${this.strategyName}] Previous-day candle warm-up failed for ${side.toUpperCase()} ${dateIso}:`, err.message);
+          console.warn(`[${this.strategyName}] Previous-day candle warm-up failed for ${side.toUpperCase()} ${dateIso}: status=${err.status || 'transport'}`);
           // An error does not prove that this date was a holiday or had no
           // candles. Do not silently initialize indicators from an older day
           // after a rate limit, timeout or upstream outage.
-          break;
+          const failures = (this.warmupRecovery[side]?.failures || 0) + 1;
+          this.warmupRecovery[side] = { token, failures, failed: true,
+            nextAttemptAt: Date.now() + Math.max(Math.min(60_000, 5000 * 2 ** Math.min(failures - 1, 4)), Math.max(0, err.retryMs || 0)) };
+          return;
         }
       }
 
       this.log(`Previous-day candle warm-up unavailable for ${side.toUpperCase()}; continuing with current-day history`);
+      this.warmupRecovery[side] = { token, failed: false, nextAttemptAt: Date.now() + 60_000 };
     })();
 
     this.warmupRequests[side] = { token, promise };
@@ -413,6 +426,8 @@ class SingleStrategyRunner {
     this.previousDayCandles = { ce: [], pe: [] };
     this.warmupTokens = { ce: null, pe: null };
     this.warmupRequests = { ce: null, pe: null };
+    this.warmupRecovery = {};
+    this.dataReadiness = 'WARMING_UP';
   }
 
   clearAllIntervals() {
@@ -535,7 +550,6 @@ class SingleStrategyRunner {
             await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol });
             if (!this.isRunning) return;
             this.subscribedCeToken = this.ceContract.symboltoken;
-            await this.loadPreviousDayWarmup(this.ceContract, 'ce');
             if (!this.isRunning) return;
           }
           if (!this.subscribedPeToken || this.subscribedPeToken !== this.peContract.symboltoken) {
@@ -545,8 +559,10 @@ class SingleStrategyRunner {
             await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol });
             if (!this.isRunning) return;
             this.subscribedPeToken = this.peContract.symboltoken;
-            await this.loadPreviousDayWarmup(this.peContract, 'pe');
           }
+          await this.loadPreviousDayWarmup(this.ceContract, 'ce');
+          if (!this.isRunning) return;
+          await this.loadPreviousDayWarmup(this.peContract, 'pe');
         }
       } catch (err) {
         console.error(`[${this.strategyName}] Contract discovery error:`, err.message);
@@ -629,12 +645,15 @@ class SingleStrategyRunner {
           let peItems = marketDataService.getBuffer(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE');
 
           if (!ceItems || ceItems.length < requiredCandles) {
-            try { ceItems = await marketDataService.subscribe(this.ceContract.exchange, this.ceContract.symboltoken, 'ONE_MINUTE', 20, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol }); } catch (err) { return; }
+            try { ceItems = await marketDataService.ensureHistory(this.ceContract.exchange, this.ceContract.symboltoken, 'ONE_MINUTE', 'scanner'); } catch (err) { return; }
           }
           if (!peItems || peItems.length < requiredCandles) {
-            try { peItems = await marketDataService.subscribe(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE', 20, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol }); } catch (err) { return; }
+            try { peItems = await marketDataService.ensureHistory(this.peContract.exchange, this.peContract.symboltoken, 'ONE_MINUTE', 'scanner'); } catch (err) { return; }
           }
-          if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
+          if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) {
+            this.setDataReadiness('DATA_DEGRADED', 'Waiting for verified breakout candle history.'); return;
+          }
+          this.setDataReadiness('READY');
           const fetchEndMs = Date.now();
 
           const ceKey = `${this.ceContract.exchange}:${this.ceContract.symboltoken}`;
@@ -683,15 +702,25 @@ class SingleStrategyRunner {
 
           if (!ceItems || (ceItems.length < requiredCandles &&
             (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.ce.length === 0))) {
-            try { ceItems = await marketDataService.subscribe(scanExchange, this.ceContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.ceContract.tradingsymbol }); } catch (err) { return; }
+            try { ceItems = await marketDataService.ensureHistory(scanExchange, this.ceContract.symboltoken, baseTimeframe, 'scanner'); } catch (err) { return; }
           }
           if (!peItems || (peItems.length < requiredCandles &&
             (!this.isHeikenAshiWarmupStrategy() || this.previousDayCandles.pe.length === 0))) {
-            try { peItems = await marketDataService.subscribe(scanExchange, this.peContract.symboltoken, baseTimeframe, null, { role: 'scanner', tradingsymbol: this.peContract.tradingsymbol }); } catch (err) { return; }
+            try { peItems = await marketDataService.ensureHistory(scanExchange, this.peContract.symboltoken, baseTimeframe, 'scanner'); } catch (err) { return; }
+          }
+          for (const side of ['ce', 'pe']) {
+            const contract = side === 'ce' ? this.ceContract : this.peContract;
+            if (this.warmupTokens[side] === String(contract.symboltoken) && !this.previousDayCandles[side].length) {
+              await this.loadPreviousDayWarmup(contract, side);
+            }
           }
           ceItems = this.getCalculationCandles(this.ceContract, ceItems, 'ce');
           peItems = this.getCalculationCandles(this.peContract, peItems, 'pe');
-          if (!ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) return;
+          if (Object.values(this.warmupRecovery).some(item => item.failed)
+            || !ceItems || ceItems.length < requiredCandles || !peItems || peItems.length < requiredCandles) {
+            this.setDataReadiness('DATA_DEGRADED', 'Waiting for verified candle history/warm-up; new entries are paused.'); return;
+          }
+          this.setDataReadiness('READY');
           const fetchEndMs = Date.now();
 
           const calcStartMs = Date.now();
@@ -799,6 +828,13 @@ class SingleStrategyRunner {
       throw error;
     } finally {
       this.entryAttemptInFlight = null;
+    }
+  }
+
+  setDataReadiness(status, message) {
+    if (this.dataReadiness !== status) {
+      this.dataReadiness = status;
+      this.log(message || 'Verified candle history is ready; scanner evaluation resumed.');
     }
   }
 
@@ -1545,6 +1581,7 @@ class SingleStrategyRunner {
       exitRetryCount: this.exitRetryCount,
       lastExitAttemptTime: this.lastExitAttemptTime,
       brokerReady: this.brokerReady,
+      dataReadiness: this.dataReadiness,
       positionState: this.positionState,
       remainingQuantity: this.remainingQuantity ?? null,
       pendingEntryQuantity: this.pendingEntryQuantity ?? null,

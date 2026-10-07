@@ -5,6 +5,7 @@ const OrderUpdateService = require('./orderUpdateService').OrderUpdateService;
 const activeAccountService = require('./activeAccountService');
 const { requestPython } = require('./pythonApiClient');
 const accountContext = require('./accountContext');
+let historyRequestsInFlight = 0;
 
 const EXCH_TYPE_MAP = {
   NSE: 1,
@@ -65,6 +66,7 @@ class AccountMarketDataService extends EventEmitter {
     this.pendingSubscriptions = new Map();
     this.fallbackBackoffUntil = 0;
     this.fallbackFailures = 0;
+    this.historyInFlight = false;
 
     this.smartStream.on('tick', (tick, identity) => this.handleTick(tick, identity));
     this.smartStream.on('disconnected', () => this.handleStreamDisconnect());
@@ -104,6 +106,7 @@ class AccountMarketDataService extends EventEmitter {
       return false;
     }
     this.destroyed = true;
+    for (const builder of this.candleBuilders.values()) clearTimeout(builder.historyRetryTimer);
     for (const pending of this.pendingSubscriptions.values()) pending.cancelled = true;
     this.pendingSubscriptions.clear();
     this.smartStream.disconnect(true);
@@ -468,6 +471,38 @@ class AccountMarketDataService extends EventEmitter {
         lastProcessedTs: 0
       };
       this.candleBuilders.set(key, builder);
+    }
+    await this.ensureHistory(exchange, token, interval, role);
+    return builder.candles;
+  }
+
+  scheduleHistoryRetry(builder, delay) {
+    if (this.destroyed || this.candleBuilders.get(builder.key) !== builder || builder.historyRetryTimer) return;
+    builder.historyRetryTimer = setTimeout(() => {
+      builder.historyRetryTimer = null;
+      this.ensureHistory(builder.exchange, builder.symboltoken, builder.interval, builder.role)
+        .catch(() => {}); // Transport errors are logged/backed off inside ensureHistory.
+    }, delay);
+    builder.historyRetryTimer.unref?.();
+  }
+
+  async ensureHistory(exchange, symboltoken, interval = 'FIVE_MINUTE', role = 'scanner') {
+    const token = String(symboltoken);
+    const key = `${role}:${this.getBufferKey(exchange, token, interval)}`;
+    const builder = this.candleBuilders.get(key);
+    if (this.destroyed || !builder) return [];
+    if (builder.historyPromise) return builder.historyPromise;
+    if (builder.historyReady) return builder.candles;
+    const delay = Math.max(0, (builder.historyNextAttemptAt || 0) - Date.now());
+    if (delay || this.historyInFlight || historyRequestsInFlight >= 4) {
+      this.scheduleHistoryRetry(builder, Math.max(delay, 1000));
+      return builder.candles;
+    }
+    clearTimeout(builder.historyRetryTimer);
+    builder.historyRetryTimer = null;
+    this.historyInFlight = true;
+    historyRequestsInFlight++;
+    builder.historyPromise = Promise.resolve().then(async () => {
 
       // Backfill historical candles via REST
       try {
@@ -476,6 +511,13 @@ class AccountMarketDataService extends EventEmitter {
           `/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${encodeURIComponent(targetDate)}`,
           { timeoutMs: 10000, context: this.accountContext },
         );
+        if (!res.ok) {
+          const retryAfter = res.headers?.get('retry-after');
+          const seconds = Number(retryAfter);
+          const retryMs = retryAfter ? (Number.isFinite(seconds) ? seconds * 1000 : Date.parse(retryAfter) - Date.now()) : 0;
+          throw Object.assign(new Error('Historical candles unavailable'), { status: res.status, retryMs });
+        }
+        if (!Array.isArray(data?.items)) throw Object.assign(new Error('Invalid historical response'), { status: 'invalid-response' });
         if (res.ok && !this.destroyed && this.candleBuilders.get(key) === builder) {
           if (Array.isArray(data?.items)) {
             const intervalMs = this.getIntervalMs(interval);
@@ -505,14 +547,31 @@ class AccountMarketDataService extends EventEmitter {
             const merged = new Map(parsed.map(candle => [candle.time, candle]));
             for (const candle of builder.candles) merged.set(candle.time, candle);
             builder.candles = [...merged.values()].sort((a, b) => a.time - b.time).slice(-200);
+            builder.historyReady = parsed.length > 0;
+            builder.historyFailures = 0;
+            if (!builder.historyReady) {
+              builder.historyNextAttemptAt = Date.now() + 30_000;
+              this.scheduleHistoryRetry(builder, 30_000);
+            }
+            console.log(`[MarketDataService] History ${builder.historyReady ? 'ready' : 'empty; retry scheduled'} account=${this.accountContext.brokerAccountId} ${key} candles=${builder.candles.length} first=${builder.candles[0]?.time ?? 'none'} last=${builder.candles.at(-1)?.time ?? 'none'}`);
           }
         }
       } catch (err) {
-        console.warn(`[MarketDataService] Seeding historical candles failed for ${key}:`, err.message);
+        if (!this.destroyed && this.candleBuilders.get(key) === builder) {
+          builder.historyFailures = (builder.historyFailures || 0) + 1;
+          const backoff = Math.max(2000 * 2 ** Math.min(builder.historyFailures - 1, 5), Math.max(0, err.retryMs || 0));
+          builder.historyNextAttemptAt = Date.now() + backoff;
+          console.warn(`[MarketDataService] History unavailable account=${this.accountContext.brokerAccountId} ${key} status=${err.status || 'transport'}; retry in ${backoff}ms`);
+          this.scheduleHistoryRetry(builder, backoff);
+        }
+      } finally {
+        this.historyInFlight = false;
+        historyRequestsInFlight--;
+        builder.historyPromise = null;
       }
-    }
-
-    return builder.candles;
+      return builder.candles;
+    });
+    return builder.historyPromise;
   }
 
   unsubscribe(exchange, symboltoken, interval = 'FIVE_MINUTE', role = 'scanner') {
@@ -527,6 +586,7 @@ class AccountMarketDataService extends EventEmitter {
       sub.refCount--;
       if (sub.refCount <= 0) {
         console.log(`[MarketDataService] Candle subscription ${key}: removed`);
+        clearTimeout(this.candleBuilders.get(key)?.historyRetryTimer);
         this.candleBuilders.delete(key);
         this.subscribers.delete(key);
       }
@@ -726,6 +786,7 @@ class MarketDataRouter extends EventEmitter {
   }
   getLtp(...args) { return this._serviceSync().getLtp(...args); }
   getBuffer(...args) { return this._serviceSync().getBuffer(...args); }
+  async ensureHistory(...args) { return (await this._service()).ensureHistory(...args); }
   async getOrderUpdateService() { return (await this._service()).getOrderUpdateService(); }
 
   on(event, listener) {
