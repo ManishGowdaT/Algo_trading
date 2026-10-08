@@ -117,6 +117,16 @@ test('invalid deployment keyrings fail with secret-free diagnostic codes, includ
   assert.equal(stores.BrokerCredential.length, 0);
 });
 
+test('active deployment key version detects missing/mismatched values and tolerates surrounding whitespace', t => {
+  fixture(t);
+  delete process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION;
+  assert.throws(() => vault.checkConfiguration(), { code: 'BROKER_VAULT_ACTIVE_KEY_VERSION_UNSET' });
+  process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION = 'wrong-version';
+  assert.throws(() => vault.checkConfiguration(), { code: 'BROKER_VAULT_MISSING_KEY_VERSION' });
+  process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION = ' test-v1\n';
+  assert.deepEqual(vault.checkConfiguration(), { configured: true });
+});
+
 test('HTTP setup saves through POST, MPIN-only login uses server secrets, and replacement respects active exposure', async t => {
   const express = require('express');
   const bcrypt = require('bcryptjs');

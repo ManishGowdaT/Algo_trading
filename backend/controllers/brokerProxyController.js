@@ -264,7 +264,7 @@ exports.saveCredentials = async (req, res) => {
     });
   } catch (err) {
     if (err.status) return res.status(err.status).json({ status: 'fail', message: err.message });
-    return respondWithApiError(req, res, err, { status: 503, message: 'Secure broker credential storage is unavailable.' });
+    return respondWithApiError(req, res, err, { status: 503, message: brokerCredentialVault.configurationMessage(err) });
   }
 };
 
@@ -272,7 +272,7 @@ exports.credentialStatus = async (req, res) => {
   try {
     return res.status(200).json(await brokerCredentialVault.metadata(req.user._id));
   } catch (err) {
-    return respondWithApiError(req, res, err, { status: 503, message: 'Secure broker credential storage is unavailable.' });
+    return respondWithApiError(req, res, err, { status: 503, message: brokerCredentialVault.configurationMessage(err) });
   }
 };
 exports.logout = async (req, res) => {

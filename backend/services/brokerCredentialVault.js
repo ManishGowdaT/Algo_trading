@@ -16,7 +16,7 @@ async function ensureIndexes() {
   return indexesReady;
 }
 
-function activeKeyVersion() { return process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION || ''; }
+function activeKeyVersion() { return (process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION || '').trim(); }
 
 function configurationError(code) {
   return Object.assign(new Error('Broker credential encryption is not configured.'), { code });
@@ -29,7 +29,8 @@ function encryptionKey(version = activeKeyVersion()) {
   if (!keyring || typeof keyring !== 'object' || Array.isArray(keyring)) {
     throw configurationError('BROKER_VAULT_INVALID_KEYRING_OBJECT');
   }
-  if (!version || !Object.hasOwn(keyring, version)) {
+  if (!version) throw configurationError('BROKER_VAULT_ACTIVE_KEY_VERSION_UNSET');
+  if (!Object.hasOwn(keyring, version)) {
     throw configurationError('BROKER_VAULT_MISSING_KEY_VERSION');
   }
   const encoded = keyring[version];
@@ -77,11 +78,11 @@ function validate({ apiKey, clientCode, totpSecret }) {
 }
 
 async function save(userId, input, expectedVersion = 0) {
-  await ensureIndexes();
   const values = validate(input);
   // Check key availability before making any database changes.
   const keyVersion = activeKeyVersion();
   encryptionKey(keyVersion);
+  await ensureIndexes();
   const existing = await BrokerCredential.findOne({ userId, broker: 'ANGEL_ONE' }).select('version brokerAccountId').lean();
   if ((existing?.version || 0) !== expectedVersion) throw Object.assign(new Error('Broker setup changed; reload and retry.'), { status: 409 });
   const version = (existing?.version || 0) + 1;
@@ -142,4 +143,20 @@ async function metadata(userId) {
   return { configured: true, clientCode: `****${clientCode.slice(-4)}`, verified: Boolean(doc.verifiedAt), version: doc.version };
 }
 
-module.exports = { save, get, markVerified, metadata };
+function checkConfiguration() {
+  encryptionKey(activeKeyVersion());
+  return { configured: true };
+}
+
+function configurationMessage(error) {
+  if (error?.code === 'BROKER_VAULT_ACTIVE_KEY_VERSION_UNSET') {
+    return 'Broker encryption configuration is incomplete: set BROKER_CREDENTIAL_ACTIVE_KEY_VERSION on the Node backend.';
+  }
+  if (error?.code === 'BROKER_VAULT_MISSING_KEY_VERSION') {
+    return 'Broker encryption configuration is invalid: the active key version must match an entry in BROKER_CREDENTIAL_ENCRYPTION_KEYS on the Node backend.';
+  }
+  if (error?.code?.startsWith('BROKER_VAULT_')) return 'Broker encryption configuration is invalid. Check the Node backend encryption key settings.';
+  return 'Secure broker credential storage is unavailable.';
+}
+
+module.exports = { save, get, markVerified, metadata, checkConfiguration, configurationMessage };
