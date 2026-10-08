@@ -89,6 +89,14 @@ class AccountMarketDataService extends EventEmitter {
     return INTERVAL_MS_MAP[iv] || 5 * 60 * 1000;
   }
 
+  getChartCandleStart(timestamp, intervalMs, exchange) {
+    // Broker intraday bars align to the exchange opening time in IST.
+    const offset = 330 * 60000;
+    const day = Math.floor((timestamp + offset) / 86400000) * 86400000 - offset;
+    const opening = day + (exchange === 'MCX' ? 540 : 555) * 60000;
+    return opening + Math.floor((timestamp - opening) / intervalMs) * intervalMs;
+  }
+
   initSession(credentials) {
     if (this.destroyed) return;
     if (credentials) {
@@ -175,7 +183,9 @@ class AccountMarketDataService extends EventEmitter {
   }
 
   async _pollRestLtpFallback() {
-    const available = [...this.streamSubscribers.entries()].filter(([, sub]) => sub.tradingsymbol);
+    const available = [...this.streamSubscribers.entries()].filter(([, sub]) => sub.tradingsymbol
+      && [...this.subscribers.values()].some(reference => reference.role !== 'chart'
+        && reference.exchangeType === sub.exchangeType && reference.token === sub.token));
     if (available.length === 0) return;
     const start = this.fallbackCursor % available.length;
     const subscriptions = Array.from({ length: Math.min(4, available.length) }, (_, offset) => available[(start + offset) % available.length]);
@@ -237,7 +247,8 @@ class AccountMarketDataService extends EventEmitter {
 
     const token = String(tick.token);
     const streamKey = `${Number(tick.exchangeType)}:${token}`;
-    this.ltpCache.set(streamKey, { ltp: tick.ltp, timestamp: tick.timestamp });
+    this.ltpCache.set(streamKey, { ltp: tick.ltp, timestamp: tick.timestamp,
+      receivedAt: Date.now(), source: tick.isFallback ? 'REST_FALLBACK' : 'ANGEL_WEBSOCKET' });
 
     if (!tick.isFallback) {
       this.wsConsecutiveTicks++;
@@ -256,6 +267,8 @@ class AccountMarketDataService extends EventEmitter {
   }
 
   processTickForBuilder(builder, tick) {
+    if (builder.role === 'chart' && tick.isFallback) return;
+    if (builder.role === 'chart' && (!Number.isFinite(tick.timestamp) || tick.timestamp > Date.now() + 5000)) return;
     const intervalMs = this.getIntervalMs(builder.interval);
     const ts = tick.timestamp;
 
@@ -264,7 +277,7 @@ class AccountMarketDataService extends EventEmitter {
     }
     builder.lastProcessedTs = ts;
 
-    const candleStartMs = Math.floor(ts / intervalMs) * intervalMs;
+    const candleStartMs = builder.role === 'chart' ? this.getChartCandleStart(ts, intervalMs, builder.exchange) : Math.floor(ts / intervalMs) * intervalMs;
     const candleTimeSec = Math.floor(candleStartMs / 1000);
 
     if (!builder.activeCandle) {
@@ -305,7 +318,7 @@ class AccountMarketDataService extends EventEmitter {
 
       // Fill-forward missing gap candles if any
       let gapMs = candleStartMs - builder.activeCandle.candleStartMs;
-      while (gapMs > intervalMs) {
+      while (builder.role !== 'chart' && gapMs > intervalMs) {
         const ghostStartMs = builder.activeCandle.candleStartMs + intervalMs;
         const ghostCandle = {
           time: Math.floor(ghostStartMs / 1000),
@@ -421,7 +434,7 @@ class AccountMarketDataService extends EventEmitter {
 
   async subscribe(exchange, symboltoken, interval = 'FIVE_MINUTE', lookbackMinutes = null, options = {}) {
     if (this.destroyed) return [];
-    const role = options.role === 'position' ? 'position' : 'scanner';
+    const role = ['position', 'chart'].includes(options.role) ? options.role : 'scanner';
 
     const token = String(symboltoken);
     const exchType = this.getExchangeType(exchange);
@@ -508,7 +521,9 @@ class AccountMarketDataService extends EventEmitter {
       try {
         const targetDate = new Date().toISOString().split('T')[0];
         const { response: res, data } = await this.requestPython(
-          `/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${encodeURIComponent(targetDate)}`,
+          role === 'chart'
+            ? `/instruments/history?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}`
+            : `/market/candles?exchange=${encodeURIComponent(exchange)}&symboltoken=${encodeURIComponent(token)}&interval=${encodeURIComponent(interval)}&date=${encodeURIComponent(targetDate)}`,
           { timeoutMs: 10000, context: this.accountContext },
         );
         if (!res.ok) {
@@ -530,7 +545,7 @@ class AccountMarketDataService extends EventEmitter {
               const zoned = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(text);
               return Math.floor(new Date(zoned ? text : `${text.replace(' ', 'T')}+05:30`).getTime() / 1000);
             };
-            const parsed = data.items.map(c => ({
+            const validRows = data.items.map(c => ({
               time: timestampOf(c.ts ?? c.time),
               open: Number(c.open),
               high: Number(c.high),
@@ -538,9 +553,19 @@ class AccountMarketDataService extends EventEmitter {
               close: Number(c.close)
             })).filter(c => Number.isFinite(c.time) && Number.isFinite(c.open) && Number.isFinite(c.high)
               && Number.isFinite(c.low) && Number.isFinite(c.close)
-              && c.high >= Math.max(c.open, c.close) && c.low <= Math.min(c.open, c.close) && c.high >= c.low
-              && (c.time * 1000 + intervalMs <= Date.now()))
+              && c.high >= Math.max(c.open, c.close) && c.low <= Math.min(c.open, c.close) && c.high >= c.low)
               .sort((a, b) => a.time - b.time);
+            const parsed = validRows.filter(c => c.time * 1000 + intervalMs <= Date.now());
+            if (role === 'chart') {
+              const start = this.getChartCandleStart(Date.now(), intervalMs, exchange);
+              const forming = validRows.find(c => c.time * 1000 === start);
+              if (forming && (!builder.activeCandle || builder.activeCandle.time === forming.time)) {
+                const live = builder.activeCandle;
+                builder.activeCandle = { ...forming, candleStartMs: start,
+                  high: Math.max(forming.high, live?.high ?? forming.high),
+                  low: Math.min(forming.low, live?.low ?? forming.low), close: live?.close ?? forming.close };
+              }
+            }
             // Historical data may have been in flight while live ticks closed
             // bars. Prefer live bars on overlap and never replace the active
             // candle with an incomplete REST row.
@@ -576,7 +601,7 @@ class AccountMarketDataService extends EventEmitter {
 
   unsubscribe(exchange, symboltoken, interval = 'FIVE_MINUTE', role = 'scanner') {
     const token = String(symboltoken);
-    const key = `${role === 'position' ? 'position' : 'scanner'}:${this.getBufferKey(exchange, token, interval)}`;
+    const key = `${['position', 'chart'].includes(role) ? role : 'scanner'}:${this.getBufferKey(exchange, token, interval)}`;
 
     const pending = [...this.pendingSubscriptions.values()].find(item => item.key === key && !item.cancelled);
     if (pending) { pending.cancelled = true; return; }

@@ -1,20 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Eye, EyeOff, X } from 'lucide-react'
 import type { AngelCredentials } from './AngelConnectionProvider'
 
 export default function MpinModal({
   open,
+  credentialsConfigured,
   onCancel,
   onSubmit,
 }: {
   open: boolean
+  credentialsConfigured: boolean
   onCancel: () => void
   onSubmit: (credentials: AngelCredentials) => Promise<void> | void
 }) {
-  const [form, setForm] = useState<AngelCredentials>({ apiKey: '', clientCode: '', mpin: '', totpSecret: '' })
+  const [form, setForm] = useState<AngelCredentials>({ apiKey: '', clientCode: '', mpin: '', totpSecret: '', consent: false })
   const [isWorking, setIsWorking] = useState(false)
   const [error, setError] = useState('')
-  const [visibleFields, setVisibleFields] = useState<Record<keyof AngelCredentials, boolean>>({
+  const [editingSetup, setEditingSetup] = useState(false)
+  const setupVisible = !credentialsConfigured || editingSetup
+  const [visibleFields, setVisibleFields] = useState<Record<'apiKey' | 'clientCode' | 'mpin' | 'totpSecret', boolean>>({
     apiKey: false,
     clientCode: false,
     mpin: false,
@@ -22,27 +26,37 @@ export default function MpinModal({
   })
 
   const clearCredentials = () => {
-    setForm({ apiKey: '', clientCode: '', mpin: '', totpSecret: '' })
+    setForm({ apiKey: '', clientCode: '', mpin: '', totpSecret: '', consent: false })
     setVisibleFields({ apiKey: false, clientCode: false, mpin: false, totpSecret: false })
   }
 
   const closeModal = () => {
     clearCredentials()
     setError('')
+    setEditingSetup(false)
     onCancel()
   }
 
+  useEffect(() => {
+    if (!open) setEditingSetup(false)
+  }, [open])
+
   if (!open) return null
 
-  const update = (key: keyof AngelCredentials, value: string) => {
+  const update = (key: keyof AngelCredentials, value: string | boolean) => {
     setForm((current) => ({ ...current, [key]: value }))
     setError('')
   }
 
   async function handleSubmit() {
     if (isWorking) return
-    if (Object.values(form).some((value) => !value.trim())) {
-      setError('Enter API key, Client ID, MPIN, and TOTP secret.')
+    if (!form.mpin?.trim()) {
+      setError('Enter your Angel One MPIN.')
+      return
+    }
+    if (setupVisible && (!form.apiKey?.trim() || !form.clientCode?.trim() || !form.totpSecret?.trim() || !form.consent
+      || (credentialsConfigured && !form.currentPassword?.trim()))) {
+      setError(credentialsConfigured ? 'Enter the replacement broker credentials, application password, and consent.' : 'Enter API key, Client ID, TOTP setup secret, and consent to encrypted storage.')
       return
     }
 
@@ -64,7 +78,7 @@ export default function MpinModal({
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-base font-semibold">Connect to Angel One</h3>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Credentials are used for this connection only.</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{setupVisible ? 'The API key and TOTP setup secret are encrypted before storage. MPIN is used only for this login.' : 'Enter your MPIN to connect using your saved encrypted setup.'}</p>
           </div>
           <button type="button" onClick={closeModal} disabled={isWorking} className="rounded-xl p-1 max-md:shrink-0 max-md:min-h-11 max-md:min-w-11 max-md:flex max-md:items-center max-md:justify-center text-slate-500 hover:bg-slate-100 disabled:opacity-60" aria-label="Close">
             <X className="h-5 w-5" />
@@ -73,10 +87,8 @@ export default function MpinModal({
 
         <div className="mt-5 space-y-3">
           {([
-            ['apiKey', 'API Key'],
-            ['clientCode', 'Client ID'],
-            ['mpin', 'MPIN'],
-            ['totpSecret', 'TOTP Code or Secret'],
+            ...(setupVisible ? [['apiKey', 'API Key'], ['clientCode', 'Client ID'], ['totpSecret', 'TOTP authenticator setup secret']] as const : []),
+            ['mpin', 'Angel One MPIN'],
           ] as const).map(([key, label]) => (
             <label key={key} className="block text-sm font-medium text-slate-700 dark:text-slate-200">
               {label}
@@ -84,7 +96,7 @@ export default function MpinModal({
                 <input
                   type={visibleFields[key] ? 'text' : 'password'}
                   autoComplete="off"
-                  value={form[key]}
+                  value={String(form[key] ?? '')}
                   onChange={(event) => update(key, event.target.value)}
                   disabled={isWorking}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 pr-11 max-md:pr-12 text-sm text-slate-900 outline-none focus:ring-4 focus:ring-cyan-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-50"
@@ -101,11 +113,20 @@ export default function MpinModal({
               </div>
             </label>
           ))}
+          {setupVisible && credentialsConfigured && <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+            Application password for reauthentication
+            <input type="password" autoComplete="current-password" value={form.currentPassword || ''} disabled={isWorking} onChange={(event) => update('currentPassword', event.target.value)} className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-slate-50" />
+          </label>}
+          {setupVisible && <label className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+            <input type="checkbox" checked={Boolean(form.consent)} disabled={isWorking} onChange={(event) => update('consent', event.target.checked)} className="mt-0.5" />
+            <span>I consent to storing my API key and TOTP authenticator setup secret encrypted so I only need my MPIN to reconnect.</span>
+          </label>}
         </div>
 
         {error && <p className="mt-3 text-sm text-red-600" role="alert">{error}</p>}
 
         <div className="mt-6 flex justify-end gap-2 max-md:[&>button]:flex-1">
+          {credentialsConfigured && !editingSetup && <button type="button" onClick={() => setEditingSetup(true)} disabled={isWorking} className="mr-auto rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-100 disabled:opacity-70">Replace saved setup</button>}
           <button type="button" onClick={closeModal} disabled={isWorking} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-100 disabled:opacity-70">Cancel</button>
           <button type="button" onClick={() => void handleSubmit()} disabled={isWorking} className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300 disabled:opacity-70">{isWorking ? 'Connecting…' : 'Connect'}</button>
         </div>

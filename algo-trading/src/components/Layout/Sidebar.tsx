@@ -12,7 +12,8 @@ import {
     TrendingUp,
     Shield,
     History,
-    X
+    X,
+    Search
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -78,6 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
                 >
                     <LayoutDashboard className={`w-4 h-4 ${isActive('/dashboard') ? 'text-[#0052FF]' : 'text-[#787B86]'}`} />
                     <span>Dashboard</span>
+                </NavLink>
+
+                <NavLink to="/search" onClick={onMobileClose} className={({ isActive }) => `flex max-md:min-h-11 items-center gap-2.5 px-3 py-2 rounded text-xs font-semibold transition-colors ${isActive ? 'bg-[#0052FF]/10 text-[#0052FF]' : 'text-[#434651] hover:bg-[#F0F3FA]'}`}>
+                    <Search className="w-4 h-4" /><span>Search</span>
                 </NavLink>
 
                 <NavLink

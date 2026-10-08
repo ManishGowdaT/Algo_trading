@@ -693,6 +693,44 @@ def angel_exit_position(req: ExitPositionRequest, request: Request) -> Dict[str,
     return {"item": store.to_dict(attempt)}
 
 
+@app.get("/instruments/search")
+def instrument_search(query: str = Query(..., min_length=2, max_length=80),
+                      exchange: str = Query("ALL", pattern="^(ALL|NSE|BSE|NFO|BFO|MCX)$")) -> Dict[str, Any]:
+    try:
+        return {"items": instruments.search(query, exchange)}
+    except Exception:
+        raise HTTPException(status_code=503, detail="Instrument directory is unavailable. Try again shortly.")
+
+
+@app.get("/instruments/resolve")
+def instrument_resolve(exchange: str = Query(..., pattern="^(NSE|BSE|NFO|BFO|MCX)$"),
+                       symboltoken: str = Query(..., pattern="^[0-9]{1,32}$")) -> Dict[str, Any]:
+    try:
+        return {"item": instruments.resolve(exchange, symboltoken)}
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Instrument not found or expired.")
+    except Exception:
+        raise HTTPException(status_code=503, detail="Instrument directory is unavailable.")
+
+
+@app.get("/instruments/history")
+def instrument_history(exchange: str = Query(..., pattern="^(NSE|BSE|NFO|BFO|MCX)$"),
+                       symboltoken: str = Query(..., pattern="^[0-9]{1,32}$"),
+                       interval: str = Query("FIVE_MINUTE", pattern="^(ONE_MINUTE|THREE_MINUTE|FIVE_MINUTE|FIFTEEN_MINUTE|THIRTY_MINUTE|ONE_HOUR)$")) -> Dict[str, Any]:
+    instrument_resolve(exchange, symboltoken)
+    now = datetime.now(timezone(timedelta(hours=5, minutes=30)))
+    try:
+        return {"items": angel.get_candles(exchange=exchange, symboltoken=symboltoken,
+                                           interval=interval, from_dt=now - timedelta(days=7), to_dt=now)}
+    except Exception as e:
+        msg = str(e).lower()
+        if "rate" in msg or "access denied" in msg or "429" in msg:
+            raise HTTPException(status_code=429, detail="Historical data is rate limited. Try again shortly.")
+        if "no data" in msg:
+            return {"items": []}
+        raise HTTPException(status_code=503, detail="Historical data is temporarily unavailable.")
+
+
 @app.get("/instruments/index-options")
 def index_options(
     exchange: str = Query(..., min_length=1, max_length=10),

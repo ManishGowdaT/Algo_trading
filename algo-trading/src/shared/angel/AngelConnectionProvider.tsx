@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import MpinModal from './MpinModal'
 import { apiGet, apiPost } from '../../trading'
@@ -7,10 +8,12 @@ import { setApiAccountScope } from '../../trading/api'
 import { useAuth } from '../../context/AuthContext'
 
 export type AngelCredentials = {
-  apiKey: string
-  clientCode: string
   mpin: string
-  totpSecret: string
+  apiKey?: string
+  clientCode?: string
+  totpSecret?: string
+  consent?: boolean
+  currentPassword?: string
 }
 
 type AngelLoginResponse = {
@@ -66,6 +69,8 @@ const AngelConnectionContext = createContext<AngelConnectionContextValue | null>
 
 export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
   const userIdRef = useRef(user?._id ?? null)
   userIdRef.current = user?._id ?? null
   const [connectStatus, setConnectStatus] = useState<ConnectStatus>('idle')
@@ -74,14 +79,33 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const [backendReady, setBackendReady] = useState(false)
   const [backendMessage, setBackendMessage] = useState(DEFAULT_BACKEND_MESSAGE)
   const [mpinOpen, setMpinOpen] = useState(false)
+  const [credentialsConfigured, setCredentialsConfigured] = useState(false)
+  const [credentialStateLoaded, setCredentialStateLoaded] = useState(false)
 
-  const openConnect = useCallback(() => {
+  const loadCredentialState = useCallback(async () => {
+    const ownerId = userIdRef.current
+    const status = await apiGet<{ configured: boolean }>('/angel/credentials/status')
+    if (!ownerId || ownerId !== userIdRef.current) throw new DOMException('Application user changed.', 'AbortError')
+    setCredentialsConfigured(status.configured)
+    setCredentialStateLoaded(true)
+  }, [])
+
+  const openConnect = useCallback(async () => {
+    const ownerId = userIdRef.current
     if (!backendReady) {
       setConnectMessage(backendMessage)
       return
     }
+    if (!credentialStateLoaded) {
+      try { await loadCredentialState() }
+      catch {
+        if (ownerId === userIdRef.current) setConnectMessage('Unable to check saved broker setup. Please retry the connection.')
+        return
+      }
+    }
+    if (!ownerId || ownerId !== userIdRef.current) return
     setMpinOpen(true)
-  }, [backendMessage, backendReady])
+  }, [backendMessage, backendReady, credentialStateLoaded, loadCredentialState])
 
   const disconnect = useCallback(async () => {
     await apiPost<Record<string, unknown>>('/angel/logout')
@@ -97,9 +121,26 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     setConnectStatus('connecting')
     setConnectMessage('')
     try {
-      const login = await apiPost<AngelLoginResponse>('/angel/login', credentials)
+      if (credentials.apiKey) {
+        if (!credentials.apiKey || !credentials.clientCode || !credentials.totpSecret || !credentials.consent) {
+          throw new Error('Complete broker setup and consent to encrypted credential storage.')
+        }
+        await apiPost('/angel/credentials', {
+          apiKey: credentials.apiKey,
+          clientCode: credentials.clientCode,
+          totpSecret: credentials.totpSecret,
+          consent: credentials.consent,
+          ...(credentials.currentPassword ? { currentPassword: credentials.currentPassword } : {}),
+        })
+        if (ownerId !== userIdRef.current) return
+        setCredentialsConfigured(true)
+      }
+      const login = await apiPost<AngelLoginResponse>('/angel/login', {
+        mpin: credentials.mpin,
+        useSavedCredentials: true,
+      })
       if (ownerId !== userIdRef.current) return
-      if (!login.brokerAccountId) throw new Error('Broker connection did not return a verified account.')
+      if (!login.status || !login.connected || !login.brokerAccountId) throw new Error('Broker connection did not return a verified account.')
       setBrokerAccountId(login.brokerAccountId)
       setApiAccountScope(login.brokerAccountId)
       setConnectStatus('connected')
@@ -114,6 +155,13 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     }
   }, [user?._id])
 
+  useEffect(() => {
+    if (user && credentialStateLoaded && !credentialsConfigured && backendReady && location.state?.brokerSetupOnboarding === true) {
+      setMpinOpen(true)
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [user, credentialStateLoaded, credentialsConfigured, backendReady, location.pathname, location.state, navigate])
+
   // Restore the broker connection indicator after an application refresh.
   useEffect(() => {
     let active = true
@@ -121,6 +169,9 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     setBrokerAccountId(null)
     setConnectStatus('idle')
     setConnectMessage('')
+    setMpinOpen(false)
+    setCredentialsConfigured(false)
+    setCredentialStateLoaded(false)
     if (!user) return () => { active = false }
     apiGet<{ connected: boolean; message?: string; brokerAccountId?: string | null }>('/angel/status')
       .then((status) => {
@@ -134,8 +185,15 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         if (active) setConnectStatus('idle')
       })
+      .finally(() => {
+        // Resolve broker account scope first: changing it cancels older API
+        // requests, so a parallel vault lookup could otherwise be aborted.
+        if (active) void loadCredentialState().catch(() => {
+          if (active) setConnectMessage('Saved broker setup is unavailable. Retry the connection.')
+        })
+      })
     return () => { active = false }
-  }, [user])
+  }, [user, loadCredentialState])
 
   useEffect(() => {
     if (!user) {
@@ -188,13 +246,15 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   return (
     <AngelConnectionContext.Provider value={value}>
       {children}
-      <MpinModal
+      {mpinOpen && user && <MpinModal
+        key={user._id}
         open={mpinOpen}
+        credentialsConfigured={credentialsConfigured}
         onCancel={() => setMpinOpen(false)}
         onSubmit={async (credentials) => {
           await submitCredentials(credentials)
         }}
-      />
+      />}
     </AngelConnectionContext.Provider>
   )
 }

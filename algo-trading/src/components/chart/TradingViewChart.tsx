@@ -52,6 +52,7 @@ type TradingViewChartProps = {
   toggles: LayerToggles;
   chartType?: 'candlestick' | 'heikenAshi';
   isDarkMode?: boolean;
+  liveUpdates?: boolean;
 };
 
 type ActiveTooltipInfo = {
@@ -114,7 +115,9 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
   toggles,
   chartType = 'candlestick',
   isDarkMode = false,
+  liveUpdates = false,
 }) => {
+  const fittedRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -441,16 +444,17 @@ export const TradingViewChart: React.FC<TradingViewChartProps> = ({
     }
 
     // Auto-fit chart content when dataset updates
-    if (candles && candles.length > 0) {
+    if (candles && candles.length > 0 && (!liveUpdates || !fittedRef.current)) {
       requestAnimationFrame(() => {
         if (!chartRef.current) return;
         try {
           chartRef.current.priceScale('right').applyOptions({ autoScale: true });
           chartRef.current.timeScale().fitContent();
+          fittedRef.current = !liveUpdates || candles.length > 1;
         } catch (e) {}
       });
     }
-  }, [candles, emaSeries, jmaSeries, modifiedHaSeries, markers, priceLines, toggles, chartType]);
+  }, [candles, emaSeries, jmaSeries, modifiedHaSeries, markers, priceLines, toggles, chartType, liveUpdates]);
 
   return (
     <div className="w-full h-full relative group">

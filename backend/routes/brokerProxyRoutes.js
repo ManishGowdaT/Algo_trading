@@ -12,6 +12,8 @@ const router = express.Router();
 router.use(authController.protect);
 
 router.post('/angel/login', angelLoginLimiter, proxy.login);
+router.post('/angel/credentials', angelLoginLimiter, proxy.saveCredentials);
+router.get('/angel/credentials/status', brokerReadLimiter, proxy.credentialStatus);
 router.post('/angel/logout', proxy.logout);
 router.get('/angel/status', brokerReadLimiter, proxy.status);
 router.post('/angel/offboard', brokerReadLimiter, require('../services/accountContext').readMiddleware, proxy.offboard);

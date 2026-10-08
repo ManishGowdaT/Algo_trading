@@ -39,7 +39,7 @@ function getUrl(path: string): string {
     url = `${API_BASE}${path}`
   }
   const accountPath = path.split('?')[0]
-  const accountScoped = /^\/(angel\/(?:status|logout|orders|positions)|strategies\/(?:settings\/[^/]+|[^/]+\/(?:status|start|stop|exit))|trades(?:\/|$))/.test(accountPath)
+  const accountScoped = /^\/(instruments(?:\/|$)|angel\/(?:status|logout|orders|positions)|strategies\/(?:settings\/[^/]+|[^/]+\/(?:status|start|stop|exit))|trades(?:\/|$))/.test(accountPath)
   if (apiAccountId && accountScoped) {
     const parsed = new URL(url, window.location.origin)
     parsed.searchParams.set('brokerAccountId', apiAccountId)
@@ -125,8 +125,8 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function apiGet<T>(path: string): Promise<T> {
-  return request<T>(path, { method: 'GET' })
+export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+  return request<T>(path, { method: 'GET', signal })
 }
 
 export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
@@ -137,10 +137,13 @@ export async function apiDelete<T>(path: string): Promise<T> {
   return request<T>(path, { method: 'DELETE' })
 }
 
-async function request<T>(path: string, options: { method: string; body?: unknown }): Promise<T> {
+async function request<T>(path: string, options: { method: string; body?: unknown; signal?: AbortSignal }): Promise<T> {
   if (!apiIdentity) throw new DOMException('No signed-in user owns this request.', 'AbortError')
   const generation = identityGeneration
   const controller = new AbortController()
+  const abort = () => controller.abort()
+  options.signal?.addEventListener('abort', abort, { once: true })
+  if (options.signal?.aborted) controller.abort()
   activeRequests.add(controller)
   const url = getUrl(path)
   const requestOptions = (): RequestInit => ({
@@ -170,5 +173,61 @@ async function request<T>(path: string, options: { method: string; body?: unknow
     return data as T
   } finally {
     activeRequests.delete(controller)
+    options.signal?.removeEventListener('abort', abort)
+  }
+}
+
+// Fetch-based SSE keeps JWTs out of URLs and reuses app/account cancellation.
+export async function apiStream<T>(path: string, signal: AbortSignal, onData: (data: T) => void): Promise<void> {
+  if (!apiIdentity) throw new DOMException('Sign in to view market data.', 'AbortError')
+  const generation = identityGeneration
+  const controller = new AbortController()
+  const abort = () => controller.abort()
+  signal.addEventListener('abort', abort, { once: true })
+  if (signal.aborted) controller.abort()
+  activeRequests.add(controller)
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
+  let watchdog = setTimeout(() => controller.abort(), 20000)
+  try {
+    const url = getUrl(path)
+    const fetchStream = () => fetch(url, { credentials: 'include', headers: { ...authHeaders(), Accept: 'text/event-stream' }, signal: controller.signal })
+    let response = await fetchStream()
+    assertCurrent(generation)
+    if (response.status === 401 && await refreshAccessToken(generation)) {
+      assertCurrent(generation)
+      response = await fetchStream()
+    }
+    if (!response.ok) {
+      const data = await readResponseBody(response)
+      assertCurrent(generation)
+      if (isConfirmedAuthFailure(response, data)) redirectToLoginWithReturnPath()
+      throw Object.assign(new Error(errorMessage(data, response.status)), { status: response.status })
+    }
+    if (!response.headers.get('content-type')?.includes('text/event-stream') || !response.body) throw new Error('Invalid live data response.')
+    reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    while (true) {
+      const { done, value } = await reader.read()
+      assertCurrent(generation)
+      clearTimeout(watchdog)
+      watchdog = setTimeout(() => controller.abort(), 20000)
+      if (done) return
+      buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n')
+      if (buffer.length > 256000) throw new Error('Live data response exceeded its limit.')
+      let end: number
+      while ((end = buffer.indexOf('\n\n')) >= 0) {
+        const event = buffer.slice(0, end)
+        buffer = buffer.slice(end + 2)
+        const data = event.split('\n').filter(line => line.startsWith('data:')).map(line => line.slice(5).trimStart()).join('\n')
+        if (data) onData(JSON.parse(data) as T)
+      }
+    }
+  } finally {
+    clearTimeout(watchdog)
+    void reader?.cancel().catch(() => {})
+    controller.abort()
+    activeRequests.delete(controller)
+    signal.removeEventListener('abort', abort)
   }
 }

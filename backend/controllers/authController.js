@@ -197,6 +197,7 @@ exports.protect = async (req, res, next) => {
 
         // GRANT ACCESS TO PROTECTED ROUTE
         req.user = currentUser;
+        req.accessTokenExpiresAt = Number(decoded.exp) * 1000;
         next();
     } catch (err) {
         res.status(401).json({ status: 'fail', message: 'Invalid token or session expired.' });

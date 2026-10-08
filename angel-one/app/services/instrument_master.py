@@ -201,6 +201,29 @@ class InstrumentMasterCache:
         self._contracts: List[IndexOptionContract] = []
         self._index_spot: Dict[str, Tuple[str, str]] = {}
         self._fetcher = fetcher
+        self._search_rows: List[Dict[str, Any]] = []
+        self._instrument_by_key: Dict[Tuple[str, str], Dict[str, Any]] = {}
+
+    def search(self, query: str, exchange: str = "ALL", limit: int = 30) -> List[Dict[str, Any]]:
+        self.refresh_if_needed()
+        words = query.strip().upper().split()
+        today = datetime.now(timezone(timedelta(hours=5, minutes=30))).date().isoformat()
+        matches = [row for row in self._search_rows
+                   if (exchange == "ALL" or row["exchange"] == exchange)
+                   and (not row["expiry"] or row["expiry"] >= today)
+                   and all(word in (row["tradingsymbol"] + " " + row["name"]).upper() for word in words)]
+        matches.sort(key=lambda row: (row["tradingsymbol"].upper() != query.strip().upper(),
+                                     not row["tradingsymbol"].upper().startswith(query.strip().upper()),
+                                     row["expiry"] or "", row["tradingsymbol"], row["exchange"]))
+        return [dict(row) for row in matches[:limit]]
+
+    def resolve(self, exchange: str, token: str) -> Dict[str, Any]:
+        self.refresh_if_needed()
+        row = self._instrument_by_key.get((exchange, token))
+        today = datetime.now(timezone(timedelta(hours=5, minutes=30))).date().isoformat()
+        if row is None or (row["expiry"] and row["expiry"] < today):
+            raise ValueError("Instrument not found or expired")
+        return dict(row)
 
     def get_index_spot(self, *, underlying: str) -> Tuple[str, str]:
         self.refresh_if_needed()
@@ -243,7 +266,22 @@ class InstrumentMasterCache:
             rows = self._download_rows()
             contracts: List[IndexOptionContract] = []
             best_index: Dict[str, Tuple[int, str, str]] = {}
+            search_rows: Dict[Tuple[str, str], Dict[str, Any]] = {}
             for r in rows:
+                ex = str(r.get("exch_seg") or "").strip().upper()
+                token = str(r.get("token") or "").strip()
+                symbol = str(r.get("symbol") or "").strip()
+                kind = str(r.get("instrumenttype") or "EQUITY").strip()
+                expiry = _parse_expiry_to_iso(str(r.get("expiry") or ""))
+                if ex in {"NSE", "BSE", "NFO", "BFO", "MCX"} and token.isdigit() and symbol and (not kind.startswith(("OPT", "FUT")) or expiry):
+                    search_rows[(ex, token)] = {
+                        "exchange": ex, "symboltoken": token, "tradingsymbol": symbol,
+                        "name": str(r.get("name") or symbol).strip(),
+                        "instrumentType": kind,
+                        "expiry": expiry,
+                        "lotSize": _parse_int(r.get("lotsize")),
+                        "optionType": _parse_option_type(symbol),
+                    }
                 c = parse_index_option_contract(r)
                 if c is not None:
                     contracts.append(c)
@@ -278,6 +316,8 @@ class InstrumentMasterCache:
                     best_index[und] = (score, tradingsymbol, symboltoken)
 
             self._contracts = contracts
+            self._instrument_by_key = search_rows
+            self._search_rows = list(search_rows.values())
             self._index_spot = {k: (v[1], v[2]) for k, v in best_index.items()}
             self._fetched_at = datetime.now(timezone.utc)
 

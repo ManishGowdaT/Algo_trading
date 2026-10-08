@@ -4,6 +4,7 @@ const strategyEngine = require('../services/strategyEngine');
 const config = require('../config');
 const accounts = require('../services/accountContext');
 const BrokerAccount = require('../models/BrokerAccount');
+const brokerCredentialVault = require('../services/brokerCredentialVault');
 const { respondWithApiError } = require('../middleware/apiErrors');
 
 function respondWithPythonTransportError(req, res, err) {
@@ -92,9 +93,33 @@ function redactLoginDiagnosticBody(data, credentials = []) {
 exports.login = async (req, res) => {
   try {
     const requestedUserId = req.user._id.toString();
-    const clientId = String(req.body?.clientCode || '').trim().toUpperCase();
+    let suppliedCredentials = null;
+    if (req.body?.useSavedCredentials === true) {
+      const saved = await brokerCredentialVault.get(req.user._id);
+      if (!saved) throw accounts.denied('Complete secure broker setup before connecting.', 409);
+      if (typeof req.body?.mpin !== 'string' || !req.body.mpin.trim() || req.body.mpin.length > 64) {
+        throw accounts.denied('Enter your Angel One MPIN.', 400);
+      }
+      suppliedCredentials = { ...saved, mpin: req.body.mpin };
+    } else {
+      // Compatibility for existing clients. New UI saves credentials once and
+      // connects through the saved-credentials path.
+      suppliedCredentials = req.body || {};
+    }
+    const clientId = String(suppliedCredentials?.clientCode || '').trim().toUpperCase();
     if (!clientId || clientId.length > 64 || !/^[A-Z0-9_-]+$/.test(clientId)) throw accounts.denied('A valid client ID is required.', 400);
+    if (req.body?.useSavedCredentials === true && (!suppliedCredentials?.mpin || String(suppliedCredentials.mpin).length > 64)) throw accounts.denied('Enter your Angel One MPIN.', 400);
+    const pythonUrl = new URL(config.API.ANGEL_ONE_API_BASE);
+    if (process.env.NODE_ENV === 'production' && pythonUrl.protocol !== 'https:' && !config.API.ANGEL_ONE_PRIVATE_NETWORK) {
+      throw Object.assign(new Error('Broker credential transport must use HTTPS or an explicitly isolated private network.'), { status: 503 });
+    }
     return await accounts.exclusive(`connect:${requestedUserId}:${clientId}`, async () => {
+    if (req.body?.useSavedCredentials === true) {
+      const fresh = await brokerCredentialVault.get(req.user._id);
+      if (!fresh || fresh.version !== suppliedCredentials.version || fresh.clientCode !== clientId) {
+        throw accounts.denied('Saved broker credentials changed. Please retry.', 409);
+      }
+    }
     if (accounts.selector(req)) await accounts.owned(requestedUserId, accounts.selector(req));
     let record = await BrokerAccount.findOne({ userId: requestedUserId, broker: 'ANGEL_ONE' }).lean();
     if (record && (record.brokerClientId !== clientId || record.status === 'DISABLED')) throw accounts.denied('This user is linked to a different or disabled broker account.');
@@ -127,7 +152,12 @@ exports.login = async (req, res) => {
     try {
     ({ response, data } = await requestPython('/angel/login', {
       method: 'POST',
-      body: { ...req.body, clientCode: clientId },
+      body: {
+        apiKey: suppliedCredentials.apiKey,
+        clientCode: clientId,
+        mpin: suppliedCredentials.mpin,
+        totpSecret: suppliedCredentials.totpSecret,
+      },
       context,
       timeoutMs: config.API.PYTHON_COLD_START_TIMEOUT_MS,
     }));
@@ -143,15 +173,26 @@ exports.login = async (req, res) => {
       if (created) await BrokerAccount.deleteOne(reservation);
       else await BrokerAccount.updateOne(reservation,
         { $set: { status: record.status }, $inc: { version: 1 } });
-      return res.status(response.status).json(data);
+      return res.status(response.status).json(req.body?.useSavedCredentials === true
+        ? redactLoginDiagnosticBody(data, [suppliedCredentials.apiKey, suppliedCredentials.totpSecret, suppliedCredentials.mpin])
+        : data);
     }
     const sanitized = sanitizeLoginResponse(data);
+    if (req.body?.useSavedCredentials === true && sanitized.message) {
+      sanitized.message = redactLoginDiagnosticBody(sanitized.message,
+        [suppliedCredentials.apiKey, suppliedCredentials.totpSecret, suppliedCredentials.mpin]);
+    }
     sanitized.brokerAccountId = String(record._id);
     if (sanitized.connected) {
       if (!data.session_id || String(data.client_code).toUpperCase() !== clientId) throw accounts.denied('Broker login identity could not be verified.');
       const saved = await BrokerAccount.updateOne(reservation,
         { $set: { status: 'CONNECTED', connectedAt: new Date() }, $inc: { sessionGeneration: 1, version: 1 } });
       if (saved.modifiedCount !== 1) throw accounts.denied('Broker connection ownership changed.');
+      if (req.body?.useSavedCredentials === true && !await brokerCredentialVault.markVerified(req.user._id, record._id, suppliedCredentials.version)) {
+        await BrokerAccount.updateOne({ _id: record._id, userId: requestedUserId, sessionGeneration: generation },
+          { $set: { status: 'SERVICE_UNAVAILABLE' }, $inc: { version: 1 } });
+        throw accounts.denied('Saved broker credentials changed during connection. Please reconnect.');
+      }
       require('../services/marketDataService').resetAccountSession(record._id);
       activeAccountService.setActiveAccount({
         userId: requestedUserId,
@@ -175,7 +216,63 @@ exports.login = async (req, res) => {
     return res.status(response.status).json(sanitized);
     });
   } catch (err) {
+    if (req.body?.useSavedCredentials === true && !err.status) {
+      return respondWithApiError(req, res, err, { status: 503, message: 'Saved broker credentials are unavailable. Check the secure storage configuration.' });
+    }
     return respondWithPythonTransportError(req, res, err);
+  }
+};
+
+exports.saveCredentials = async (req, res) => {
+  try {
+    const allowedFields = new Set(['apiKey', 'clientCode', 'totpSecret', 'consent', 'currentPassword']);
+    if (!req.body || Object.keys(req.body).some((field) => !allowedFields.has(field))) {
+      throw accounts.denied('Broker setup request contains unsupported fields.', 400);
+    }
+    const userId = req.user._id;
+    const proposedClientId = String(req.body?.clientCode || '').trim().toUpperCase();
+    return await accounts.exclusive(`connect:${userId}:${proposedClientId}`, async () => {
+    const current = await brokerCredentialVault.metadata(userId);
+    if (current.configured) {
+      if (!req.body?.currentPassword) throw accounts.denied('Re-enter your application password to replace saved broker credentials.', 403);
+      const User = require('../models/User');
+      const user = await User.findById(userId).select('+password');
+      if (!user || !await user.comparePassword(String(req.body.currentPassword))) throw accounts.denied('Application password is incorrect.', 403);
+    }
+    if (req.body?.consent !== true) throw accounts.denied('Consent is required to encrypt and save broker credentials.', 400);
+    const linked = await BrokerAccount.findOne({ userId, broker: 'ANGEL_ONE' }).select('brokerClientId status').lean();
+    if (linked && linked.brokerClientId !== proposedClientId) {
+      throw accounts.denied('Disconnect and safely remove the existing broker account before changing its client ID.', 409);
+    }
+    if (current.configured && linked) {
+      if (['CONNECTED', 'CONNECTING', 'DISABLED'].includes(linked.status) || activeAccountService.getActiveAccount(userId, linked._id)) {
+        throw accounts.denied('Disconnect the broker before replacing saved setup.', 409);
+      }
+      await strategyEngine.assertAccountCanSwitch(userId);
+      const scope = { userId, brokerAccountId: linked._id };
+      const [position, intent] = await Promise.all([
+        require('../models/Position').findOne({ ...scope, status: { $ne: 'CLOSED' } }).select('_id').lean(),
+        require('../models/OrderIntent').findOne({ ...scope, $or: [
+          { status: { $in: require('../services/executionLeaseService').unresolvedStates } },
+          { filledQuantity: { $gt: 0 }, positionId: { $exists: false } },
+        ] }).select('_id').lean(),
+      ]);
+      if (position || intent) throw accounts.denied('Broker setup replacement is blocked while exposure is unresolved.', 409);
+    }
+    const saved = await brokerCredentialVault.save(userId, req.body, current.version);
+    return res.status(200).json({ status: 'success', ...saved });
+    });
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ status: 'fail', message: err.message });
+    return respondWithApiError(req, res, err, { status: 503, message: 'Secure broker credential storage is unavailable.' });
+  }
+};
+
+exports.credentialStatus = async (req, res) => {
+  try {
+    return res.status(200).json(await brokerCredentialVault.metadata(req.user._id));
+  } catch (err) {
+    return respondWithApiError(req, res, err, { status: 503, message: 'Secure broker credential storage is unavailable.' });
   }
 };
 exports.logout = async (req, res) => {

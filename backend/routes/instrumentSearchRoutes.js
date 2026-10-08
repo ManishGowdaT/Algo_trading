@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const auth = require('../controllers/authController');
+const controller = require('../controllers/instrumentSearchController');
+const { createUserRateLimiter } = require('../middleware/rateLimiters');
+router.use(auth.protect);
+router.use(require('../services/accountContext').middleware);
+router.use(createUserRateLimiter({ limit: 90, message: 'Too many market searches. Please wait a moment.' }));
+router.get('/search', controller.search);
+router.get('/live', controller.live);
+module.exports = router;

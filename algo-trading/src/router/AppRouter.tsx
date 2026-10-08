@@ -12,6 +12,7 @@ import HeikenashiPage from '../pages/StrategiesPage/HeikenashiPage'
 import ModifiedHeikenashiPage from '../pages/StrategiesPage/ModifiedHeikenashiPage'
 import DashboardPage from '../pages/DashboardPage/DashboardPage'
 import TradesPage from '../pages/TradesPage/TradesPage'
+import SearchPage from '../pages/SearchPage/SearchPage'
 import DashboardLayout from '../components/Layout/DashboardLayout'
 import ProtectedRoute from './ProtectedRoute'
 
@@ -27,6 +28,7 @@ export default function AppRouter() {
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/strategies" element={<StrategiesPage />} />
         <Route path="/strategies/manual-trading" element={<ManualTradingPage />} />
         <Route path="/strategies/ichimoku" element={<IchimokuStrategyPage />} />

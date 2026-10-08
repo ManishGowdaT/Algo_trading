@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
     try {
       await register(email, password, confirmPassword);
-      navigate('/dashboard');
+      navigate('/dashboard', { state: { brokerSetupOnboarding: true } });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {

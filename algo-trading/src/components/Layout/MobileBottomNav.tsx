@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Home, LogOut, UserRound, X } from 'lucide-react';
+import { Activity, BarChart3, Home, LogOut, UserRound, X, Search } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const items = [
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Strategies', path: '/strategies', icon: Activity },
     { label: 'Trades', path: '/trades', icon: BarChart3 },
-    { label: 'Orders', path: '/strategies/manual-trading', icon: Activity },
+    { label: 'Search', path: '/search', icon: Search },
 ];
 
 const MobileBottomNav: React.FC = () => {

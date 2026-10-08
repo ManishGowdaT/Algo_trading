@@ -13,6 +13,7 @@ module.exports = {
   },
   API: {
     ANGEL_ONE_API_BASE: process.env.ANGEL_ONE_API_BASE || 'http://localhost:8000',
+    ANGEL_ONE_PRIVATE_NETWORK: process.env.ANGEL_ONE_PRIVATE_NETWORK === 'true',
     TIMEOUT_MS: parseInt(process.env.API_TIMEOUT_MS || '5000', 10),
     PYTHON_COLD_START_TIMEOUT_MS: parseInt(process.env.PYTHON_COLD_START_TIMEOUT_MS || '60000', 10),
     // INTERNAL_SERVICE_KEY is canonical; retain this legacy alias for existing deployments.
