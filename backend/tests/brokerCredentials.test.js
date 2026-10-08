@@ -104,6 +104,19 @@ test('stale saves and concurrent replacements cannot overwrite a newer credentia
   assert.equal((await vault.get(userA)).version, 2);
 });
 
+test('invalid deployment keyrings fail with secret-free diagnostic codes, including JSON null', async t => {
+  const stores = fixture(t);
+  for (const value of ['null', '[]', '"key"', '123']) {
+    process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS = value;
+    await assert.rejects(vault.save(userA, input), { code: 'BROKER_VAULT_INVALID_KEYRING_OBJECT' });
+  }
+  process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS = '{';
+  await assert.rejects(vault.save(userA, input), { code: 'BROKER_VAULT_INVALID_KEYRING_JSON' });
+  process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS = JSON.stringify({ 'test-v1': 123 });
+  await assert.rejects(vault.save(userA, input), { code: 'BROKER_VAULT_INVALID_KEY_VALUE' });
+  assert.equal(stores.BrokerCredential.length, 0);
+});
+
 test('HTTP setup saves through POST, MPIN-only login uses server secrets, and replacement respects active exposure', async t => {
   const express = require('express');
   const bcrypt = require('bcryptjs');

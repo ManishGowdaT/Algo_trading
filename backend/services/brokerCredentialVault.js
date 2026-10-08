@@ -18,16 +18,26 @@ async function ensureIndexes() {
 
 function activeKeyVersion() { return process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION || ''; }
 
+function configurationError(code) {
+  return Object.assign(new Error('Broker credential encryption is not configured.'), { code });
+}
+
 function encryptionKey(version = activeKeyVersion()) {
   let keyring;
   try { keyring = JSON.parse(process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS || '{}'); }
-  catch { throw new Error('Broker credential encryption is not configured.'); }
+  catch { throw configurationError('BROKER_VAULT_INVALID_KEYRING_JSON'); }
+  if (!keyring || typeof keyring !== 'object' || Array.isArray(keyring)) {
+    throw configurationError('BROKER_VAULT_INVALID_KEYRING_OBJECT');
+  }
+  if (!version || !Object.hasOwn(keyring, version)) {
+    throw configurationError('BROKER_VAULT_MISSING_KEY_VERSION');
+  }
   const encoded = keyring[version];
-  if (!version || !encoded) throw new Error('Broker credential encryption is not configured.');
+  if (typeof encoded !== 'string' || !encoded) throw configurationError('BROKER_VAULT_INVALID_KEY_VALUE');
   let key;
-  try { key = Buffer.from(encoded, 'base64'); } catch { throw new Error('Broker credential encryption is not configured.'); }
+  try { key = Buffer.from(encoded, 'base64'); } catch { throw configurationError('BROKER_VAULT_INVALID_KEY_VALUE'); }
   if (key.length !== 32 || key.toString('base64').replace(/=+$/, '') !== encoded.replace(/=+$/, '')) {
-    throw new Error('Broker credential encryption is not configured.');
+    throw configurationError('BROKER_VAULT_INVALID_KEY_LENGTH_OR_ENCODING');
   }
   return key;
 }
