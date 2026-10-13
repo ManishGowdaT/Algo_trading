@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import logging
 import math
+import time
 from concurrent.futures import ThreadPoolExecutor
 from contextvars import copy_context
 from dataclasses import dataclass
 from datetime import date
 
-from .engine import atm_iv, edge_discovery_metrics, edge_discovery_shortlist, rank_edge_discovery
+from .engine import atm_iv, edge_discovery_metrics, rank_edge_discovery
 from .transport import UpstoxProviderError
 
 logger = logging.getLogger('spreads.discovery')
@@ -19,6 +20,7 @@ class DiscoveryResult:
     items: list[dict]
     errors: list[dict]
     capabilities: dict[str, dict]
+    stats: dict
 
 
 def _error(symbol, stage, exception=None, message=None):
@@ -32,8 +34,8 @@ def _error(symbol, stage, exception=None, message=None):
 
 def discover(universe: list[dict], adapter, *, as_of: date | None = None,
              vrp_threshold: float = 1.20, shock_threshold: float = 1.5,
-             max_workers: int = 6, iv_shortlist: int = 10, on_progress=None) -> DiscoveryResult:
-    """Preserve source input order, two stages, unknown IV and pandas ranking.
+             max_workers: int = 6, on_progress=None) -> DiscoveryResult:
+    """Run original history and ATM-IV stages for the complete eligible universe.
 
     Adapter failures are isolated per name. Stage one drops a failed name;
     stage two retains it with unknown IV. Errors/capabilities are additive
@@ -41,8 +43,7 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
     """
     if isinstance(max_workers, bool) or not 1 <= max_workers <= 6:
         raise ValueError('Discovery workers must be between one and six')
-    if isinstance(iv_shortlist, bool) or iv_shortlist < 0:
-        raise ValueError('Discovery IV shortlist must be non-negative')
+    started = time.monotonic()
 
     def stage1(item):
         symbol = item['symbol']
@@ -81,38 +82,57 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
         if metrics is not None:
             items.append(metrics)
             capabilities[entry['symbol']] = capability
-    if not items:
-        return DiscoveryResult([], errors, capabilities)
     by_symbol = {entry['symbol']:entry for entry in universe}
     metrics_by_symbol = {item['ticker']:item for item in items}
-    shortlist = edge_discovery_shortlist(items, iv_shortlist)
+    symbols = [entry['symbol'] for entry in universe]
     completed[0] = 0
     if on_progress:
-        on_progress({'stage':'iv','completed':0,'total':len(shortlist)})
+        on_progress({'stage':'iv','completed':0,'total':len(symbols)})
 
     def stage2(symbol):
         try:
             chain = adapter.get_atm_chain(by_symbol[symbol]['instrument_key'], as_of=as_of)
             if chain is None:
-                return symbol, float('nan'), _error(symbol,'iv',message='No usable discovery option expiry.'), None
-            iv = atm_iv(chain, metrics_by_symbol[symbol]['_spot_raw'])
-            error = _error(symbol,'iv',message='No usable ATM IV in the cleaned option chain.') if math.isnan(iv) else None
-            return symbol, iv, error, {'iv':chain.implied_volatility.status,'oi':chain.open_interest.status}
+                return symbol, float('nan'), 'unavailable', 'unavailable', _error(symbol,'iv',message='No usable discovery option expiry.'), None
+            metrics = metrics_by_symbol.get(symbol)
+            iv = atm_iv(chain, metrics['_spot_raw'] if metrics else float('nan'))
+            if math.isnan(iv):
+                reason = ('Historical spot is unavailable, so the original ATM strike selection cannot be evaluated.'
+                          if metrics is None else 'No usable positive IV was present in the original ATM selection.')
+                return symbol, iv, 'unavailable', 'unavailable', _error(symbol,'iv',message=reason), {'iv':chain.implied_volatility.status,'oi':chain.open_interest.status}
+            rv21 = metrics['_rv21_raw'] if metrics else float('nan')
+            vrp_status = 'available' if rv21 and rv21 > 0 and not math.isnan(rv21) else 'unavailable'
+            return symbol, iv, 'available', vrp_status, None, {'iv':chain.implied_volatility.status,'oi':chain.open_interest.status}
         except Exception as exception:
-            return symbol, float('nan'), _error(symbol,'iv',exception), None
+            return symbol, float('nan'), 'failed', 'failed', _error(symbol,'iv',exception), None
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
-        futures = [pool.submit(copy_context().run, tracked, 'iv', stage2, symbol, len(shortlist)) for symbol in shortlist]
+        futures = [pool.submit(copy_context().run, tracked, 'iv', stage2, symbol, len(symbols)) for symbol in symbols]
         iv_results = [future.result() for future in futures]
-    ivs = {}
-    for symbol, iv, error, capability in iv_results:
+    ivs, iv_status, vrp_status = {}, {}, {}
+    for symbol, iv, iv_state, vrp_state, error, capability in iv_results:
         ivs[symbol] = iv
+        iv_status[symbol], vrp_status[symbol] = iv_state, vrp_state
         if error:
             errors.append(error)
-        if capability:
+        if capability and symbol in capabilities:
             capabilities[symbol].update(capability)
-    return DiscoveryResult(rank_edge_discovery(items, ivs, vrp_threshold=vrp_threshold,
-        shock_threshold=shock_threshold, iv_shortlist=iv_shortlist), errors, capabilities)
+    ranked = rank_edge_discovery(items, ivs, vrp_threshold=vrp_threshold,
+        shock_threshold=shock_threshold, iv_status_by_ticker=iv_status, vrp_status_by_ticker=vrp_status)
+    attempts = {'eligible_underlyings':len(universe), 'history_attempted':len(universe),
+                'history_available':len(items), 'atm_iv_attempted':len(symbols),
+                'atm_iv_available':sum(state == 'available' for state in iv_status.values()),
+                'atm_iv_unavailable':sum(state == 'unavailable' for state in iv_status.values()),
+                'atm_iv_failed':sum(state == 'failed' for state in iv_status.values()),
+                'history_failed':sum(error['stage'] == 'history' and error['status'] is not None for error in errors),
+                'failed_requests':sum(error['status'] is not None for error in errors),
+                'total_runtime_seconds':round(time.monotonic()-started, 2),
+                'complete':True}
+    attempts['failed'] = attempts['failed_requests']
+    provider_metrics = getattr(adapter, 'request_metrics', None)
+    if callable(provider_metrics):
+        attempts.update(provider_metrics())
+    return DiscoveryResult(ranked, errors, capabilities, attempts)
 
 
 def edge_discovery(universe, adapter, **kwargs):

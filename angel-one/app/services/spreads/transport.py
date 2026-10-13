@@ -48,6 +48,7 @@ _READ_ONLY_PATHS = frozenset({
     "/v2/instruments/search",
     "/v2/option/contract",
     "/v2/option/chain",
+    "/v3/market-quote/option-greek",
 })
 _HISTORICAL_CANDLE_PATH = re.compile(
     r"/v3/historical-candle/[A-Za-z0-9_.~%+-]+/days/1/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2}"
@@ -96,8 +97,14 @@ class UpstoxTransport:
         self._max_attempts = max_attempts
         self._base_url = base_url.rstrip("/")
         self._identity = hashlib.sha256(access_token.strip().encode()).hexdigest()
+        self._metrics_lock = threading.Lock()
+        self._metrics = {'option_chain_requests':0, 'v3_greeks_requests':0, 'rate_limit_responses':0}
         # Injected clients have an isolated namespace, preventing test/client data bleed.
         self._scope = client if client is not None else "live"
+
+    def request_metrics(self):
+        with self._metrics_lock:
+            return dict(self._metrics)
 
     def get(self, path: str, params: dict[str, Any] | None = None) -> dict:
         if not _is_read_only_market_data_path(path):
@@ -113,6 +120,11 @@ class UpstoxTransport:
         headers = {"Authorization": self._authorization, "Accept": "application/json"}
         response = None
         for attempt in range(self._max_attempts):
+            metric_key = ('option_chain_requests' if path == '/v2/option/chain' else
+                          'v3_greeks_requests' if path == '/v3/market-quote/option-greek' else None)
+            if metric_key:
+                with self._metrics_lock:
+                    self._metrics[metric_key] += 1
             try:
                 if self._client is None:
                     _pace()
@@ -135,6 +147,9 @@ class UpstoxTransport:
                 continue
 
             if response.status_code == 429 or response.status_code >= 500:
+                if response.status_code == 429:
+                    with self._metrics_lock:
+                        self._metrics['rate_limit_responses'] += 1
                 if attempt + 1 < self._max_attempts:
                     retry_after = response.headers.get("Retry-After", "")
                     try:

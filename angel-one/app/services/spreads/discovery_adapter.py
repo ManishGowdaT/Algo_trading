@@ -54,6 +54,10 @@ class DiscoveryDataAdapter:
         self.transport = transport if transport is not None else market_provider._transport
         self.fixture = fixture
 
+    def request_metrics(self):
+        metrics = getattr(self.market_provider, 'request_metrics', None)
+        return metrics() if callable(metrics) else {}
+
     def get_history(self, instrument_key: str, *, as_of: date | None = None) -> DiscoveryHistory:
         end = as_of or datetime.now(IST).date()
         start = four_month_start(end)

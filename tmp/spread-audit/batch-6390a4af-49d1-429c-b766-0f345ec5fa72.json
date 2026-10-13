@@ -1,0 +1,4760 @@
+{
+  "audit_id": "6390a4af-49d1-429c-b766-0f345ec5fa72",
+  "request": {
+    "expiry": null,
+    "dte": 30,
+    "width": 5.0,
+    "min_vrp": 1.15,
+    "min_oi": 100,
+    "max_spread_pct": 0.1,
+    "min_cushion": 2.0,
+    "min_ror": 15.0,
+    "underlyings": [
+      "ABB",
+      "AMBUJACEM",
+      "ANANDRATHI",
+      "ANGELONE",
+      "AUROPHARMA",
+      "AXISBANK",
+      "BANKINDIA",
+      "BHEL",
+      "BIOCON",
+      "BPCL",
+      "CANBK",
+      "CIPLA",
+      "CROMPTON",
+      "FEDERALBNK",
+      "GAIL",
+      "GODFRYPHLP",
+      "HDFCAMC",
+      "HINDPETRO",
+      "ICICIBANK",
+      "IEX",
+      "INDIANB",
+      "INDUSINDBK",
+      "INFY",
+      "IOC",
+      "IRFC",
+      "JINDALSTEL",
+      "JSWENERGY",
+      "KPITTECH",
+      "LAURUSLABS",
+      "MAZDOCK",
+      "MCX",
+      "NBCC",
+      "NESTLEIND",
+      "NMDC",
+      "NTPC",
+      "OFSS",
+      "PERSISTENT",
+      "PNBHOUSING",
+      "POLYCAB",
+      "SHREECEM",
+      "SUZLON",
+      "TATAELXSI",
+      "TATASTEEL",
+      "TCS",
+      "TECHM",
+      "TIINDIA",
+      "TORNTPHARM",
+      "TVSMOTOR",
+      "UJJIVANSFB",
+      "WAAREEENER"
+    ],
+    "expiries": {}
+  },
+  "result": {
+    "ok": true,
+    "data_mode": "upstox",
+    "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+    "underlyings": [
+      {
+        "ticker": "ABB",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 22,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 6855.5,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.48,
+          "rv": {
+            "rv10": 0.3885,
+            "rv21": 0.3208,
+            "rv63": 0.2913,
+            "rv252": 0.3072
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "ABB",
+        "instrument_key": "NSE_EQ|INE117A01022",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "addd000c-a07f-4b48-981f-05eb3231824f",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\addd000c-a07f-4b48-981f-05eb3231824f.json"
+        }
+      },
+      {
+        "ticker": "AMBUJACEM",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 16,
+          "cushion": 14,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 348.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.83,
+          "rv": {
+            "rv10": 0.3854,
+            "rv21": 0.3031,
+            "rv63": 0.2382,
+            "rv252": 0.2817
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "AMBUJACEM",
+        "instrument_key": "NSE_EQ|INE079A01024",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "5373f8f6-54a1-442c-a8e3-d16c8e88438e",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\5373f8f6-54a1-442c-a8e3-d16c8e88438e.json"
+        }
+      },
+      {
+        "ticker": "ANANDRATHI",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "ANANDRATHI",
+        "instrument_key": "NSE_EQ|INE463V01026",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "ec27b0af-591c-479d-a95b-1e7d595b6e4f",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\ec27b0af-591c-479d-a95b-1e7d595b6e4f.json"
+        }
+      },
+      {
+        "ticker": "ANGELONE",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "ANGELONE",
+        "instrument_key": "NSE_EQ|INE732I01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "07da6345-c3c5-490d-aed7-e15afcf0117c",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\07da6345-c3c5-490d-aed7-e15afcf0117c.json"
+        }
+      },
+      {
+        "ticker": "AUROPHARMA",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1706.9,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.13,
+          "rv": {
+            "rv10": 0.228,
+            "rv21": 0.2331,
+            "rv63": 0.2402,
+            "rv252": 0.2602
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "AUROPHARMA",
+        "instrument_key": "NSE_EQ|INE406A01037",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "0fdd62e9-ff56-4f66-9da1-43e9af63220a",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\0fdd62e9-ff56-4f66-9da1-43e9af63220a.json"
+        }
+      },
+      {
+        "ticker": "AXISBANK",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1253.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.46,
+          "rv": {
+            "rv10": 0.1551,
+            "rv21": 0.2468,
+            "rv63": 0.236,
+            "rv252": 0.2444
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "AXISBANK",
+        "instrument_key": "NSE_EQ|INE238A01034",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "e32f2622-c979-40d0-be31-1a4fc9969c34",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\e32f2622-c979-40d0-be31-1a4fc9969c34.json"
+        }
+      },
+      {
+        "ticker": "BANKINDIA",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "BANKINDIA",
+        "instrument_key": "NSE_EQ|INE084A01016",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "9df097c0-0ab2-4cff-a291-b1aa0cef3e38",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\9df097c0-0ab2-4cff-a291-b1aa0cef3e38.json"
+        }
+      },
+      {
+        "ticker": "BHEL",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 16,
+          "cushion": 15,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 439.9,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.95,
+          "rv": {
+            "rv10": 0.3943,
+            "rv21": 0.3778,
+            "rv63": 0.3308,
+            "rv252": 0.3731
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "BHEL",
+        "instrument_key": "NSE_EQ|INE257A01026",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "f0ef95e9-515b-467d-b91e-9a875be3a6a0",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\f0ef95e9-515b-467d-b91e-9a875be3a6a0.json"
+        }
+      },
+      {
+        "ticker": "BIOCON",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 346.35,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.43,
+          "rv": {
+            "rv10": 0.1878,
+            "rv21": 0.2338,
+            "rv63": 0.236,
+            "rv252": 0.2519
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "BIOCON",
+        "instrument_key": "NSE_EQ|INE376G01013",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "cda2f2c5-5b1f-400f-9ddb-e8423a27c147",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\cda2f2c5-5b1f-400f-9ddb-e8423a27c147.json"
+        }
+      },
+      {
+        "ticker": "BPCL",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 21,
+          "cushion": 18,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 284.5,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.71,
+          "rv": {
+            "rv10": 0.2332,
+            "rv21": 0.2397,
+            "rv63": 0.2123,
+            "rv252": 0.293
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "BPCL",
+        "instrument_key": "NSE_EQ|INE029A01011",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "c574df71-99eb-437f-88df-5e045cfc8b1d",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\c574df71-99eb-437f-88df-5e045cfc8b1d.json"
+        }
+      },
+      {
+        "ticker": "CANBK",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "ticker": "CANBK",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 125.0,
+            "long_strike": 130.0,
+            "width": 5.0,
+            "credit": 1.41,
+            "ror_pct": 39.1,
+            "cushion_pct": 5.59,
+            "vrp": 1.56,
+            "iv": 0.3125,
+            "rv21": 0.2002,
+            "earnings": true,
+            "max_gap": 5.3,
+            "p_raw": 0.2979,
+            "p_adj": 0.5801,
+            "ev": -150.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.2354,
+                "rv21": 0.2002,
+                "rv63": 0.1926,
+                "rv252": 0.2864
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 5.3
+              },
+              "l3": {
+                "iv": 0.3125,
+                "rv21": 0.2002,
+                "ratio": 1.56
+              },
+              "l4": {
+                "p_raw": 0.2979,
+                "p_adj": 0.5801,
+                "horizon_td": 28
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0335,
+                  "oi": 161
+                },
+                "long": {
+                  "spread_pct": 0.0506,
+                  "oi": 274
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|83051",
+            "long_instrument_key": "NSE_FO|83064",
+            "lot_size": 6750,
+            "lot_size_status": "contract",
+            "credit_per_lot_inr": 9483.75,
+            "max_loss_per_lot_inr": 24266.25,
+            "ev_per_lot_inr": -10093.69
+          }
+        ],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 1,
+          "paired": 1,
+          "ror": 1,
+          "vrp": 1,
+          "final": 1
+        },
+        "meta": {
+          "spot": 118.38,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.3,
+          "rv": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "CANBK",
+        "instrument_key": "NSE_EQ|INE476A01022",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "6e7c8cc9-c5ad-43e6-98d2-1d5826c5cfd6",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\6e7c8cc9-c5ad-43e6-98d2-1d5826c5cfd6.json"
+        }
+      },
+      {
+        "ticker": "CIPLA",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1311.3,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 7.05,
+          "rv": {
+            "rv10": 0.1483,
+            "rv21": 0.1546,
+            "rv63": 0.1558,
+            "rv252": 0.208
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "CIPLA",
+        "instrument_key": "NSE_EQ|INE059A01026",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "5bae9d47-b88e-4453-a3c5-843f98e4243e",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\5bae9d47-b88e-4453-a3c5-843f98e4243e.json"
+        }
+      },
+      {
+        "ticker": "CROMPTON",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 21,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 202.5,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.62,
+          "rv": {
+            "rv10": 0.3582,
+            "rv21": 0.2694,
+            "rv63": 0.3039,
+            "rv252": 0.2991
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "CROMPTON",
+        "instrument_key": "NSE_EQ|INE299U01018",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "bcc7ee61-cf54-48ed-92df-092faa3817a7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\bcc7ee61-cf54-48ed-92df-092faa3817a7.json"
+        }
+      },
+      {
+        "ticker": "FEDERALBNK",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 21,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 328.2,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 9.48,
+          "rv": {
+            "rv10": 0.2722,
+            "rv21": 0.233,
+            "rv63": 0.2596,
+            "rv252": 0.2612
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "FEDERALBNK",
+        "instrument_key": "NSE_EQ|INE171A01029",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "ebe9e796-990d-438a-b862-d8aafe585d0a",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\ebe9e796-990d-438a-b862-d8aafe585d0a.json"
+        }
+      },
+      {
+        "ticker": "GAIL",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 20,
+          "cushion": 17,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 166.91,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.49,
+          "rv": {
+            "rv10": 0.2208,
+            "rv21": 0.1743,
+            "rv63": 0.2184,
+            "rv252": 0.2519
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "GAIL",
+        "instrument_key": "NSE_EQ|INE129A01019",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "a9830073-5264-42e2-8801-002ac9fbcc75",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\a9830073-5264-42e2-8801-002ac9fbcc75.json"
+        }
+      },
+      {
+        "ticker": "GODFRYPHLP",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "GODFRYPHLP",
+        "instrument_key": "NSE_EQ|INE260B01028",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "3e5c1615-802b-4308-9a2e-76ef8fd03292",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\3e5c1615-802b-4308-9a2e-76ef8fd03292.json"
+        }
+      },
+      {
+        "ticker": "HDFCAMC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 2289.7,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.04,
+          "rv": {
+            "rv10": 0.3584,
+            "rv21": 0.2775,
+            "rv63": 0.2757,
+            "rv252": 0.32
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "HDFCAMC",
+        "instrument_key": "NSE_EQ|INE127D01025",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "51bba662-6575-47c6-b7b7-b8c28cdd3fe4",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\51bba662-6575-47c6-b7b7-b8c28cdd3fe4.json"
+        }
+      },
+      {
+        "ticker": "HINDPETRO",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 22,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 332.25,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 7.99,
+          "rv": {
+            "rv10": 0.3718,
+            "rv21": 0.3009,
+            "rv63": 0.263,
+            "rv252": 0.3506
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "HINDPETRO",
+        "instrument_key": "NSE_EQ|INE094A01015",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "6916a96a-b3fe-4283-81ce-b3701ccaa124",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\6916a96a-b3fe-4283-81ce-b3701ccaa124.json"
+        }
+      },
+      {
+        "ticker": "ICICIBANK",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1340.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.72,
+          "rv": {
+            "rv10": 0.2125,
+            "rv21": 0.1692,
+            "rv63": 0.16,
+            "rv252": 0.1955
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "ICICIBANK",
+        "instrument_key": "NSE_EQ|INE090A01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "a394b71b-a6db-4a6d-adce-1d2bf1d4f016",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\a394b71b-a6db-4a6d-adce-1d2bf1d4f016.json"
+        }
+      },
+      {
+        "ticker": "IEX",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 104.37,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 29.58,
+          "rv": {
+            "rv10": 0.272,
+            "rv21": 0.2442,
+            "rv63": 0.2467,
+            "rv252": 0.3153
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "IEX",
+        "instrument_key": "NSE_EQ|INE022Q01020",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "30d5b525-9aa6-49db-bfb0-d218fc069b21",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\30d5b525-9aa6-49db-bfb0-d218fc069b21.json"
+        }
+      },
+      {
+        "ticker": "INDIANB",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 814.1,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 10.62,
+          "rv": {
+            "rv10": 0.3466,
+            "rv21": 0.2473,
+            "rv63": 0.2165,
+            "rv252": 0.324
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "INDIANB",
+        "instrument_key": "NSE_EQ|INE562A01011",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "7a55ed33-426e-4b64-a42f-24f3a2ecd572",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7a55ed33-426e-4b64-a42f-24f3a2ecd572.json"
+        }
+      },
+      {
+        "ticker": "INDUSINDBK",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 853.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.57,
+          "rv": {
+            "rv10": 0.3236,
+            "rv21": 0.2773,
+            "rv63": 0.2599,
+            "rv252": 0.2922
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "INDUSINDBK",
+        "instrument_key": "NSE_EQ|INE095A01012",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "58288df2-0a03-4e46-a469-5ad44a5180ce",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\58288df2-0a03-4e46-a469-5ad44a5180ce.json"
+        }
+      },
+      {
+        "ticker": "INFY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 17,
+          "cushion": 15,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1020.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 2.5,
+          "rv": {
+            "rv10": 0.3187,
+            "rv21": 0.2723,
+            "rv63": 0.2909,
+            "rv252": 0.3061
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "INFY",
+        "instrument_key": "NSE_EQ|INE009A01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "66d585a2-b0f2-4807-8d90-eba6ec462488",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\66d585a2-b0f2-4807-8d90-eba6ec462488.json"
+        }
+      },
+      {
+        "ticker": "IOC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 19,
+          "friction": 2,
+          "paired": 2,
+          "ror": 2,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 125.35,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.47,
+          "rv": {
+            "rv10": 0.2672,
+            "rv21": 0.2404,
+            "rv63": 0.2062,
+            "rv252": 0.2697
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "IOC",
+        "instrument_key": "NSE_EQ|INE242A01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "b5493094-b681-49d4-a75c-3cef0c405590",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\b5493094-b681-49d4-a75c-3cef0c405590.json"
+        }
+      },
+      {
+        "ticker": "IRFC",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "IRFC",
+        "instrument_key": "NSE_EQ|INE053F01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "7676c56c-f489-48e7-a7da-79d3022a8cc6",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7676c56c-f489-48e7-a7da-79d3022a8cc6.json"
+        }
+      },
+      {
+        "ticker": "JINDALSTEL",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 21,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1012.5,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.79,
+          "rv": {
+            "rv10": 0.2747,
+            "rv21": 0.2903,
+            "rv63": 0.251,
+            "rv252": 0.2859
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "JINDALSTEL",
+        "instrument_key": "NSE_EQ|INE749A01030",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "bfa40899-46c6-4855-a878-be144808366a",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\bfa40899-46c6-4855-a878-be144808366a.json"
+        }
+      },
+      {
+        "ticker": "JSWENERGY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 18,
+          "cushion": 16,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 467.35,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.68,
+          "rv": {
+            "rv10": 0.287,
+            "rv21": 0.2828,
+            "rv63": 0.2554,
+            "rv252": 0.3035
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "JSWENERGY",
+        "instrument_key": "NSE_EQ|INE121E01018",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "e4bc3862-1468-4948-849e-46a2478061f5",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\e4bc3862-1468-4948-849e-46a2478061f5.json"
+        }
+      },
+      {
+        "ticker": "KPITTECH",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 18,
+          "cushion": 16,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 481.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 8.81,
+          "rv": {
+            "rv10": 0.3145,
+            "rv21": 0.2967,
+            "rv63": 0.3551,
+            "rv252": 0.3905
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "KPITTECH",
+        "instrument_key": "NSE_EQ|INE04I401011",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "85bc0b29-9dbd-438b-8756-dea4194d5d19",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\85bc0b29-9dbd-438b-8756-dea4194d5d19.json"
+        }
+      },
+      {
+        "ticker": "LAURUSLABS",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 2069.2,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 2.99,
+          "rv": {
+            "rv10": 0.2943,
+            "rv21": 0.2651,
+            "rv63": 0.2804,
+            "rv252": 0.289
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "LAURUSLABS",
+        "instrument_key": "NSE_EQ|INE947Q01028",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "af14d32c-f0ca-45dc-bf36-66870dbdec07",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\af14d32c-f0ca-45dc-bf36-66870dbdec07.json"
+        }
+      },
+      {
+        "ticker": "MAZDOCK",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "MAZDOCK",
+        "instrument_key": "NSE_EQ|INE249Z01020",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "0d31011f-cbbe-4ae2-9a96-4a43f7b5eccb",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\0d31011f-cbbe-4ae2-9a96-4a43f7b5eccb.json"
+        }
+      },
+      {
+        "ticker": "MCX",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 20,
+          "cushion": 17,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 3390.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 8.88,
+          "rv": {
+            "rv10": 0.3906,
+            "rv21": 0.3552,
+            "rv63": 0.3585,
+            "rv252": 0.3975
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "MCX",
+        "instrument_key": "NSE_EQ|INE745G01043",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "efe5ba5e-c266-48c5-bdef-c7fe9c085812",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\efe5ba5e-c266-48c5-bdef-c7fe9c085812.json"
+        }
+      },
+      {
+        "ticker": "NBCC",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "NBCC",
+        "instrument_key": "NSE_EQ|INE095N01031",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "4153e9ac-6ab7-4c76-8540-9a58cfc1ed22",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\4153e9ac-6ab7-4c76-8540-9a58cfc1ed22.json"
+        }
+      },
+      {
+        "ticker": "NESTLEIND",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 18,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1324.7,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 7.27,
+          "rv": {
+            "rv10": 0.2552,
+            "rv21": 0.2329,
+            "rv63": 0.2229,
+            "rv252": 0.2104
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "NESTLEIND",
+        "instrument_key": "NSE_EQ|INE239A01024",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "b5d65c0e-5ff3-4229-83ce-7c0d29089aed",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\b5d65c0e-5ff3-4229-83ce-7c0d29089aed.json"
+        }
+      },
+      {
+        "ticker": "NMDC",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "ticker": "NMDC",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 75.0,
+            "long_strike": 80.0,
+            "width": 5.0,
+            "credit": 0.97,
+            "ror_pct": 24.2,
+            "cushion_pct": 6.62,
+            "vrp": 1.22,
+            "iv": 0.3027,
+            "rv21": 0.2471,
+            "earnings": true,
+            "max_gap": 4.65,
+            "p_raw": 0.2825,
+            "p_adj": 0.4808,
+            "ev": -143.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.2523,
+                "rv21": 0.2471,
+                "rv63": 0.2287,
+                "rv252": 0.2875
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 4.65
+              },
+              "l3": {
+                "iv": 0.3027,
+                "rv21": 0.2471,
+                "ratio": 1.22
+              },
+              "l4": {
+                "p_raw": 0.2825,
+                "p_adj": 0.4808,
+                "horizon_td": 28
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.024,
+                  "oi": 120
+                },
+                "long": {
+                  "spread_pct": 0.0432,
+                  "oi": 151
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|139549",
+            "long_instrument_key": "NSE_FO|120954",
+            "lot_size": 6750,
+            "lot_size_status": "contract",
+            "credit_per_lot_inr": 6581.25,
+            "max_loss_per_lot_inr": 27168.75,
+            "ev_per_lot_inr": -9644.63
+          }
+        ],
+        "funnel": {
+          "considered": 22,
+          "cushion": 19,
+          "friction": 1,
+          "paired": 1,
+          "ror": 1,
+          "vrp": 1,
+          "final": 1
+        },
+        "meta": {
+          "spot": 70.34,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.65,
+          "rv": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "NMDC",
+        "instrument_key": "NSE_EQ|INE584A01023",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "0861dbb9-1b14-4299-9561-fda43680ec80",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\0861dbb9-1b14-4299-9561-fda43680ec80.json"
+        }
+      },
+      {
+        "ticker": "NTPC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 310.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.11,
+          "rv": {
+            "rv10": 0.2316,
+            "rv21": 0.1828,
+            "rv63": 0.159,
+            "rv252": 0.1946
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "NTPC",
+        "instrument_key": "NSE_EQ|INE733E01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "c33d0266-a325-4159-99a0-835a75272055",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\c33d0266-a325-4159-99a0-835a75272055.json"
+        }
+      },
+      {
+        "ticker": "OFSS",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 15,
+          "cushion": 13,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 10360.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 6.71,
+          "rv": {
+            "rv10": 0.2796,
+            "rv21": 0.3824,
+            "rv63": 0.3344,
+            "rv252": 0.3274
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "OFSS",
+        "instrument_key": "NSE_EQ|INE881D01027",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "a02e6382-1f0a-4dd7-b4ec-9db765a66984",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\a02e6382-1f0a-4dd7-b4ec-9db765a66984.json"
+        }
+      },
+      {
+        "ticker": "PERSISTENT",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 21,
+          "cushion": 18,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 5787.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 9.68,
+          "rv": {
+            "rv10": 0.3797,
+            "rv21": 0.3016,
+            "rv63": 0.2926,
+            "rv252": 0.3494
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "PERSISTENT",
+        "instrument_key": "NSE_EQ|INE262H01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "6bacc950-abcf-4bf2-8677-2b779447de80",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\6bacc950-abcf-4bf2-8677-2b779447de80.json"
+        }
+      },
+      {
+        "ticker": "PNBHOUSING",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "PNBHOUSING",
+        "instrument_key": "NSE_EQ|INE572E01012",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "bd4c16e9-520b-4948-9e18-c28d210adaae",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\bd4c16e9-520b-4948-9e18-c28d210adaae.json"
+        }
+      },
+      {
+        "ticker": "POLYCAB",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 22,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 8405.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 6.07,
+          "rv": {
+            "rv10": 0.257,
+            "rv21": 0.2098,
+            "rv63": 0.2809,
+            "rv252": 0.3089
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "POLYCAB",
+        "instrument_key": "NSE_EQ|INE455K01017",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "f5fa7008-c6ce-4646-b00e-0a272a409afc",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\f5fa7008-c6ce-4646-b00e-0a272a409afc.json"
+        }
+      },
+      {
+        "ticker": "SHREECEM",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 9,
+          "cushion": 7,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 21860.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 2.73,
+          "rv": {
+            "rv10": 0.2519,
+            "rv21": 0.2438,
+            "rv63": 0.2322,
+            "rv252": 0.2278
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "SHREECEM",
+        "instrument_key": "NSE_EQ|INE070A01015",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "5cb201db-62df-431e-bb45-6ccf6383a714",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\5cb201db-62df-431e-bb45-6ccf6383a714.json"
+        }
+      },
+      {
+        "ticker": "SUZLON",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 20,
+          "cushion": 18,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 39.57,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 9.65,
+          "rv": {
+            "rv10": 0.4628,
+            "rv21": 0.3694,
+            "rv63": 0.3307,
+            "rv252": 0.3344
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "SUZLON",
+        "instrument_key": "NSE_EQ|INE040H01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "7066c01b-fa67-488b-b06f-dcb7490b88b5",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7066c01b-fa67-488b-b06f-dcb7490b88b5.json"
+        }
+      },
+      {
+        "ticker": "TATAELXSI",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 3257.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 3.3,
+          "rv": {
+            "rv10": 0.4053,
+            "rv21": 0.325,
+            "rv63": 0.2913,
+            "rv252": 0.3217
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TATAELXSI",
+        "instrument_key": "NSE_EQ|INE670A01012",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "3eb2ad37-dcd0-4fac-b371-cc2144c3b9df",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\3eb2ad37-dcd0-4fac-b371-cc2144c3b9df.json"
+        }
+      },
+      {
+        "ticker": "TATASTEEL",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 21,
+          "cushion": 18,
+          "friction": 5,
+          "paired": 5,
+          "ror": 3,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 172.24,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 6.2,
+          "rv": {
+            "rv10": 0.2338,
+            "rv21": 0.2482,
+            "rv63": 0.2046,
+            "rv252": 0.2624
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TATASTEEL",
+        "instrument_key": "NSE_EQ|INE081A01020",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "98173894-40d1-4ce3-af89-fd201dd5020b",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\98173894-40d1-4ce3-af89-fd201dd5020b.json"
+        }
+      },
+      {
+        "ticker": "TCS",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 2125.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 1.84,
+          "rv": {
+            "rv10": 0.2744,
+            "rv21": 0.2712,
+            "rv63": 0.2923,
+            "rv252": 0.2869
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TCS",
+        "instrument_key": "NSE_EQ|INE467B01029",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "2c667005-3867-43f5-8f31-669afc3a5e37",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\2c667005-3867-43f5-8f31-669afc3a5e37.json"
+        }
+      },
+      {
+        "ticker": "TECHM",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 22,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 1471.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.16,
+          "rv": {
+            "rv10": 0.2243,
+            "rv21": 0.2086,
+            "rv63": 0.2194,
+            "rv252": 0.2763
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TECHM",
+        "instrument_key": "NSE_EQ|INE669C01036",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "d50e8f08-9892-49e9-b331-42638d3b315b",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\d50e8f08-9892-49e9-b331-42638d3b315b.json"
+        }
+      },
+      {
+        "ticker": "TIINDIA",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 20,
+          "cushion": 18,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 2214.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.36,
+          "rv": {
+            "rv10": 0.5084,
+            "rv21": 0.3777,
+            "rv63": 0.3272,
+            "rv252": 0.3472
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TIINDIA",
+        "instrument_key": "NSE_EQ|INE974X01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "1a5b445a-8432-4c31-b083-bf9037281847",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\1a5b445a-8432-4c31-b083-bf9037281847.json"
+        }
+      },
+      {
+        "ticker": "TORNTPHARM",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 4682.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.59,
+          "rv": {
+            "rv10": 0.1928,
+            "rv21": 0.2135,
+            "rv63": 0.2547,
+            "rv252": 0.2209
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TORNTPHARM",
+        "instrument_key": "NSE_EQ|INE685A01028",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "4a98732d-933d-430e-b2e8-3371c19e8a9e",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\4a98732d-933d-430e-b2e8-3371c19e8a9e.json"
+        }
+      },
+      {
+        "ticker": "TVSMOTOR",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 21,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 3940.3,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.62,
+          "rv": {
+            "rv10": 0.215,
+            "rv21": 0.2004,
+            "rv63": 0.2526,
+            "rv252": 0.2739
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "symbol": "TVSMOTOR",
+        "instrument_key": "NSE_EQ|INE494B01023",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "6d9b2d7f-6d88-4c04-bc57-70e89f4945fb",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\6d9b2d7f-6d88-4c04-bc57-70e89f4945fb.json"
+        }
+      },
+      {
+        "ticker": "UJJIVANSFB",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "UJJIVANSFB",
+        "instrument_key": "NSE_EQ|INE551W01018",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "4a559ff0-0b03-4d29-9067-9982914303eb",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\4a559ff0-0b03-4d29-9067-9982914303eb.json"
+        }
+      },
+      {
+        "ticker": "WAAREEENER",
+        "ok": false,
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "candidates": [],
+        "funnel": null,
+        "meta": null,
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 485,
+          "parsed_count": 485,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "capability_blockers": [
+          "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+        ],
+        "symbol": "WAAREEENER",
+        "instrument_key": "NSE_EQ|INE377N01017",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "unavailable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.",
+        "scan_audit": {
+          "audit_id": "d8472f89-e011-453e-bf56-d38462213839",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\d8472f89-e011-453e-bf56-d38462213839.json"
+        }
+      }
+    ],
+    "success_count": 40,
+    "failure_count": 10,
+    "candidates": [
+      {
+        "ticker": "NMDC",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 75.0,
+        "long_strike": 80.0,
+        "width": 5.0,
+        "credit": 0.97,
+        "ror_pct": 24.2,
+        "cushion_pct": 6.62,
+        "vrp": 1.22,
+        "iv": 0.3027,
+        "rv21": 0.2471,
+        "earnings": true,
+        "max_gap": 4.65,
+        "p_raw": 0.2825,
+        "p_adj": 0.4808,
+        "ev": -143.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 4.65
+          },
+          "l3": {
+            "iv": 0.3027,
+            "rv21": 0.2471,
+            "ratio": 1.22
+          },
+          "l4": {
+            "p_raw": 0.2825,
+            "p_adj": 0.4808,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.024,
+              "oi": 120
+            },
+            "long": {
+              "spread_pct": 0.0432,
+              "oi": 151
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|139549",
+        "long_instrument_key": "NSE_FO|120954",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_per_lot_inr": 6581.25,
+        "max_loss_per_lot_inr": 27168.75,
+        "ev_per_lot_inr": -9644.63
+      },
+      {
+        "ticker": "CANBK",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 125.0,
+        "long_strike": 130.0,
+        "width": 5.0,
+        "credit": 1.41,
+        "ror_pct": 39.1,
+        "cushion_pct": 5.59,
+        "vrp": 1.56,
+        "iv": 0.3125,
+        "rv21": 0.2002,
+        "earnings": true,
+        "max_gap": 5.3,
+        "p_raw": 0.2979,
+        "p_adj": 0.5801,
+        "ev": -150.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 5.3
+          },
+          "l3": {
+            "iv": 0.3125,
+            "rv21": 0.2002,
+            "ratio": 1.56
+          },
+          "l4": {
+            "p_raw": 0.2979,
+            "p_adj": 0.5801,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0335,
+              "oi": 161
+            },
+            "long": {
+              "spread_pct": 0.0506,
+              "oi": 274
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|83051",
+        "long_instrument_key": "NSE_FO|83064",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_per_lot_inr": 9483.75,
+        "max_loss_per_lot_inr": 24266.25,
+        "ev_per_lot_inr": -10093.69
+      }
+    ],
+    "funnel": {
+      "considered": 856,
+      "cushion": 731,
+      "friction": 9,
+      "paired": 9,
+      "ror": 7,
+      "vrp": 2,
+      "final": 2
+    },
+    "elapsed": 174.9,
+    "tickers_ok": 40,
+    "tickers_failed": 10,
+    "funnels": {
+      "ABB": {
+        "considered": 22,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "AMBUJACEM": {
+        "considered": 16,
+        "cushion": 14,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "AUROPHARMA": {
+        "considered": 23,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "AXISBANK": {
+        "considered": 24,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "BHEL": {
+        "considered": 16,
+        "cushion": 15,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "BIOCON": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "BPCL": {
+        "considered": 21,
+        "cushion": 18,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "CANBK": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "CIPLA": {
+        "considered": 24,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "CROMPTON": {
+        "considered": 23,
+        "cushion": 21,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "FEDERALBNK": {
+        "considered": 21,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "GAIL": {
+        "considered": 20,
+        "cushion": 17,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "HDFCAMC": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "HINDPETRO": {
+        "considered": 22,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "ICICIBANK": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "IEX": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "INDIANB": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "INDUSINDBK": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "INFY": {
+        "considered": 17,
+        "cushion": 15,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "IOC": {
+        "considered": 24,
+        "cushion": 19,
+        "friction": 2,
+        "paired": 2,
+        "ror": 2,
+        "vrp": 0,
+        "final": 0
+      },
+      "JINDALSTEL": {
+        "considered": 21,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "JSWENERGY": {
+        "considered": 18,
+        "cushion": 16,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "KPITTECH": {
+        "considered": 18,
+        "cushion": 16,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "LAURUSLABS": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "MCX": {
+        "considered": 20,
+        "cushion": 17,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NESTLEIND": {
+        "considered": 24,
+        "cushion": 18,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NMDC": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "NTPC": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "OFSS": {
+        "considered": 15,
+        "cushion": 13,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "PERSISTENT": {
+        "considered": 21,
+        "cushion": 18,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "POLYCAB": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "SHREECEM": {
+        "considered": 9,
+        "cushion": 7,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "SUZLON": {
+        "considered": 20,
+        "cushion": 18,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TATAELXSI": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TATASTEEL": {
+        "considered": 21,
+        "cushion": 18,
+        "friction": 5,
+        "paired": 5,
+        "ror": 3,
+        "vrp": 0,
+        "final": 0
+      },
+      "TCS": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TECHM": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TIINDIA": {
+        "considered": 20,
+        "cushion": 18,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TORNTPHARM": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TVSMOTOR": {
+        "considered": 24,
+        "cushion": 21,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      }
+    },
+    "meta": {
+      "ABB": {
+        "spot": 6855.5,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.48,
+        "rv": {
+          "rv10": 0.3885,
+          "rv21": 0.3208,
+          "rv63": 0.2913,
+          "rv252": 0.3072
+        }
+      },
+      "AMBUJACEM": {
+        "spot": 348.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.83,
+        "rv": {
+          "rv10": 0.3854,
+          "rv21": 0.3031,
+          "rv63": 0.2382,
+          "rv252": 0.2817
+        }
+      },
+      "AUROPHARMA": {
+        "spot": 1706.9,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.13,
+        "rv": {
+          "rv10": 0.228,
+          "rv21": 0.2331,
+          "rv63": 0.2402,
+          "rv252": 0.2602
+        }
+      },
+      "AXISBANK": {
+        "spot": 1253.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.46,
+        "rv": {
+          "rv10": 0.1551,
+          "rv21": 0.2468,
+          "rv63": 0.236,
+          "rv252": 0.2444
+        }
+      },
+      "BHEL": {
+        "spot": 439.9,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.95,
+        "rv": {
+          "rv10": 0.3943,
+          "rv21": 0.3778,
+          "rv63": 0.3308,
+          "rv252": 0.3731
+        }
+      },
+      "BIOCON": {
+        "spot": 346.35,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.43,
+        "rv": {
+          "rv10": 0.1878,
+          "rv21": 0.2338,
+          "rv63": 0.236,
+          "rv252": 0.2519
+        }
+      },
+      "BPCL": {
+        "spot": 284.5,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.71,
+        "rv": {
+          "rv10": 0.2332,
+          "rv21": 0.2397,
+          "rv63": 0.2123,
+          "rv252": 0.293
+        }
+      },
+      "CANBK": {
+        "spot": 118.38,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.3,
+        "rv": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        }
+      },
+      "CIPLA": {
+        "spot": 1311.3,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 7.05,
+        "rv": {
+          "rv10": 0.1483,
+          "rv21": 0.1546,
+          "rv63": 0.1558,
+          "rv252": 0.208
+        }
+      },
+      "CROMPTON": {
+        "spot": 202.5,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.62,
+        "rv": {
+          "rv10": 0.3582,
+          "rv21": 0.2694,
+          "rv63": 0.3039,
+          "rv252": 0.2991
+        }
+      },
+      "FEDERALBNK": {
+        "spot": 328.2,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 9.48,
+        "rv": {
+          "rv10": 0.2722,
+          "rv21": 0.233,
+          "rv63": 0.2596,
+          "rv252": 0.2612
+        }
+      },
+      "GAIL": {
+        "spot": 166.91,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.49,
+        "rv": {
+          "rv10": 0.2208,
+          "rv21": 0.1743,
+          "rv63": 0.2184,
+          "rv252": 0.2519
+        }
+      },
+      "HDFCAMC": {
+        "spot": 2289.7,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.04,
+        "rv": {
+          "rv10": 0.3584,
+          "rv21": 0.2775,
+          "rv63": 0.2757,
+          "rv252": 0.32
+        }
+      },
+      "HINDPETRO": {
+        "spot": 332.25,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 7.99,
+        "rv": {
+          "rv10": 0.3718,
+          "rv21": 0.3009,
+          "rv63": 0.263,
+          "rv252": 0.3506
+        }
+      },
+      "ICICIBANK": {
+        "spot": 1340.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.72,
+        "rv": {
+          "rv10": 0.2125,
+          "rv21": 0.1692,
+          "rv63": 0.16,
+          "rv252": 0.1955
+        }
+      },
+      "IEX": {
+        "spot": 104.37,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 29.58,
+        "rv": {
+          "rv10": 0.272,
+          "rv21": 0.2442,
+          "rv63": 0.2467,
+          "rv252": 0.3153
+        }
+      },
+      "INDIANB": {
+        "spot": 814.1,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 10.62,
+        "rv": {
+          "rv10": 0.3466,
+          "rv21": 0.2473,
+          "rv63": 0.2165,
+          "rv252": 0.324
+        }
+      },
+      "INDUSINDBK": {
+        "spot": 853.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.57,
+        "rv": {
+          "rv10": 0.3236,
+          "rv21": 0.2773,
+          "rv63": 0.2599,
+          "rv252": 0.2922
+        }
+      },
+      "INFY": {
+        "spot": 1020.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 2.5,
+        "rv": {
+          "rv10": 0.3187,
+          "rv21": 0.2723,
+          "rv63": 0.2909,
+          "rv252": 0.3061
+        }
+      },
+      "IOC": {
+        "spot": 125.35,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.47,
+        "rv": {
+          "rv10": 0.2672,
+          "rv21": 0.2404,
+          "rv63": 0.2062,
+          "rv252": 0.2697
+        }
+      },
+      "JINDALSTEL": {
+        "spot": 1012.5,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.79,
+        "rv": {
+          "rv10": 0.2747,
+          "rv21": 0.2903,
+          "rv63": 0.251,
+          "rv252": 0.2859
+        }
+      },
+      "JSWENERGY": {
+        "spot": 467.35,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.68,
+        "rv": {
+          "rv10": 0.287,
+          "rv21": 0.2828,
+          "rv63": 0.2554,
+          "rv252": 0.3035
+        }
+      },
+      "KPITTECH": {
+        "spot": 481.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 8.81,
+        "rv": {
+          "rv10": 0.3145,
+          "rv21": 0.2967,
+          "rv63": 0.3551,
+          "rv252": 0.3905
+        }
+      },
+      "LAURUSLABS": {
+        "spot": 2069.2,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 2.99,
+        "rv": {
+          "rv10": 0.2943,
+          "rv21": 0.2651,
+          "rv63": 0.2804,
+          "rv252": 0.289
+        }
+      },
+      "MCX": {
+        "spot": 3390.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 8.88,
+        "rv": {
+          "rv10": 0.3906,
+          "rv21": 0.3552,
+          "rv63": 0.3585,
+          "rv252": 0.3975
+        }
+      },
+      "NESTLEIND": {
+        "spot": 1324.7,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 7.27,
+        "rv": {
+          "rv10": 0.2552,
+          "rv21": 0.2329,
+          "rv63": 0.2229,
+          "rv252": 0.2104
+        }
+      },
+      "NMDC": {
+        "spot": 70.34,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.65,
+        "rv": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        }
+      },
+      "NTPC": {
+        "spot": 310.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.11,
+        "rv": {
+          "rv10": 0.2316,
+          "rv21": 0.1828,
+          "rv63": 0.159,
+          "rv252": 0.1946
+        }
+      },
+      "OFSS": {
+        "spot": 10360.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 6.71,
+        "rv": {
+          "rv10": 0.2796,
+          "rv21": 0.3824,
+          "rv63": 0.3344,
+          "rv252": 0.3274
+        }
+      },
+      "PERSISTENT": {
+        "spot": 5787.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 9.68,
+        "rv": {
+          "rv10": 0.3797,
+          "rv21": 0.3016,
+          "rv63": 0.2926,
+          "rv252": 0.3494
+        }
+      },
+      "POLYCAB": {
+        "spot": 8405.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 6.07,
+        "rv": {
+          "rv10": 0.257,
+          "rv21": 0.2098,
+          "rv63": 0.2809,
+          "rv252": 0.3089
+        }
+      },
+      "SHREECEM": {
+        "spot": 21860.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 2.73,
+        "rv": {
+          "rv10": 0.2519,
+          "rv21": 0.2438,
+          "rv63": 0.2322,
+          "rv252": 0.2278
+        }
+      },
+      "SUZLON": {
+        "spot": 39.57,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 9.65,
+        "rv": {
+          "rv10": 0.4628,
+          "rv21": 0.3694,
+          "rv63": 0.3307,
+          "rv252": 0.3344
+        }
+      },
+      "TATAELXSI": {
+        "spot": 3257.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 3.3,
+        "rv": {
+          "rv10": 0.4053,
+          "rv21": 0.325,
+          "rv63": 0.2913,
+          "rv252": 0.3217
+        }
+      },
+      "TATASTEEL": {
+        "spot": 172.24,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 6.2,
+        "rv": {
+          "rv10": 0.2338,
+          "rv21": 0.2482,
+          "rv63": 0.2046,
+          "rv252": 0.2624
+        }
+      },
+      "TCS": {
+        "spot": 2125.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 1.84,
+        "rv": {
+          "rv10": 0.2744,
+          "rv21": 0.2712,
+          "rv63": 0.2923,
+          "rv252": 0.2869
+        }
+      },
+      "TECHM": {
+        "spot": 1471.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.16,
+        "rv": {
+          "rv10": 0.2243,
+          "rv21": 0.2086,
+          "rv63": 0.2194,
+          "rv252": 0.2763
+        }
+      },
+      "TIINDIA": {
+        "spot": 2214.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.36,
+        "rv": {
+          "rv10": 0.5084,
+          "rv21": 0.3777,
+          "rv63": 0.3272,
+          "rv252": 0.3472
+        }
+      },
+      "TORNTPHARM": {
+        "spot": 4682.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.59,
+        "rv": {
+          "rv10": 0.1928,
+          "rv21": 0.2135,
+          "rv63": 0.2547,
+          "rv252": 0.2209
+        }
+      },
+      "TVSMOTOR": {
+        "spot": 3940.3,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.62,
+        "rv": {
+          "rv10": 0.215,
+          "rv21": 0.2004,
+          "rv63": 0.2526,
+          "rv252": 0.2739
+        }
+      }
+    },
+    "errors": [
+      {
+        "ticker": "ANANDRATHI",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "ANGELONE",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "BANKINDIA",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "GODFRYPHLP",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "IRFC",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "MAZDOCK",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "NBCC",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "PNBHOUSING",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "UJJIVANSFB",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      },
+      {
+        "ticker": "WAAREEENER",
+        "error": "Required earnings calendar and historical gaps unavailable: Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings."
+      }
+    ],
+    "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking."
+  },
+  "original_combined_candidates": [
+    {
+      "ticker": "NMDC",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 75.0,
+      "long_strike": 80.0,
+      "width": 5.0,
+      "credit": 0.97,
+      "ror_pct": 24.2,
+      "cushion_pct": 6.62,
+      "vrp": 1.22,
+      "iv": 0.3027,
+      "rv21": 0.2471,
+      "earnings": true,
+      "max_gap": 4.65,
+      "p_raw": 0.2825,
+      "p_adj": 0.4808,
+      "ev": -143.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 4.65
+        },
+        "l3": {
+          "iv": 0.3027,
+          "rv21": 0.2471,
+          "ratio": 1.22
+        },
+        "l4": {
+          "p_raw": 0.2825,
+          "p_adj": 0.4808,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.024,
+            "oi": 120
+          },
+          "long": {
+            "spread_pct": 0.0432,
+            "oi": 151
+          }
+        }
+      }
+    },
+    {
+      "ticker": "CANBK",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 125.0,
+      "long_strike": 130.0,
+      "width": 5.0,
+      "credit": 1.41,
+      "ror_pct": 39.1,
+      "cushion_pct": 5.59,
+      "vrp": 1.56,
+      "iv": 0.3125,
+      "rv21": 0.2002,
+      "earnings": true,
+      "max_gap": 5.3,
+      "p_raw": 0.2979,
+      "p_adj": 0.5801,
+      "ev": -150.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 5.3
+        },
+        "l3": {
+          "iv": 0.3125,
+          "rv21": 0.2002,
+          "ratio": 1.56
+        },
+        "l4": {
+          "p_raw": 0.2979,
+          "p_adj": 0.5801,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.0335,
+            "oi": 161
+          },
+          "long": {
+            "spread_pct": 0.0506,
+            "oi": 274
+          }
+        }
+      }
+    }
+  ],
+  "combined_ranking_identical": true,
+  "original_aggregate_funnel": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 9,
+    "paired": 9,
+    "ror": 7,
+    "vrp": 2,
+    "final": 2
+  },
+  "aggregate_funnel_identical": true,
+  "first_failure_counts": {
+    "cushion": 125,
+    "short bid/ask fraction": 546,
+    "missing hedge strike": 42,
+    "short OI": 128,
+    "long bid/ask fraction": 3,
+    "VRP": 5,
+    "long OI": 3,
+    "RoR": 2
+  },
+  "issues": []
+}

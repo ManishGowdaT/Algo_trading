@@ -1,0 +1,158 @@
+{
+  "source_url": "https://www.nseindia.com/api/option-chain-v3?type=Equity&symbol=GAIL&expiry=23-Nov-2026",
+  "comparisons": [
+    {
+      "key": "NSE_FO|91843",
+      "strike": 150.0,
+      "side": "PE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91862",
+      "strike": 160.0,
+      "side": "CE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 2,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|91863",
+      "strike": 160.0,
+      "side": "PE",
+      "upstox_oi": 170400.0,
+      "lot": 3550,
+      "nse_contracts": 48,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91865",
+      "strike": 165.0,
+      "side": "CE",
+      "upstox_oi": 17750.0,
+      "lot": 3550,
+      "nse_contracts": 7,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|91866",
+      "strike": 165.0,
+      "side": "PE",
+      "upstox_oi": 46150.0,
+      "lot": 3550,
+      "nse_contracts": 13,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|108815",
+      "strike": 167.5,
+      "side": "PE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91867",
+      "strike": 170.0,
+      "side": "CE",
+      "upstox_oi": 131350.0,
+      "lot": 3550,
+      "nse_contracts": 37,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91870",
+      "strike": 170.0,
+      "side": "PE",
+      "upstox_oi": 67450.0,
+      "lot": 3550,
+      "nse_contracts": 19,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|108818",
+      "strike": 172.5,
+      "side": "PE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91873",
+      "strike": 175.0,
+      "side": "CE",
+      "upstox_oi": 266250.0,
+      "lot": 3550,
+      "nse_contracts": 75,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91875",
+      "strike": 175.0,
+      "side": "PE",
+      "upstox_oi": 14200.0,
+      "lot": 3550,
+      "nse_contracts": 5,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|91876",
+      "strike": 180.0,
+      "side": "CE",
+      "upstox_oi": 568000.0,
+      "lot": 3550,
+      "nse_contracts": 160,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91877",
+      "strike": 180.0,
+      "side": "PE",
+      "upstox_oi": 17750.0,
+      "lot": 3550,
+      "nse_contracts": 5,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91878",
+      "strike": 185.0,
+      "side": "CE",
+      "upstox_oi": 81650.0,
+      "lot": 3550,
+      "nse_contracts": 24,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|91901",
+      "strike": 190.0,
+      "side": "CE",
+      "upstox_oi": 124250.0,
+      "lot": 3550,
+      "nse_contracts": 35,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91917",
+      "strike": 190.0,
+      "side": "PE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|91918",
+      "strike": 195.0,
+      "side": "CE",
+      "upstox_oi": 3550.0,
+      "lot": 3550,
+      "nse_contracts": 1,
+      "equal": true
+    }
+  ]
+}

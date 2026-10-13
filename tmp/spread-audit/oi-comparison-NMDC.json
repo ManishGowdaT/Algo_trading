@@ -1,0 +1,176 @@
+{
+  "source_url": "https://www.nseindia.com/api/option-chain-v3?type=Equity&symbol=NMDC&expiry=23-Nov-2026",
+  "comparisons": [
+    {
+      "key": "NSE_FO|120933",
+      "strike": 60.0,
+      "side": "PE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|37192",
+      "strike": 62.0,
+      "side": "PE",
+      "upstox_oi": 607500.0,
+      "lot": 6750,
+      "nse_contracts": 90,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|120943",
+      "strike": 68.0,
+      "side": "PE",
+      "upstox_oi": 67500.0,
+      "lot": 6750,
+      "nse_contracts": 10,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139543",
+      "strike": 69.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139544",
+      "strike": 69.0,
+      "side": "PE",
+      "upstox_oi": 13500.0,
+      "lot": 6750,
+      "nse_contracts": 3,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|120944",
+      "strike": 70.0,
+      "side": "CE",
+      "upstox_oi": 108000.0,
+      "lot": 6750,
+      "nse_contracts": 16,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|120945",
+      "strike": 70.0,
+      "side": "PE",
+      "upstox_oi": 567000.0,
+      "lot": 6750,
+      "nse_contracts": 84,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139545",
+      "strike": 71.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|120946",
+      "strike": 72.0,
+      "side": "CE",
+      "upstox_oi": 135000.0,
+      "lot": 6750,
+      "nse_contracts": 20,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139548",
+      "strike": 73.0,
+      "side": "PE",
+      "upstox_oi": 81000.0,
+      "lot": 6750,
+      "nse_contracts": 13,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|139549",
+      "strike": 75.0,
+      "side": "CE",
+      "upstox_oi": 810000.0,
+      "lot": 6750,
+      "nse_contracts": 120,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139550",
+      "strike": 75.0,
+      "side": "PE",
+      "upstox_oi": 54000.0,
+      "lot": 6750,
+      "nse_contracts": 8,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139552",
+      "strike": 77.0,
+      "side": "PE",
+      "upstox_oi": 0.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|120954",
+      "strike": 80.0,
+      "side": "CE",
+      "upstox_oi": 1019250.0,
+      "lot": 6750,
+      "nse_contracts": 151,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|120955",
+      "strike": 80.0,
+      "side": "PE",
+      "upstox_oi": 33750.0,
+      "lot": 6750,
+      "nse_contracts": 7,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|120956",
+      "strike": 82.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|139559",
+      "strike": 85.0,
+      "side": "CE",
+      "upstox_oi": 13500.0,
+      "lot": 6750,
+      "nse_contracts": 5,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|120962",
+      "strike": 88.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|120963",
+      "strike": 88.0,
+      "side": "PE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    }
+  ]
+}

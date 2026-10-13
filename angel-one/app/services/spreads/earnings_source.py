@@ -66,6 +66,13 @@ class YahooEarningsSource:
             events,calendar_known = self._dates(symbol,today)
         except Exception:
             return unavailable('Yahoo earnings source could not be loaded. Install yfinance and retry; no earnings values were assumed.')
+        from .scan_audit import CURRENT_AUDIT
+        capture = CURRENT_AUDIT.get()
+        if capture:
+            try:
+                capture.record_dates(events,today,expiration,history)
+            except Exception as exc:
+                capture.snapshot['earnings_capture_error_type'] = type(exc).__name__
         historical = [day for day in events if today-timedelta(days=3*365) <= day <= today]
         if not historical or not (any(day>today for day in events) or calendar_known):
             return unavailable('Yahoo did not return both historical and upcoming NSE earnings dates. Missing dates are not treated as no earnings.')

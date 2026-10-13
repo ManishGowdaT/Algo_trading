@@ -130,7 +130,7 @@ def test_multi_scan_enforces_selection_limit_and_preserves_partial_failure(monke
     headers = {"X-Internal-Service-Key": "test-internal-key"}
     with TestClient(app) as client:
         too_many = client.post("/spreads/scan", headers=headers, json={
-            "underlyings": ["NIFTY"] * 11, "expiries": {},
+            "underlyings": ["NIFTY"] * 51, "expiries": {},
         })
         assert too_many.status_code == 422
 

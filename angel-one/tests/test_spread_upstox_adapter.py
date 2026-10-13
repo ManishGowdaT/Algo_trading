@@ -57,7 +57,7 @@ def test_history_is_chronological_and_marks_adjustment_semantics_unverified():
     assert result.scanner_history_eligible is False
 
 
-def test_option_chain_normalizes_iv_but_preserves_unverified_oi():
+def test_option_chain_normalizes_iv_and_quantity_oi():
     expiry = date(2026, 10, 29)
     transport = StubTransport({"/v2/option/chain": [{
         "strike_price": 25000, "underlying_spot_price": 25100,
@@ -68,12 +68,16 @@ def test_option_chain_normalizes_iv_but_preserves_unverified_oi():
         "call_options": {"instrument_key": "NSE_FO|call", "market_data": {
             "bid_price": 110, "ask_price": 112, "oi": 654321,
         }, "option_greeks": {"iv": 40.0}},
-    }]})
+    }], "/v2/option/contract": [
+        {"instrument_key": "NSE_FO|"+key, "trading_symbol": key, "instrument_type": side,
+         "expiry": expiry.isoformat(), "strike_price":25000, "lot_size":3}
+        for key,side in [("put","PE"),("call","CE")]]})
     chain = UpstoxMarketDataProvider(transport=transport).get_option_chain("NSE_INDEX|Nifty 50", expiry)
     assert chain.spot == 25100
     assert chain.puts[0][1].implied_volatility == pytest.approx(0.5078)
-    assert chain.puts[0][1].open_interest == 123456
-    assert chain.open_interest.status == "unverified"
+    assert chain.puts[0][1].open_interest == 41152
+    assert chain.puts[0][1].as_scanner_row()['openInterest'] == 41152
+    assert chain.open_interest.status == "verified"
     assert chain.quote_timestamp.status == "unavailable"
     assert transport.calls[0][1] == {"instrument_key": "NSE_INDEX|Nifty 50", "expiry_date": "2026-10-29"}
 

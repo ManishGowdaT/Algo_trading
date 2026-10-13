@@ -151,10 +151,10 @@ it('discovery enforces the combined ten-underlying limit and displays request er
   requests.post.mockResolvedValue({ ...discoveryPayload,top:[row],all:[row] })
   let elements = renderDiscovery()
   await (button(elements,'Discover opportunities').props.onClick as () => Promise<void>)()
-  elements = renderDiscovery(Array.from({ length:20 },(_,i)=>`S${i}`))
+  elements = renderDiscovery(Array.from({ length:50 },(_,i)=>`S${i}`))
   ;(elements.find(e => e.props['aria-label']==='Select discovery EXTRA')!.props.onChange as () => void)()
   elements = renderDiscovery()
-  expect(elements.some(e => String(e.props.children).includes('Choose at most 20 underlyings including'))).toBe(true)
+  expect(elements.some(e => String(e.props.children).includes('Choose at most 50 underlyings including'))).toBe(true)
   requests.post.mockRejectedValue(new Error('Connect Upstox'))
   await (button(elements,'Discover opportunities').props.onClick as () => Promise<void>)()
   expect(renderDiscovery().some(e => e.props.children==='Connect Upstox')).toBe(true)
@@ -213,7 +213,7 @@ it('releases loading state when a discovery request never responds', async () =>
   try {
     requests.post.mockImplementation(() => new Promise(() => {}))
     const request=(button(renderDiscovery(),'Discover opportunities').props.onClick as () => Promise<void>)()
-    await vi.advanceTimersByTimeAsync(200_000)
+    await vi.advanceTimersByTimeAsync(900_000)
     await request
     const elements=renderDiscovery()
     expect(elements.some(e => String(e.props.children).startsWith('Discovery took too long.'))).toBe(true)
@@ -229,4 +229,45 @@ it('surfaces conditional stock availability without claiming inputs are ready', 
   await (panel.props.onAdd as (symbols: string[]) => Promise<void>)(['RELIANCE'])
   expect(render().map(e => String(e.props.children)).join(' ')).toContain('Earnings availability is checked during the scan.')
   expect(requests.post).not.toHaveBeenCalled()
+})
+
+
+it('NSE profile is opt-in, preserves thresholds and submits only explicit listed steps', async () => {
+  let elements = render()
+  const profile = elements.find(e => e.props['aria-label'] === 'Strategy profile')!
+  expect(profile.props.value).toBe('ORIGINAL_ZIP_BASELINE')
+  ;(profile.props.onChange as (event: unknown) => void)({ target: { value: 'NSE_RESEARCH_V1' } })
+  elements = render()
+  expect(elements.some(e => e.props['aria-label'] === 'Width (points; NSE range extended)')).toBe(false)
+  const steps = elements.find(e => e.props['aria-label'] === 'Listed hedge steps')!
+  expect(steps.props.value).toBe(1)
+  ;(steps.props.onChange as (event: unknown) => void)({ target: { value: '2' } })
+  elements = render()
+  requests.post.mockResolvedValue({ ok:true, candidates:[], underlyings:[], failure_count:0 })
+  await (elements.find(e => e.type === 'form')!.props.onSubmit as (event: unknown) => Promise<void>)({ preventDefault: vi.fn() })
+  expect(requests.post).toHaveBeenCalledWith('/spreads/scan', expect.objectContaining({
+    strategy_profile:'NSE_RESEARCH_V1',width_steps:2,min_vrp:1.15,min_oi:100,max_spread_pct:.1,min_cushion:2,min_ror:15,
+  }))
+  expect(requests.post).toHaveBeenCalledTimes(1)
+})
+
+
+it('NSE results show profile, INR amounts, actual lot and width without relabeling the EV score as money', async () => {
+  const c = {ticker:'TEST',type:'BEAR CALL',expiration:'2026-11-23',short_strike:100,long_strike:105,width:5,
+    credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
+    p_raw:.2,p_adj:.3,earnings:false,max_gap:0,lot_size:125,lot_size_status:'contract',monetary_status:'available',
+    credit_per_lot_inr:125.63,max_loss_per_lot_inr:499.38,ev_per_lot_inr:-12.5,
+    strategy_profile:'NSE_RESEARCH_V1',strike_interval:5,width_steps:1,short_tick_inr:.01,long_tick_inr:.01,minimum_credit_points:.005,
+    layers:{l1:{rv21:.25},l2:{earnings_inside:false,max_gap_pct:0},l3:{iv:.3,rv21:.25,ratio:1.2},l4:{p_raw:.2,p_adj:.3,horizon_td:21},l5:{short:{spread_pct:.05,oi:150},long:{spread_pct:.05,oi:200}}}}
+  requests.post.mockResolvedValue({strategy_profile:'NSE_RESEARCH_V1',ok:true,candidates:[c],underlyings:[],failure_count:0,success_count:1,elapsed:1})
+  let elements = render()
+  await (elements.find(e => e.type === 'form')!.props.onSubmit as (event: unknown) => Promise<void>)({preventDefault:vi.fn()})
+  elements = render()
+  const strings = elements.flatMap(e => Array.isArray(e.props.children) ? e.props.children : [e.props.children]).filter(x => typeof x === 'string' || typeof x === 'number').join(' ')
+  expect(strings).toContain('NSE_RESEARCH_V1')
+  expect(strings).toContain('₹ Credit / lot')
+  expect(strings).toContain('₹ Max loss / lot')
+  expect(strings).toContain('₹125.63')
+  expect(strings).toContain('EV (100-unit score)')
+  expect(strings).toContain('FAIL / UNVERIFIED')
 })

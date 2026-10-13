@@ -1,0 +1,74 @@
+{
+  "live_batch": "tmp\\spread-audit\\batch-6390a4af-49d1-429c-b766-0f345ec5fa72.json",
+  "old_baseline_funnel": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 19,
+    "paired": 19,
+    "ror": 13,
+    "vrp": 3,
+    "final": 3
+  },
+  "current_inputs_raw_oi_counterfactual_funnel": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 19,
+    "paired": 19,
+    "ror": 13,
+    "vrp": 3,
+    "final": 3
+  },
+  "actual_normalized_live_funnel": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 9,
+    "paired": 9,
+    "ror": 7,
+    "vrp": 2,
+    "final": 2
+  },
+  "runtime": 174.9,
+  "quote_count": 2059,
+  "invalid_mappings": [],
+  "removed": [
+    {
+      "ticker": "GAIL",
+      "strikes": [
+        175.0,
+        180.0
+      ],
+      "first_failure": "short OI",
+      "short_oi": 75
+    }
+  ],
+  "examples": [
+    {
+      "ticker": "CANBK",
+      "strike": 125,
+      "instrument_key": "NSE_FO|83051",
+      "raw_oi_quantity": 1086750.0,
+      "oi_lot_size": 6750,
+      "open_interest": 161,
+      "oi_normalization_status": "verified_quantity_to_contracts"
+    },
+    {
+      "ticker": "GAIL",
+      "strike": 175,
+      "instrument_key": "NSE_FO|91873",
+      "raw_oi_quantity": 266250.0,
+      "oi_lot_size": 3550,
+      "open_interest": 75,
+      "oi_normalization_status": "verified_quantity_to_contracts"
+    },
+    {
+      "ticker": "NMDC",
+      "strike": 75,
+      "instrument_key": "NSE_FO|139549",
+      "raw_oi_quantity": 810000.0,
+      "oi_lot_size": 6750,
+      "open_interest": 120,
+      "oi_normalization_status": "verified_quantity_to_contracts"
+    }
+  ],
+  "original_zip_parity": true
+}

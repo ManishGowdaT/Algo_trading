@@ -11,7 +11,6 @@ from app.services.spreads.engine import (
     capability_blockers,
     empirical_breach_prob,
     edge_discovery_metrics,
-    edge_discovery_shortlist,
     get_earnings_info,
     pick_expiration,
     rank_edge_discovery,
@@ -121,13 +120,12 @@ def test_provider_orchestration_runs_only_with_explicit_required_capabilities():
     assert result["meta"]["spot"] == round(closes[-1], 2)
 
 
-def test_edge_discovery_stage_one_volume_shock_and_shortlist():
+def test_edge_discovery_stage_one_volume_shock():
     closes = [100.0 + index * 0.2 for index in range(30)]
     volumes = [100.0] * 21 + [200.0]
     row = edge_discovery_metrics("TEST", closes, volumes)
     assert row["shock"] == 2.0
     assert row["shock_pass"] is True
-    assert edge_discovery_shortlist([row, {"ticker": "OTHER", "shock": 3.0}], 1) == ["OTHER"]
     assert edge_discovery_metrics("SHORT", closes[:29], volumes) is None
 
 
@@ -140,12 +138,13 @@ def test_edge_discovery_preserves_vrp_shock_percentile_score_and_edge_sort():
         {"ticker": "C", "spot": 100, "chg": -1, "rv21": 0.2, "iv14": None, "vrp14": None,
          "shock": 1.5, "vrp_pass": False, "shock_pass": False, "_rv21_raw": 0.2, "_spot_raw": 100},
     ]
-    assert edge_discovery_shortlist(items, 1) == ["A"]
-    ranked = rank_edge_discovery(items, {"A": 0.3, "B": 0.13, "C": 0.1}, iv_shortlist=3)
+    ranked = rank_edge_discovery(items, {"A": 0.3, "B": 0.13, "C": 0.1})
     assert [row["ticker"] for row in ranked] == ["A", "B", "C"]
     assert [row["edge"] for row in ranked] == [True, False, False]
     assert [row["score"] for row in ranked] == [2.0, 1.0, 1.0]
     assert ranked[0]["vrp14"] == 1.5
     assert ranked[1]["vrp_pass"] is True
     assert ranked[2]["vrp_pass"] is False
+    assert all(row['iv_status'] == 'available' for row in ranked)
+    assert all(row['vrp_status'] == 'available' for row in ranked)
 

@@ -38,6 +38,27 @@ def test_transport_retries_rate_limit_then_returns_data_without_exposing_token()
     assert len(client.calls) == 2
     assert delays == [0]
     assert client.calls[0][1]["headers"]["Authorization"] == "Bearer secret-token"
+    assert transport.request_metrics() == {
+        'option_chain_requests':0,
+        'v3_greeks_requests':0,
+        'rate_limit_responses':1,
+    }
+
+
+def test_transport_counts_option_chain_greeks_and_rate_limit_attempts():
+    client = StubClient([
+        StubResponse(429, {"status":"error","errors":[]}, {"Retry-After":"0"}),
+        StubResponse(200, {"status":"success","data":{}}),
+        StubResponse(200, {"status":"success","data":{}}),
+    ])
+    transport = UpstoxTransport("secret-token", client=client, sleep=lambda _:None, jitter=lambda:0)
+    transport.get('/v2/option/chain', {'instrument_key':'NSE_EQ|TEST'})
+    transport.get('/v3/market-quote/option-greek', {'instrument_key':'NSE_FO|TEST'})
+    assert transport.request_metrics() == {
+        'option_chain_requests':2,
+        'v3_greeks_requests':1,
+        'rate_limit_responses':1,
+    }
 
 
 def test_transport_rejects_auth_errors_with_safe_message():

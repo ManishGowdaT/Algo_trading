@@ -33,6 +33,7 @@ class HistoryData:
     adjustment: DataCapability
     volume: DataCapability
     completeness: DataCapability = DataCapability(False, "unverified", "Daily candle completeness needs live validation.")
+    validation: dict | None = None
 
     @property
     def scanner_history_eligible(self) -> bool:
@@ -63,6 +64,10 @@ class OptionQuote:
     bid_quantity: int | None
     ask_quantity: int | None
     volume: int | None
+
+    raw_oi_quantity: float | None = None
+    oi_lot_size: int | None = None
+    oi_normalization_status: str | None = None
 
     def as_scanner_row(self) -> dict:
         """Yahoo-compatible field names for the Phase 4 calculation port."""

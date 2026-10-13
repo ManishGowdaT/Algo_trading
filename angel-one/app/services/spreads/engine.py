@@ -124,21 +124,19 @@ def edge_discovery_metrics(ticker, closes, volumes, shock_threshold=1.5):
             "_rv21_raw": rv21, "_spot_raw": spot}
 
 
-def edge_discovery_shortlist(items: Sequence[Mapping], iv_shortlist: int = 10) -> list[str]:
-    """Select names for the original expensive ATM-IV/VRP second stage."""
-    return [row["ticker"] for row in sorted(items, key=lambda row: row["shock"],
-                                               reverse=True)[:iv_shortlist]]
-
-
-def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_threshold=1.5, iv_shortlist=10):
+def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_threshold=1.5,
+                        iv_status_by_ticker=None, vrp_status_by_ticker=None):
     if not items:
         return []
     rows = [dict(item) for item in items]
-    shortlist = sorted(rows, key=lambda r: r["shock"], reverse=True)[:iv_shortlist]
-    for row in shortlist:
+    for row in rows:
         iv14 = iv14_by_ticker.get(row["ticker"], float("nan"))
         rv21 = row["_rv21_raw"]
         vrp14 = iv14 / rv21 if rv21 and rv21 > 0 and not math.isnan(iv14) else float("nan")
+        row["iv_status"] = (iv_status_by_ticker or {}).get(
+            row["ticker"], "available" if not math.isnan(iv14) else "unavailable")
+        row["vrp_status"] = (vrp_status_by_ticker or {}).get(
+            row["ticker"], "available" if not math.isnan(vrp14) else "unavailable")
         if not math.isnan(iv14):
             row["iv14"] = round(iv14, 4)
         if not math.isnan(vrp14):
@@ -176,6 +174,7 @@ def capability_blockers(history: HistoryData, earnings: EarningsData) -> list[st
 def scan_provider_data(
     ticker: str, history: HistoryData, chain: OptionChain, earnings: EarningsData,
     expiration: date, dte: int, p: ScanParams | None = None,
+    *, spread_builder=None,
 ) -> dict:
     """Safely run the exact engine when all original input capabilities exist."""
     params = p or ScanParams()
@@ -189,9 +188,13 @@ def scan_provider_data(
         warnings.append("Using Upstox reported OI directly; source-unit equivalence is unverified.")
     if history.completeness.status not in {"verified", "fixture"}:
         warnings.append("Using returned daily candles; candle completeness is unverified.")
+        if history.validation:
+            warnings.append(history.completeness.explanation)
     if history.adjustment.status not in {"verified", "not_applicable", "fixture"}:
         warnings.append("Using Upstox returned closes; corporate-action adjustment equivalence is unverified.")
     result["data_warnings"] = warnings
+    if history.validation:
+        result['history_validation'] = history.validation
     if blockers:
         result["error"] = "; ".join(blockers)
         result["capability_blockers"] = blockers
@@ -208,7 +211,7 @@ def scan_provider_data(
     if not puts and not calls:
         result["error"] = "empty or malformed option chain"
         return result
-    candidates, funnel = build_spreads(
+    candidates, funnel = (spread_builder or build_spreads)(
         ticker, spot, puts, calls, expiration.isoformat(), dte, closes, rv,
         bool(earnings.earnings_inside), float(earnings.max_historical_gap_pct or 0), params,
     )

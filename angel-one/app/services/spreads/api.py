@@ -10,7 +10,7 @@ import hmac
 import logging
 import os
 from datetime import date, datetime
-from typing import Annotated
+from typing import Annotated, Literal
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -27,6 +27,8 @@ from .discovery_adapter import DiscoveryDataAdapter, FixtureDiscoveryDataAdapter
 from .discovery_cache import discovery_cache
 from .universe import UpstoxUniverseProvider, FixtureUniverseProvider
 from .earnings_source import yahoo_earnings_source
+from .scan_audit import CURRENT_AUDIT, RecordingTransport, ScanAudit, batch_snapshot
+from . import nse_calculations as nse
 
 
 logger = logging.getLogger("spreads.api")
@@ -35,6 +37,9 @@ IST = ZoneInfo("Asia/Kolkata")
 
 
 class NiftyScanRequest(BaseModel):
+    strategy_profile: Literal['ORIGINAL_ZIP_BASELINE', 'NSE_RESEARCH_V1'] = 'ORIGINAL_ZIP_BASELINE'
+    width_steps: int = Field(default=1, ge=1, le=50)
+    audit_snapshot: bool = Field(default=False, exclude=True)  # Never a dumped calculation parameter.
     expiry: date | None = None  # Explicit override; default uses original target-DTE picker.
     dte: int = Field(default=30, ge=5, le=180)
     # Only the width RANGE is extended for NSE; original default remains 5.
@@ -47,7 +52,7 @@ class NiftyScanRequest(BaseModel):
 
 
 class MultiScanRequest(NiftyScanRequest):
-    underlyings: list[str] = Field(min_length=1, max_length=20)
+    underlyings: list[str] = Field(min_length=1, max_length=50)
     expiries: dict[str, date] = Field(default_factory=dict)
 
 
@@ -123,7 +128,10 @@ async def _discovery_response(owner, token, force):
     cache_key = discovery_cache.key(owner,mode,token)
     async def load():
         def work():
-            context = REQUEST_DEADLINE.set(time.monotonic()+170)
+            # Full-universe discovery is deliberately paced through Upstox.
+            # Keep one bounded deadline for the entire history + IV pass.
+            started = time.monotonic()
+            context = REQUEST_DEADLINE.set(started+900)
             try:
                 universe_provider, adapter = _discovery_inputs(mode, token)
                 universe = universe_provider.get_universe()
@@ -133,8 +141,9 @@ async def _discovery_response(owner, token, force):
                 def progress(value):
                     discovery_cache.progress[cache_key] = value
                 result = discover(universe['items'], adapter, on_progress=progress)
-                logger.info('discovery_completed ranked=%s errors=%s mode=%s',len(result.items),len(result.errors),mode)
-                return {'all':result.items, 'errors':result.errors, 'capabilities':result.capabilities,
+                stats = {**getattr(result, 'stats', {}), 'total_runtime_seconds':round(time.monotonic()-started, 2)}
+                logger.info('discovery_completed ranked=%s errors=%s mode=%s stats=%s',len(result.items),len(result.errors),mode,stats)
+                return {'all':result.items, 'errors':result.errors, 'capabilities':result.capabilities, 'stats':stats,
                         'universe':{key:value for key,value in universe.items() if key != 'items'}}
             finally:
                 REQUEST_DEADLINE.reset(context)
@@ -263,6 +272,7 @@ async def scan_multiple(
             params = NiftyScanRequest(**{
                 **request.model_dump(exclude={"underlyings", "expiries"}),
                 "expiry": expiry_map.get(symbol, request.expiry),
+                "audit_snapshot": request.audit_snapshot,
             })
             try:
                 return _scan_underlying(symbol, params, _authorized, access_token)
@@ -284,8 +294,11 @@ async def scan_multiple(
     # Original main.py: stable descending sort of the rounded original EV, including negatives.
     candidates.sort(key=lambda candidate: candidate["ev"], reverse=True)
     keys = ("considered", "cushion", "friction", "paired", "ror", "vrp", "final")
-    return _json_safe({
+    response = _json_safe({
         "ok": bool(successful), "data_mode": _mode(), "data_note": _data_note(_mode()),
+        "strategy_profile": request.strategy_profile,
+        "width_mode": 'listed_strike_steps' if request.strategy_profile == nse.NSE_RESEARCH_V1 else 'fixed_price_points',
+        "width_steps": request.width_steps if request.strategy_profile == nse.NSE_RESEARCH_V1 else None,
         "underlyings": scans, "success_count": len(successful),
         "failure_count": len(scans) - len(successful), "candidates": candidates,
         "funnel": {key: sum((scan.get("funnel") or {}).get(key, 0) for scan in successful)
@@ -299,14 +312,24 @@ async def scan_multiple(
                    for scan in scans if not scan.get("ok")],
         "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking.",
     })
+    if request.audit_snapshot:
+        try:
+            response['scan_audit'] = batch_snapshot(response, request.model_dump())
+        except Exception as exc:
+            response['scan_audit'] = {'status':'failed','error_type':type(exc).__name__}
+    return response
 
 
 def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access_token: str):
     mode = _mode()
     today = datetime.now(IST).date()
     deadline_context = REQUEST_DEADLINE.set(REQUEST_DEADLINE.get() or time.monotonic() + SCAN_BUDGET_SECONDS)
+    capture = ScanAudit(symbol) if request.audit_snapshot else None
+    audit_context = CURRENT_AUDIT.set(capture)
     try:
         provider = _provider(mode, access_token)
+        if capture and mode == 'upstox':
+            provider._transport = RecordingTransport(provider._transport, capture)
         underlying = provider.resolve_underlying(symbol)
         symbol = underlying["symbol"]
         underlying_key = underlying["instrument_key"]
@@ -329,9 +352,33 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
             min_cushion=request.min_cushion, min_ror=request.min_ror,
             max_strikes=12,
         )
+        if capture:
+            try:
+                capture.inputs(underlying, contracts, history, chain, earnings, expiration, dte, params)
+            except Exception as exc:
+                capture.snapshot['capture_error_type'] = type(exc).__name__
+        market_issues = []
+        native_builder = None
+        if request.strategy_profile == nse.NSE_RESEARCH_V1:
+            resolve = nse.pair_resolver(contracts, expiration, request.width_steps,
+                                       'paise' if mode == 'upstox' else 'rupees', market_issues)
+            def native_builder(ticker, spot, puts, calls, expiry, days, close, rv, earnings_inside, gap, p):
+                import pandas as pd
+                return nse.build_spreads(ticker, spot, pd.DataFrame(puts), pd.DataFrame(calls),
+                    expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve)
         result = scan_provider_data(symbol, history, chain, earnings,
-                                    expiration, dte, params)
+                                    expiration, dte, params, spread_builder=native_builder)
+        result['strategy_profile'] = request.strategy_profile
+        result['width_mode'] = 'listed_strike_steps' if native_builder else 'fixed_price_points'
+        if native_builder:
+            result['width_steps'] = request.width_steps
+            result['nse_market_structure_issues'] = market_issues
+            result['history_parity_status'] = 'UNVERIFIED' if history.adjustment.status not in {'verified','not_applicable','fixture'} else history.adjustment.status
+            result.setdefault('data_warnings', []).append(
+                'NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. '
+                'The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity.')
         for candidate in result["candidates"]:
+            candidate['strategy_profile'] = request.strategy_profile
             side = "PE" if candidate["type"] == "BULL PUT" else "CE"
             pairs = chain.puts if side == "PE" else chain.calls
             quotes = dict(pairs)
@@ -361,6 +408,8 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
             if lot and short and long:
                 candidate['monetary_status'] = 'available'
                 credit = (short.bid + short.ask - long.bid - long.ask) / 2
+                candidate['credit_points_unrounded'] = credit
+                candidate['actual_width_points'] = candidate['width']
                 loss = candidate["width"] - credit
                 closes = [bar.close for bar in history.bars if bar.close is not None]
                 cushion = abs(candidate["short_strike"] - closes[-1]) / closes[-1] * 100
@@ -385,6 +434,11 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
             },
         })
         result['earnings_source_note'] = earnings.capability.explanation
+        if capture:
+            try:
+                result['scan_audit'] = capture.finish(result)
+            except Exception as exc:
+                result['scan_audit'] = {'status':'failed','audit_id':capture.id,'error_type':type(exc).__name__}
         return _json_safe(result)
     except HTTPException:
         raise
@@ -397,6 +451,12 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
         logger.warning("underlying_scan_failed mode=%s error_type=%s", mode, type(exc).__name__)
         raise HTTPException(502, "Spread scan failed while loading market data.") from None
     finally:
+        if capture and not capture.finished:
+            try:
+                capture.finish({'ok':False,'data_mode':mode,'error':'Scan ended before a complete audit snapshot could be captured.'})
+            except Exception:
+                logger.warning('scan_audit_failed audit_id=%s', capture.id)
+        CURRENT_AUDIT.reset(audit_context)
         REQUEST_DEADLINE.reset(deadline_context)
 
 

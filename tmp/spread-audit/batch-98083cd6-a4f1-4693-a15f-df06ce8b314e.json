@@ -1,0 +1,649 @@
+{
+  "audit_id": "98083cd6-a4f1-4693-a15f-df06ce8b314e",
+  "request": {
+    "strategy_profile": "NSE_RESEARCH_V1",
+    "width_steps": 1,
+    "expiry": null,
+    "dte": 30,
+    "width": 5.0,
+    "min_vrp": 1.15,
+    "min_oi": 100,
+    "max_spread_pct": 0.1,
+    "min_cushion": 2.0,
+    "min_ror": 15.0,
+    "underlyings": [
+      "NIFTY",
+      "BANKNIFTY",
+      "NMDC",
+      "CANBK",
+      "TATAELXSI",
+      "NTPC"
+    ],
+    "expiries": {}
+  },
+  "result": {
+    "ok": true,
+    "data_mode": "upstox",
+    "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+    "strategy_profile": "NSE_RESEARCH_V1",
+    "width_mode": "listed_strike_steps",
+    "width_steps": 1,
+    "underlyings": [
+      {
+        "ticker": "BANKNIFTY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 2,
+          "friction": 1,
+          "paired": 1,
+          "ror": 1,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 54918.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 0.0,
+          "rv": {
+            "rv10": 0.1556,
+            "rv21": 0.1446,
+            "rv63": 0.1198,
+            "rv252": 0.1693
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "not_applicable",
+        "symbol": "BANKNIFTY",
+        "instrument_key": "NSE_INDEX|Nifty Bank",
+        "kind": "INDEX",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "not_applicable",
+          "earnings": "not_applicable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "An index has no company earnings calendar; the original earnings-event filter does not apply to NIFTY.",
+        "scan_audit": {
+          "audit_id": "c2ed4dce-7987-4cc3-919d-d8974b18557f",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\c2ed4dce-7987-4cc3-919d-d8974b18557f.json"
+        }
+      },
+      {
+        "ticker": "CANBK",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 118.38,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.3,
+          "rv": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "CANBK",
+        "instrument_key": "NSE_EQ|INE476A01022",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "c903a0a9-0069-4880-ad38-3a1b388a97f7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\c903a0a9-0069-4880-ad38-3a1b388a97f7.json"
+        }
+      },
+      {
+        "ticker": "NIFTY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 6,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 22363.35,
+          "expiration": "2026-11-09",
+          "dte": 27,
+          "earnings": false,
+          "max_gap": 0.0,
+          "rv": {
+            "rv10": 0.1597,
+            "rv21": 0.1351,
+            "rv63": 0.1042,
+            "rv252": 0.136
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "not_applicable",
+        "symbol": "NIFTY",
+        "instrument_key": "NSE_INDEX|Nifty 50",
+        "kind": "INDEX",
+        "expiry": "2026-11-09",
+        "dte": 27,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "not_applicable",
+          "earnings": "not_applicable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "An index has no company earnings calendar; the original earnings-event filter does not apply to NIFTY.",
+        "scan_audit": {
+          "audit_id": "dd4025ed-c880-47da-9abb-03fe8a39bee7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\dd4025ed-c880-47da-9abb-03fe8a39bee7.json"
+        }
+      },
+      {
+        "ticker": "NMDC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 22,
+          "cushion": 19,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 70.34,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.65,
+          "rv": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "NMDC",
+        "instrument_key": "NSE_EQ|INE584A01023",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "d588f4b6-7a6c-47a3-a9e3-f40fb21b3dae",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\d588f4b6-7a6c-47a3-a9e3-f40fb21b3dae.json"
+        }
+      },
+      {
+        "ticker": "NTPC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 310.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.11,
+          "rv": {
+            "rv10": 0.2316,
+            "rv21": 0.1828,
+            "rv63": 0.159,
+            "rv252": 0.1946
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "NTPC",
+        "instrument_key": "NSE_EQ|INE733E01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "6c33f75a-56f9-46ec-b94a-f948c984dd88",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\6c33f75a-56f9-46ec-b94a-f948c984dd88.json"
+        }
+      },
+      {
+        "ticker": "TATAELXSI",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 3257.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 3.3,
+          "rv": {
+            "rv10": 0.4053,
+            "rv21": 0.325,
+            "rv63": 0.2913,
+            "rv252": 0.3217
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "TATAELXSI",
+        "instrument_key": "NSE_EQ|INE670A01012",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "a0a12c4b-5c18-4d05-8bc0-2a00aa41ca0f",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\a0a12c4b-5c18-4d05-8bc0-2a00aa41ca0f.json"
+        }
+      }
+    ],
+    "success_count": 6,
+    "failure_count": 0,
+    "candidates": [],
+    "funnel": {
+      "considered": 141,
+      "cushion": 87,
+      "friction": 1,
+      "paired": 1,
+      "ror": 1,
+      "vrp": 0,
+      "final": 0
+    },
+    "elapsed": 1.3,
+    "tickers_ok": 6,
+    "tickers_failed": 0,
+    "funnels": {
+      "BANKNIFTY": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "CANBK": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NIFTY": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NMDC": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NTPC": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TATAELXSI": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      }
+    },
+    "meta": {
+      "BANKNIFTY": {
+        "spot": 54918.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 0.0,
+        "rv": {
+          "rv10": 0.1556,
+          "rv21": 0.1446,
+          "rv63": 0.1198,
+          "rv252": 0.1693
+        }
+      },
+      "CANBK": {
+        "spot": 118.38,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.3,
+        "rv": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        }
+      },
+      "NIFTY": {
+        "spot": 22363.35,
+        "expiration": "2026-11-09",
+        "dte": 27,
+        "earnings": false,
+        "max_gap": 0.0,
+        "rv": {
+          "rv10": 0.1597,
+          "rv21": 0.1351,
+          "rv63": 0.1042,
+          "rv252": 0.136
+        }
+      },
+      "NMDC": {
+        "spot": 70.34,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.65,
+        "rv": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        }
+      },
+      "NTPC": {
+        "spot": 310.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.11,
+        "rv": {
+          "rv10": 0.2316,
+          "rv21": 0.1828,
+          "rv63": 0.159,
+          "rv252": 0.1946
+        }
+      },
+      "TATAELXSI": {
+        "spot": 3257.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 3.3,
+        "rv": {
+          "rv10": 0.4053,
+          "rv21": 0.325,
+          "rv63": 0.2913,
+          "rv252": 0.3217
+        }
+      }
+    },
+    "errors": [],
+    "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking."
+  },
+  "status": "PROFILE_ADAPTATION",
+  "note": "No original-ZIP candidate parity claim for NSE market-structure adaptations."
+}

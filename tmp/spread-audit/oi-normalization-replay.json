@@ -1,0 +1,212 @@
+{
+  "kind": "OFFLINE replay of captured live inputs; NOT a new live scan",
+  "before": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 19,
+    "paired": 19,
+    "ror": 13,
+    "vrp": 3,
+    "final": 3
+  },
+  "after": {
+    "considered": 856,
+    "cushion": 731,
+    "friction": 9,
+    "paired": 9,
+    "ror": 7,
+    "vrp": 2,
+    "final": 2
+  },
+  "removed": [
+    {
+      "ticker": "GAIL",
+      "candidate": {
+        "ticker": "GAIL",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 175.0,
+        "long_strike": 180.0,
+        "width": 5.0,
+        "credit": 1.27,
+        "ror_pct": 34.0,
+        "cushion_pct": 4.85,
+        "vrp": 1.26,
+        "iv": 0.2197,
+        "rv21": 0.1743,
+        "earnings": true,
+        "max_gap": 4.49,
+        "p_raw": 0.2993,
+        "p_adj": 0.5767,
+        "ev": -161.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2208,
+            "rv21": 0.1743,
+            "rv63": 0.2184,
+            "rv252": 0.2519
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 4.49
+          },
+          "l3": {
+            "iv": 0.2197,
+            "rv21": 0.1743,
+            "ratio": 1.26
+          },
+          "l4": {
+            "p_raw": 0.2993,
+            "p_adj": 0.5767,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0428,
+              "oi": 266250
+            },
+            "long": {
+              "spread_pct": 0.051,
+              "oi": 568000
+            }
+          }
+        }
+      },
+      "first_failure": "short OI",
+      "short_friction": {
+        "mid": 3.035,
+        "spread_pct": 0.04283360790774296,
+        "oi": 75
+      },
+      "long_friction": null
+    }
+  ],
+  "examples": [
+    [
+      "CANBK",
+      125.0,
+      1086750,
+      6750,
+      161
+    ],
+    [
+      "GAIL",
+      175.0,
+      266250,
+      3550,
+      75
+    ],
+    [
+      "NMDC",
+      75.0,
+      810000,
+      6750,
+      120
+    ]
+  ],
+  "invalid": [],
+  "candidates": [
+    {
+      "ticker": "NMDC",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 75.0,
+      "long_strike": 80.0,
+      "width": 5.0,
+      "credit": 0.97,
+      "ror_pct": 24.2,
+      "cushion_pct": 6.62,
+      "vrp": 1.22,
+      "iv": 0.3027,
+      "rv21": 0.2471,
+      "earnings": true,
+      "max_gap": 4.65,
+      "p_raw": 0.2825,
+      "p_adj": 0.4808,
+      "ev": -143.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 4.65
+        },
+        "l3": {
+          "iv": 0.3027,
+          "rv21": 0.2471,
+          "ratio": 1.22
+        },
+        "l4": {
+          "p_raw": 0.2825,
+          "p_adj": 0.4808,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.024,
+            "oi": 120
+          },
+          "long": {
+            "spread_pct": 0.0432,
+            "oi": 151
+          }
+        }
+      }
+    },
+    {
+      "ticker": "CANBK",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 125.0,
+      "long_strike": 130.0,
+      "width": 5.0,
+      "credit": 1.41,
+      "ror_pct": 39.1,
+      "cushion_pct": 5.59,
+      "vrp": 1.56,
+      "iv": 0.3125,
+      "rv21": 0.2002,
+      "earnings": true,
+      "max_gap": 5.3,
+      "p_raw": 0.2979,
+      "p_adj": 0.5801,
+      "ev": -150.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 5.3
+        },
+        "l3": {
+          "iv": 0.3125,
+          "rv21": 0.2002,
+          "ratio": 1.56
+        },
+        "l4": {
+          "p_raw": 0.2979,
+          "p_adj": 0.5801,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.0335,
+            "oi": 161
+          },
+          "long": {
+            "spread_pct": 0.0506,
+            "oi": 274
+          }
+        }
+      }
+    }
+  ]
+}

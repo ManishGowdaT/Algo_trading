@@ -1,0 +1,194 @@
+{
+  "source_url": "https://www.nseindia.com/api/option-chain-v3?type=Equity&symbol=CANBK&expiry=23-Nov-2026",
+  "comparisons": [
+    {
+      "key": "NSE_FO|83040",
+      "strike": 100.0,
+      "side": "PE",
+      "upstox_oi": 60750.0,
+      "lot": 6750,
+      "nse_contracts": 10,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|94432",
+      "strike": 102.0,
+      "side": "PE",
+      "upstox_oi": 47250.0,
+      "lot": 6750,
+      "nse_contracts": 6,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|94436",
+      "strike": 104.0,
+      "side": "PE",
+      "upstox_oi": 216000.0,
+      "lot": 6750,
+      "nse_contracts": 33,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|94439",
+      "strike": 107.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83043",
+      "strike": 110.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83044",
+      "strike": 110.0,
+      "side": "PE",
+      "upstox_oi": 810000.0,
+      "lot": 6750,
+      "nse_contracts": 120,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83045",
+      "strike": 115.0,
+      "side": "CE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83046",
+      "strike": 115.0,
+      "side": "PE",
+      "upstox_oi": 162000.0,
+      "lot": 6750,
+      "nse_contracts": 24,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94547",
+      "strike": 117.0,
+      "side": "PE",
+      "upstox_oi": 13500.0,
+      "lot": 6750,
+      "nse_contracts": 2,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94548",
+      "strike": 118.0,
+      "side": "CE",
+      "upstox_oi": 20250.0,
+      "lot": 6750,
+      "nse_contracts": 3,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94549",
+      "strike": 118.0,
+      "side": "PE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83047",
+      "strike": 120.0,
+      "side": "CE",
+      "upstox_oi": 796500.0,
+      "lot": 6750,
+      "nse_contracts": 118,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83050",
+      "strike": 120.0,
+      "side": "PE",
+      "upstox_oi": 317250.0,
+      "lot": 6750,
+      "nse_contracts": 47,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94555",
+      "strike": 122.0,
+      "side": "PE",
+      "upstox_oi": 47250.0,
+      "lot": 6750,
+      "nse_contracts": 7,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83051",
+      "strike": 125.0,
+      "side": "CE",
+      "upstox_oi": 1086750.0,
+      "lot": 6750,
+      "nse_contracts": 161,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83052",
+      "strike": 125.0,
+      "side": "PE",
+      "upstox_oi": 162000.0,
+      "lot": 6750,
+      "nse_contracts": 24,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94595",
+      "strike": 128.0,
+      "side": "PE",
+      "upstox_oi": 60750.0,
+      "lot": 6750,
+      "nse_contracts": 9,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83064",
+      "strike": 130.0,
+      "side": "CE",
+      "upstox_oi": 1849500.0,
+      "lot": 6750,
+      "nse_contracts": 274,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|83065",
+      "strike": 130.0,
+      "side": "PE",
+      "upstox_oi": 13500.0,
+      "lot": 6750,
+      "nse_contracts": 3,
+      "equal": false
+    },
+    {
+      "key": "NSE_FO|94609",
+      "strike": 136.0,
+      "side": "PE",
+      "upstox_oi": 6750.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": true
+    },
+    {
+      "key": "NSE_FO|94612",
+      "strike": 138.0,
+      "side": "CE",
+      "upstox_oi": 0.0,
+      "lot": 6750,
+      "nse_contracts": 1,
+      "equal": false
+    }
+  ]
+}

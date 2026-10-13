@@ -1,0 +1,998 @@
+{
+  "audit_id": "86c96a05-c13f-4166-9a3b-d1a26dfec2cd",
+  "request": {
+    "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+    "width_steps": 1,
+    "expiry": null,
+    "dte": 30,
+    "width": 5.0,
+    "min_vrp": 1.15,
+    "min_oi": 100,
+    "max_spread_pct": 0.1,
+    "min_cushion": 2.0,
+    "min_ror": 15.0,
+    "underlyings": [
+      "NIFTY",
+      "BANKNIFTY",
+      "NMDC",
+      "CANBK",
+      "TATAELXSI",
+      "NTPC"
+    ],
+    "expiries": {}
+  },
+  "result": {
+    "ok": true,
+    "data_mode": "upstox",
+    "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+    "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+    "width_mode": "fixed_price_points",
+    "width_steps": null,
+    "underlyings": [
+      {
+        "ticker": "BANKNIFTY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 2,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 54918.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 0.0,
+          "rv": {
+            "rv10": 0.1556,
+            "rv21": 0.1446,
+            "rv63": 0.1198,
+            "rv252": 0.1693
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "BANKNIFTY",
+        "instrument_key": "NSE_INDEX|Nifty Bank",
+        "kind": "INDEX",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "not_applicable",
+          "earnings": "not_applicable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "An index has no company earnings calendar; the original earnings-event filter does not apply to NIFTY.",
+        "scan_audit": {
+          "audit_id": "8bb65039-ebf7-4058-aabc-106411d257c4",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\8bb65039-ebf7-4058-aabc-106411d257c4.json"
+        }
+      },
+      {
+        "ticker": "CANBK",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "ticker": "CANBK",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 125.0,
+            "long_strike": 130.0,
+            "width": 5.0,
+            "credit": 1.41,
+            "ror_pct": 39.1,
+            "cushion_pct": 5.59,
+            "vrp": 1.56,
+            "iv": 0.3125,
+            "rv21": 0.2002,
+            "earnings": true,
+            "max_gap": 5.3,
+            "p_raw": 0.2979,
+            "p_adj": 0.5801,
+            "ev": -150.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.2354,
+                "rv21": 0.2002,
+                "rv63": 0.1926,
+                "rv252": 0.2864
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 5.3
+              },
+              "l3": {
+                "iv": 0.3125,
+                "rv21": 0.2002,
+                "ratio": 1.56
+              },
+              "l4": {
+                "p_raw": 0.2979,
+                "p_adj": 0.5801,
+                "horizon_td": 28
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0335,
+                  "oi": 161
+                },
+                "long": {
+                  "spread_pct": 0.0506,
+                  "oi": 274
+                }
+              }
+            },
+            "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|83051",
+            "long_instrument_key": "NSE_FO|83064",
+            "lot_size": 6750,
+            "lot_size_status": "contract",
+            "credit_points_unrounded": 1.405,
+            "actual_width_points": 5.0,
+            "credit_per_lot_inr": 9483.75,
+            "max_loss_per_lot_inr": 24266.25,
+            "ev_per_lot_inr": -10093.69
+          }
+        ],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 1,
+          "paired": 1,
+          "ror": 1,
+          "vrp": 1,
+          "final": 1
+        },
+        "meta": {
+          "spot": 118.38,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 5.3,
+          "rv": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "CANBK",
+        "instrument_key": "NSE_EQ|INE476A01022",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "7feed0f6-bdac-406e-a973-16a21a846216",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7feed0f6-bdac-406e-a973-16a21a846216.json"
+        }
+      },
+      {
+        "ticker": "NIFTY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 6,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 22363.35,
+          "expiration": "2026-11-09",
+          "dte": 27,
+          "earnings": false,
+          "max_gap": 0.0,
+          "rv": {
+            "rv10": 0.1597,
+            "rv21": 0.1351,
+            "rv63": 0.1042,
+            "rv252": 0.136
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "NIFTY",
+        "instrument_key": "NSE_INDEX|Nifty 50",
+        "kind": "INDEX",
+        "expiry": "2026-11-09",
+        "dte": 27,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "not_applicable",
+          "earnings": "not_applicable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "An index has no company earnings calendar; the original earnings-event filter does not apply to NIFTY.",
+        "scan_audit": {
+          "audit_id": "487c86e8-9bd3-4c72-8dfd-0c3773a9586d",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\487c86e8-9bd3-4c72-8dfd-0c3773a9586d.json"
+        }
+      },
+      {
+        "ticker": "NMDC",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "ticker": "NMDC",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 75.0,
+            "long_strike": 80.0,
+            "width": 5.0,
+            "credit": 0.97,
+            "ror_pct": 24.2,
+            "cushion_pct": 6.62,
+            "vrp": 1.22,
+            "iv": 0.3027,
+            "rv21": 0.2471,
+            "earnings": true,
+            "max_gap": 4.65,
+            "p_raw": 0.2825,
+            "p_adj": 0.4808,
+            "ev": -143.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.2523,
+                "rv21": 0.2471,
+                "rv63": 0.2287,
+                "rv252": 0.2875
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 4.65
+              },
+              "l3": {
+                "iv": 0.3027,
+                "rv21": 0.2471,
+                "ratio": 1.22
+              },
+              "l4": {
+                "p_raw": 0.2825,
+                "p_adj": 0.4808,
+                "horizon_td": 28
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.024,
+                  "oi": 120
+                },
+                "long": {
+                  "spread_pct": 0.0432,
+                  "oi": 151
+                }
+              }
+            },
+            "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|139549",
+            "long_instrument_key": "NSE_FO|120954",
+            "lot_size": 6750,
+            "lot_size_status": "contract",
+            "credit_points_unrounded": 0.9749999999999999,
+            "actual_width_points": 5.0,
+            "credit_per_lot_inr": 6581.25,
+            "max_loss_per_lot_inr": 27168.75,
+            "ev_per_lot_inr": -9644.63
+          }
+        ],
+        "funnel": {
+          "considered": 22,
+          "cushion": 19,
+          "friction": 1,
+          "paired": 1,
+          "ror": 1,
+          "vrp": 1,
+          "final": 1
+        },
+        "meta": {
+          "spot": 70.34,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 4.65,
+          "rv": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "NMDC",
+        "instrument_key": "NSE_EQ|INE584A01023",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "779f7e49-c2ff-4a16-bc1f-9815b73563d4",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\779f7e49-c2ff-4a16-bc1f-9815b73563d4.json"
+        }
+      },
+      {
+        "ticker": "NTPC",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 310.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": true,
+          "max_gap": 3.11,
+          "rv": {
+            "rv10": 0.2316,
+            "rv21": 0.1828,
+            "rv63": 0.159,
+            "rv252": 0.1946
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "NTPC",
+        "instrument_key": "NSE_EQ|INE733E01010",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "5bb035ef-872c-46eb-8adb-4803989126e7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\5bb035ef-872c-46eb-8adb-4803989126e7.json"
+        }
+      },
+      {
+        "ticker": "TATAELXSI",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 23,
+          "cushion": 20,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 3257.0,
+          "expiration": "2026-11-23",
+          "dte": 41,
+          "earnings": false,
+          "max_gap": 3.3,
+          "rv": {
+            "rv10": 0.4053,
+            "rv21": 0.325,
+            "rv63": 0.2913,
+            "rv252": 0.3217
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-13",
+          "requested_end": "2026-10-13",
+          "raw_count": 743,
+          "parsed_count": 743,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "width_mode": "fixed_price_points",
+        "symbol": "TATAELXSI",
+        "instrument_key": "NSE_EQ|INE670A01012",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 41,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.",
+        "scan_audit": {
+          "audit_id": "52052a90-12e1-461b-b271-4d571625a6db",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\52052a90-12e1-461b-b271-4d571625a6db.json"
+        }
+      }
+    ],
+    "success_count": 6,
+    "failure_count": 0,
+    "candidates": [
+      {
+        "ticker": "NMDC",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 75.0,
+        "long_strike": 80.0,
+        "width": 5.0,
+        "credit": 0.97,
+        "ror_pct": 24.2,
+        "cushion_pct": 6.62,
+        "vrp": 1.22,
+        "iv": 0.3027,
+        "rv21": 0.2471,
+        "earnings": true,
+        "max_gap": 4.65,
+        "p_raw": 0.2825,
+        "p_adj": 0.4808,
+        "ev": -143.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 4.65
+          },
+          "l3": {
+            "iv": 0.3027,
+            "rv21": 0.2471,
+            "ratio": 1.22
+          },
+          "l4": {
+            "p_raw": 0.2825,
+            "p_adj": 0.4808,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.024,
+              "oi": 120
+            },
+            "long": {
+              "spread_pct": 0.0432,
+              "oi": 151
+            }
+          }
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|139549",
+        "long_instrument_key": "NSE_FO|120954",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_points_unrounded": 0.9749999999999999,
+        "actual_width_points": 5.0,
+        "credit_per_lot_inr": 6581.25,
+        "max_loss_per_lot_inr": 27168.75,
+        "ev_per_lot_inr": -9644.63
+      },
+      {
+        "ticker": "CANBK",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 125.0,
+        "long_strike": 130.0,
+        "width": 5.0,
+        "credit": 1.41,
+        "ror_pct": 39.1,
+        "cushion_pct": 5.59,
+        "vrp": 1.56,
+        "iv": 0.3125,
+        "rv21": 0.2002,
+        "earnings": true,
+        "max_gap": 5.3,
+        "p_raw": 0.2979,
+        "p_adj": 0.5801,
+        "ev": -150.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 5.3
+          },
+          "l3": {
+            "iv": 0.3125,
+            "rv21": 0.2002,
+            "ratio": 1.56
+          },
+          "l4": {
+            "p_raw": 0.2979,
+            "p_adj": 0.5801,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0335,
+              "oi": 161
+            },
+            "long": {
+              "spread_pct": 0.0506,
+              "oi": 274
+            }
+          }
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|83051",
+        "long_instrument_key": "NSE_FO|83064",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_points_unrounded": 1.405,
+        "actual_width_points": 5.0,
+        "credit_per_lot_inr": 9483.75,
+        "max_loss_per_lot_inr": 24266.25,
+        "ev_per_lot_inr": -10093.69
+      }
+    ],
+    "funnel": {
+      "considered": 141,
+      "cushion": 87,
+      "friction": 2,
+      "paired": 2,
+      "ror": 2,
+      "vrp": 2,
+      "final": 2
+    },
+    "elapsed": 11.8,
+    "tickers_ok": 6,
+    "tickers_failed": 0,
+    "funnels": {
+      "BANKNIFTY": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "CANBK": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "NIFTY": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "NMDC": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "NTPC": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "TATAELXSI": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      }
+    },
+    "meta": {
+      "BANKNIFTY": {
+        "spot": 54918.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 0.0,
+        "rv": {
+          "rv10": 0.1556,
+          "rv21": 0.1446,
+          "rv63": 0.1198,
+          "rv252": 0.1693
+        }
+      },
+      "CANBK": {
+        "spot": 118.38,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 5.3,
+        "rv": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        }
+      },
+      "NIFTY": {
+        "spot": 22363.35,
+        "expiration": "2026-11-09",
+        "dte": 27,
+        "earnings": false,
+        "max_gap": 0.0,
+        "rv": {
+          "rv10": 0.1597,
+          "rv21": 0.1351,
+          "rv63": 0.1042,
+          "rv252": 0.136
+        }
+      },
+      "NMDC": {
+        "spot": 70.34,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 4.65,
+        "rv": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        }
+      },
+      "NTPC": {
+        "spot": 310.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": true,
+        "max_gap": 3.11,
+        "rv": {
+          "rv10": 0.2316,
+          "rv21": 0.1828,
+          "rv63": 0.159,
+          "rv252": 0.1946
+        }
+      },
+      "TATAELXSI": {
+        "spot": 3257.0,
+        "expiration": "2026-11-23",
+        "dte": 41,
+        "earnings": false,
+        "max_gap": 3.3,
+        "rv": {
+          "rv10": 0.4053,
+          "rv21": 0.325,
+          "rv63": 0.2913,
+          "rv252": 0.3217
+        }
+      }
+    },
+    "errors": [],
+    "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking."
+  },
+  "original_combined_candidates": [
+    {
+      "ticker": "NMDC",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 75.0,
+      "long_strike": 80.0,
+      "width": 5.0,
+      "credit": 0.97,
+      "ror_pct": 24.2,
+      "cushion_pct": 6.62,
+      "vrp": 1.22,
+      "iv": 0.3027,
+      "rv21": 0.2471,
+      "earnings": true,
+      "max_gap": 4.65,
+      "p_raw": 0.2825,
+      "p_adj": 0.4808,
+      "ev": -143.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 4.65
+        },
+        "l3": {
+          "iv": 0.3027,
+          "rv21": 0.2471,
+          "ratio": 1.22
+        },
+        "l4": {
+          "p_raw": 0.2825,
+          "p_adj": 0.4808,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.024,
+            "oi": 120
+          },
+          "long": {
+            "spread_pct": 0.0432,
+            "oi": 151
+          }
+        }
+      }
+    },
+    {
+      "ticker": "CANBK",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 125.0,
+      "long_strike": 130.0,
+      "width": 5.0,
+      "credit": 1.41,
+      "ror_pct": 39.1,
+      "cushion_pct": 5.59,
+      "vrp": 1.56,
+      "iv": 0.3125,
+      "rv21": 0.2002,
+      "earnings": true,
+      "max_gap": 5.3,
+      "p_raw": 0.2979,
+      "p_adj": 0.5801,
+      "ev": -150.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 5.3
+        },
+        "l3": {
+          "iv": 0.3125,
+          "rv21": 0.2002,
+          "ratio": 1.56
+        },
+        "l4": {
+          "p_raw": 0.2979,
+          "p_adj": 0.5801,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.0335,
+            "oi": 161
+          },
+          "long": {
+            "spread_pct": 0.0506,
+            "oi": 274
+          }
+        }
+      }
+    }
+  ],
+  "combined_ranking_identical": true,
+  "original_aggregate_funnel": {
+    "considered": 141,
+    "cushion": 87,
+    "friction": 2,
+    "paired": 2,
+    "ror": 2,
+    "vrp": 2,
+    "final": 2
+  },
+  "aggregate_funnel_identical": true,
+  "first_failure_counts": {
+    "cushion": 54,
+    "short OI": 10,
+    "missing hedge strike": 7,
+    "short bid/ask fraction": 65,
+    "long bid/ask fraction": 1,
+    "long OI": 2
+  },
+  "issues": []
+}

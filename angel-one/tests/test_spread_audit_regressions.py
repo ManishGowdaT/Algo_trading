@@ -221,8 +221,9 @@ def test_discovery_pipeline_metrics_and_rank_match_original_zip():
                      _yf_call=lambda fn, **kwargs: fn(),
                      _atm_iv=lambda ticker, spot, dte: ivs[next(symbol for symbol in symbols if ticker.history() is histories[symbol])])
     exec(compile(ast.Module(body=[node], type_ignores=[]), 'original-ZIP/edge_discovery', 'exec'), namespace)
-    expected = namespace['edge_discovery'](symbols)
-    assert engine.rank_edge_discovery(metrics, ivs) == expected
+    expected = namespace['edge_discovery'](symbols, iv_shortlist=len(symbols))
+    actual = engine.rank_edge_discovery(metrics, ivs)
+    assert [{key:value for key,value in row.items() if key not in {'iv_status','vrp_status'}} for row in actual] == expected
 
 
 def test_earnings_gap_calculation_matches_original_zip():
@@ -302,7 +303,7 @@ def test_duplicate_strikes_do_not_use_last_quote_for_per_lot_money(monkeypatch):
     result = api._scan_underlying('NIFTY', request, None, '')
     assert result['ok'] and result['candidates']
     key = result['instrument_key']; expiry = date.fromisoformat(result['expiry'])
-    expected = engine.scan_provider_data('NIFTY', provider.get_history(key), duplicated(key, expiry), provider.get_earnings_info(key, expiry), expiry, result['dte'], engine.ScanParams(**request.model_dump(exclude={'expiry','dte'}), dte=result['dte']))
+    expected = engine.scan_provider_data('NIFTY', provider.get_history(key), duplicated(key, expiry), provider.get_earnings_info(key, expiry), expiry, result['dte'], engine.ScanParams(**request.model_dump(exclude={'expiry','dte','strategy_profile','width_steps'}), dte=result['dte']))
     for candidate, original_candidate in zip(result['candidates'], expected['candidates']):
         assert all(candidate[key] == value for key,value in original_candidate.items())
         assert candidate['monetary_status'] == 'ambiguous_duplicate_strike'

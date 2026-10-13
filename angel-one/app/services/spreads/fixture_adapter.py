@@ -58,6 +58,14 @@ class FixtureMarketDataProvider(UpstoxMarketDataProvider):
             completeness=history.completeness,
         )
 
+    def _contracts_for_oi(self, underlying_key):
+        return ()
+
+    def _normalize_option_oi(self, value, contracts, instrument_key, expiry, strike, side):
+        # Existing synthetic fixtures already contain scanner contract-count OI.
+        from .upstox_adapter import _integer
+        return _integer(value), None, None, 'fixture_contract_count'
+
     def get_option_chain(self, underlying_key, expiry):
         chain = super().get_option_chain(underlying_key, expiry)
         return replace(chain, open_interest=DataCapability(True, "fixture", "Synthetic scanner-unit OI, not live unit validation."))

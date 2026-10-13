@@ -56,11 +56,11 @@ def test_history_stage_gates_and_four_month_request_match_source(length):
     expected = ref['edge_discovery'](['TEST'])
     metrics = engine.edge_discovery_metrics('TEST', history.Close, history.Volume)
     actual = engine.rank_edge_discovery([metrics], {}) if metrics else []
-    assert actual == expected
+    assert [{key:value for key,value in row.items() if key not in {'iv_status','vrp_status'}} for row in actual] == expected
     assert calls == [{'period':'4mo','interval':'1d','auto_adjust':True}]
 
 
-def test_original_shortlist_fetches_only_ten_names_and_preserves_unknown_iv():
+def test_full_universe_iv_coverage_matches_original_zip_methodology():
     histories = {f'S{i}':pd.DataFrame({'Close':[100*math.exp(.01*math.sin(j)) for j in range(85)],
                                     'Volume':[100.]*84+[100.+i*10]}) for i in range(15)}
     iv_calls = []
@@ -70,11 +70,11 @@ def test_original_shortlist_fetches_only_ten_names_and_preserves_unknown_iv():
     ref = load_reference('original_screener.txt', {'edge_discovery'},
         RateLimited=RuntimeError, _yf_call=lambda fn, **kwargs:fn(), _atm_iv=iv)
     ref['yf'] = types.SimpleNamespace(Ticker=lambda symbol:types.SimpleNamespace(symbol=symbol,history=lambda **kwargs:histories[symbol]))
-    expected = ref['edge_discovery'](list(histories))
+    expected = ref['edge_discovery'](list(histories), iv_shortlist=len(histories))
     metrics = [engine.edge_discovery_metrics(symbol,frame.Close,frame.Volume) for symbol,frame in histories.items()]
-    assert set(iv_calls) == {(f'S{i}',14) for i in range(5,15)}
-    assert engine.rank_edge_discovery(metrics,{symbol:.3 for symbol,_ in iv_calls}) == expected
-    assert all(row['iv14'] is None for row in expected if row['ticker'] in {f'S{i}' for i in range(5)})
+    assert set(iv_calls) == {(f'S{i}',14) for i in range(len(histories))}
+    actual = engine.rank_edge_discovery(metrics,{symbol:.3 for symbol,_ in iv_calls})
+    assert [{key:value for key,value in row.items() if key not in {'iv_status','vrp_status'}} for row in actual] == expected
 
 
 def test_atm_iv_uses_three_nearest_valid_strikes_per_side():
