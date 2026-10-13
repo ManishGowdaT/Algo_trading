@@ -17,6 +17,7 @@ import DashboardLayout from '../components/Layout/DashboardLayout'
 import ProtectedRoute from './ProtectedRoute'
 
 import DynamicStrategyPage from '../pages/StrategiesPage/DynamicStrategyPage'
+import SpreadsPage from '../pages/SpreadsPage/SpreadsPage'
 
 export default function AppRouter() {
   return (
@@ -29,6 +30,7 @@ export default function AppRouter() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/spreads" element={<SpreadsPage />} />
         <Route path="/strategies" element={<StrategiesPage />} />
         <Route path="/strategies/manual-trading" element={<ManualTradingPage />} />
         <Route path="/strategies/ichimoku" element={<IchimokuStrategyPage />} />

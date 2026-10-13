@@ -1,0 +1,297 @@
+"""
+main.py — Spread Terminal API + static UI host.
+
+Run:  uvicorn main:app --port 8000
+"""
+
+from __future__ import annotations
+
+import asyncio
+import math
+import time
+from pathlib import Path
+
+from fastapi import FastAPI
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, Field
+import yfinance as yf
+
+import screener
+from applog import get_logger
+
+log = get_logger("api")
+
+app = FastAPI(title="Spread Terminal", version="1.0")
+
+BASE = Path(__file__).parent
+INDEX = BASE / "templates" / "index.html"
+
+import sys
+
+# --------------------------------------------------------------------------- #
+# JSON safety — NaN/Inf are not JSON-compliant; Starlette serializes with
+# allow_nan=False and 500s on any bare NaN. Scrub every payload at the boundary
+# so no upstream NaN (thin option chains, missing history) can crash a response.
+# --------------------------------------------------------------------------- #
+def _json_safe(obj):
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_json_safe(v) for v in obj]
+    return obj
+
+# --------------------------------------------------------------------------- #
+# Universe Sourcing Pipeline (dynamic, multi-source, fail-safe)
+# --------------------------------------------------------------------------- #
+CORE_PILLARS = ["SPY", "QQQ", "IWM", "NVDA", "TSLA", "MU"]
+
+# Emergency fallback: top 20 core liquid option underlyings. Used ONLY when
+# every dynamic source fails — the server must never crash on a cold start.
+EMERGENCY_UNIVERSE = [
+    "SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "TSLA", "AMD", "MU", "SMCI",
+    "AMZN", "NFLX", "META", "GOOG", "AVGO", "COIN", "PLTR", "BABA", "GME", "AMC",
+]
+
+UNIVERSE_MIN, UNIVERSE_MAX = 30, 40
+_SCREEN_KEYS = ("most_actives", "day_gainers")
+
+_universe_state: dict = {"source": "pending", "size": 0}
+
+
+def _normalize_symbol(sym: str) -> str | None:
+    """Strict normalization + plausibility filter for optionable US listings."""
+    s = str(sym or "").upper().strip()
+    if not (1 <= len(s) <= 5) or not s.isalpha():
+        return None  # drops ^indices, BRK.B-style classes, =F futures, warrants
+    return s
+
+
+def _quote_is_liquid(q: dict) -> bool:
+    """Best-effort liquidity sanity check on a screener quote payload."""
+    try:
+        if q.get("quoteType") not in (None, "EQUITY", "ETF"):
+            return False
+        price = q.get("regularMarketPrice")
+        if price is not None and float(price) < 5.0:
+            return False  # sub-$5 names rarely carry institutional chains
+        vol = q.get("regularMarketVolume")
+        if vol is not None and float(vol) < 1_000_000:
+            return False
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
+def _fetch_screener_symbols(key: str, count: int = 30) -> list[str]:
+    """Pull one predefined yfinance screener; tolerate both API generations."""
+    quotes: list[dict] = []
+    # Modern API (yfinance >= 0.2.4x): yf.screen("most_actives")
+    if hasattr(yf, "screen"):
+        try:
+            res = yf.screen(key, count=count)
+            if isinstance(res, dict):
+                quotes = res.get("quotes", []) or []
+        except Exception as exc:
+            log.warning("yf.screen(%r) failed: %s", key, exc)
+    # Legacy API: yf.Screener with predefined bodies
+    if not quotes and hasattr(yf, "Screener"):
+        try:
+            scr = yf.Screener()
+            scr.set_predefined_body(key)
+            resp = scr.response
+            if isinstance(resp, dict):
+                quotes = resp.get("quotes", []) or []
+        except Exception as exc:
+            log.warning("yf.Screener(%r) failed: %s", key, exc)
+
+    out: list[str] = []
+    for q in quotes:
+        if not isinstance(q, dict) or not _quote_is_liquid(q):
+            continue
+        s = _normalize_symbol(q.get("symbol"))
+        if s:
+            out.append(s)
+    return out
+
+
+def _get_active_universe() -> list[str]:
+    """
+    Dynamic universe: core pillars + today's most-active / top-gainer names,
+    deduplicated and normalized, clamped to 30-40 symbols. Falls back to the
+    emergency list on any failure so a cold start can never crash the server.
+    """
+    try:
+        merged: list[str] = []
+        seen: set[str] = set()
+
+        def _add(syms: list[str]) -> None:
+            for raw in syms:
+                s = _normalize_symbol(raw)
+                if s and s not in seen and len(merged) < UNIVERSE_MAX:
+                    seen.add(s)
+                    merged.append(s)
+
+        _add(CORE_PILLARS)  # foundational base layer always rides first
+        for key in _SCREEN_KEYS:
+            if len(merged) >= UNIVERSE_MAX:
+                break
+            _add(_fetch_screener_symbols(key, count=30))
+
+        # Top up from the emergency list if the dynamic pull came back thin
+        if len(merged) < UNIVERSE_MIN:
+            _add(EMERGENCY_UNIVERSE)
+
+        if len(merged) >= UNIVERSE_MIN:
+            _universe_state.update(source="dynamic", size=len(merged))
+            return merged
+
+        raise RuntimeError(
+            f"dynamic universe too small after all sources ({len(merged)})")
+    except Exception as exc:
+        log.error("universe sourcing failed -> emergency fallback: %s", exc)
+        fallback = []
+        seen = set()
+        for raw in EMERGENCY_UNIVERSE:
+            s = _normalize_symbol(raw)
+            if s and s not in seen:
+                seen.add(s)
+                fallback.append(s)
+        _universe_state.update(source="fallback", size=len(fallback))
+        return fallback
+
+
+TRENDING_TTL = 15 * 60  # seconds
+_trending: dict = {"updated": 0.0, "items": [], "refreshing": False}
+_scan_sem = asyncio.Semaphore(4)  # max concurrent ticker scans
+
+
+class ScanRequest(BaseModel):
+    tickers: list[str] = Field(..., min_length=1, max_length=50)
+    dte: int = Field(30, ge=5, le=180)
+    width: float = Field(5.0, gt=0, le=100)
+    min_vrp: float = Field(1.15, ge=0.5, le=3.0)
+    min_oi: int = Field(100, ge=0, le=10000)
+    max_spread_pct: float = Field(0.10, gt=0, le=0.5)
+    min_cushion: float = Field(2.0, ge=0, le=30)
+    min_ror: float = Field(15.0, ge=5.0, le=100.0)
+
+
+# --------------------------------------------------------------------------- #
+# Edge Discovery Pipeline (background, cached; forcible via /api/discover)
+# --------------------------------------------------------------------------- #
+async def _refresh_trending() -> None:
+    if _trending["refreshing"]:
+        # Another refresh is in flight — wait for it instead of stacking.
+        while _trending["refreshing"]:
+            await asyncio.sleep(0.5)
+        return
+    _trending["refreshing"] = True
+    try:
+        # Source today's universe first, then run Edge Discovery over it,
+        # so the scanning pool tracks live volume/volatility anomalies.
+        universe = await asyncio.to_thread(_get_active_universe)
+        log.info("edge discovery: scanning %d-name universe (%s)",
+                 len(universe), _universe_state.get("source"))
+        items = await asyncio.to_thread(screener.edge_discovery, universe)
+        if items:
+            _trending["items"] = items
+            _trending["updated"] = time.time()
+            top = ", ".join(r["ticker"] for r in items[:5])
+            log.info("edge discovery: ranked %d names, top 5 = %s",
+                     len(items), top)
+        else:
+            log.warning("edge discovery returned no rankable names "
+                        "(all history fetches failed — likely rate limited)")
+    finally:
+        _trending["refreshing"] = False
+
+
+def _trending_payload() -> dict:
+    return _json_safe({
+        "updated": _trending["updated"],
+        "refreshing": _trending["refreshing"],
+        "top": _trending["items"][:5],
+        "all": _trending["items"],
+        "universe": dict(_universe_state),
+    })
+
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(_refresh_trending())
+
+
+@app.get("/api/trending")
+async def api_trending():
+    if (time.time() - _trending["updated"] > TRENDING_TTL
+            and not _trending["refreshing"]):
+        asyncio.create_task(_refresh_trending())  # serve stale, refresh behind
+    return _trending_payload()
+
+
+@app.post("/api/discover")
+async def api_discover():
+    """Auto-Discover Edge button: force a fresh pipeline run and wait for it."""
+    _trending["updated"] = 0.0  # invalidate cache
+    await _refresh_trending()
+    return _trending_payload()
+
+
+# --------------------------------------------------------------------------- #
+# Scan endpoint — each ticker in a worker thread, bounded concurrency
+# --------------------------------------------------------------------------- #
+async def _scan_one(ticker: str, params: screener.ScanParams) -> dict:
+    async with _scan_sem:
+        return await asyncio.to_thread(screener.scan_ticker, ticker, params)
+
+
+@app.post("/api/scan")
+async def api_scan(req: ScanRequest):
+    params = screener.ScanParams(
+        dte=req.dte, width=req.width, min_vrp=req.min_vrp,
+        min_oi=req.min_oi, max_spread_pct=req.max_spread_pct,
+        min_cushion=req.min_cushion, min_ror=req.min_ror,
+    )
+    tickers = sorted({t.upper().strip() for t in req.tickers if t.strip()})
+    t0 = time.time()
+    log.info("scan request: %d ticker(s) %s | dte=%d width=%g vrp>=%.2f "
+             "oi>=%d ror>=%.0f%%", len(tickers), tickers, params.dte,
+             params.width, params.min_vrp, params.min_oi, params.min_ror)
+    results = await asyncio.gather(*[_scan_one(t, params) for t in tickers])
+
+    candidates, errors, funnels, metas = [], [], {}, {}
+    for r in results:
+        if r["ok"]:
+            candidates.extend(r["candidates"])
+            funnels[r["ticker"]] = r["funnel"]
+            metas[r["ticker"]] = r["meta"]
+        else:
+            errors.append({"ticker": r["ticker"], "error": r["error"]})
+
+    # Aggregate funnel for the signature layer strip
+    agg = {k: sum(f[k] for f in funnels.values())
+           for k in ("considered", "cushion", "friction", "paired",
+                     "ror", "vrp", "final")} if funnels else None
+
+    candidates.sort(key=lambda c: c["ev"], reverse=True)
+    elapsed = round(time.time() - t0, 1)
+    rl = sum(1 for e in errors if "rate limited" in (e["error"] or ""))
+    log.info("scan done in %ss: %d ok, %d failed, %d spread(s)%s",
+             elapsed, len(funnels), len(errors), len(candidates),
+             f" — {rl} RATE LIMITED" if rl else "")
+    if rl and rl == len(tickers):
+        log.error("ALL %d tickers rate limited — Yahoo is throttling this IP; "
+                  "wait several minutes or raise YF_MIN_INTERVAL", len(tickers))
+    return JSONResponse(_json_safe({
+        "elapsed": elapsed,
+        "tickers_ok": len(funnels), "tickers_failed": len(errors),
+        "candidates": candidates, "funnel": agg,
+        "funnels": funnels, "meta": metas, "errors": errors,
+    }))
+
+
+@app.get("/")
+async def index():
+    return FileResponse(INDEX)

@@ -1,0 +1,1865 @@
+
+> backend@1.0.0 test
+> node --test
+
+✔ default resolution is server-owned; known foreign account selectors are denied (21.0013ms)
+✔ missing/forged and stale session contexts fail before broker dispatch (2.1959ms)
+✔ transport writes only verified owner/account/session headers and background work retains them (12.407ms)
+✔ owner generation changes and disabled accounts invalidate background contexts (1.1295ms)
+✔ cancel validates account orderbook before mutation; foreign order IDs never reach cancel (3.0405ms)
+✔ exit verifies instrument/product/direction/quantity against account positions (5.2569ms)
+✔ candle cache keys include account and session; cached A data is absent for B (2.1088ms)
+[BrokerGateway] login outcome=success status=200 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:45.933Z","userId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb","sessionGeneration":2,"attributes":{"status":200}}
+[StartupRecovery] Post-login recovery remains pending for account bbbbbbbbbbbbbbbbbbbbbbbb: Database recovery scan is not complete.
+✔ connect/reconnect admission is serialized and errors release the queue (6.7305ms)
+✔ broker status for B never queries or reveals A connection (17.9419ms)
+✔ B login uses its own Python account context and leaves A session untouched (142.8807ms)
+✔ forged selectors are rejected by middleware before chart/cache handlers (0.6134ms)
+✔ a disconnected second user still cannot claim A real broker client ID (2.3704ms)
+✔ connection fails closed when required unique ownership indexes are absent (0.5949ms)
+✔ expired JWT and refresh tokens cannot reach account dispatch; body userId is not authority (175.2603ms)
+✔ managed PAPER entry/exit retains quantity and thresholds while persisting account ownership (234.8999ms)
+✔ manual strategy exit cannot use a foreign trade ID even in an owned runner (5.6865ms)
+✔ manual exit with no held position preserves its existing harmless status response (4.9144ms)
+✔ LIVE exit rejects missing or mismatched held instrument before any broker mutation (3.5121ms)
+[StartupRecovery] Post-login recovery remains pending for account aaaaaaaaaaaaaaaaaaaaaaaa: Database recovery scan is not complete.
+[StartupRecovery] Post-login recovery remains pending for account aaaaaaaaaaaaaaaaaaaaaaaa: Database recovery scan is not complete.
+[BrokerGateway] login outcome=success status=200 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:46.439Z","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":2,"attributes":{"status":200}}
+[BrokerGateway] login outcome=success status=200 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:46.441Z","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":3,"attributes":{"status":200}}
+[BrokerGateway] login outcome=http_error status=429 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:46.450Z","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":2,"attributes":{"status":429}}
+[BrokerGateway] login outcome=timeout type=AbortError
+[APIError] requestId=unavailable method=undefined type=AbortError code=none
+    at global.fetch (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\tests\accountContext.phase2.test.js:414:40)
+    at requestPythonTransport (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\services\pythonApiClient.js:41:28)
+    at async C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\controllers\brokerProxyController.js:153:27
+    at async Object.exclusive (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\services\accountContext.js:60:16)
+    at async exports.login (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\controllers\brokerProxyController.js:116:12)
+    at async TestContext.<anonymous> (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\tests\accountContext.phase2.test.js:418:5)
+    at async Test.run (node:internal/test_runner/test:1113:7)
+    at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+✔ simultaneous same-account logins dispatch sequentially and advance verified generations (21.5789ms)
+✔ definitive failed reconnect preserves the existing verified session without decreasing generation (6.6897ms)
+✔ unknown login outcome consumes the candidate generation and fails closed (3.7748ms)
+✔ one broker session loss changes only runners owned by that broker account (2.9044ms)
+✔ Phase 4 enables User A strategy start while User B remains connected (31.9982ms)
+✔ Phase 1 schemas add account ownership and durable records without rewriting legacy trades (9.7021ms)
+✔ User A cannot read, update, or delete User B broker-account/settings/position records by known IDs (2.7674ms)
+✔ new durable records require matching owner/account/strategy/trade references (1.2091ms)
+✔ position and order-intent state changes use owner filters and compare-and-set versions (1.5797ms)
+✔ generation counters only advance through atomic increments (0.5745ms)
+✔ durable position and order-intent quantity invariants are validated (41.6819ms)
+[APIError] requestId=request-123 method=GET type=Error code=none
+    at TestContext.<anonymous> (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\tests\apiErrors.test.js:24:17)
+    at Test.runInAsyncScope (node:async_hooks:214:14)
+    at Test.run (node:internal/test_runner/test:1106:25)
+    at Test.start (node:internal/test_runner/test:1003:17)
+    at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+✔ unexpected server errors do not expose the original exception message (4.8146ms)
+✔ intentional client errors preserve status and readable message (3.1621ms)
+✔ Python transport failures can retain their safe timeout status and message (0.3266ms)
+✔ request context assigns a response-correlatable identifier (2.3069ms)
+✔ malformed JSON and oversized bodies keep their established client statuses (0.9228ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[10:29:45 pm] [5minBreakout] Verified candle history is ready; scanner evaluation resumed.
+✔ real tick candle builder output produces the same breakout as REST timestamps (5.6328ms)
+✔ real scanner accepts late PE breakout after CE minute is processed and deduplicates per instrument (224.9716ms)
+✔ vault encrypts persisted credentials with distinct nonces; MPIN and app passwords are absent (110.1472ms)
+✔ vault reads, metadata and verification are isolated to their owner (12.4336ms)
+✔ ciphertext tampering, owner replay and field replay fail authentication (8.1616ms)
+✔ missing keys fail closed; retained old keys permit rotation without losing saved setup (22.477ms)
+✔ stale saves and concurrent replacements cannot overwrite a newer credential version (13.3919ms)
+✔ invalid deployment keyrings fail with secret-free diagnostic codes, including JSON null (3.6179ms)
+✔ active deployment key version detects missing/mismatched values and tolerates surrounding whitespace (2.8913ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[BrokerGateway] login outcome=success status=200 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:47.158Z","userId":"111111111111111111111111","brokerAccountId":"6acd1203eb170d2c19eac6e3","sessionGeneration":1,"attributes":{"status":200}}
+[StartupRecovery] Post-login recovery remains pending for account 6acd1203eb170d2c19eac6e3: Database recovery scan is not complete.
+[BrokerGateway] login outcome=http_error status=400 retryAfter=none
+{"type":"trading_audit","event":"broker_login_completed","at":"2026-10-12T16:59:47.209Z","userId":"111111111111111111111111","brokerAccountId":"6acd1203eb170d2c19eac6e3","sessionGeneration":2,"attributes":{"status":400}}
+✔ HTTP setup saves through POST, MPIN-only login uses server secrets, and replacement respects active exposure (1313.4399ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ status keeps the disconnected response for users without a linked broker account (4.2699ms)
+[dotenv@17.3.1] injecting env (15) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+✔ password hashes are excluded from normal Mongoose user queries (1.5121ms)
+✔ login explicitly selects the password hash and still returns a successful session (18.636ms)
+✔ cross-site refresh cookies require Secure and can be cleared with matching attributes (2.9856ms)
+✔ /me never serializes a selected password hash (0.4343ms)
+✔ database seeding requires an explicit local opt-in and credentials (1.2659ms)
+✔ database seeding refuses production and Render environments (0.3936ms)
+✔ seed preserves an existing account and only ensures missing starter strategies (0.8276ms)
+✔ seed creates an account only when absent and upserts starter strategies (0.6545ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ owned strategy status remains visible through recovery while its broker session is disconnected (5.0987ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ a late renewal from an old generation cannot erase the new local owner (124.8783ms)
+✔ renewal timers stay bounded while A is blocked and still renew B independently (50.7497ms)
+[MarketDataService] Broker session restored (session 720f9407-1aaa-4504-99bb-322deeb79347)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.948Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:29:47 pm] [5minBreakout] Verified candle history is ready; scanner evaluation resumed.
+[5minBreakout] Scan error: intent persistence unavailable
+[10:29:48 pm] [5minBreakout] Strategy execution halted.
+✔ breakout persistence errors consume the evaluated candle instead of replaying entry (218.1808ms)
+✔ idle account leases renew in the background without changing owner generation (17.8756ms)
+[MarketDataService] Broker session restored (session 6fb1d76e-0c09-4d38-b7c3-87dfb7029f4d)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.135Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:29:48 pm] [ModifiedHeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:48 pm] [ModifiedHeikenAshi] [CANDLE EVALUATION - CE CE-OPT] Time: 10:20:00 pm
+  EMA = 120.52
+  JMA = 128.34
+  Last Candle = O:127.50 H:130.00 L:127.50 C:129.50
+  Prev Candle = O:126.50 H:129.00 L:126.50 C:128.50
+  lastNoWick = true
+  prevNoWick = true
+  jmaGtEma = true
+  closeGtJma = true
+  lastGreen = true
+  prevGreen = true
+  Result: SIGNAL GENERATED (YES)
+  
+[10:29:48 pm] [ModifiedHeikenAshi] Entry deferred before broker submission (RECONCILIATION_REQUIRED).
+[10:29:48 pm] [ModifiedHeikenAshi] [CANDLE EVALUATION - PE PE-OPT] Time: 10:20:00 pm
+  EMA = 120.52
+  JMA = 128.34
+  Last Candle = O:127.50 H:130.00 L:127.50 C:129.50
+  Prev Candle = O:126.50 H:129.00 L:126.50 C:128.50
+  lastNoWick = true
+  prevNoWick = true
+  jmaGtEma = true
+  closeGtJma = true
+  lastGreen = true
+  prevGreen = true
+  Result: SIGNAL GENERATED (YES)
+  
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:48 pm] [ModifiedHeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ a verified pre-submit ownership failure does not consume a fresh signal; recovery admits one entry (131.887ms)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.261Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Broker session restored (session fd1cddf6-5952-454f-bef0-271b337ac38a)
+[StrategyEngine] Broker session restored
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:29:48 pm] [ModifiedHeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:48 pm] [ModifiedHeikenAshi] [CANDLE EVALUATION - CE CE-OPT] Time: 10:20:00 pm
+  EMA = 120.52
+  JMA = 128.34
+  Last Candle = O:127.50 H:130.00 L:127.50 C:129.50
+  Prev Candle = O:126.50 H:129.00 L:126.50 C:128.50
+  lastNoWick = true
+  prevNoWick = true
+  jmaGtEma = true
+  closeGtJma = true
+  lastGreen = true
+  prevGreen = true
+  Result: SIGNAL GENERATED (YES)
+  
+[10:29:48 pm] [ModifiedHeikenAshi] Strategy execution halted.
+✔ wrong timeframe and synthetic bars cannot submit a five-minute strategy entry (32.7531ms)
+[MarketDataService] Broker session restored (session 57dc76a2-4285-4be3-a084-d4c6233c4748)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.301Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[StrategyEngine] Broker session restored
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=1 first=1791823800 last=1791823800
+✔ current-day history seed drops a forming candle and merges rather than overwrites live bars (31.5558ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[MarketDataService] Broker session restored (session e0bfab7a-d573-4bd4-8aa3-2935bf3e4b36)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.825Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+{"type":"trading_audit","event":"broker_request_completed","at":"2026-10-12T16:59:52.046Z","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":1,"attributes":{"route":"/angel/orders/simple","method":"POST","status":200}}
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production proxy: manual partial exit uses persisted instrument and reprotects remaining exposure (6441.162ms)
+✔ Phase 5 gateway: unmanaged unknown mutation is durable and cannot be blindly repeated (37.5501ms)
+[MarketDataService] Broker session restored (session 981045bd-b9b7-4205-8b58-af5e0f956072)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:54.120Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:55 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 gateway: B cannot cancel A and conflicting BUY cannot bypass managed exposure (1041.4859ms)
+[MarketDataService] Broker session restored (session ec11c395-b48a-4189-8be9-de600d5072d7)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:55.165Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:55 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 persistence: lifecycle increments, unsets and negative balancing quantities are rejected by Mongoose (26.3293ms)
+[MarketDataService] Broker session restored (session 1ff210b4-637c-4cc5-b787-9733e73efea8)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:55.188Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:57 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 protection: disappearance/expiry is visible without fabricated closure or resubmission (2045.619ms)
+[MarketDataService] Broker session restored (session 7c4e269f-c42e-4a41-9863-1d60d1ef0ad1)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:57.233Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:01 pm] [ModifiedHeikenAshi] Strategy execution halted.
+✔ Phase 5 trailing: replacement preserves thresholds and protective fill keeps trailing cooldown (4074.119ms)
+[MarketDataService] Broker session restored (session a8bad658-f242-4037-9cfc-b78d041b5f59)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:01.307Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:01 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 verified workflow: HeikenAshi PAPER preserves target, SL, intended quantity and cooldown (32.508ms)
+[MarketDataService] Broker session restored (session 8227e26e-fc19-473c-aeab-83e0559adb96)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:01.346Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:04 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 verified workflow: HeikenAshi LIVE preserves target, SL, intended quantity and cooldown (3059.7028ms)
+[MarketDataService] Broker session restored (session 870dae5f-0140-4dd8-848c-36e0b1864cbe)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:04.399Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:04 pm] [ModifiedHeikenAshi] Strategy execution halted.
+✔ Phase 5 verified workflow: ModifiedHeikenAshi PAPER preserves target, SL, intended quantity and cooldown (36.8362ms)
+[MarketDataService] Broker session restored (session 5ba2bba7-38e4-4072-baf2-71255af75014)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:04.442Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:07 pm] [ModifiedHeikenAshi] Strategy execution halted.
+✔ Phase 5 verified workflow: ModifiedHeikenAshi LIVE preserves target, SL, intended quantity and cooldown (3050.3032ms)
+[MarketDataService] Broker session restored (session 6d08a581-7526-4027-b2a4-1cb18a86893b)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:07.492Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:07 pm] [5minBreakout] Strategy execution halted.
+✔ Phase 5 verified workflow: 5minBreakout PAPER preserves target, SL, intended quantity and cooldown (32.7702ms)
+[MarketDataService] Broker session restored (session 88320c19-7284-4452-9ae5-94318b37a423)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:07.519Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:10 pm] [5minBreakout] Strategy execution halted.
+✔ Phase 5 verified workflow: 5minBreakout LIVE preserves target, SL, intended quantity and cooldown (3048.2384ms)
+[MarketDataService] Broker session restored (session bb4b62d1-c4d3-4627-a185-6efeae971604)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:10.568Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[10:30:10 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:10 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 Stop: actual background monitor exits PAPER held exposure after Stop (34.8408ms)
+[MarketDataService] Broker session restored (session 90694585-2e1d-4186-a680-aca1d9d42bb7)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:10.603Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:16 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 partial BUY: manual exit cancels remaining BUY and closes only verified filled quantity (6081.9809ms)
+[MarketDataService] Broker session restored (session 23ada9cd-1605-4869-b7c0-2177e8028c54)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:16.687Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[10:30:16 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 entry: missing uniqueness index fails closed before persistence or broker submission (19.5085ms)
+[MarketDataService] Broker session restored (session e1259559-9b10-42d7-b84e-eec84f4d95cf)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:16.705Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:30:16 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:17 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 submitted BUY: Stop keeps the eventual fill owned and monitored without enabling entries (1026.6324ms)
+[MarketDataService] Broker session restored (session 42125c22-8c8d-404e-9d84-2778eb32a732)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:17.730Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[OrderUpdateService] Order Update: d81ef3e8-5c59-4edd-a149-48e07bb7f2d0 -> Status: complete
+[OrderUpdateService] Order Update: d81ef3e8-5c59-4edd-a149-48e07bb7f2d0 -> Status: complete
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:19 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 real order feed: stale/foreign events are rejected and duplicate owned events reconcile REST evidence once (2064.1509ms)
+[MarketDataService] Broker session restored (session 1822ac29-a7e0-4fa1-8043-0bde05a53b91)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:19.795Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[10:30:19 pm] [HeikenAshi] Strategy execution halted.
+[10:30:19 pm] [HeikenAshi] Reversal exit signal detected on closed candle for HELD-CE
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:19 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 held candles: reversal after strike rotation and Stop exits exact held instrument through real plugin (32.0349ms)
+[MarketDataService] Broker session restored (session cf6009de-c5c2-468f-8a59-99651286c3bc)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:19.827Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[10:30:23 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:25 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 partial BUY: target monitoring continues while the remaining BUY is pending, including after Stop (6104.0922ms)
+[MarketDataService] Broker session restored (session a0eb3415-548d-4edf-ad01-02981acd1988)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:25.935Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:25 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 held history: PE warm-up is captured durably and cannot be replaced by rotated scanner history (31.3231ms)
+✔ Phase 5 request budget: frontend/query reads share one bounded account orderbook request while B remains independent (16.8619ms)
+✔ Phase 5 manual API compatibility: original attempt ID/request/response are preserved and a working manual order remains cancellable (1042.7402ms)
+[MarketDataService] Broker session restored (session abf468cd-1731-4f66-8c85-efe4512626aa)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:27.031Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:30:27 pm] [HeikenAshi] Strategy execution halted.
+[10:30:27 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 rejected BUY: no-fill terminal evidence clears pending runtime and preserves ordinary Stop behaviour (31.9128ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.558Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.564Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[StrategyEngine] Broker session restored
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+[MarketDataService] History ready account=bbbbbbbbbbbbbbbbbbbbbbbb scanner:NFO_77_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+✔ Phase 4 production: verified context survives real token/backfill/quote transport; forged ownership is denied (168.0754ms)
+[10:29:47 pm] [HeikenAshi] Strategy execution started on Node.js
+[10:29:47 pm] [HeikenAshi] Strategy execution started on Node.js
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.791Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.797Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+[MarketDataService] Candle subscription scanner:NFO_78_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:78
+[MarketDataService] History ready account=bbbbbbbbbbbbbbbbbbbbbbbb scanner:NFO_77_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+[MarketDataService] Candle subscription scanner:NFO_78_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:78
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_78_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+[MarketDataService] History ready account=bbbbbbbbbbbbbbbbbbbbbbbb scanner:NFO_78_FIVE_MINUTE candles=35 first=1791172800 last=1791183000
+[10:29:47 pm] [HeikenAshi] Loaded 35 previous trading-day candles for CE warm-up (2026-10-11)
+[10:29:47 pm] [HeikenAshi] Loaded 35 previous trading-day candles for CE warm-up (2026-10-11)
+[10:29:47 pm] [HeikenAshi] Loaded 35 previous trading-day candles for PE warm-up (2026-10-11)
+[10:29:47 pm] [HeikenAshi] [SCANNER HEARTBEAT] Active | CE: CLIENT-A-CE (Awaiting Ticks) | PE: CLIENT-A-PE (Awaiting Ticks) | Next Candle Close: 12s
+[10:29:47 pm] [HeikenAshi] Loaded 35 previous trading-day candles for PE warm-up (2026-10-11)
+[10:29:47 pm] [HeikenAshi] [SCANNER HEARTBEAT] Active | CE: CLIENT-B-CE (Awaiting Ticks) | PE: CLIENT-B-PE (Awaiting Ticks) | Next Candle Close: 12s
+[10:29:47 pm] [HeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:47 pm] [HeikenAshi] [CANDLE EVALUATION - CE CLIENT-A-CE] Time: 2:30:00 pm
+  EMA = 100.00
+  JMA = 100.00
+  Last Candle = O:100.00 H:100.00 L:100.00 C:100.00
+  Prev Candle = O:100.00 H:101.00 L:99.00 C:100.00
+  lastNoWick = true
+  prevNoWick = false
+  jmaGtEma = true
+  closeGtJma = false
+  lastGreen = false
+  prevGreen = false
+  Result: NO ENTRY
+  Reason:
+    prevNoWick = false (open - low = 1.0000, required <= 0.05)
+    lastGreen = false (close = 100.00, open = 100.00)
+    prevGreen = false (close = 100.00, open = 100.00)
+    closeGtJma = false (close = 100.00, JMA = 100.00)
+[10:29:47 pm] [HeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:47 pm] [HeikenAshi] [CANDLE EVALUATION - CE CLIENT-B-CE] Time: 2:30:00 pm
+  EMA = 100.00
+  JMA = 100.00
+  Last Candle = O:100.00 H:100.00 L:100.00 C:100.00
+  Prev Candle = O:100.00 H:101.00 L:99.00 C:100.00
+  lastNoWick = true
+  prevNoWick = false
+  jmaGtEma = true
+  closeGtJma = false
+  lastGreen = false
+  prevGreen = false
+  Result: NO ENTRY
+  Reason:
+    prevNoWick = false (open - low = 1.0000, required <= 0.05)
+    lastGreen = false (close = 100.00, open = 100.00)
+    prevGreen = false (close = 100.00, open = 100.00)
+    closeGtJma = false (close = 100.00, JMA = 100.00)
+[10:29:47 pm] [HeikenAshi] [CANDLE EVALUATION - CE CLIENT-A-CE] Time: 2:30:00 pm
+  EMA = 100.00
+  JMA = 100.00
+  Last Candle = O:100.00 H:100.00 L:100.00 C:100.00
+  Prev Candle = O:100.00 H:101.00 L:99.00 C:100.00
+  lastNoWick = true
+  prevNoWick = false
+  jmaGtEma = true
+  closeGtJma = false
+  lastGreen = false
+  prevGreen = false
+  Result: NO ENTRY
+  Reason:
+    prevNoWick = false (open - low = 1.0000, required <= 0.05)
+    lastGreen = false (close = 100.00, open = 100.00)
+    prevGreen = false (close = 100.00, open = 100.00)
+    closeGtJma = false (close = 100.00, JMA = 100.00)
+[10:29:48 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_78_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:78
+[10:29:48 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_78_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:78
+✔ Phase 4 production: cold simultaneous Starts register listeners before contract discovery and run real plugins outside request scope (386.2258ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.038Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+✔ Phase 4 production: pending token initialization is cancelled by unsubscribe/reset and cannot reopen a retired feed (36.4545ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.076Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 4 production: delayed candle backfill cannot restore a removed builder (44.7223ms)
+[MarketDataService] Broker session restored (session baaaed4a-004c-4ecb-8c48-3dd530a8ba0c)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.190Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[SmartStreamService] Smart Stream WebSocket connected
+[MarketDataService] Smart Stream connected. Monitoring consecutive ticks...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Feed cleanup failed: socket closed
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 4 production: retired-feed exit/Stop and failing socket cleanup clear runner state; protective fill releases held references (2537.4694ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.639Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[StrategyEngine] Broker session restored
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.652Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+[StrategyEngine] Broker session restored
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+✔ Phase 4 production: background health and subscribe share the per-account request guard (74.884ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.717Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.720Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+✔ Phase 4 production: real HTTP 429/503 and timeout back off only A; fallback instrument and bounded transport remain correct (109.413ms)
+✔ Phase 4: account/global quote budgets bound rate and concurrency without retaining idle accounts (0.8242ms)
+[10:29:50 pm] [HeikenAshi] Strategy execution started on Node.js
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[10:29:50 pm] [HeikenAshi] Strategy execution started on Node.js
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.862Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 4 production: cold Start fails closed on unavailable tokens, and Stop cancels delayed startup (53.0068ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.875Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.890Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+✔ Phase 4 production: old socket/candle callbacks and old cleanup cannot affect the replacement session (64.1579ms)
+✔ Phase 4 production: real quote transport enforces the account budget and A saturation leaves B operational (32.8598ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.982Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session session-CLIENT-B)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.985Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+✔ Phase 4 production: fallback transport timeout logs/backoffs A, releases its budget, and B keeps polling (5041.571ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:56.010Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+✔ Phase 4 production: immediate unsubscribe cancels a router reservation before database validation completes (7.3205ms)
+[MarketDataService] Broker session restored (session session-CLIENT-A)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:56.016Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_ONE_MINUTE candles=35 first=1791172800 last=1791183000
+✔ Phase 4 production: context-bound gap candles retain synchronous baseline delivery and historical candle semantics (10.0959ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[MarketDataService] Broker session restored (session f6e96751-2162-4406-9699-c3f9c9a83929)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.951Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session 4b483a4a-5a91-4ae0-918a-fba758419b16)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:47.969Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History unavailable account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE status=429; retry in 2000ms
+[MarketDataService] Candle subscription scanner:NFO_88_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:88
+[MarketDataService] History unavailable account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_88_FIVE_MINUTE status=429; retry in 2000ms
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=bbbbbbbbbbbbbbbbbbbbbbbb scanner:NFO_77_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+[10:29:48 pm] [HeikenAshi] Waiting for verified candle history/warm-up; new entries are paused.
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_88_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+[10:29:50 pm] [HeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:50 pm] [HeikenAshi] [CANDLE EVALUATION - CE CE] Time: 10:20:00 pm
+  EMA = 120.52
+  JMA = 128.34
+  Last Candle = O:127.50 H:130.00 L:127.50 C:129.50
+  Prev Candle = O:126.50 H:129.00 L:126.50 C:128.50
+  lastNoWick = true
+  prevNoWick = true
+  jmaGtEma = true
+  closeGtJma = true
+  lastGreen = true
+  prevGreen = true
+  Result: SIGNAL GENERATED (YES)
+  
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=2
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription scanner:NFO_88_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:88
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ real HTTP 429 seed recovery resumes scanner once without increasing subscriptions; B remains independent (2505.4803ms)
+[MarketDataService] Broker session restored (session 5f833c4c-ff76-4c3a-9ce9-afd65393824e)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.300Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[StrategyEngine] Broker session restored
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History unavailable account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE status=500; retry in 2000ms
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_88_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:88
+[MarketDataService] History unavailable account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_88_FIVE_MINUTE status=500; retry in 2000ms
+✔ unsubscribe and session reset cancel history retry without recreating feeds (2276.0195ms)
+[MarketDataService] Broker session restored (session d34693ff-df0d-4a7e-80b2-19ee7745bcfe)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:52.554Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+[MarketDataService] Candle subscription scanner:NFO_88_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:88
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_88_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+[HeikenAshi] Previous-day candle warm-up failed for CE 2026-10-11: status=429
+[10:29:52 pm] [HeikenAshi] Waiting for verified candle history/warm-up; new entries are paused.
+[10:29:52 pm] [HeikenAshi] Loaded 30 previous trading-day candles for CE warm-up (2026-10-11)
+[10:29:52 pm] [HeikenAshi] Verified candle history is ready; scanner evaluation resumed.
+[10:29:52 pm] [HeikenAshi] [CANDLE EVALUATION - CE CE] Time: 10:20:00 pm
+  EMA = 121.52
+  JMA = 128.34
+  Last Candle = O:127.50 H:130.00 L:127.50 C:129.50
+  Prev Candle = O:126.50 H:129.00 L:126.50 C:128.50
+  lastNoWick = true
+  prevNoWick = true
+  jmaGtEma = true
+  closeGtJma = true
+  lastGreen = true
+  prevGreen = true
+  Result: SIGNAL GENERATED (YES)
+  
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=2
+[10:29:52 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription scanner:NFO_88_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:88
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ failed warm-up pauses entries, does not substitute older dates, and recovers the original date (100.1213ms)
+[MarketDataService] Broker session restored (session 2a90d83f-5bfd-434b-baf0-9ce8e2857bf5)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:52.635Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=30 first=1791815100 last=1791823800
+✔ concurrent history repair joins one request and preserves live closed bars (24.6754ms)
+✔ trade search regex escaping preserves special characters literally (1.5164ms)
+✔ trade query pagination accepts current defaults and rejects unsafe bounds (1.0366ms)
+✔ date filter accepts real ISO dates only (2.4081ms)
+✔ current strategy UI payloads remain valid (1.3701ms)
+✔ strategy validation rejects unknown fields and truthy non-boolean live consent (3.3514ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ search rejects arrays, unsupported exchanges, short input and oversized instrument identities (3.5904ms)
+✔ chart admission is bounded per account and release is idempotent (0.6134ms)
+[MarketDataService] Broker session restored (session 323c2322-56f7-43f1-87b5-4ffbb68d05e6)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.214Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa scanner:NFO_77_FIVE_MINUTE candles=4 first=1791822900 last=1791823800
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa chart:NFO_77_FIVE_MINUTE candles=4 first=1791822900 last=1791823800
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ chart subscription shares broker token references without affecting strategy candles; stale/fallback states are honest (214.7672ms)
+[MarketDataService] Broker session restored (session 60a72129-ca55-4604-903b-f05fa6d068cb)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.288Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History ready account=aaaaaaaaaaaaaaaaaaaaaaaa chart:NFO_77_FIVE_MINUTE candles=4 first=1791822900 last=1791823800
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[APIError] requestId=unavailable method=undefined type=Error code=none
+    at exports.live (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\controllers\instrumentSearchController.js:29:145)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TestContext.<anonymous> (C:\Users\Manish gowda\OneDrive\Desktop\algo-trading\Angel-one-trading\backend\tests\instrumentSearch.test.js:84:3)
+    at async Test.run (node:internal/test_runner/test:1113:7)
+    at async Test.processPendingSubtests (node:internal/test_runner/test:788:7)
+✔ SSE publishes verified selection, disconnect releases its reference, and foreign selection cannot initialize a feed (82.4347ms)
+[MarketDataService] Broker session restored (session 9bc52f2f-ff01-4a52-8442-b27cad2662ac)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:48.334Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[StrategyEngine] Broker session restored
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription chart:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ disconnect while history is in flight cannot leak a chart subscription (31.4289ms)
+[MarketDataService] Candle subscription scanner:NFO_12345_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:12345
+[MarketDataService] Candle subscription scanner:NFO_12345_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:12345
+[MarketDataService] History empty; retry scheduled account=account-a scanner:NFO_12345_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] History empty; retry scheduled account=account-b scanner:NFO_12345_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] History empty; retry scheduled account=account-c scanner:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Candle subscription scanner:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription scanner:NFO_88_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:88
+[MarketDataService] History empty; retry scheduled account=account-d scanner:NFO_88_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription scanner:NFO_88_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:88
+[MarketDataService] History empty; retry scheduled account=account-e scanner:NFO_88_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] Account account-d quote fallback failed (429); backing off.
+[MarketDataService] Candle subscription scanner:NFO_89_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:89
+[MarketDataService] History empty; retry scheduled account=account-k scanner:NFO_89_ONE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription scanner:NFO_99_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:99
+[MarketDataService] History empty; retry scheduled account=account-f scanner:NFO_99_ONE_MINUTE candles=0 first=none last=none
+✔ Phase 4: identical tokens are isolated by account and exchange key (9.3373ms)
+✔ Phase 4: scanner and held-position references unsubscribe independently (1.5322ms)
+✔ Phase 4: fallback is bounded, uses the account instrument, and does not leak a rate limit (2.7771ms)
+✔ Phase 4: fallback polling does not overlap for one account (1.671ms)
+✔ Phase 4: stale session ticks and wrong-account order events are rejected (2.7955ms)
+✔ Phase 4: synchronous strategy LTP reads route by verified account context (1.1082ms)
+✔ Phase 4: reconnect replaces only the old account session feed (2.587ms)
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_LOST","at":"2026-10-12T16:59:47.610Z","details":{"reason":"no ownership context","accountLabel":"unscoped","accountUserId":null,"brokerAccountId":null}}
+[URGENT BROKER ALERT] {"event":"OPEN_POSITION_UNPROTECTED","at":"2026-10-12T16:59:47.614Z","details":{"strategyName":"HeikenAshi","reason":"test","accountLabel":"account-ount-a","accountUserId":"user-a","brokerAccountId":"account-a"}}
+[URGENT BROKER ALERT] {"event":"SYSTEM_HEALTH_DEGRADED","at":"2026-10-12T16:59:48.892Z","details":{"reason":"Python status: timeout; database ready","accountLabel":"account-ount-a","accountUserId":"user-a","brokerAccountId":"account-a"}}
+[URGENT BROKER ALERT] {"event":"SYSTEM_HEALTH_DEGRADED","at":"2026-10-12T16:59:48.892Z","details":{"reason":"Python status: timeout; database ready","accountLabel":"account-ount-b","accountUserId":"user-b","brokerAccountId":"account-b"}}
+[URGENT BROKER ALERT] {"event":"SYSTEM_HEALTH_RESTORED","at":"2026-10-12T16:59:48.893Z","details":{"reason":"Node, Python, and MongoDB checks are healthy","accountLabel":"account-ount-a","accountUserId":"user-a","brokerAccountId":"account-a"}}
+[URGENT BROKER ALERT] {"event":"SYSTEM_HEALTH_RESTORED","at":"2026-10-12T16:59:48.893Z","details":{"reason":"Node, Python, and MongoDB checks are healthy","accountLabel":"account-ount-b","accountUserId":"user-b","brokerAccountId":"account-b"}}
+✔ urgent notifications require explicit verified account scope and never use a global active account (16.5415ms)
+✔ health degradation and restoration notifications are sent only to explicitly connected account scopes (1281.1955ms)
+✔ Mongoose findOneAndUpdate rejects closing a position that still has exposure (12.9468ms)
+✔ Mongoose findOneAndUpdate rejects FILLED order intents with missing fills (5.0794ms)
+✔ Mongoose query and document writes reject nested execution snapshot changes (29.6331ms)
+✔ position deletion refuses open exposure and refuses any linked order intent (7.261ms)
+✔ position deletion of flat, unlinked records is version and intent-revision guarded (9.0062ms)
+✔ same-status position metadata updates pass through Mongoose with owner and CAS filters (6.89ms)
+✔ entry intent can be bound once to an owned resulting position and trade (8.3306ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[MarketDataService] Broker session restored (session 474e0b00-f81a-4641-aea0-5bad44171c23)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:49.782Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[HeikenAshi] Monitor error: Missing, stale or future exchange quote timestamp; position monitoring is degraded.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Held monitor rejects missing exchange timestamp and resumes on fresh data (489.743ms)
+[MarketDataService] Broker session restored (session d022e13c-8c46-47a6-84c9-36b076febc98)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.159Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[HeikenAshi] Monitor error: Missing, stale or future exchange quote timestamp; position monitoring is degraded.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Held monitor rejects stale exchange timestamp and resumes on fresh data (265.2962ms)
+[MarketDataService] Broker session restored (session 4ce7fe80-7034-4b62-ae95-c431223e1893)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.404Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[HeikenAshi] Monitor error: Missing, stale or future exchange quote timestamp; position monitoring is degraded.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Held monitor rejects future exchange timestamp and resumes on fresh data (273.6233ms)
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+✔ Partial PAPER exit preserves next entry configuration (158.0975ms)
+[MarketDataService] Broker session restored (session 17be50bc-e058-47d8-984d-1b347b7f1113)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.915Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:58 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Partial LIVE exit preserves next entry configuration (8141.7062ms)
+[MarketDataService] Broker session restored (session 8cc4d2a3-3c31-4feb-ab99-ac4963933919)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:58.958Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:58 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: durable PAPER entry/exit preserves quantities, thresholds and cooldown without broker mutations (27.4119ms)
+[MarketDataService] Broker session restored (session 6ff36c4a-266f-4f64-83d8-e5a55290d5b4)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:58.985Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:02 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: double entry, manual-v-auto exit and double exit submit only one BUY and one SELL (3051.1889ms)
+[MarketDataService] Broker session restored (session 05caeef6-629a-442f-a5c0-af063cbc1482)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:02.038Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:30:02 pm] [HeikenAshi] Strategy execution halted.
+[10:30:02 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: unknown BUY blocks another BUY and never synthesizes a position from similar broker orders (22.322ms)
+[MarketDataService] Broker session restored (session 3e5f5e16-dc7e-4134-92da-40bb0278d6a9)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:02.058Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:04 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 production: unknown SELL cannot cause duplicate sale or false close (2053.4119ms)
+[MarketDataService] Broker session restored (session c6ca3158-b90c-402d-928a-c26c6c48e87e)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:04.113Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:10 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 production: partial BUY remains durable and later fills resize only held exposure (6092.8586ms)
+[MarketDataService] Broker session restored (session f67ff64c-65e4-4ce5-9841-e5b705049806)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:10.212Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:14 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: partial SELL, duplicate and late events cannot double count fills (4117.7766ms)
+[MarketDataService] Broker session restored (session 8d85f0ae-65d9-4a87-9333-beb514b21b5c)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:14.340Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:15 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 5 production: protection rejection leaves exposure open and visible (1052.9154ms)
+[MarketDataService] Broker session restored (session 4eb4c93c-d1d7-45ea-9bf2-ac9a7e23d627)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:15.381Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:17 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: protective cancel/fill race consumes fill evidence instead of submitting a second SELL (2065.4363ms)
+[MarketDataService] Broker session restored (session 41c247f1-f8f7-42a6-88fd-9f46c05d5d7c)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:17.450Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:20 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: strike rotation cannot change the persisted manual exit instrument (3065.3107ms)
+[MarketDataService] Broker session restored (session c46a9d82-3afd-4ac1-81bb-03db6bbb55d5)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:20.507Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[URGENT BROKER ALERT] {"event":"PERSISTENCE_FAILURE","at":"2026-10-12T17:00:20.523Z","details":{"strategyName":"HeikenAshi","state":"RECONCILIATION_REQUIRED","reason":"Durable execution state could not be confirmed; broker mutations remain fenced.","accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"PERSISTENCE_FAILURE"}
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:23 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: intent persistence failure prevents mutation; completion persistence failure retains pending ownership (3087.9441ms)
+[MarketDataService] Broker session restored (session 94f33322-2d33-4a78-98c4-17558e66493c)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:23.596Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Broker session restored (session fe2c60da-11d4-423c-ad0a-55fa55f16248)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:23.597Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] History empty; retry scheduled account=bbbbbbbbbbbbbbbbbbbbbbbb position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[10:30:24 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 5 production: Stop retains held monitoring and settings while concurrent users cannot interfere (3079.6115ms)
+[dotenv@17.3.1] injecting env (19) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+{"type":"trading_audit","event":"order_submit","at":"2026-10-12T16:59:50.409Z","userId":"user-a","brokerAccountId":"account-a","sessionGeneration":4,"attributes":{"orderType":"MARKET"}}
+✔ Phase 8 production config fails closed on weak internal auth, public HTTP and insecure origins (14.2818ms)
+✔ Phase 8 global HTTP admission is bounded and releases capacity once per response (2.8502ms)
+✔ Phase 8 Express app admits requests before JSON body parsing (659.9783ms)
+✔ Phase 8 audit redacts credential-shaped data and retains explicit tenant identity (2.06ms)
+✔ Credential redaction covers JSON, quoted whitespace, escaped values and complete auth schemes (4.0276ms)
+✔ Phase 8 alert transport failure never logs webhook URL or transport message (7.9339ms)
+[MarketDataService] Broker session restored (session 931c8d43-07aa-419a-a7b5-86663cada13a)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:50.565Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=2
+{"type":"runtime_metrics","openPositions":2,"unresolvedIntents":0,"activeAlerts":1,"infrastructure":"node-running","brokerDegradedAccounts":0,"at":"2026-10-12T16:59:50.788Z","counters":{"http_global_saturated_total":1,"audit_events_total":1,"python_gateway_requests_total":2}}
+{"type":"runtime_metrics","openPositions":2,"unresolvedIntents":0,"activeAlerts":2,"infrastructure":"node-running","brokerDegradedAccounts":0,"at":"2026-10-12T16:59:50.792Z","counters":{"http_global_saturated_total":1,"audit_events_total":1,"python_gateway_requests_total":2}}
+[MarketDataService] Broker stream 2:77: refCount=3
+[10:29:50 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:50 pm] [ModifiedHeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+{"type":"runtime_metrics","openPositions":1,"unresolvedIntents":1,"activeAlerts":5,"infrastructure":"node-running","brokerDegradedAccounts":1,"at":"1970-01-01T02:46:40.000Z","counters":{"http_global_saturated_total":1,"audit_events_total":1,"python_gateway_requests_total":2}}
+{"type":"runtime_metrics","openPositions":1,"unresolvedIntents":1,"activeAlerts":5,"infrastructure":"node-running","brokerDegradedAccounts":1,"at":"1970-01-01T02:46:40.000Z","counters":{"http_global_saturated_total":1,"audit_events_total":1,"python_gateway_requests_total":2}}
+[OperationalWatchdog] persistence/scan failure: database unavailable
+{"type":"trading_audit","event":"broker_account_offboarded","at":"2026-10-12T16:59:50.863Z","requestId":"operator","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":1,"attributes":{"requestId":"operator"}}
+✔ Watchdog attributes quote health to each durable position on the same account (415.0048ms)
+{"type":"trading_audit","event":"broker_account_offboarded","at":"2026-10-12T16:59:50.881Z","requestId":"operator","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":1,"attributes":{"requestId":"operator"}}
+✔ Phase 8 watchdog scopes exposure, stale-quote, unresolved-intent, broker and recovery alerts per account (5.5804ms)
+{"type":"trading_audit","event":"broker_account_offboarded","at":"2026-10-12T16:59:50.894Z","requestId":"operator","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","sessionGeneration":1,"attributes":{"requestId":"operator"}}
+{"type":"trading_audit","event":"broker_account_offboarded","at":"2026-10-12T16:59:50.897Z","requestId":"operator","userId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa","attributes":{"requestId":"operator"}}
+✔ Phase 8 watchdog reports DB scan failure to active accounts without global notification fallback (2.7028ms)
+✔ Phase 8 watchdog redacts persistence failures and continues account alert fanout after notifier throws (2.5286ms)
+✔ Offboarding checks real Mongoose Position account links (16.566ms)
+✔ Offboarding checks real Mongoose OrderIntent account links (17.4592ms)
+✔ Offboarding checks real Mongoose Trade account links (12.3199ms)
+✔ Phase 8 account offboarding retains records and refuses unresolved exposure (2.1267ms)
+{"type":"alert_delivery_failed","event":"UNPROTECTED_EXPOSURE","userId":"u1","brokerAccountId":"a1","reason":"unspecified"}
+{"type":"runtime_metrics","openPositions":1,"unresolvedIntents":0,"activeAlerts":0,"infrastructure":"node-running","brokerDegradedAccounts":0,"at":"1970-01-01T00:00:10.000Z","counters":{"http_global_saturated_total":1,"audit_events_total":5,"python_gateway_requests_total":2,"alert_delivery_failures_total":2}}
+{"type":"runtime_metrics","openPositions":1,"unresolvedIntents":0,"activeAlerts":1,"infrastructure":"node-running","brokerDegradedAccounts":0,"at":"1970-01-01T00:00:10.000Z","counters":{"http_global_saturated_total":1,"audit_events_total":5,"python_gateway_requests_total":2,"alert_delivery_failures_total":2}}
+{"type":"runtime_metrics","openPositions":1,"unresolvedIntents":0,"activeAlerts":0,"infrastructure":"node-running","brokerDegradedAccounts":0,"at":"1970-01-01T00:00:10.000Z","counters":{"http_global_saturated_total":1,"audit_events_total":5,"python_gateway_requests_total":2,"alert_delivery_failures_total":2}}
+✔ Phase 8 graceful drain keeps position monitoring alive for the handoff window after HTTP closes (63.5739ms)
+✔ Phase 8 shutdown ownership handoff releases only the local lease generation after monitors quiesce (13.9005ms)
+✔ Phase 8 watchdog retries a critical alert after failed delivery while condition remains active (8.8163ms)
+✔ Phase 8 watchdog does not report another replica owner quote as stale during rolling deployment (1.2041ms)
+✔ Phase 8 shutdown handling retains an exposed legacy monitor while stopping scanner timers (1.6253ms)
+[MarketDataService] Broker session restored (session fc7d3b51-40d5-46fe-a44d-51e8e42e3650)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:51.006Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[10:29:51 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 8 position persistence failure emits an explicit account-scoped alert and retains degraded state (20.6383ms)
+✔ startup warm-up calls the public health endpoint once and accepts a delayed healthy response (46.9781ms)
+✔ startup warm-up records a non-success HTTP response without retrying (1.1037ms)
+✔ startup warm-up records a timeout and does not retry (30.6315ms)
+[RateLimit] route=/limited userId=user-a brokerAccountId=unresolved retryAfterSeconds=60
+✔ authenticated limiter returns 429 at the configured user limit and isolates users (165.2208ms)
+✔ API security headers are present without changing JSON response behavior (143.9134ms)
+✔ production HSTS is emitted only when the trusted proxy reports HTTPS (43.0718ms)
+✔ mismatched provider modes cannot silently serve fixture data in live mode (2.9029ms)
+✔ fixture mode uses only the private NIFTY endpoint and never forwards an Upstox token (0.6838ms)
+✔ live mode forwards the user Upstox token to Python without putting it in the body (4.4483ms)
+✔ live mode refuses a scan without an Upstox token and service failures are sanitized (3.8483ms)
+✔ production live mode refuses to send an Upstox token over public HTTP (0.7183ms)
+✔ production live mode permits HTTP only when the private network is explicitly enabled (0.6158ms)
+✔ underlying calls use the private whitelist pattern and sanitize the symbol path (1.3639ms)
+✔ multi-underlying scan uses only its fixed private read-only Python route (0.7451ms)
+✔ concurrent broker session checks share one Python request (11.383ms)
+✔ multi-account background health polling checks each account and scopes transition events (21.5464ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+[MarketDataService] Broker session restored (session e9ee253d-a6d1-4d87-9583-f5bf8812f715)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:51.651Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:29:51 pm] [HeikenAshi] Reversal exit signal detected on closed candle for HELD-CE
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:51 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:51 pm] [HeikenAshi] Strategy execution halted.
+✔ Recovered held candles execute the original reversal exit without starting entries (361.0595ms)
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: An order without a durable held-position link remains unresolved.
+[10:29:52 pm] [HeikenAshi] Strategy execution halted.
+[10:29:52 pm] [HeikenAshi] Strategy execution halted.
+✔ Recovery checks every standalone intent when second is open (1074.0694ms)
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+✔ Recovery checks every standalone intent when second is cancelled (1057.9442ms)
+[MarketDataService] Broker session restored (session 70d46546-7ba3-4eed-97b0-0391f5014f5a)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:54.060Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 restart: persisted held position recovers its exact snapshot and monitoring without restarting entries (39.0294ms)
+[MarketDataService] Broker session restored (session a288bf8d-1a5c-4dde-a60e-ef55c032d213)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:54.086Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:29:54 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 ready-feed recovery: restored position executes its price monitor without a new session-restored event (99.2398ms)
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: An order without a durable held-position link remains unresolved.
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: An order without a durable held-position link remains unresolved.
+[10:29:55 pm] [HeikenAshi] Strategy execution halted.
+[10:29:55 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 standalone intent recovery: unresolved manual intent is reconciled before account becomes READY (1040.156ms)
+[MarketDataService] Broker session restored (session eeea1864-4ac4-43af-8bb0-c09702ca9f73)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T16:59:55.240Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:29:56 pm] [HeikenAshi] Position reconciliation failed: Execution manager was suspended for recovery.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: Broker orderbook unavailable.
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:00 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:00 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 degraded recovery admission: manual broker request completes without reacquiring its held execution lock (5074.8042ms)
+[MarketDataService] Broker session restored (session 17c88a9b-d9cb-4913-8402-1ce5a400eb7a)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:00.307Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:30:00 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:00 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 snapshot authority: later reconciliation retains persisted stop, target and trailing thresholds (31.5245ms)
+✔ Phase 6 lease renewal: renewed expiry replaces the cached token (4.9935ms)
+[MarketDataService] Broker session restored (session 4b86582b-9f62-4979-b781-85be5d069d13)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:00.356Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:01 pm] [HeikenAshi] Position reconciliation failed: Execution manager was suspended for recovery.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:30:02 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:02 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 restart after protective order: fresh broker evidence restores the same protection without duplicate orders (2047.8042ms)
+[MarketDataService] Broker session restored (session 00cabaad-de26-4adc-8977-05158530d2cb)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:02.417Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: Recovered position is RECONCILIATION_REQUIRED; broker execution authority remains withheld until reconciliation and protection are verified.
+[10:30:04 pm] [ModifiedHeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:04 pm] [ModifiedHeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 restart during trailing protection replacement: unresolved replacement is fenced without duplicate stops (2072.3322ms)
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: BUY has no verified fill yet.
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: BUY has no verified fill yet.
+[10:30:05 pm] [HeikenAshi] Strategy execution halted.
+[10:30:05 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 restart before BUY transport: durable PREPARED intent blocks a duplicate entry (1031.8564ms)
+[MarketDataService] Broker session restored (session 4de88d26-2da9-461a-8d68-1c719b748db4)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:09.542Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:30:11 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:11 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 restart after BUY submit: recovered broker fill materializes once and does not resend BUY (6085.4563ms)
+[URGENT BROKER ALERT] {"event":"PERSISTENCE_FAILURE","at":"2026-10-12T17:00:21.570Z","details":{"strategyName":"HeikenAshi","state":"RECONCILIATION_REQUIRED","reason":"Durable execution state could not be confirmed; broker mutations remain fenced.","accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"PERSISTENCE_FAILURE"}
+[10:30:21 pm] [HeikenAshi] Position reconciliation failed: Operation `positions.findOne()` buffering timed out after 10000ms
+[MarketDataService] Broker session restored (session 821d11d8-e524-4990-a1ad-b7172397c235)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:25.672Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: Recovered position is RECONCILIATION_REQUIRED; broker execution authority remains withheld until reconciliation and protection are verified.
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 restart after partial BUY fill: preserves filled and pending quantities and blocks duplicate entry (15133.2008ms)
+✔ Phase 6 ownership: an expired or superseded owner is fenced while another user retains independent ownership (4.9858ms)
+[MarketDataService] Broker session restored (session 770217f4-07e7-48ec-a8af-a953f9272873)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:26.722Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 persistence fence: takeover advances durable position generation and rejects an old loaded document (27.6117ms)
+✔ Phase 6 database outage: lease renewal failure withholds subsequent broker ownership checks (3.8995ms)
+✔ Phase 6 database restoration: broker execution remains gated until a fresh recovery scan completes (7.0019ms)
+[10:30:26 pm] [HeikenAshi] Position reconciliation failed: fetch failed
+[MarketDataService] Broker session restored (session 77b1ecc9-e343-462d-a18b-031ea8a6de4b)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:26.774Z","details":{"accountLabel":"account-bbbbbb","accountUserId":"222222222222222222222222","brokerAccountId":"bbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Broker session restored (session 4a8f9bdf-de1d-4e9b-812d-231f747fd8ed)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:26.775Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[StartupRecovery] Account bbbbbbbbbbbbbbbbbbbbbbbb reconciled 1 strategy manager(s); entries remain stopped.
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:26 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 two-user recovery: each account restores only its own position and keeps scanner stopped (55.4577ms)
+[MarketDataService] Broker session restored (session 93173035-b362-4b09-b0c1-ee9888f0bcf6)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:26.821Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:27 pm] [HeikenAshi] Position reconciliation failed: Execution manager was suspended for recovery.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: Broker orderbook unavailable.
+[10:30:28 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[10:30:28 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+✔ Phase 6 recovery fail-closed: unavailable broker evidence blocks account start and does not affect another account (2042.3652ms)
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa recovery withheld: Persisted position snapshot is incomplete; recovery will not guess instrument, mode, quantity, or risk thresholds.
+[10:30:28 pm] [HeikenAshi] Strategy execution halted.
+[10:30:28 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 recovery fail-closed: incomplete persisted risk snapshot is never reconstructed from defaults (18.8027ms)
+[10:30:28 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 late callback fence: a suspended manager cannot reacquire execution after recovery begins (20.1884ms)
+[MarketDataService] Broker session restored (session c330a1c7-06b5-49e3-8c3d-d856da5195ea)
+[StrategyEngine] Broker session restored
+[URGENT BROKER ALERT] {"event":"BROKER_SESSION_RESTORED","at":"2026-10-12T17:00:28.908Z","details":{"accountLabel":"account-aaaaaa","accountUserId":"111111111111111111111111","brokerAccountId":"aaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"type":"alert_delivery_unconfigured","event":"BROKER_SESSION_RESTORED"}
+[MarketDataService] Smart Stream disconnected. Starting 10s timeout for REST fallback...
+[SmartStreamService] Connecting to Smart Stream 2.0...
+[OrderUpdateService] Connecting to Order Update WebSocket...
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=1
+[MarketDataService] Broker stream subscribe 2:77
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: refCount=1
+[MarketDataService] History empty; retry scheduled account=aaaaaaaaaaaaaaaaaaaaaaaa position:NFO_77_FIVE_MINUTE candles=0 first=none last=none
+[MarketDataService] Broker stream 2:77: refCount=2
+[MarketDataService] Candle subscription position:NFO_77_FIVE_MINUTE: removed
+[MarketDataService] Broker stream 2:77: refCount=1
+[StartupRecovery] Account aaaaaaaaaaaaaaaaaaaaaaaa reconciled 1 strategy manager(s); entries remain stopped.
+[10:30:32 pm] [HeikenAshi] Strategy execution halted.
+[MarketDataService] Candle subscription position:NFO_77_ONE_MINUTE: removed
+[MarketDataService] Broker stream unsubscribe 2:77
+[10:30:32 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 restart during exit: recovered fill evidence closes once and never resubmits SELL (4067.2478ms)
+[10:30:32 pm] [HeikenAshi] Strategy execution halted.
+✔ Phase 6 session expiry: an unresolved account waits for its own reconnect while another account remains usable (16.4579ms)
+[StartupRecovery] Global execution gate: 1 unresolved record(s) lack verified user/account ownership; operator reconciliation is required.
+✔ Phase 6 ownership quarantine: unresolved records without verified account links block adoption by every user (3.1972ms)
+✔ system health reports ready only when Python and MongoDB are both healthy (3.0908ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ trade deletion only removes the authenticated owner’s closed, inactive trade (3.9786ms)
+✔ trade deletion refuses malformed IDs, unclosed positions, active states, and active runner records (1.3789ms)
+✔ trade deletion returns not found for another owner and refuses a changed database state (1.1065ms)
+[StrategyRegistry] Initializing startup strategy plugin discovery...
+[StrategyRegistry] Registered Strategy Plugin: 5 Min Premium Range Breakout Strategy (id: 5minBreakout, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Heiken Ashi Trend Strategy (id: HeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Registered Strategy Plugin: Modified Heiken Ashi Strategy (id: ModifiedHeikenAshi, engineVersion: 1.0.0)
+[StrategyRegistry] Successfully loaded 3 strategy plugins.
+✔ authenticated User A cannot read or update User B trade by supplying its known trade ID (2.7341ms)
+[StrategyEngine] Broker session lost: fixture session loss
+[10:29:52 pm] [HeikenAshi] New candle detected: 22:29:52.425
+[10:29:52 pm] [HeikenAshi] Signal generated: 22:29:52.425
+[10:29:52 pm] [HeikenAshi] BUY request sent: 22:29:52.441
+[10:29:52 pm] [HeikenAshi] Broker acknowledged: 22:29:52.441
+[10:29:52 pm] [HeikenAshi] Order completed: 22:29:52.441
+[10:29:52 pm] [HeikenAshi] Execution confirmed: 22:29:52.441
+[10:29:52 pm] [HeikenAshi] Total execution latency: 16 ms
+[10:29:52 pm] [HeikenAshi] ENTRY NIFTY-OPT @ ₹100
+[10:29:52 pm] [HeikenAshi] Database update complete: 22:29:52.442 (DB write delay: 0ms)
+[10:29:52 pm] [HeikenAshi] EXIT NIFTY-OPT @ ₹70 (SL)
+[10:29:52 pm] [HeikenAshi] Entering cooldown for 4 min
+[10:29:52 pm] [HeikenAshi] New candle detected: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] Signal generated: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] BUY request sent: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] Broker acknowledged: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] Order completed: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] Execution confirmed: 22:29:52.443
+[10:29:52 pm] [HeikenAshi] Total execution latency: 0 ms
+[10:29:52 pm] [HeikenAshi] ENTRY NIFTY-OPT @ ₹100
+[10:29:52 pm] [HeikenAshi] Database update complete: 22:29:52.443 (DB write delay: 0ms)
+[10:29:52 pm] [HeikenAshi] EXIT NIFTY-OPT @ ₹120 (Target)
+[10:29:52 pm] [HeikenAshi] Entering cooldown for 2 min
+[10:29:52 pm] [ModifiedHeikenAshi] New candle detected: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] Signal generated: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] BUY request sent: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] Broker acknowledged: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] Order completed: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] Execution confirmed: 22:29:52.444
+[10:29:52 pm] [ModifiedHeikenAshi] Total execution latency: 0 ms
+[10:29:52 pm] [ModifiedHeikenAshi] ENTRY NIFTY-OPT @ ₹100
+[10:29:52 pm] [ModifiedHeikenAshi] Database update complete: 22:29:52.444 (DB write delay: 0ms)
+[10:29:52 pm] [ModifiedHeikenAshi] Trailed SL up to ₹90
+[10:29:52 pm] [ModifiedHeikenAshi] EXIT NIFTY-OPT @ ₹90 (Trailing SL)
+[10:29:52 pm] [ModifiedHeikenAshi] Entering cooldown for 2 min
+[10:29:52 pm] [5minBreakout] New candle detected: 22:29:52.444
+[10:29:52 pm] [5minBreakout] Signal generated: 22:29:52.444
+[10:29:52 pm] [5minBreakout] BUY request sent: 22:29:52.444
+[10:29:52 pm] [5minBreakout] Broker acknowledged: 22:29:52.444
+[10:29:52 pm] [5minBreakout] Order completed: 22:29:52.444
+[10:29:52 pm] [5minBreakout] Execution confirmed: 22:29:52.444
+[10:29:52 pm] [5minBreakout] Total execution latency: 0 ms
+[10:29:52 pm] [5minBreakout] ENTRY NIFTY-OPT @ ₹100
+[10:29:52 pm] [5minBreakout] Database update complete: 22:29:52.444 (DB write delay: 0ms)
+[10:29:52 pm] [5minBreakout] EXIT NIFTY-OPT @ ₹120 (Target)
+[10:29:52 pm] [5minBreakout] Entering cooldown for 1 min
+[10:29:52 pm] [HeikenAshi] New candle detected: 22:29:52.444
+[10:29:52 pm] [HeikenAshi] Signal generated: 22:29:52.444
+[10:29:52 pm] [HeikenAshi] BUY request sent: 22:29:52.444
+[10:29:52 pm] [HeikenAshi] Broker acknowledged: 22:29:52.444 (API HTTP delay: 0ms)
+✔ baseline fixture is tied to the reviewed code revision and known strategy parameters (1.2427ms)
+✔ Heiken Ashi plugins characterize current bullish entry and bearish reversal rules (9.2093ms)
+✔ Heiken Ashi signal rejects insufficient data and reports failed conditions (0.321ms)
+✔ breakout helper preserves close-only breakout, range validity, and stop buffer rules (1.7134ms)
+✔ breakout plugin emits the current entry, SL, target, and duplicate-candle outputs (1.8598ms)
+✔ strategy routes preserve existing authenticated API paths and methods (0.6103ms)
+✔ active broker sessions remain isolated by user and account (1.57ms)
+[10:29:52 pm] [HeikenAshi] Order completed: 22:29:52.448
+[10:29:52 pm] [HeikenAshi] Execution confirmed: 22:29:52.448
+[10:29:52 pm] [HeikenAshi] Total execution latency: 4 ms
+[10:29:52 pm] [HeikenAshi] ENTRY NIFTY-OPT @ ₹104
+[10:29:52 pm] [HeikenAshi] Database update complete: 22:29:52.449 (DB write delay: 0ms)
+[HeikenAshi] WS order confirmation timeout (5s) for sell-6. Checking orderbook fallback...
+[10:29:52 pm] [HeikenAshi] EXIT NIFTY-OPT @ ₹130 (Target)
+[10:29:52 pm] [HeikenAshi] Entering cooldown for 2 min
+✔ runner executes PAPER/LIVE entry and SL/target/trailing exits with the current recorded thresholds (42.5582ms)
+✔ OAuth state is user-bound, single-use and authorization URL uses the registered callback (2.9368ms)
+✔ token exchange sends standard form body and stores token only for its app user (1.3653ms)
+✔ provider errors remain actionable without returning raw provider payloads (1.1227ms)
+✔ OAuth fails closed when server configuration is absent and expired sessions are removed (2.3228ms)
+ℹ tests 222
+ℹ suites 0
+ℹ pass 222
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48877.9422

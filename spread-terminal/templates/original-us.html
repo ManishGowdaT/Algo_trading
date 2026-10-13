@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0B0F17]">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spread Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      canvas: '#0B0F17', panel: '#131A26', hairline: '#1E293B',
+      ink: '#E2E8F0', muted: '#94A3B8', dim: '#64748B',
+      accent: '#67E8F9', pos: '#34D399', neg: '#FB7185', warn: '#FBBF24',
+    },
+    fontFamily: {
+      disp: ['"Space Grotesk"', 'sans-serif'],
+      mono: ['"IBM Plex Mono"', 'monospace'],
+    },
+  }}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  body { font-feature-settings: "tnum"; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+  input[type=range] { accent-color: #67E8F9; }
+  .tooltip-panel { display: none; }
+  .has-tooltip:hover .tooltip-panel, .has-tooltip:focus-within .tooltip-panel { display: block; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+
+<body class="bg-canvas text-ink font-disp min-h-screen" x-data="app()" x-init="init()">
+
+<!-- ══════════ TOP BAR ══════════ -->
+<header class="border-b border-hairline bg-panel/60 backdrop-blur sticky top-0 z-30">
+  <div class="px-5 py-3 flex flex-wrap items-center gap-x-8 gap-y-2">
+    <div class="flex items-baseline gap-3">
+      <h1 class="text-lg font-bold tracking-tight">SPREAD<span class="text-accent">TERMINAL</span></h1>
+      <span class="text-[11px] text-dim font-mono uppercase">5-layer credit spread screen · local</span>
+    </div>
+
+    <!-- scan stats -->
+    <div class="flex items-center gap-5 font-mono text-xs text-muted">
+      <div><span class="text-dim">tickers</span> <span class="text-ink" x-text="lastScan ? lastScan.tickers_ok : '—'"></span></div>
+      <div><span class="text-dim">spreads</span> <span class="text-ink" x-text="lastScan ? lastScan.candidates.length : '—'"></span></div>
+      <div><span class="text-dim">elapsed</span> <span class="text-ink" x-text="lastScan ? lastScan.elapsed + 's' : '—'"></span></div>
+      <div x-show="lastScan && lastScan.tickers_failed" class="text-neg" x-text="lastScan ? lastScan.tickers_failed + ' failed' : ''"></div>
+    </div>
+
+    <!-- ══ SIGNATURE: layer survival funnel ══ -->
+    <div class="flex-1 min-w-[320px]" x-show="funnel">
+      <div class="flex items-center gap-1">
+        <template x-for="(seg, i) in funnelSegments()" :key="i">
+          <div class="flex-1 group relative">
+            <div class="h-2 rounded-sm transition-all"
+                 :style="`background:${seg.color}; opacity:${0.25 + 0.75 * seg.frac}`"></div>
+            <div class="mt-1 flex justify-between font-mono text-[10px] text-dim">
+              <span x-text="seg.label"></span>
+              <span class="text-muted" x-text="seg.count"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="flex min-h-[calc(100vh-57px)]">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="w-[300px] shrink-0 border-r border-hairline bg-panel/40 p-4 space-y-5 overflow-y-auto">
+
+    <!-- search & select -->
+    <section>
+      <div class="text-[11px] font-mono uppercase tracking-widest text-dim mb-2">Screening list</div>
+      <div class="flex gap-2">
+        <input x-model="tickerInput" @keydown.enter="addTickers()"
+               placeholder="MU, NVDA, AMD…"
+               class="flex-1 bg-canvas border border-hairline rounded px-3 py-2 text-sm font-mono placeholder-dim focus:outline-none focus:border-accent/60" />
+        <button @click="addTickers()"
+                class="px-3 rounded bg-hairline hover:bg-accent/20 text-accent text-sm font-mono">Add</button>
+      </div>
+      <div class="flex gap-2 mt-2">
+        <input type="file" accept=".txt,text/plain" class="hidden" x-ref="watchlistFile"
+               @change="loadWatchlistFile($event)" />
+        <button @click="$refs.watchlistFile.click()" :disabled="scanning"
+                class="flex-1 py-1.5 rounded border border-hairline bg-canvas hover:bg-accent/10 hover:border-accent/40
+                       font-mono text-xs text-muted hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed">
+          📁 Load Watchlist (.txt)
+        </button>
+        <button @click="clearWatchlist()" :disabled="scanning || !tickers.length"
+                class="py-1.5 px-3 rounded border border-hairline bg-canvas hover:bg-neg/10 hover:border-neg/40
+                       font-mono text-xs text-muted hover:text-neg disabled:opacity-40 disabled:cursor-not-allowed">
+          🗑 Clear
+        </button>
+      </div>
+      <p x-show="watchlistMsg" class="mt-1.5 text-[10px] font-mono"
+         :class="watchlistMsgError ? 'text-neg' : 'text-dim'" x-text="watchlistMsg"></p>
+      <div class="flex flex-wrap gap-1.5 mt-3" x-show="tickers.length">
+        <template x-for="t in tickers" :key="t">
+          <span class="inline-flex items-center gap-1 bg-canvas border border-hairline rounded px-2 py-0.5 font-mono text-xs">
+            <span x-text="t"></span>
+            <button @click="removeTicker(t)" class="text-dim hover:text-neg" aria-label="remove">×</button>
+          </span>
+        </template>
+      </div>
+      <p x-show="!tickers.length" class="mt-3 text-xs text-dim">Add tickers above or pull from the trending scanner below.</p>
+    </section>
+
+    <!-- Edge Discovery Pipeline -->
+    <section class="rounded-lg border border-hairline bg-canvas/60 p-3">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[11px] font-mono uppercase tracking-widest text-dim">Edge discovery</div>
+        <span class="text-[10px] font-mono"
+              :class="universe.source === 'fallback' ? 'text-warn' : 'text-dim'"
+              x-text="universe.size ? universe.size + ' names · ' + universe.source : ''"></span>
+      </div>
+      <template x-if="trending.length">
+        <ul class="space-y-1.5 mb-3">
+          <template x-for="t in trending" :key="t.ticker">
+            <li class="flex items-center justify-between font-mono text-xs">
+              <div class="flex items-center gap-2">
+                <button @click="quickAdd(t.ticker)"
+                        class="w-5 h-5 rounded bg-hairline text-accent hover:bg-accent/20 leading-none"
+                        :aria-label="'add ' + t.ticker">+</button>
+                <span class="text-ink w-12" x-text="t.ticker"></span>
+                <span class="w-1.5 h-1.5 rounded-full"
+                      :class="(t.vrp_pass && t.shock_pass) ? 'bg-pos' : 'bg-hairline'"
+                      :title="(t.vrp_pass && t.shock_pass) ? 'clears both edge thresholds' : 'partial signal'"></span>
+              </div>
+              <div class="text-dim">
+                <span :class="t.vrp_pass ? 'text-accent' : ''"
+                      title="14d ATM IV / RV21 (edge > 1.20)"
+                      x-text="t.vrp14 !== null ? t.vrp14.toFixed(2) + 'vrp' : '—vrp'"></span>
+                <span class="ml-2" :class="t.shock_pass ? 'text-warn' : ''"
+                      title="day volume / 20d avg (shock > 1.5×)"
+                      x-text="t.shock.toFixed(1) + '×vol'"></span>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </template>
+      <p x-show="!trending.length" class="text-xs text-dim mb-3"
+         x-text="trendingRefreshing ? 'Pipeline running — scoring VRP spikes and volume shocks across the universe…' : 'Pipeline warming up — auto-runs at launch.'"></p>
+
+      <button @click="autoDiscover()" :disabled="discovering || scanning"
+              class="w-full py-2 rounded font-mono text-xs tracking-wide
+                     bg-warn/10 border border-warn/40 text-warn
+                     hover:bg-warn/20 disabled:opacity-40 disabled:cursor-not-allowed">
+        <span x-show="!discovering">⚡ Auto-Discover Edge</span>
+        <span x-show="discovering" class="animate-pulse">Scoring universe…</span>
+      </button>
+      <p class="text-[10px] text-dim mt-1.5 leading-relaxed">Re-scores all 20 names, loads the top 5 into the screening list, and runs the 5-layer scan.</p>
+    </section>
+
+    <!-- parameter sliders -->
+    <section class="space-y-4">
+      <div class="text-[11px] font-mono uppercase tracking-widest text-dim">Screen parameters</div>
+
+      <template x-for="s in sliders" :key="s.key">
+        <div>
+          <div class="flex justify-between font-mono text-xs mb-1">
+            <span class="text-muted" x-text="s.label"></span>
+            <span class="text-accent" x-text="fmtParam(s)"></span>
+          </div>
+          <input type="range" class="w-full" :min="s.min" :max="s.max" :step="s.step"
+                 x-model.number="params[s.key]" />
+        </div>
+      </template>
+    </section>
+
+    <button @click="runScan()" :disabled="scanning || !tickers.length"
+            class="w-full py-2.5 rounded font-mono text-sm tracking-wide
+                   bg-accent/15 border border-accent/40 text-accent
+                   hover:bg-accent/25 disabled:opacity-40 disabled:cursor-not-allowed">
+      <span x-show="!scanning">Run 5-layer scan</span>
+      <span x-show="scanning" class="inline-flex items-center gap-2">
+        <span class="animate-pulse">●</span> Scanning <span x-text="tickers.length"></span> chains…
+      </span>
+    </button>
+
+    <p class="text-[10px] text-dim leading-relaxed">Delayed yfinance data. Screening output only — not investment advice.</p>
+  </aside>
+
+  <!-- ══════════ MAIN PANEL ══════════ -->
+  <main class="flex-1 p-5 overflow-x-auto">
+
+    <!-- empty state -->
+    <div x-show="!lastScan && !scanning" class="h-full grid place-items-center">
+      <div class="text-center max-w-md">
+        <div class="font-mono text-dim text-sm mb-2">No scan yet</div>
+        <p class="text-muted text-sm">Build a screening list in the sidebar, tune the five filter layers, then run the scan. Survivors land here ranked by expected value.</p>
+      </div>
+    </div>
+
+    <!-- scanning state -->
+    <div x-show="scanning" class="h-full grid place-items-center">
+      <div class="font-mono text-accent text-sm animate-pulse">Pulling chains · computing RV ladders · matching earnings windows…</div>
+    </div>
+
+    <!-- errors -->
+    <div x-show="lastScan && lastScan.errors.length" class="mb-4 rounded border border-neg/30 bg-neg/5 p-3">
+      <div class="font-mono text-xs text-neg mb-1">Skipped tickers</div>
+      <template x-for="e in (lastScan ? lastScan.errors : [])" :key="e.ticker">
+        <div class="font-mono text-xs text-muted"><span class="text-ink" x-text="e.ticker"></span> — <span x-text="e.error"></span></div>
+      </template>
+    </div>
+
+    <!-- ticker meta strip -->
+    <div x-show="lastScan && Object.keys(lastScan.meta || {}).length" class="mb-4 flex flex-wrap gap-2">
+      <template x-for="[t, m] in Object.entries(lastScan ? lastScan.meta : {})" :key="t">
+        <div class="rounded border px-3 py-2 font-mono text-xs"
+             :class="m.earnings ? 'border-warn/40 bg-warn/5' : 'border-hairline bg-panel/60'">
+          <div class="flex items-center gap-2">
+            <span class="text-ink font-semibold" x-text="t"></span>
+            <span class="text-muted" x-text="'$' + m.spot"></span>
+            <span x-show="m.earnings" class="text-warn text-[10px] uppercase">earnings included</span>
+          </div>
+          <div class="text-dim mt-0.5">
+            <span x-text="m.expiration"></span> · <span x-text="m.dte + 'd'"></span>
+            · rv21 <span class="text-muted" x-text="m.rv && m.rv.rv21 !== null ? (m.rv.rv21 * 100).toFixed(0) + '%' : '—'"></span>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- results grid -->
+    <div x-show="lastScan && lastScan.candidates.length" class="rounded-lg border border-hairline overflow-visible">
+      <!-- view toolbar: sort/filter are display-only, they never re-run the scan -->
+      <div class="flex items-center justify-between px-3 py-2 border-b border-hairline bg-panel/40 font-mono text-xs">
+        <button @click="filtersOpen = !filtersOpen"
+                class="px-2 py-1 rounded border border-hairline hover:border-accent/40 hover:text-accent"
+                :class="filtersOpen ? 'text-accent border-accent/40' : 'text-muted'">
+          ⚲ Filters
+        </button>
+        <div class="text-dim">
+          showing <span class="text-ink" x-text="displayedCandidates().length"></span>
+          of <span class="text-ink" x-text="lastScan.candidates.length"></span>
+          <button x-show="hasActiveView()" @click="resetView()"
+                  class="ml-2 text-accent hover:underline">clear</button>
+        </div>
+      </div>
+      <table class="w-full text-sm font-mono">
+        <thead>
+          <tr class="text-[11px] uppercase tracking-wider text-dim border-b border-hairline bg-panel/60">
+            <template x-for="col in sortColumns" :key="col.key">
+              <th class="px-3 py-2.5 select-none"
+                  :class="col.align === 'right' ? 'text-right' : (col.align === 'center' ? 'text-center' : 'text-left')">
+                <button @click="toggleSort(col.key)"
+                        class="inline-flex items-center gap-1 hover:text-accent uppercase tracking-wider"
+                        :class="sortKey === col.key ? 'text-accent' : ''">
+                  <span x-text="col.label"></span>
+                  <span class="text-[9px]" x-text="sortIndicator(col.key)"></span>
+                </button>
+              </th>
+            </template>
+            <th class="text-center px-3 py-2.5">Layers</th>
+          </tr>
+
+          <!-- filter row (display-only) -->
+          <tr x-show="filtersOpen" class="border-b border-hairline bg-canvas/40">
+            <template x-for="col in sortColumns" :key="'f-' + col.key">
+              <th class="px-2 py-1.5 align-top"
+                  :class="col.align === 'right' ? 'text-right' : (col.align === 'center' ? 'text-center' : 'text-left')">
+                <!-- text filter -->
+                <input x-show="col.filter === 'text'" x-model="filters[col.key]"
+                       :placeholder="'filter'"
+                       class="w-full bg-canvas border border-hairline rounded px-2 py-1 text-[11px] normal-case tracking-normal placeholder-dim focus:outline-none focus:border-accent/60" />
+                <!-- select filter (e.g. type, earnings) -->
+                <select x-show="col.filter === 'select'" x-model="filters[col.key]"
+                        class="w-full bg-canvas border border-hairline rounded px-1 py-1 text-[11px] normal-case tracking-normal focus:outline-none focus:border-accent/60">
+                  <template x-for="opt in col.options" :key="opt.value">
+                    <option :value="opt.value" x-text="opt.label"></option>
+                  </template>
+                </select>
+                <!-- numeric min/max filter -->
+                <div x-show="col.filter === 'num'" class="flex gap-1">
+                  <input x-model="filters[col.key].min" placeholder="min" inputmode="decimal"
+                         class="w-full bg-canvas border border-hairline rounded px-1 py-1 text-[11px] text-right normal-case tracking-normal placeholder-dim focus:outline-none focus:border-accent/60" />
+                  <input x-model="filters[col.key].max" placeholder="max" inputmode="decimal"
+                         class="w-full bg-canvas border border-hairline rounded px-1 py-1 text-[11px] text-right normal-case tracking-normal placeholder-dim focus:outline-none focus:border-accent/60" />
+                </div>
+              </th>
+            </template>
+            <th class="px-2 py-1.5"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="(c, i) in displayedCandidates()" :key="i">
+            <tr class="border-b border-hairline/50 hover:bg-panel/70 transition-colors"
+                :class="c.earnings ? 'bg-warn/[0.06]' : ''">
+              <td class="px-3 py-2 text-ink font-semibold" x-text="c.ticker"></td>
+              <td class="px-3 py-2"
+                  :class="c.type === 'BULL PUT' ? 'text-pos/80' : 'text-neg/80'"
+                  x-text="c.type"></td>
+              <td class="px-3 py-2 text-right" x-text="c.short_strike + ' / ' + c.long_strike"></td>
+              <td class="px-3 py-2 text-right text-ink" x-text="c.credit.toFixed(2)"></td>
+              <td class="px-3 py-2 text-right text-ink" x-text="c.ror_pct.toFixed(1) + '%'"></td>
+              <td class="px-3 py-2 text-right" x-text="c.cushion_pct.toFixed(1) + '%'"></td>
+              <td class="px-3 py-2 text-right text-accent" x-text="c.vrp.toFixed(2)"></td>
+              <td class="px-3 py-2 text-center">
+                <span x-show="c.earnings" class="text-warn text-xs font-semibold">YES</span>
+                <span x-show="!c.earnings" class="text-dim text-xs">no</span>
+              </td>
+              <td class="px-3 py-2 text-right" x-text="(c.p_adj * 100).toFixed(1) + '%'"></td>
+              <td class="px-3 py-2 text-right font-semibold"
+                  :class="c.ev >= 0 ? 'text-pos' : 'text-neg'"
+                  x-text="(c.ev >= 0 ? '+' : '') + c.ev"></td>
+
+              <!-- asymmetric layer tooltip -->
+              <td class="px-3 py-2 text-center relative has-tooltip">
+                <button class="text-dim hover:text-accent" tabindex="0" aria-label="layer breakdown">ⓘ</button>
+                <div class="tooltip-panel absolute right-2 top-8 z-40 w-80 text-left rounded-lg border border-hairline bg-panel shadow-2xl p-3 space-y-2">
+                  <div class="text-[10px] uppercase tracking-widest text-dim">5-layer breakdown</div>
+                  <div class="text-xs space-y-1.5">
+                    <div><span class="text-accent">L1 RV ladder</span>
+                      <span class="text-muted" x-text="' 10d ' + pct(c.layers.l1.rv10) + ' · 21d ' + pct(c.layers.l1.rv21) + ' · 63d ' + pct(c.layers.l1.rv63) + ' · 252d ' + pct(c.layers.l1.rv252)"></span></div>
+                    <div><span :class="c.earnings ? 'text-warn' : 'text-accent'">L2 binary event</span>
+                      <span class="text-muted" x-text="c.earnings ? ' EARNINGS INSIDE — max 3y gap ' + c.max_gap + '%, breach scaled ' + (c.p_raw*100).toFixed(1) + '% → ' + (c.p_adj*100).toFixed(1) + '%' : ' clean window, no penalty'"></span></div>
+                    <div><span class="text-accent">L3 VRP</span>
+                      <span class="text-muted" x-text="' IV ' + pct(c.iv) + ' / RV21 ' + pct(c.rv21) + ' = ' + c.vrp + ' ✓ pass'"></span></div>
+                    <div><span class="text-accent">L4 fat-tail</span>
+                      <span class="text-muted" x-text="' empirical P(breach ' + c.cushion_pct.toFixed(1) + '% in ' + c.layers.l4.horizon_td + 'td) = ' + (c.p_raw*100).toFixed(1) + '%'"></span></div>
+                    <div><span class="text-accent">L5 friction</span>
+                      <span class="text-muted" x-text="' short ' + (c.layers.l5.short.spread_pct*100).toFixed(1) + '% spr / OI ' + c.layers.l5.short.oi + ' · long ' + (c.layers.l5.long.spread_pct*100).toFixed(1) + '% spr / OI ' + c.layers.l5.long.oi + ' ✓ pass'"></span></div>
+                  </div>
+                  <div class="pt-1 border-t border-hairline text-xs text-dim"
+                       x-text="'EV = ' + c.credit.toFixed(2) + '×(1−' + c.p_adj.toFixed(3) + ') − ' + (c.width - c.credit).toFixed(2) + '×' + c.p_adj.toFixed(3) + ' = $' + c.ev + ' /contract'"></div>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <!-- everything filtered out -->
+      <div x-show="!displayedCandidates().length"
+           class="px-3 py-6 text-center font-mono text-xs text-dim">
+        No rows match the current filters.
+        <button @click="resetView()" class="text-accent hover:underline ml-1">clear filters</button>
+      </div>
+    </div>
+
+    <!-- survived nothing -->
+    <div x-show="lastScan && !lastScan.candidates.length && !scanning"
+         class="rounded border border-hairline bg-panel/40 p-6 text-center">
+      <div class="font-mono text-sm text-muted mb-1">All candidates eliminated.</div>
+      <p class="text-xs text-dim">The funnel strip above shows which layer filtered them out. Loosen VRP, cushion, or liquidity thresholds and rerun.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+function app() {
+  return {
+    tickers: [], tickerInput: '',
+    trending: [], trendingRefreshing: false, universe: { source: '', size: 0 },
+    scanning: false, discovering: false, autoLoaded: false,
+    lastScan: null, funnel: null,
+
+    // ── Display-only sort/filter (never re-runs the scan) ──
+    filtersOpen: false,
+    sortKey: '', sortDir: 'desc',
+    sortColumns: [
+      { key: 'ticker',      label: 'Ticker',   align: 'left',   filter: 'text',   get: c => c.ticker },
+      { key: 'type',        label: 'Type',     align: 'left',   filter: 'select', get: c => c.type,
+        options: [{ value: '', label: 'all' }, { value: 'BULL PUT', label: 'BULL PUT' }, { value: 'BEAR CALL', label: 'BEAR CALL' }] },
+      { key: 'strikes',     label: 'Strikes',  align: 'right',  filter: 'num',    get: c => c.short_strike },
+      { key: 'credit',      label: 'Mid Prem', align: 'right',  filter: 'num',    get: c => c.credit },
+      { key: 'ror_pct',     label: 'RoR %',    align: 'right',  filter: 'num',    get: c => c.ror_pct },
+      { key: 'cushion_pct', label: 'Cushion',  align: 'right',  filter: 'num',    get: c => c.cushion_pct },
+      { key: 'vrp',         label: 'VRP',      align: 'right',  filter: 'num',    get: c => c.vrp },
+      { key: 'earnings',    label: 'Earnings', align: 'center', filter: 'select', get: c => (c.earnings ? 1 : 0),
+        options: [{ value: '', label: 'all' }, { value: 'yes', label: 'yes' }, { value: 'no', label: 'no' }] },
+      { key: 'p_adj',       label: 'Breach %', align: 'right',  filter: 'num',    get: c => c.p_adj * 100 },
+      { key: 'ev',          label: 'EV $',     align: 'right',  filter: 'num',    get: c => c.ev },
+    ],
+    filters: {
+      ticker: '', type: '', earnings: '',
+      strikes:     { min: '', max: '' },
+      credit:      { min: '', max: '' },
+      ror_pct:     { min: '', max: '' },
+      cushion_pct: { min: '', max: '' },
+      vrp:         { min: '', max: '' },
+      p_adj:       { min: '', max: '' },
+      ev:          { min: '', max: '' },
+    },
+
+    init() {
+      this.bootstrapEdge();
+      setInterval(() => this.loadTrending(), 5 * 60 * 1000);
+    },
+
+    // On dashboard load: poll until the startup pipeline finishes, then
+    // preload the top-5 edge tickers and fire the 5-layer scan automatically.
+    async bootstrapEdge() {
+      await this.loadTrending();
+      if (!this.trending.length) { setTimeout(() => this.bootstrapEdge(), 4000); return; }
+      if (!this.autoLoaded && !this.tickers.length) {
+        this.autoLoaded = true;
+        this.tickers = this.trending.map(t => t.ticker);
+        this.runScan();
+      }
+    },
+
+    async autoDiscover() {
+      if (this.discovering) return;
+      this.discovering = true;
+      try {
+        const r = await fetch('/api/discover', { method: 'POST' });
+        const d = await r.json();
+        this.trending = d.top || [];
+        if (d.universe) this.universe = d.universe;
+        if (this.trending.length) {
+          this.tickers = this.trending.map(t => t.ticker);
+          await this.runScan();
+        }
+      } catch (e) { console.error('discovery failed', e); }
+      finally { this.discovering = false; }
+    },
+    params: { dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: 0.10, min_cushion: 2.0, min_ror: 15 },
+    sliders: [
+      { key: 'dte',            label: 'Target DTE',     min: 5,    max: 90,  step: 1,    fmt: v => v + 'd' },
+      { key: 'width',          label: 'Spread width',   min: 0.5,  max: 25,  step: 0.5,  fmt: v => '$' + v },
+      { key: 'min_vrp',        label: 'Min VRP ratio',  min: 0.8,  max: 2.0, step: 0.05, fmt: v => '≥' + v.toFixed(2) },
+      { key: 'min_oi',         label: 'Min open int.',  min: 0,    max: 1000, step: 25,  fmt: v => '≥' + v },
+      { key: 'max_spread_pct', label: 'Max bid-ask %',  min: 0.02, max: 0.30, step: 0.01, fmt: v => '≤' + (v * 100).toFixed(0) + '%' },
+      { key: 'min_cushion',    label: 'Min cushion %',  min: 0,    max: 15,  step: 0.5,  fmt: v => '≥' + v + '%' },
+      { key: 'min_ror',        label: 'Min Return on Risk %', min: 5, max: 50, step: 1, fmt: v => '≥' + v + '%' },
+    ],
+
+    fmtParam(s) { return s.fmt(this.params[s.key]); },
+    pct(v) { return v === null || v === undefined ? '—' : (v * 100).toFixed(0) + '%'; },
+
+    addTickers() {
+      this.tickerInput.split(',').map(t => t.trim().toUpperCase()).filter(Boolean)
+        .forEach(t => { if (!this.tickers.includes(t) && this.tickers.length < 25) this.tickers.push(t); });
+      this.tickerInput = '';
+    },
+    quickAdd(t) { if (!this.tickers.includes(t)) this.tickers.push(t); },
+    removeTicker(t) { this.tickers = this.tickers.filter(x => x !== t); },
+    clearWatchlist() {
+      this.tickers = [];
+      this.watchlistMsg = '';
+      this.watchlistMsgError = false;
+    },
+
+    // ── Local watchlist file loader (pure client-side, FileReader API) ──
+    watchlistMsg: '', watchlistMsgError: false,
+    loadWatchlistFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onerror = () => {
+        this.watchlistMsg = 'Could not read file — check permissions and retry.';
+        this.watchlistMsgError = true;
+      };
+      reader.onload = () => {
+        const MAX = 50;  // matches server-side ScanRequest cap
+        const parsed = String(reader.result)
+          .split(/\r?\n/)                       // line by line
+          .map(l => l.split('#')[0])            // strip full + inline comments
+          .map(l => l.trim().toUpperCase())     // normalize
+          .filter(l => l.length > 0)            // drop blanks
+          .filter(l => /^[A-Z]{1,5}$/.test(l)); // plausible US symbols only
+
+        if (!parsed.length) {
+          this.watchlistMsg = 'No valid tickers found — expected one symbol per line.';
+          this.watchlistMsgError = true;
+          event.target.value = '';
+          return;
+        }
+        let added = 0, skipped = 0;
+        for (const t of parsed) {
+          if (this.tickers.includes(t)) continue;
+          if (this.tickers.length >= MAX) { skipped++; continue; }
+          this.tickers.push(t); added++;
+        }
+        this.watchlistMsgError = false;
+        this.watchlistMsg = `Loaded ${added} ticker${added === 1 ? '' : 's'} from ${file.name}`
+          + (skipped ? ` · ${skipped} skipped (list capped at ${MAX})` : '');
+        event.target.value = '';                // allow re-loading same file
+        if (added) this.runScan();              // immediate 5-layer scan
+      };
+      reader.readAsText(file);
+    },
+
+    async loadTrending() {
+      try {
+        const r = await fetch('/api/trending');
+        const d = await r.json();
+        this.trending = d.top || [];
+        this.trendingRefreshing = d.refreshing;
+        if (d.universe) this.universe = d.universe;
+      } catch (e) { console.error('trending fetch failed', e); }
+    },
+
+    async runScan() {
+      if (!this.tickers.length || this.scanning) return;
+      this.scanning = true;
+      try {
+        const r = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tickers: this.tickers, ...this.params }),
+        });
+        const d = await r.json();
+        this.lastScan = d;
+        this.funnel = d.funnel;
+      } catch (e) {
+        this.lastScan = { candidates: [], errors: [{ ticker: '—', error: 'request failed: ' + e }], meta: {}, tickers_ok: 0, tickers_failed: 0, elapsed: 0 };
+        this.funnel = null;
+      } finally { this.scanning = false; }
+    },
+
+    funnelSegments() {
+      if (!this.funnel) return [];
+      const f = this.funnel, base = Math.max(f.considered, 1);
+      return [
+        { label: 'L4 cushion',  count: f.cushion,  frac: f.cushion  / base, color: '#67E8F9' },
+        { label: 'L5 friction', count: f.friction, frac: f.friction / base, color: '#67E8F9' },
+        { label: 'paired',      count: f.paired,   frac: f.paired   / base, color: '#67E8F9' },
+        { label: 'RoR gate',    count: f.ror !== undefined ? f.ror : f.paired, frac: (f.ror !== undefined ? f.ror : f.paired) / base, color: '#67E8F9' },
+        { label: 'L3 vrp',      count: f.vrp,      frac: f.vrp      / base, color: '#67E8F9' },
+        { label: 'L2+EV final', count: f.final,    frac: f.final    / base, color: '#34D399' },
+      ];
+    },
+
+    // ── Sort/filter helpers (operate on the displayed candidates only) ──
+    colByKey(key) { return this.sortColumns.find(c => c.key === key); },
+
+    toggleSort(key) {
+      if (this.sortKey === key) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortDir = 'desc';
+      }
+    },
+    sortIndicator(key) {
+      if (this.sortKey !== key) return '↕';
+      return this.sortDir === 'asc' ? '▲' : '▼';
+    },
+
+    hasActiveView() {
+      if (this.sortKey) return true;
+      return Object.values(this.filters).some(v =>
+        typeof v === 'object' ? (v.min !== '' || v.max !== '') : v !== '');
+    },
+    resetView() {
+      this.sortKey = ''; this.sortDir = 'desc';
+      for (const k in this.filters) {
+        if (typeof this.filters[k] === 'object') { this.filters[k].min = ''; this.filters[k].max = ''; }
+        else this.filters[k] = '';
+      }
+    },
+
+    passesFilters(c) {
+      for (const col of this.sortColumns) {
+        const f = this.filters[col.key];
+        if (col.filter === 'text') {
+          if (f && !String(col.get(c)).toLowerCase().includes(f.trim().toLowerCase())) return false;
+        } else if (col.filter === 'select') {
+          if (f === '') continue;
+          if (col.key === 'earnings') {
+            if ((f === 'yes') !== !!c.earnings) return false;
+          } else if (String(col.get(c)) !== f) return false;
+        } else if (col.filter === 'num') {
+          const val = col.get(c);
+          const min = parseFloat(f.min), max = parseFloat(f.max);
+          if (!isNaN(min) && val < min) return false;
+          if (!isNaN(max) && val > max) return false;
+        }
+      }
+      return true;
+    },
+
+    displayedCandidates() {
+      if (!this.lastScan) return [];
+      let rows = this.lastScan.candidates.filter(c => this.passesFilters(c));
+      if (this.sortKey) {
+        const col = this.colByKey(this.sortKey);
+        const dir = this.sortDir === 'asc' ? 1 : -1;
+        rows = rows.slice().sort((a, b) => {
+          const av = col.get(a), bv = col.get(b);
+          if (typeof av === 'string' || typeof bv === 'string') {
+            return String(av).localeCompare(String(bv)) * dir;
+          }
+          return (av - bv) * dir;
+        });
+      }
+      return rows;
+    },
+  };
+}
+</script>
+</body>
+</html>

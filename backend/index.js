@@ -51,6 +51,7 @@ app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/strategies', strategyRoutes);
 app.use('/api/v1/chart', chartRoutes);
 app.use('/api/v1/instruments', require('./routes/instrumentSearchRoutes'));
+app.use('/api/v1/spreads', require('./routes/spreadRoutes'));
 app.use('/api/v1', brokerProxyRoutes);
 app.use('/api/v1/system', systemRoutes);
 

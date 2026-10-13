@@ -40,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
         const path = location.pathname;
         if (path === '/dashboard') return 'System Dashboard';
         if (path === '/search') return 'Market Search';
+        if (path === '/spreads') return 'Spreads';
         if (path.startsWith('/strategies/')) {
             const strat = path.split('/').pop()?.replace(/-/g, ' ');
             return strat ? strat.charAt(0).toUpperCase() + strat.slice(1) : 'Trading Strategy';

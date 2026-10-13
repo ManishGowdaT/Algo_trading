@@ -13,6 +13,7 @@ import anyio
 from time import monotonic
 from uuid import uuid4
 from app.services.account_dispatch import AccountCapacityError, AccountContext, AccountDispatch
+from app.services.spreads.api import router as spreads_router
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
@@ -171,6 +172,7 @@ app = FastAPI(
     redoc_url="/redoc" if docs_enabled else None,
     openapi_url="/openapi.json" if docs_enabled else None,
 )
+app.include_router(spreads_router)
 
 
 @app.middleware("http")

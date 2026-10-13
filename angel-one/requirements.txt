@@ -6,3 +6,9 @@ smartapi-python==1.5.3
 httpx==0.28.1
 logzero==1.7.0
 websocket-client==1.8.0
+
+# Required by the original Spread Terminal calculation definitions.
+numpy>=1.26,<3
+pandas>=2.2,<3
+# Earnings dates only; price history and option chains stay on Upstox.
+yfinance>=0.2.66,<0.3

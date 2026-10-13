@@ -1,0 +1,8 @@
+/* Keep Spreads scroll behavior isolated from the shared dashboard layout. */
+@media (min-width: 768px) {
+  .dashboard-content:has(.spreads-page) {
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+    scrollbar-gutter: stable;
+  }
+}

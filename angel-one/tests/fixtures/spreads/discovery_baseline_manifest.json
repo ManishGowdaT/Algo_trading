@@ -1,0 +1,60 @@
+{
+  "spread-terminal/screener.py": {
+    "sha256": "6ceb884e157e3918216ad70491eaf5daa7de490172a8ae778a137adfd9bd5caa",
+    "functions": {
+      "safe_option_chain": {
+        "line": 147,
+        "end": 176
+      },
+      "pick_expiration": {
+        "line": 179,
+        "end": 202
+      },
+      "_atm_iv": {
+        "line": 468,
+        "end": 485
+      },
+      "edge_discovery": {
+        "line": 488,
+        "end": 595
+      }
+    }
+  },
+  "spread-terminal/main.py": {
+    "sha256": "e11cfa47f7f6638943c8f7f8bc1e281360c2ddd546e304c0591b966c70426a13",
+    "functions": {
+      "_normalize_symbol": {
+        "line": 63,
+        "end": 68
+      },
+      "_quote_is_liquid": {
+        "line": 71,
+        "end": 84
+      },
+      "_fetch_screener_symbols": {
+        "line": 87,
+        "end": 116
+      },
+      "_get_active_universe": {
+        "line": 119,
+        "end": 162
+      },
+      "_refresh_trending": {
+        "line": 184,
+        "end": 208
+      },
+      "_trending_payload": {
+        "line": 211,
+        "end": 218
+      },
+      "api_trending": {
+        "line": 227,
+        "end": 231
+      },
+      "api_discover": {
+        "line": 235,
+        "end": 239
+      }
+    }
+  }
+}

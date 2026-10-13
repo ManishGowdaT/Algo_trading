@@ -10,7 +10,11 @@ for (const timestamp of [null, 'stale', 'future']) test(`Held monitor rejects ${
   await runner.executeEntry(f.contract, 100, 'BULLISH');
   f.state.quote = 125;
   f.state.quoteTimestamp = () => timestamp === 'stale' ? Date.now()-60000 : timestamp === 'future' ? Date.now()+60000 : undefined;
-  t.mock.timers.tick(1000); await new Promise(resolve => setTimeout(resolve, 80));
+  t.mock.timers.tick(1000);
+  // Observe completion of the asynchronous monitor, not an arbitrary 80 ms delay.
+  for (let i = 0; i < 200 && !/degraded/.test(runner.message || ''); i++) {
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
   assert.notEqual(f.stores.Position[0].status, 'CLOSED');
   assert.equal(runner.lastQuoteReceivedAt, undefined);
   assert.match(runner.message, /degraded/);
