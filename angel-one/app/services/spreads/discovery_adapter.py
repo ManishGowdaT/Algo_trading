@@ -9,6 +9,7 @@ from .engine import pick_expiration
 from .provider import DataCapability, OptionChain, PriceBar
 from .transport import UpstoxProviderError, encoded_instrument_key
 from .upstox_adapter import IST, _number, _parse_timestamp
+from .history_validation import validate_history
 
 
 @dataclass(frozen=True)
@@ -20,6 +21,8 @@ class DiscoveryHistory:
     adjustment: DataCapability
     volume: DataCapability
     completeness: DataCapability
+    validation: dict | None = None
+    raw_provider_rows: tuple = ()
 
     @property
     def closes(self):
@@ -31,6 +34,8 @@ class DiscoveryHistory:
 
     @property
     def eligibility_error(self):
+        if self.completeness.status == "incomplete":
+            return "Known defective discovery history: " + self.completeness.explanation
         # Original discovery gates; no 270-close spread-history requirement.
         if len(self.bars) < 30:
             return 'Discovery requires at least 30 daily history rows.'
@@ -49,6 +54,7 @@ def four_month_start(end: date) -> date:
 
 
 class DiscoveryDataAdapter:
+    supports_atm_iv_scope = True
     def __init__(self, market_provider, *, transport=None, fixture=False):
         self.market_provider = market_provider
         self.transport = transport if transport is not None else market_provider._transport
@@ -75,6 +81,9 @@ class DiscoveryDataAdapter:
                 continue
             bars.append(PriceBar(timestamp, *[_number(value) for value in candle[1:6]],
                                  _number(candle[6]) if len(candle) > 6 else None))
+        completeness, validation = validate_history(
+            bars, start=start, end=end, raw_count=len(candles), skipped_count=len(candles)-len(bars),
+            observation_date=None if self.fixture else datetime.now(IST).date())
         bars.sort(key=lambda bar: bar.timestamp)
         index = instrument_key.startswith('NSE_INDEX|')
         return DiscoveryHistory(
@@ -83,17 +92,22 @@ class DiscoveryDataAdapter:
                            'Synthetic adjusted-history inputs.' if self.fixture else 'Returned Upstox closes; equity corporate-action adjustment equivalence is unverified.'),
             DataCapability(any(bar.volume is not None for bar in bars), 'fixture' if self.fixture else 'reported' if any(bar.volume is not None for bar in bars) else 'unavailable',
                            'Reported daily volume only; no futures-volume proxy or invented index volume.'),
-            DataCapability(self.fixture, 'fixture' if self.fixture else 'unverified',
-                           'Returned daily candles retained; partial-candle completeness is not certified.'),
+            DataCapability(True, 'fixture', 'Synthetic daily candles.') if self.fixture else completeness,
+            validation,
+            tuple(candles),
         )
 
-    def get_atm_chain(self, instrument_key: str, *, as_of: date | None = None) -> OptionChain | None:
+    def get_atm_chain(self, instrument_key: str, *, as_of: date | None = None, spot: float | None = None) -> OptionChain | None:
         today = as_of or datetime.now(IST).date()
         contracts = self.market_provider.get_option_contracts(instrument_key)
         # Normalize provider ordering to chronological order, as in spread scanning.
         expiries = sorted({contract.expiry.isoformat() for contract in contracts})
         picked = pick_expiration(expiries, 14, as_of=today)
-        return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0])) if picked else None
+        if not picked:
+            return None
+        if self.fixture or spot is None:
+            return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0]))
+        return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0]), iv_spot=spot)
 
 
 class FixtureDiscoveryDataAdapter(DiscoveryDataAdapter):

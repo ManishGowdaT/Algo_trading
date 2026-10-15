@@ -1,0 +1,1131 @@
+diff --git a/algo-trading/src/pages/SpreadsPage/DiscoveryPanel.tsx b/algo-trading/src/pages/SpreadsPage/DiscoveryPanel.tsx
+index c2928a4..13029d5 100644
+--- a/algo-trading/src/pages/SpreadsPage/DiscoveryPanel.tsx
++++ b/algo-trading/src/pages/SpreadsPage/DiscoveryPanel.tsx
+@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
+ import { apiGet, apiPost } from '../../trading'
+ 
+ export type DiscoveryItem = { ticker: string; spot: number; chg: number; rv21: number | null; iv14: number | null; vrp14: number | null; iv_status?: 'pending' | 'available' | 'unavailable' | 'failed'; vrp_status?: 'pending' | 'available' | 'unavailable' | 'failed'; shock: number; vrp_pass: boolean; shock_pass: boolean; edge: boolean; score: number }
+-export type DiscoveryPayload = { updated: number; refreshing: boolean; progress?: { stage: string; completed: number; total: number } | null; stats?: { eligible_underlyings?: number; atm_iv_attempted?: number; atm_iv_available?: number; atm_iv_unavailable?: number; atm_iv_failed?: number; failed_requests?: number; option_chain_requests?: number; v3_greeks_requests?: number; rate_limit_responses?: number; total_runtime_seconds?: number; complete?: boolean }; top: DiscoveryItem[]; all: DiscoveryItem[]; universe: { source?: string; size?: number; note?: string }; errors: { ticker: string | null; stage: string; error: string }[]; capabilities?: Record<string, Record<string, string>>; data_mode: string; data_note: string }
++export type DiscoveryPayload = { cache_age_seconds?: number | null; cache_status?: string; cached_previous_result?: boolean; latest_attempt?: { status: string; at: number; stats?: Record<string, unknown> }; updated: number; refreshing: boolean; progress?: { stage: string; completed: number; total: number; quota_wait_seconds?: number } | null; stats?: { history_attempted?: number; history_available?: number; eligible_underlyings?: number; atm_iv_attempted?: number; atm_iv_available?: number; atm_iv_unavailable?: number; atm_iv_failed?: number; failed_requests?: number; option_chain_requests?: number; v3_greeks_requests?: number; rate_limit_responses?: number; total_runtime_seconds?: number; complete?: boolean }; top: DiscoveryItem[]; all: DiscoveryItem[]; universe: { source?: string; size?: number; note?: string }; errors: { ticker: string | null; stage: string; error: string }[]; capabilities?: Record<string, Record<string, string>>; data_mode: string; data_note: string }
+ type Props = { available: boolean; disabled: boolean; selected: string[]; onAdd: (symbols: string[]) => Promise<void> }
+ const MAX_UNDERLYINGS = 50
+ const searchClass = 'h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
+@@ -38,13 +38,13 @@ export default function DiscoveryPanel({ available, disabled, selected, onAdd }:
+       let result = await Promise.race([force ? apiPost<DiscoveryPayload>('/spreads/discover') : apiGet<DiscoveryPayload>('/spreads/trending', abort.signal), deadline])
+       while (result.refreshing && mounted.current && !abort.signal.aborted) {
+         setPayload(result)
+-        setMessage(result.progress ? `${result.progress.stage === 'history' ? 'Daily history' : result.progress.stage === 'iv' ? 'ATM IV / VRP' : 'Instrument universe'}: ${result.progress.completed} / ${result.progress.total || 'loading'}${result.progress.stage === 'iv' ? ` · ${Math.max(0, result.progress.total - result.progress.completed)} pending` : ''}` : 'Discovery is running. Waiting for provider data…')
++        setMessage(result.progress ? `${result.progress.stage === 'history' ? 'Daily history' : result.progress.stage === 'iv' ? 'ATM IV / VRP' : 'Instrument universe'}: ${result.progress.completed} / ${result.progress.total || 'loading'}${result.progress.stage === 'iv' ? ` · ${Math.max(0, result.progress.total - result.progress.completed)} pending` : ''}${result.progress.quota_wait_seconds ? ` · waiting for Upstox quota (${result.progress.quota_wait_seconds}s)` : ''}` : 'Discovery is running. Waiting for provider data…')
+         await Promise.race([new Promise(resolve => setTimeout(resolve, 3000)), deadline])
+         if (!mounted.current || abort.signal.aborted) return
+         result = await Promise.race([apiGet<DiscoveryPayload>('/spreads/trending', abort.signal), deadline])
+       }
+       if (!mounted.current) return
+-      setPayload(result); setMessage(result.stats?.complete ? `Discovery complete · ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible · ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts · ${result.stats.atm_iv_available ?? 0} available · ${result.stats.atm_iv_unavailable ?? 0} unavailable · ${result.stats.atm_iv_failed ?? 0} IV failed · ${result.stats.failed_requests ?? 0} provider errors · ${result.stats.option_chain_requests ?? 0} option-chain requests · ${result.stats.v3_greeks_requests ?? 0} V3 requests · ${result.stats.rate_limit_responses ?? 0} rate limits · ${result.stats.total_runtime_seconds ?? 0}s` : '')
++      setPayload(result); setMessage(result.stats?.complete ? `Discovery complete · ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible · ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts · ${result.stats.atm_iv_available ?? 0} available · ${result.stats.atm_iv_unavailable ?? 0} unavailable · ${result.stats.atm_iv_failed ?? 0} IV failed · ${result.stats.failed_requests ?? 0} provider errors · ${result.stats.option_chain_requests ?? 0} option-chain requests · ${result.stats.v3_greeks_requests ?? 0} V3 requests · ${result.stats.rate_limit_responses ?? 0} rate limits · ${result.stats.total_runtime_seconds ?? 0}s` : result.latest_attempt ? `Latest refresh: ${result.latest_attempt.status}${result.cached_previous_result ? ' · showing the previous cached ranking' : ''}` : '')
+       setPicked(current => current.filter(symbol => result.all.some(item => item.ticker === symbol)))
+     } catch (error) { if (mounted.current) setMessage(error instanceof Error ? error.message : 'Discovery could not be loaded.') }
+     finally { if (deadlineTimer) clearTimeout(deadlineTimer); controller.current = null; requestBusy.current = false; if (mounted.current) setBusy(false) }
+@@ -83,7 +83,7 @@ export default function DiscoveryPanel({ available, disabled, selected, onAdd }:
+     {busy && !payload && <p role="status" className="mt-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900">Loading the NSE F&amp;O universe and historical market inputs…</p>}
+     {message && <p role="status" className="mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900">{message}</p>}
+     {payload && <>
+-      <p className="mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">{payload.data_note}<br /><span className="text-slate-500">{payload.universe.size ?? 0} eligible · {payload.all.length} ranked · {payload.universe.source || 'source unavailable'} · {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' · refresh in progress' : ''}</span></p>
++      <p className="mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">{payload.data_note}{payload.cached_previous_result && <strong className="block text-amber-800">Previous cached ranking · latest refresh {payload.latest_attempt?.status || 'unavailable'}</strong>}<br /><span className="text-slate-500">{payload.universe.size ?? 0} eligible · history attempted {payload.stats?.history_attempted ?? 'Unavailable'} / {payload.universe.size ?? 'Unavailable'} · history available {payload.stats?.history_available ?? 'Unavailable'} · {payload.all.length} ranked · {payload.universe.source || 'source unavailable'} · {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' · refresh in progress' : ''} · ranking cache {payload.cache_status ?? 'UNKNOWN'} · age {payload.cache_age_seconds == null ? 'Unavailable' : `${Math.round(payload.cache_age_seconds)}s`}</span></p>
+       <details className="mt-3 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-medium text-slate-700">How to read this ranking</summary><p className="mt-2 text-xs leading-5 text-slate-600">Daily change is historical. RV21 and ATM IV are annualized percentages; VRP and volume shock are ratios. Edge score is the original percentile-rank sum, not a predicted return. ATM IV and VRP are attempted for every eligible underlying.</p></details>
+       <div className="my-4 flex flex-col gap-3 rounded-2xl bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex flex-wrap items-center gap-2"><button type="button" className={shellButton} onClick={() => setShowAll(current => !current)}>{showAll ? 'Show top 5' : `Show all ${payload.all.length}`}</button><span className="text-xs font-medium text-slate-600">{picked.length} selected · {selected.length} already in scan · limit {MAX_UNDERLYINGS} total</span></div><div className="flex flex-wrap items-center gap-2"><button type="button" className={primaryButtonClass} disabled={!picked.length || disabled || adding || busy} onClick={() => void add()}>{adding ? 'Adding…' : 'Add selected to scanner'}</button>{picked.length > 0 && <button type="button" className={shellButton} disabled={adding || busy} onClick={() => setPicked([])}>Clear picks</button>}</div>{adding && <span role="status" className="text-xs font-medium text-blue-800">Adding selected underlyings…</span>}</div>
+       <label className="mb-3 block max-w-sm text-xs font-medium text-slate-600">Find an underlying<input aria-label="Search discovery underlyings" value={filter} onChange={event => setFilter(event.target.value)} placeholder="Type a symbol, for example TATAELXSI" className={`${searchClass} mt-1`} /></label>
+diff --git a/algo-trading/src/pages/SpreadsPage/SpreadsPage.test.tsx b/algo-trading/src/pages/SpreadsPage/SpreadsPage.test.tsx
+index 34ec13f..0941bf6 100644
+--- a/algo-trading/src/pages/SpreadsPage/SpreadsPage.test.tsx
++++ b/algo-trading/src/pages/SpreadsPage/SpreadsPage.test.tsx
+@@ -130,6 +130,22 @@ it('discovery loads only on explicit action and never starts a spread scan', asy
+   expect(requests.get).toHaveBeenCalledWith('/spreads/trending', expect.any(AbortSignal))
+ })
+ 
++it('discovery explains Upstox quota waiting without reporting completion', async () => {
++  vi.useFakeTimers()
++  try {
++    requests.post.mockResolvedValue({ ...discoveryPayload, refreshing:true,
++      progress:{stage:'iv', completed:12, total:219, quota_wait_seconds:31} })
++    requests.get.mockResolvedValue(discoveryPayload)
++    const pending = (button(renderDiscovery(), 'Discover opportunities').props.onClick as () => Promise<void>)()
++    await vi.advanceTimersByTimeAsync(0)
++    const elements = renderDiscovery()
++    expect(elements.some(e => typeof e.props.children === 'string' && e.props.children.includes('waiting for Upstox quota (31s)'))).toBe(true)
++    expect(requests.post).toHaveBeenCalledTimes(1)
++    await vi.advanceTimersByTimeAsync(3000)
++    await pending
++  } finally { vi.useRealTimers() }
++})
++
+ it('discovery selection adds names without changing settings or launching scan', async () => {
+   const row = { ticker:'RELIANCE',spot:100,chg:1,rv21:.2,iv14:null,vrp14:null,shock:2,edge:false,score:1,vrp_pass:false,shock_pass:true }
+   requests.post.mockResolvedValue({ ...discoveryPayload, top:[row],all:[row] })
+@@ -146,6 +162,15 @@ it('discovery selection adds names without changing settings or launching scan',
+   expect(renderDiscovery().some(e => e.props.children === 'Unavailable')).toBe(true)
+ })
+ 
++it('B5 labels failed refresh and retained ranking without claiming completion', async () => {
++  requests.post.mockResolvedValue({ ...discoveryPayload, cached_previous_result:true,
++    latest_attempt:{status:'FAILED',at:2000}, stats:{complete:false} })
++  await (button(renderDiscovery(), 'Discover opportunities').props.onClick as () => Promise<void>)()
++  const elements=renderDiscovery()
++  expect(elements.some(e => typeof e.props.children==='string' && e.props.children.includes('Latest refresh: FAILED'))).toBe(true)
++  expect(elements.some(e => typeof e.props.children==='string' && e.props.children.startsWith('Discovery complete'))).toBe(false)
++})
++
+ it('discovery enforces the combined ten-underlying limit and displays request errors', async () => {
+   const row = { ticker:'EXTRA',spot:100,chg:1,rv21:.2,iv14:.3,vrp14:1.5,shock:2,edge:true,score:2,vrp_pass:true,shock_pass:true }
+   requests.post.mockResolvedValue({ ...discoveryPayload,top:[row],all:[row] })
+@@ -254,7 +279,7 @@ it('NSE profile is opt-in, preserves thresholds and submits only explicit listed
+ 
+ it('NSE results show profile, INR amounts, actual lot and width without relabeling the EV score as money', async () => {
+   const c = {ticker:'TEST',type:'BEAR CALL',expiration:'2026-11-23',short_strike:100,long_strike:105,width:5,
+-    credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
++    probability_sample_count:700,leg_inputs:{short:{bid:2,ask:2.05,raw_oi_quantity:18750,oi_contracts:150,volume:null}},credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
+     p_raw:.2,p_adj:.3,earnings:false,max_gap:0,lot_size:125,lot_size_status:'contract',monetary_status:'available',
+     credit_per_lot_inr:125.63,max_loss_per_lot_inr:499.38,ev_per_lot_inr:-12.5,
+     strategy_profile:'NSE_RESEARCH_V1',strike_interval:5,width_steps:1,short_tick_inr:.01,long_tick_inr:.01,minimum_credit_points:.005,
+@@ -266,8 +291,14 @@ it('NSE results show profile, INR amounts, actual lot and width without relabeli
+   const strings = elements.flatMap(e => Array.isArray(e.props.children) ? e.props.children : [e.props.children]).filter(x => typeof x === 'string' || typeof x === 'number').join(' ')
+   expect(strings).toContain('NSE_RESEARCH_V1')
+   expect(strings).toContain('₹ Credit / lot')
+-  expect(strings).toContain('₹ Max loss / lot')
++  expect(strings).toContain('₹ Payoff max loss / lot')
+   expect(strings).toContain('₹125.63')
+   expect(strings).toContain('EV (100-unit score)')
+-  expect(strings).toContain('FAIL / UNVERIFIED')
++  expect(strings).toContain('unverified corporate-action treatment')
++  expect(strings).toContain('uncalibrated')
++  expect(strings).toContain('short')
++  expect(strings).toContain('raw_oi_quantity')
++  expect(strings).toContain('18750')
++  expect(strings).toContain('700')
++  expect(strings).toContain('Unavailable')
+ })
+diff --git a/algo-trading/src/pages/SpreadsPage/SpreadsPage.tsx b/algo-trading/src/pages/SpreadsPage/SpreadsPage.tsx
+index 6f9b20d..7ac9334 100644
+--- a/algo-trading/src/pages/SpreadsPage/SpreadsPage.tsx
++++ b/algo-trading/src/pages/SpreadsPage/SpreadsPage.tsx
+@@ -1,7 +1,7 @@
+ import { useCallback, useEffect, useRef, useState } from 'react'
+ import { useLocation, useNavigate } from 'react-router-dom'
+ import { apiGet, apiPost } from '../../trading'
+-import { displayedCandidates, numericColumns, type Ranges, type ViewRow } from './viewFilters'
++import { preciseCredit, displayedCandidates, numericColumns, type Ranges, type ViewRow } from './viewFilters'
+ import DiscoveryPanel from './DiscoveryPanel'
+ import './spreads-page.css'
+ 
+@@ -9,6 +9,7 @@ type Status = { connected: boolean; expiresAt: number | null; data_mode?: 'fixtu
+ type Setup = { symbol: string; expiries: string[]; data_mode: 'fixtures' | 'upstox'; data_note: string; scan_availability?: { available: boolean | null; status?: string; reason: string | null } }
+ type Parameters = { dte: number; width: number; min_vrp: number; min_oi: number; max_spread_pct: number; min_cushion: number; min_ror: number }
+ type Candidate = ViewRow & {
++  probability_sample_count?: number; leg_inputs?: Record<string, Record<string, string | number | null> | null>
+   expiration: string; long_strike: number; width: number; iv: number; rv21: number
+   strategy_profile?: string; strike_interval?: number; minimum_credit_points?: number
+   credit_points_unrounded?: number; width_steps?: number; short_tick_inr?: number; long_tick_inr?: number
+@@ -22,8 +23,8 @@ type Candidate = ViewRow & {
+   }
+ }
+ type Funnel = Record<string, number>
+-type Scan = { kind?: 'INDEX' | 'EQUITY'; nse_market_structure_issues?: { reason: string; short_strike: number; long_strike?: number }[]; symbol: string; ok: boolean; error: string | null; expiry: string | null; dte: number | null; candidates: Candidate[]; funnel: Funnel | null; capabilities?: Record<string, string>; capability_blockers?: string[]; data_warnings?: string[]; earnings_source_note?: string; meta: { spot: number } | null }
+-type Result = { strategy_profile?: string; ok: boolean; candidates: Candidate[]; funnel: Funnel | null; underlyings: Scan[]; success_count: number; failure_count: number; elapsed: number; data_mode: string; data_note: string; ranking_note: string; scan_audit?: { status: string; file?: string; error_type?: string; combined_ranking_identical?: boolean } }
++type Scan = { observation_policy?: { explanation: string; reference_date: string | null; chain_spot: number | null }; freshness?: { fetched_at: string; explanation: string }; settlement_note?: string; costs?: { explanation: string }; history_validation?: { explanation: string }; kind?: 'INDEX' | 'EQUITY'; nse_market_structure_issues?: { reason: string; short_strike: number; long_strike?: number }[]; symbol: string; ok: boolean; error: string | null; expiry: string | null; dte: number | null; candidates: Candidate[]; funnel: Funnel | null; capabilities?: Record<string, string>; capability_blockers?: string[]; data_warnings?: string[]; earnings_source_note?: string; meta: { spot: number } | null }
++type Result = { requested_count?: number; status?: string; strategy_profile?: string; ok: boolean; candidates: Candidate[]; funnel: Funnel | null; underlyings: Scan[]; success_count: number; failure_count: number; elapsed: number; data_mode: string; data_note: string; ranking_note: string; scan_audit?: { status: string; file?: string; error_type?: string; combined_ranking_identical?: boolean } }
+ const defaultParams: Parameters = { dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 }
+ const MAX_UNDERLYINGS = 50
+ const controls: { key: keyof Parameters; label: string; min: number; max: number; step: number }[] = [
+@@ -201,7 +202,7 @@ export default function SpreadsPage() {
+       <div className="my-5 flex flex-col gap-2 sm:flex-row sm:items-end"><label className="min-w-0 flex-1 text-sm font-medium text-slate-700">Add by NSE symbol<input aria-label="NSE underlying symbol" placeholder="Search NIFTY, BANKNIFTY or a stock such as RELIANCE" value={input} onChange={event => setInput(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void add() } }} className={inputClass} /><span className="mt-1 block text-xs font-normal text-slate-500">Selected: {selected.length ? selected.join(', ') : 'none'}. Type additional symbols here, then choose Add.</span></label><button type="button" className={buttonClass} disabled={loading || scanning} onClick={() => void add()}>Load F&amp;O expiries · add</button><button type="button" className={buttonClass} disabled={scanning || loading || !selected.length} onClick={() => { setSelected([]); setExpiries({}); setResult(null); setInput('') }}>Clear all</button></div>
+       <details className="mt-3 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-medium text-slate-700">Manage selected underlyings · {selected.length} names</summary><div className="mt-3 space-y-2" aria-label="Selected underlying controls">{selected.map(symbol => <div key={symbol} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 px-3 py-2"><div className="flex min-w-0 items-center gap-2"><strong className="text-sm text-slate-900">{symbol}</strong><span className="text-xs text-slate-500">NSE F&amp;O</span>{expiries[symbol] && <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{expiries[symbol]}</span>}</div><div className="flex items-center gap-2"><details className="group relative"><summary className="cursor-pointer list-none rounded-lg px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50">Expiry <span className="text-slate-400 group-open:hidden">＋</span><span className="hidden text-slate-400 group-open:inline">−</span></summary><div className="absolute right-0 z-20 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"><label className="block text-xs font-medium text-slate-600">Option expiry<select aria-label={`${symbol} expiry`} disabled={scanning || !options[symbol]?.length} value={expiries[symbol] || ''} onChange={event => setExpiries(current => ({ ...current, [symbol]: event.target.value }))} className="mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 disabled:text-slate-400"><option value="">Automatic · nearest target DTE</option>{options[symbol]?.map(expiry => <option key={expiry}>{expiry}</option>)}</select></label></div></details>{availability[symbol] && <details className="group relative"><summary aria-label={`${symbol} stock data note`} className="cursor-pointer list-none rounded-lg px-2 py-2 text-xs font-medium text-amber-800 hover:bg-amber-50">Data note <span className="text-slate-400 group-open:hidden">＋</span><span className="hidden text-slate-400 group-open:inline">−</span></summary><div className="absolute right-0 z-20 mt-1 w-[min(360px,calc(100vw-5rem))] rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950 shadow-lg">{availability[symbol]}<p className="mt-1">Other selected underlyings can still scan.</p></div></details>}<button type="button" aria-label={`Remove ${symbol}`} title={`Remove ${symbol}`} disabled={scanning || loading} className="rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50" onClick={() => setSelected(current => current.filter(value => value !== symbol))}>Remove</button></div></div>)}</div></details>
+       <form onSubmit={event => void scan(event)} className="mt-5">
+-        <fieldset disabled={scanning} className="mt-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5"><legend className="px-2 text-base font-semibold text-slate-900">Scanner parameters</legend><label className="mb-4 block max-w-lg text-sm font-medium text-slate-700">Strategy profile<select aria-label="Strategy profile" className={inputClass} value={strategyProfile} onChange={event => setStrategyProfile(event.target.value)}><option value="ORIGINAL_ZIP_BASELINE">ORIGINAL_ZIP_BASELINE · fixed price-point width</option><option value="NSE_RESEARCH_V1">NSE_RESEARCH_V1 · actual listed strike steps</option></select></label><p className="mb-4 text-sm text-slate-500">{strategyProfile === 'NSE_RESEARCH_V1' ? 'NSE research uses actual listed hedges and contract tick sizes. All percentage, ratio and contract-count thresholds retain their original defaults.' : 'Defaults match the original scanner. Adjust only the filters you want to change.'}</p>{strategyProfile === 'NSE_RESEARCH_V1' && <label className="mb-4 block max-w-xs text-sm font-medium text-slate-700">Listed hedge steps<input aria-label="Listed hedge steps" type="number" required min={1} max={50} step={1} value={widthSteps} onChange={event => setWidthSteps(Number(event.target.value))} className={inputClass} /><span className="mt-1 block text-xs text-slate-500">One step selects the next listed strike away from spot. Missing quotes are not skipped.</span></label>}<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{controls.filter(control => strategyProfile !== 'NSE_RESEARCH_V1' || control.key !== 'width').map(control => { const labels: Record<keyof Parameters, string> = { dte: 'Target expiry distance', width: 'Spread width (index points / stock ₹)', min_vrp: 'Minimum IV ÷ RV21', min_oi: 'Minimum open interest', max_spread_pct: 'Maximum bid–ask fraction', min_cushion: 'Minimum price cushion (%)', min_ror: 'Minimum return on risk (%)' }; const hints: Record<keyof Parameters, string> = { dte: 'Calendar days · default 30', width: 'Must match an available hedge strike', min_vrp: 'Ratio · default 1.15', min_oi: 'Contracts after quantity ÷ lot normalization · default 100', max_spread_pct: 'Fraction: 0.10 means 10% · default 0.10', min_cushion: 'Percent · default 2', min_ror: 'Percent · default 15' }; return <label key={control.key} className="text-sm font-medium text-slate-700">{labels[control.key]}<input aria-label={control.label} required type="number" min={control.min} max={control.max} step={control.step} value={params[control.key]} onChange={event => setParams(current => ({ ...current, [control.key]: Number(event.target.value) }))} className={inputClass} /><span className="mt-1 block text-xs font-normal text-slate-500">{hints[control.key]}</span></label> })}</div></fieldset>
++        <fieldset disabled={scanning} className="mt-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5"><legend className="px-2 text-base font-semibold text-slate-900">Scanner parameters</legend><label className="mb-4 block max-w-lg text-sm font-medium text-slate-700">Strategy profile<select aria-label="Strategy profile" className={inputClass} value={strategyProfile} onChange={event => setStrategyProfile(event.target.value)}><option value="ORIGINAL_ZIP_BASELINE">ORIGINAL_ZIP_BASELINE · fixed price-point width</option><option value="NSE_RESEARCH_V1">NSE_RESEARCH_V1 · actual listed strike steps</option></select></label><p className="mb-4 text-sm text-slate-500">{strategyProfile === 'NSE_RESEARCH_V1' ? 'NSE research uses actual listed hedges and contract tick sizes. Percentage, ratio and contract-count settings are uncalibrated research defaults.' : 'Defaults match the original scanner. Adjust only the filters you want to change.'}</p>{strategyProfile === 'NSE_RESEARCH_V1' && <label className="mb-4 block max-w-xs text-sm font-medium text-slate-700">Listed hedge steps<input aria-label="Listed hedge steps" type="number" required min={1} max={50} step={1} value={widthSteps} onChange={event => setWidthSteps(Number(event.target.value))} className={inputClass} /><span className="mt-1 block text-xs text-slate-500">One step selects the next listed strike away from spot. Missing quotes are not skipped.</span></label>}<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{controls.filter(control => strategyProfile !== 'NSE_RESEARCH_V1' || control.key !== 'width').map(control => { const labels: Record<keyof Parameters, string> = { dte: 'Target expiry distance', width: 'Spread width (index points / stock ₹)', min_vrp: 'Minimum IV ÷ RV21', min_oi: 'Minimum open interest', max_spread_pct: 'Maximum bid–ask fraction', min_cushion: 'Minimum price cushion (%)', min_ror: 'Minimum return on risk (%)' }; const hints: Record<keyof Parameters, string> = { dte: 'Calendar days · default 30', width: 'Must match an available hedge strike', min_vrp: 'Ratio · default 1.15', min_oi: 'Contracts after quantity ÷ lot normalization · default 100', max_spread_pct: 'Fraction: 0.10 means 10% · default 0.10', min_cushion: 'Percent · default 2', min_ror: 'Percent · default 15' }; return <label key={control.key} className="text-sm font-medium text-slate-700">{labels[control.key]}<input aria-label={control.label} required type="number" min={control.min} max={control.max} step={control.step} value={params[control.key]} onChange={event => setParams(current => ({ ...current, [control.key]: Number(event.target.value) }))} className={inputClass} /><span className="mt-1 block text-xs font-normal text-slate-500">{hints[control.key]}</span></label> })}</div></fieldset>
+         <p className="mt-4 rounded-xl bg-blue-50 px-4 py-3 text-xs leading-5 text-blue-900">{strategyProfile === 'NSE_RESEARCH_V1' ? 'Hedges follow actual listed strikes for each expiry and CE/PE side; widths can vary across candidates. Minimum positive midpoint credit derives from both leg ticks. Missing lot/tick metadata or off-grid quotes are not guessed.' : 'Width must match an available hedge strike. Up to 12 candidate strikes per side are evaluated. NSE index widths can extend to 5,000 points; the scanner never changes your width automatically.'}</p>
+         <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"><button type="submit" disabled={loading || scanning || !selected.length || (mode === 'upstox' && !connection.connected)} className="min-h-12 rounded-xl bg-blue-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-400">{scanning ? 'Scanning selected underlyings…' : `Scan ${selected.length} underlying${selected.length === 1 ? '' : 's'}`}</button><span className="text-xs text-slate-500">One scan request · no orders are placed</span></div>
+       </form>
+@@ -212,13 +213,13 @@ export default function SpreadsPage() {
+     {message && <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">{message}</p>}
+     {result && <section className={cardClass} aria-label="Combined spread scan results">
+       <p className="mb-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm font-semibold text-blue-950">Profile: {result.strategy_profile || 'ORIGINAL_ZIP_BASELINE'}</p>
+-      {result.strategy_profile === 'NSE_RESEARCH_V1' && <p className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">Research profile: adjusted equity history is still FAIL / UNVERIFIED against Yahoo auto_adjust=True. These market-structure adaptations do not resolve that data mismatch or establish strategy performance.</p>}
++      {result.strategy_profile === 'NSE_RESEARCH_V1' && <p className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">Research defaults are uncalibrated. Raw equity history has unverified corporate-action treatment; no adjustment factors are guessed. Historical-close references and separately fetched option quotes are not synchronized.</p>}
+       {result.scan_audit && <p role="status" className="mb-3 rounded-xl bg-blue-50 p-3 text-xs text-blue-900">Diagnostic snapshot: {result.scan_audit.status}{result.scan_audit.file ? ` · ${result.scan_audit.file}` : ''}{result.scan_audit.error_type ? ` · ${result.scan_audit.error_type}` : ''}. Capture records the selected profile and its inputs.</p>}
+-      <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-widest text-blue-700">Scan results</p><h2 className="mt-1 text-xl font-semibold tracking-tight">Ranked opportunities</h2><p className="mt-1 text-sm text-slate-500">{result.success_count} scanned · {result.failure_count} unavailable · {result.elapsed}s · {result.candidates.length} opportunities</p></div><div className="flex flex-wrap gap-2"><span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800">Bull Put and Bear Call</span><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">Ranked by original EV</span></div></div>
++      <p className="mb-3 text-xs text-slate-600">Credit is an indicative midpoint model, excludes costs and is not guaranteed executable premium. Payoff maximum loss is not broker margin or capital required.</p><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-widest text-blue-700">Scan results</p><h2 className="mt-1 text-xl font-semibold tracking-tight">Ranked opportunities</h2><p className="mt-1 text-sm text-slate-500">{result.status || (result.failure_count ? 'PARTIAL / UNAVAILABLE' : 'SUCCESS')} · {result.requested_count ?? result.underlyings.length} requested · {result.success_count} scanned · {result.failure_count} unavailable · {result.elapsed}s · {result.candidates.length} opportunities</p></div><div className="flex flex-wrap gap-2"><span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800">Bull Put and Bear Call</span><span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">Ranked by model EV score</span></div></div>
+       <details className="mt-4 rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-slate-700">Scan diagnostics · funnel, data notes and underlying status</summary>
+       <p className="mt-3 text-xs text-[#626875]">{result.data_note}</p><p className="mt-2 text-xs text-[#626875]">{result.ranking_note} Original EV uses 100 units. INR per lot uses actual contract quantity and does not affect ranking; fixture lots are synthetic.</p>
+       {result.funnel && <FunnelView funnel={result.funnel} />}
+-      <div aria-label="Per-underlying scan status">{result.underlyings.map(item => <details key={item.symbol} className="my-2 rounded-lg border p-3 text-xs"><summary>{item.symbol} · {item.ok ? `${item.expiry} · ${item.dte} days · spot ${item.kind === 'INDEX' ? '' : '₹'}${item.meta?.spot}${item.kind === 'INDEX' ? ' pts' : ''} · ${item.candidates.length} opportunities` : item.error}</summary>{item.funnel && <FunnelView funnel={item.funnel} />}<p className="mt-2">{Object.entries(item.capabilities || {}).map(([key, value]) => `${key}: ${value}`).join(' · ')}</p>{item.nse_market_structure_issues?.length ? <details className="mt-2"><summary>NSE contract validation · {item.nse_market_structure_issues.length} rejected pairs</summary>{item.nse_market_structure_issues.map((issue,index) => <p key={index} className="mt-1">Short {issue.short_strike}{issue.long_strike != null ? ` / long ${issue.long_strike}` : ''}: {issue.reason}</p>)}</details> : null}{item.earnings_source_note && <p className="mt-2">Earnings source: {item.earnings_source_note}</p>}{item.capability_blockers?.length ? <p className="mt-2 text-amber-800">Blocked to preserve original inputs: {item.capability_blockers.join('; ')}</p> : null}</details>)}</div>
++      <div aria-label="Per-underlying scan status">{result.underlyings.map(item => <details key={item.symbol} className="my-2 rounded-lg border p-3 text-xs"><summary>{item.symbol} · {item.ok ? `${item.expiry} · ${item.dte} days · spot ${item.kind === 'INDEX' ? '' : '₹'}${item.meta?.spot}${item.kind === 'INDEX' ? ' pts' : ''} · ${item.candidates.length} opportunities` : item.error}</summary>{item.funnel && <FunnelView funnel={item.funnel} />}<p className="mt-2">{Object.entries(item.capabilities || {}).map(([key, value]) => `${key}: ${value}`).join(' · ')}</p>{item.nse_market_structure_issues?.length ? <details className="mt-2"><summary>NSE contract validation · {item.nse_market_structure_issues.length} candidate rejection reasons</summary>{item.nse_market_structure_issues.map((issue,index) => <p key={index} className="mt-1">Short {issue.short_strike}{issue.long_strike != null ? ` / long ${issue.long_strike}` : ''}: {issue.reason}</p>)}</details> : null}{item.observation_policy && <p className="mt-2">Reference date {item.observation_policy.reference_date ?? 'Unavailable'} · chain spot {item.observation_policy.chain_spot ?? 'Unavailable'}. {item.observation_policy.explanation}</p>}{item.freshness && <p className="mt-2">Fetched {item.freshness.fetched_at}. {item.freshness.explanation}</p>}{item.history_validation && <p className="mt-2">{item.history_validation.explanation}</p>}{item.settlement_note && <p className="mt-2">{item.settlement_note}</p>}{item.costs && <p className="mt-2">{item.costs.explanation} Net credit unavailable.</p>}{item.earnings_source_note && <p className="mt-2">Earnings source: {item.earnings_source_note}</p>}{item.capability_blockers?.length ? <p className="mt-2 text-amber-800">Blocked to preserve original inputs: {item.capability_blockers.join('; ')}</p> : null}</details>)}</div>
+       </details>
+       <details className="my-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-800">Filter and sort results <span className="font-normal text-slate-500">· {visible.length} shown of {result.candidates.length}</span></summary><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+         <label className="text-xs font-medium text-slate-600">Underlying<input aria-label="Filter underlying" placeholder="Search symbol" value={search} onChange={event => setSearch(event.target.value)} className={inputClass} /></label>
+@@ -227,10 +228,10 @@ export default function SpreadsPage() {
+         {numericColumns.map(key => { const title: Record<(typeof numericColumns)[number], string> = { short_strike: 'Short strike', credit: '₹ Credit / unit', ror_pct: 'Return / risk (%)', cushion_pct: 'Cushion (%)', vrp: 'IV / RV21', p_adj: 'Adjusted breach (%)', ev: 'EV score (100-unit convention)' }; return <fieldset key={key} className="min-w-0"><legend className="text-xs font-medium text-slate-600">{title[key]}</legend><div className="mt-1 flex gap-2">{(['min', 'max'] as const).map(bound => <input key={bound} type="number" aria-label={`${key} ${bound}`} placeholder={`${bound} value`} value={ranges[key]?.[bound] || ''} onChange={event => setRanges(current => ({ ...current, [key]: { ...current[key], [bound]: event.target.value } }))} className="h-10 min-w-0 w-1/2 rounded-lg border border-slate-300 px-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />)}</div></fieldset> })}
+         <button type="button" disabled={!activeView} onClick={resetView} className={buttonClass}>Reset view</button>
+       </div></details>
+-      <div className="overflow-hidden rounded-2xl border border-slate-200"><div className="overflow-x-auto"><table className="w-full min-w-[780px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr>{(result.strategy_profile === 'NSE_RESEARCH_V1' ? [...headers.slice(0,-1), {label:'NSE lot'}, {label:'Width (₹ / pts)'}, {label:'Interval (₹ / pts)'}, {label:'₹ Credit / lot'}, {label:'₹ Max loss / lot'}, headers[headers.length-1]] : headers).map(header => <th key={header.label} aria-sort={header.key && header.key === sortKey ? sortDir === 'asc' ? 'ascending' : 'descending' : undefined} className="border-b border-slate-200 px-4 py-3">{header.key ? <button type="button" className="hover:text-blue-700" onClick={() => toggleSort(header.key!)}>{header.label} {header.key === sortKey ? sortDir === 'asc' ? '↑' : '↓' : '↕'}</button> : header.label}</th>)}</tr></thead><tbody>{visible.map(({ candidate: row }, index) => <tr key={`${row.ticker}-${row.expiration}-${row.type}-${row.short_strike}-${index}`} className="border-b border-slate-100 align-top last:border-0 hover:bg-blue-50/40">
+-        {[<span className="font-semibold text-slate-900">{row.ticker}</span>, row.expiration, <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${row.type === 'BULL PUT' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>{row.type === 'BULL PUT' ? 'Bull Put' : 'Bear Call'}</span>, <span className="whitespace-nowrap font-medium tabular-nums">{row.short_strike} / {row.long_strike}</span>, <span className="font-semibold tabular-nums">₹{row.credit_points_unrounded == null ? row.credit : Number(row.credit_points_unrounded.toFixed(6))}</span>, <span className="tabular-nums">{row.ror_pct}%</span>, <span className="tabular-nums">{row.cushion_pct}%</span>, <span className="font-semibold tabular-nums">{row.ev}</span>].map((value, column) => <td key={column} className="px-4 py-3.5">{value}</td>)}
++      <div className="overflow-hidden rounded-2xl border border-slate-200"><div className="overflow-x-auto"><table className="w-full min-w-[780px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr>{(result.strategy_profile === 'NSE_RESEARCH_V1' ? [...headers.slice(0,-1), {label:'NSE lot'}, {label:'Width (₹ / pts)'}, {label:'Interval (₹ / pts)'}, {label:'₹ Credit / lot'}, {label:'₹ Payoff max loss / lot'}, headers[headers.length-1]] : headers).map(header => <th key={header.label} aria-sort={header.key && header.key === sortKey ? sortDir === 'asc' ? 'ascending' : 'descending' : undefined} className="border-b border-slate-200 px-4 py-3">{header.key ? <button type="button" className="hover:text-blue-700" onClick={() => toggleSort(header.key!)}>{header.label} {header.key === sortKey ? sortDir === 'asc' ? '↑' : '↓' : '↕'}</button> : header.label}</th>)}</tr></thead><tbody>{visible.map(({ candidate: row }, index) => <tr key={`${row.ticker}-${row.expiration}-${row.type}-${row.short_strike}-${index}`} className="border-b border-slate-100 align-top last:border-0 hover:bg-blue-50/40">
++        {[<span className="font-semibold text-slate-900">{row.ticker}</span>, row.expiration, <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${row.type === 'BULL PUT' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>{row.type === 'BULL PUT' ? 'Bull Put' : 'Bear Call'}</span>, <span className="whitespace-nowrap font-medium tabular-nums">{row.short_strike} / {row.long_strike}</span>, <span className="font-semibold tabular-nums">₹{Number(preciseCredit(row).toFixed(6))}</span>, <span className="tabular-nums">{row.ror_pct}%</span>, <span className="tabular-nums">{row.cushion_pct}%</span>, <span className="font-semibold tabular-nums">{row.ev}</span>].map((value, column) => <td key={column} className="px-4 py-3.5">{value}</td>)}
+         {result.strategy_profile === 'NSE_RESEARCH_V1' && [row.lot_size ?? 'Unavailable', row.width, row.strike_interval ?? 'Unavailable', row.credit_per_lot_inr == null ? 'Unavailable' : `₹${row.credit_per_lot_inr}`, row.max_loss_per_lot_inr == null ? 'Unavailable' : `₹${row.max_loss_per_lot_inr}`].map((value,column) => <td key={`nse-${column}`} className="whitespace-nowrap px-4 py-3.5 tabular-nums">{value}</td>)}
+-        <td className="px-4 py-3"><details className="group"><summary className="cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-900">Full breakdown <span className="text-slate-400 group-open:hidden">＋</span><span className="hidden text-slate-400 group-open:inline">−</span></summary><div className="mt-3 grid w-[min(620px,calc(100vw-4rem))] gap-3 whitespace-normal text-xs sm:grid-cols-2"><div className="rounded-xl bg-slate-50 p-3"><strong>Spread</strong><p className="mt-1">Expiry {row.expiration} · actual width {row.width} · ₹ credit/unit {row.credit_points_unrounded ?? row.credit}</p>{row.strategy_profile === 'NSE_RESEARCH_V1' && <p>Listed steps {row.width_steps} · interval {row.strike_interval} · ticks ₹{row.short_tick_inr} / ₹{row.long_tick_inr} · midpoint-credit quantum ₹{row.minimum_credit_points}</p>}<p>Short {row.short_instrument_key ?? 'unavailable'} · long {row.long_instrument_key ?? 'unavailable'}</p></div><div className="rounded-xl bg-slate-50 p-3"><strong>Returns</strong><p className="mt-1">RoR {row.ror_pct}% · cushion {row.cushion_pct}% · EV {row.ev} original 100-unit convention</p><p>Lot {row.lot_size ?? 'unavailable'} · EV/lot {row.ev_per_lot_inr == null ? 'Unavailable' : `₹${row.ev_per_lot_inr}`}{row.lot_size_status === 'fixture' ? ' (fixture)' : ''}</p><p>Credit/lot ₹{row.credit_per_lot_inr ?? '—'} · max loss/lot ₹{row.max_loss_per_lot_inr ?? '—'} · lot source {row.lot_size_status}</p></div><div className="rounded-xl bg-slate-50 p-3 sm:col-span-2"><strong>Calculation layers</strong><p className="mt-1">RV: {Object.entries(row.layers.l1).map(([key, value]) => `${key} ${value ?? '—'}`).join(' · ')}</p><p>Earnings: {row.earnings ? 'inside expiry' : 'outside expiry'} · max gap {row.layers.l2.max_gap_pct}%</p><p>IV {row.layers.l3.iv} / RV21 {row.layers.l3.rv21} = VRP {row.layers.l3.ratio}</p><p>Historical breach: raw {row.layers.l4.p_raw} · earnings adjusted {row.layers.l4.p_adj} · {row.layers.l4.horizon_td} trading days</p><p>Friction: short {row.layers.l5.short.spread_pct * 100}% · OI {row.layers.l5.short.oi}; long {row.layers.l5.long.spread_pct * 100}% · OI {row.layers.l5.long.oi}</p>{row.monetary_status === 'ambiguous_duplicate_strike' && <p className="mt-2 font-medium text-amber-800">Per-lot amounts unavailable: duplicate strike quotes cannot be attributed unambiguously.</p>}</div></div></details></td>
++        <td className="px-4 py-3"><details className="group"><summary className="cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-900">Full breakdown <span className="text-slate-400 group-open:hidden">＋</span><span className="hidden text-slate-400 group-open:inline">−</span></summary><div className="mt-3 grid w-[min(620px,calc(100vw-4rem))] gap-3 whitespace-normal text-xs sm:grid-cols-2"><div className="rounded-xl bg-slate-50 p-3"><strong>Spread</strong><p className="mt-1">Expiry {row.expiration} · actual width {row.width} · ₹ credit/unit {preciseCredit(row)}</p>{row.strategy_profile === 'NSE_RESEARCH_V1' && <p>Listed steps {row.width_steps} · interval {row.strike_interval} · ticks ₹{row.short_tick_inr} / ₹{row.long_tick_inr} · midpoint-credit quantum ₹{row.minimum_credit_points}</p>}<p>Short {row.short_instrument_key ?? 'unavailable'} · long {row.long_instrument_key ?? 'unavailable'}</p></div><div className="rounded-xl bg-slate-50 p-3"><strong>Returns</strong><p className="mt-1">RoR {row.ror_pct}% · cushion {row.cushion_pct}% · Model EV score {row.ev} (100-unit convention)</p><p>Lot {row.lot_size ?? 'unavailable'} · Simplified model score/lot {row.ev_per_lot_inr == null ? 'Unavailable' : `₹${row.ev_per_lot_inr}`}{row.lot_size_status === 'fixture' ? ' (fixture)' : ''}</p><p>Credit/lot ₹{row.credit_per_lot_inr ?? '—'} · payoff max loss/lot ₹{row.max_loss_per_lot_inr ?? '—'} · lot source {row.lot_size_status}</p></div><div className="rounded-xl bg-slate-50 p-3 sm:col-span-2"><strong>Calculation layers</strong>{row.leg_inputs && Object.entries(row.leg_inputs).map(([name, values]) => <details key={name} className="mt-2"><summary>{name} leg provider inputs</summary>{values ? Object.entries(values).map(([key, value]) => <p key={key}>{key}: {value ?? 'Unavailable'}</p>) : <p>Unavailable</p>}</details>)}<p className="mt-1">RV: {Object.entries(row.layers.l1).map(([key, value]) => `${key} ${value ?? '—'}`).join(' · ')}</p><p>Earnings: {row.earnings ? 'inside expiry' : 'outside expiry'} · max gap {row.layers.l2.max_gap_pct}%</p><p>IV {row.layers.l3.iv} / RV21 {row.layers.l3.rv21} = VRP {row.layers.l3.ratio}</p><p>Historical breach: raw {row.layers.l4.p_raw} · earnings adjusted {row.layers.l4.p_adj} · {row.layers.l4.horizon_td} approximate sessions · {row.probability_sample_count ?? 'Unavailable'} overlapping observations; uncalibrated terminal breach estimate</p><p>Friction: short {row.layers.l5.short.spread_pct * 100}% · OI {row.layers.l5.short.oi}; long {row.layers.l5.long.spread_pct * 100}% · OI {row.layers.l5.long.oi}</p>{row.monetary_status === 'ambiguous_duplicate_strike' && <p className="mt-2 font-medium text-amber-800">Per-lot amounts unavailable: duplicate strike quotes cannot be attributed unambiguously.</p>}</div></div></details></td>
+       </tr>)}</tbody></table></div></div>
+       {result.underlyings.some(item => item.data_warnings?.length) && <details className="mt-3 text-xs"><summary>Market-data notes (do not block scanning)</summary>{result.underlyings.map(item => item.data_warnings?.length ? <p key={item.symbol} className="mt-2">{item.symbol}: {item.data_warnings.join(' ')}</p> : null)}</details>}
+       {!visible.length && <p className="mt-4 text-xs">{result.candidates.length ? 'No opportunities match these display filters.' : result.success_count ? 'No candidates passed the scanner filters.' : 'Scan unavailable. See the per-underlying error above.'}</p>}
+diff --git a/algo-trading/src/pages/SpreadsPage/viewFilters.test.ts b/algo-trading/src/pages/SpreadsPage/viewFilters.test.ts
+index 228de0e..a9241a0 100644
+--- a/algo-trading/src/pages/SpreadsPage/viewFilters.test.ts
++++ b/algo-trading/src/pages/SpreadsPage/viewFilters.test.ts
+@@ -6,6 +6,11 @@ const rows: ViewRow[] = [
+   { ticker: 'BANKNIFTY', type: 'BEAR CALL', earnings: true, short_strike: 200, credit: 3, ror_pct: 30, cushion_pct: 3, vrp: 1.3, p_adj: .2, ev: -2 },
+ ]
+ describe('original result view behavior', () => {
++  it('B6 uses precise displayed credit for filters and explicit sorting', () => {
++    const precise = [{ ...rows[0], credit:.01, credit_points_unrounded:.005 }, { ...rows[1], credit:.01, credit_points_unrounded:.009 }]
++    expect(displayedCandidates(precise, '', '', '', {credit:{min:'.006'}}, '', 'desc').map(r=>r.candidate.ticker)).toEqual(['BANKNIFTY'])
++    expect(displayedCandidates(precise, '', '', '', {}, 'credit', 'desc')[0].candidate.ticker).toBe('BANKNIFTY')
++  })
+   it('preserves server ranking by default and never mutates results', () => {
+     expect(displayedCandidates(rows, '', '', '', {}, '', 'desc').map(r => r.candidate)).toEqual(rows)
+     expect(displayedCandidates(rows, '', '', '', {}, 'credit', 'desc')[0].candidate.ticker).toBe('BANKNIFTY')
+diff --git a/algo-trading/src/pages/SpreadsPage/viewFilters.ts b/algo-trading/src/pages/SpreadsPage/viewFilters.ts
+index eabb8a1..f1dbd0b 100644
+--- a/algo-trading/src/pages/SpreadsPage/viewFilters.ts
++++ b/algo-trading/src/pages/SpreadsPage/viewFilters.ts
+@@ -1,4 +1,5 @@
+-export type ViewRow = { ticker: string; type: string; earnings: boolean; short_strike: number; credit: number; ror_pct: number; cushion_pct: number; vrp: number; p_adj: number; ev: number }
++export type ViewRow = { ticker: string; type: string; earnings: boolean; short_strike: number; credit: number; credit_points_unrounded?: number; ror_pct: number; cushion_pct: number; vrp: number; p_adj: number; ev: number }
++export function preciseCredit(row: ViewRow): number { return Number((row.credit_points_unrounded ?? row.credit).toFixed(6)) }
+ export const numericColumns = ['short_strike', 'credit', 'ror_pct', 'cushion_pct', 'vrp', 'p_adj', 'ev'] as const
+ export type NumericColumn = typeof numericColumns[number]
+ export type Ranges = Partial<Record<NumericColumn, { min?: string; max?: string }>>
+@@ -7,12 +8,12 @@ export function displayedCandidates<T extends ViewRow>(rows: T[], search: string
+     && (!strategy || row.type === strategy)
+     && (!earnings || row.earnings === (earnings === 'yes'))
+     && numericColumns.every(key => {
+-      const value = row[key] * (key === 'p_adj' ? 100 : 1)
++      const value = (key === 'credit' ? preciseCredit(row) : row[key]) * (key === 'p_adj' ? 100 : 1)
+       const range = ranges[key]
+       return (!range?.min?.trim() || value >= Number(range.min)) && (!range?.max?.trim() || value <= Number(range.max))
+     }))
+   if (sortKey) filtered.sort((a, b) => {
+-    const left = a[sortKey], right = b[sortKey]
++    const left = sortKey === 'credit' ? preciseCredit(a) : a[sortKey], right = sortKey === 'credit' ? preciseCredit(b) : b[sortKey]
+     const compared = typeof left === 'string' ? left.localeCompare(String(right)) : Number(left) - Number(right)
+     return compared * (direction === 'asc' ? 1 : -1)
+   })
+diff --git a/angel-one/app/services/spreads/api.py b/angel-one/app/services/spreads/api.py
+index e0c13a3..9f905e9 100644
+--- a/angel-one/app/services/spreads/api.py
++++ b/angel-one/app/services/spreads/api.py
+@@ -20,7 +20,7 @@ from .engine import ScanParams, scan_provider_data, pick_expiration, empirical_b
+ from .fixture_adapter import FixtureMarketDataProvider
+ from .instruments import normalize_symbol, retain_universe_identities
+ from .nifty_fixtures import spread_fixture_payloads
+-from .transport import UpstoxProviderError, REQUEST_DEADLINE
++from .transport import UpstoxProviderError, REQUEST_DEADLINE, RATE_OWNER
+ from .upstox_adapter import UpstoxMarketDataProvider
+ from .discovery import discover
+ from .discovery_adapter import DiscoveryDataAdapter, FixtureDiscoveryDataAdapter
+@@ -82,12 +82,20 @@ def _mode() -> str:
+     return mode
+ 
+ 
+-def _authorize_internal(
++async def _authorize_internal(
+     supplied: Annotated[str, Header(alias="X-Internal-Service-Key")] = "",
++    owner: Annotated[str, Header(alias="X-Spreads-User-Id")] = "",
+ ) -> None:
+     internal_key = (os.getenv("INTERNAL_SERVICE_KEY") or os.getenv("INTERNAL_API_SECRET") or "").strip()
+     if not internal_key or not hmac.compare_digest(supplied.encode(), internal_key.encode()):
+         raise HTTPException(401, "Internal service authentication required.")
++    if len(owner) > 128:
++        raise HTTPException(422, "Invalid Spread user identity.")
++    context = RATE_OWNER.set(owner or None)
++    try:
++        yield
++    finally:
++        RATE_OWNER.reset(context)
+ 
+ 
+ def _access_token(
+@@ -300,6 +308,8 @@ async def scan_multiple(
+         "width_mode": 'listed_strike_steps' if request.strategy_profile == nse.NSE_RESEARCH_V1 else 'fixed_price_points',
+         "width_steps": request.width_steps if request.strategy_profile == nse.NSE_RESEARCH_V1 else None,
+         "underlyings": scans, "success_count": len(successful),
++        "requested_count": len(symbols),
++        "status": "SUCCESS" if len(successful) == len(scans) else "PARTIAL" if successful else "UNAVAILABLE",
+         "failure_count": len(scans) - len(successful), "candidates": candidates,
+         "funnel": {key: sum((scan.get("funnel") or {}).get(key, 0) for scan in successful)
+                    for key in keys} if successful else None,
+@@ -365,7 +375,7 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
+             def native_builder(ticker, spot, puts, calls, expiry, days, close, rv, earnings_inside, gap, p):
+                 import pandas as pd
+                 return nse.build_spreads(ticker, spot, pd.DataFrame(puts), pd.DataFrame(calls),
+-                    expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve)
++                    expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve, market_issues)
+         result = scan_provider_data(symbol, history, chain, earnings,
+                                     expiration, dte, params, spread_builder=native_builder)
+         result['strategy_profile'] = request.strategy_profile
+@@ -398,13 +408,24 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
+                     for key in ("short_strike", "long_strike")]
+             # Use exact quoted leg identity, never the first contract sharing a strike.
+             legs = [matching[0] if matching and len({(leg.instrument_key, leg.lot_size) for leg in matching}) == 1 else None for matching in matches]
+-            lot = legs[0].lot_size if all(legs) and legs[0].lot_size == legs[1].lot_size and legs[0].lot_size > 0 else None
++            lot = legs[0].lot_size if all(legs) and legs[0].lot_size is not None and legs[0].lot_size == legs[1].lot_size and legs[0].lot_size > 0 else None
+             candidate.update(short_instrument_key=legs[0].instrument_key if legs[0] else None,
+                              long_instrument_key=legs[1].instrument_key if legs[1] else None,
+                              lot_size=lot, lot_size_status=("fixture" if mode == "fixtures" else "contract") if lot else "unavailable")
+             # Recompute unrounded amounts from the original quote/probability inputs;
+             # never derive money from rounded displayed EV or change its ordering.
+             short, long = quotes.get(candidate["short_strike"]), quotes.get(candidate["long_strike"])
++            candidate['leg_inputs'] = {
++                name: ({'instrument_key': quote.instrument_key, 'bid': quote.bid, 'ask': quote.ask,
++                        'midpoint': (quote.bid + quote.ask) / 2 if quote.bid is not None and quote.ask is not None else None,
++                        'iv': quote.implied_volatility, 'raw_iv': quote.raw_iv, 'iv_source': quote.iv_source,
++                        'raw_oi_quantity': quote.raw_oi_quantity, 'oi_lot_size': quote.oi_lot_size,
++                        'oi_contracts': quote.open_interest, 'oi_status': quote.oi_normalization_status,
++                        'volume': quote.volume} if quote else None)
++                for name, quote in (('short', short), ('long', long))
++            }
++            horizon = max(1, round(dte * 252 / 365))
++            candidate['probability_sample_count'] = max(0, sum(bar.close is not None for bar in history.bars) - horizon)
+             if lot and short and long:
+                 candidate['monetary_status'] = 'available'
+                 credit = (short.bid + short.ask - long.bid - long.ask) / 2
+@@ -433,6 +454,26 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
+                 "quote_timestamp": chain.quote_timestamp.status,
+             },
+         })
++        result['iv_provider_errors'] = list(chain.iv_errors)
++        result['history_validation'] = history.validation
++        result['observation_policy'] = {
++            'mode': 'historical_close_reference',
++            'reference_date': history.bars[-1].timestamp.astimezone(IST).date().isoformat() if history.bars else None,
++            'chain_spot': chain.spot,
++            'explanation': 'OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot.',
++        }
++        result['freshness'] = {'fetched_at': datetime.now(IST).isoformat(),
++                               'quote_time_status': 'UNKNOWN', 'provider_quote_timestamp': None,
++                               'explanation': 'Fetch completion time only; provider per-leg quote age is unavailable.'}
++        result['settlement_note'] = (
++            'Stock options are physically settled: expiry can create delivery and funding obligations. '
++            'Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled.'
++            if underlying['kind'] == 'EQUITY' else
++            'Index options are cash settled. Payoff maximum loss is not broker margin or capital required.')
++        result['costs'] = {'status': 'UNVERIFIED', 'estimated_cost_inr': None, 'net_credit_inr': None,
++                           'explanation': 'Gross midpoint model excludes brokerage, STT, exchange charges, GST, SEBI charges, stamp duty, slippage and two-leg execution effects.'}
++        if chain.iv_errors:
++            result.setdefault('data_warnings', []).append('Some V3 IV requests failed; see IV provider errors. Missing values were not estimated.')
+         result['earnings_source_note'] = earnings.capability.explanation
+         if capture:
+             try:
+diff --git a/angel-one/app/services/spreads/discovery.py b/angel-one/app/services/spreads/discovery.py
+index 43042a9..14b0348 100644
+--- a/angel-one/app/services/spreads/discovery.py
++++ b/angel-one/app/services/spreads/discovery.py
+@@ -10,7 +10,7 @@ from dataclasses import dataclass
+ from datetime import date
+ 
+ from .engine import atm_iv, edge_discovery_metrics, rank_edge_discovery
+-from .transport import UpstoxProviderError
++from .transport import UpstoxProviderError, QUOTA_WAIT_OBSERVER
+ 
+ logger = logging.getLogger('spreads.discovery')
+ 
+@@ -29,7 +29,7 @@ def _error(symbol, stage, exception=None, message=None):
+                        'Upstox connection unavailable; reconnect.' if status in {401,403} else
+                        'Discovery provider input could not be loaded.')
+     logger.warning('discovery_input_failed symbol=%s stage=%s status=%s', symbol, stage, status)
+-    return {'ticker':symbol, 'stage':stage, 'error':safe, 'status':status}
++    return {'ticker':symbol, 'stage':stage, 'error':safe, 'status':status, 'provider_failed':exception is not None}
+ 
+ 
+ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
+@@ -63,9 +63,16 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
+     progress_lock = threading.Lock()
+     completed = [0]
+     def tracked(stage, function, value, total):
++        def waiting(seconds):
++            with progress_lock:
++                if on_progress:
++                    on_progress({'stage':stage, 'completed':completed[0], 'total':total,
++                                 'quota_wait_seconds':round(seconds, 1)})
++        observer = QUOTA_WAIT_OBSERVER.set(waiting)
+         try:
+             return function(value)
+         finally:
++            QUOTA_WAIT_OBSERVER.reset(observer)
+             with progress_lock:
+                 completed[0] += 1
+                 if on_progress:
+@@ -91,12 +98,19 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
+ 
+     def stage2(symbol):
+         try:
+-            chain = adapter.get_atm_chain(by_symbol[symbol]['instrument_key'], as_of=as_of)
++            metrics = metrics_by_symbol.get(symbol)
++            scope = {'spot': metrics['_spot_raw'] if metrics else None} if getattr(adapter, 'supports_atm_iv_scope', False) else {}
++            chain = adapter.get_atm_chain(by_symbol[symbol]['instrument_key'], as_of=as_of, **scope)
+             if chain is None:
+                 return symbol, float('nan'), 'unavailable', 'unavailable', _error(symbol,'iv',message='No usable discovery option expiry.'), None
+             metrics = metrics_by_symbol.get(symbol)
+-            iv = atm_iv(chain, metrics['_spot_raw'] if metrics else float('nan'))
++            iv = atm_iv(chain, metrics['_spot_raw']) if metrics else float('nan')
+             if math.isnan(iv):
++                if getattr(chain, 'iv_errors', ()):
++                    failure = chain.iv_errors[0]
++                    error = _error(symbol, 'iv', message=failure['reason'])
++                    error.update(status=failure.get('status'), code=failure.get('code'), provider_failed=True)
++                    return symbol, iv, 'failed', 'failed', error, {'iv':'failed', 'oi':chain.open_interest.status}
+                 reason = ('Historical spot is unavailable, so the original ATM strike selection cannot be evaluated.'
+                           if metrics is None else 'No usable positive IV was present in the original ATM selection.')
+                 return symbol, iv, 'unavailable', 'unavailable', _error(symbol,'iv',message=reason), {'iv':chain.implied_volatility.status,'oi':chain.open_interest.status}
+@@ -124,8 +138,8 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
+                 'atm_iv_available':sum(state == 'available' for state in iv_status.values()),
+                 'atm_iv_unavailable':sum(state == 'unavailable' for state in iv_status.values()),
+                 'atm_iv_failed':sum(state == 'failed' for state in iv_status.values()),
+-                'history_failed':sum(error['stage'] == 'history' and error['status'] is not None for error in errors),
+-                'failed_requests':sum(error['status'] is not None for error in errors),
++                'history_failed':sum(error['stage'] == 'history' and error.get('provider_failed', False) for error in errors),
++                'failed_requests':sum(error.get('provider_failed', False) for error in errors),
+                 'total_runtime_seconds':round(time.monotonic()-started, 2),
+                 'complete':True}
+     attempts['failed'] = attempts['failed_requests']
+diff --git a/angel-one/app/services/spreads/discovery_adapter.py b/angel-one/app/services/spreads/discovery_adapter.py
+index df32216..88707e7 100644
+--- a/angel-one/app/services/spreads/discovery_adapter.py
++++ b/angel-one/app/services/spreads/discovery_adapter.py
+@@ -9,6 +9,7 @@ from .engine import pick_expiration
+ from .provider import DataCapability, OptionChain, PriceBar
+ from .transport import UpstoxProviderError, encoded_instrument_key
+ from .upstox_adapter import IST, _number, _parse_timestamp
++from .history_validation import validate_history
+ 
+ 
+ @dataclass(frozen=True)
+@@ -20,6 +21,8 @@ class DiscoveryHistory:
+     adjustment: DataCapability
+     volume: DataCapability
+     completeness: DataCapability
++    validation: dict | None = None
++    raw_provider_rows: tuple = ()
+ 
+     @property
+     def closes(self):
+@@ -31,6 +34,8 @@ class DiscoveryHistory:
+ 
+     @property
+     def eligibility_error(self):
++        if self.completeness.status == "incomplete":
++            return "Known defective discovery history: " + self.completeness.explanation
+         # Original discovery gates; no 270-close spread-history requirement.
+         if len(self.bars) < 30:
+             return 'Discovery requires at least 30 daily history rows.'
+@@ -49,6 +54,7 @@ def four_month_start(end: date) -> date:
+ 
+ 
+ class DiscoveryDataAdapter:
++    supports_atm_iv_scope = True
+     def __init__(self, market_provider, *, transport=None, fixture=False):
+         self.market_provider = market_provider
+         self.transport = transport if transport is not None else market_provider._transport
+@@ -75,6 +81,9 @@ class DiscoveryDataAdapter:
+                 continue
+             bars.append(PriceBar(timestamp, *[_number(value) for value in candle[1:6]],
+                                  _number(candle[6]) if len(candle) > 6 else None))
++        completeness, validation = validate_history(
++            bars, start=start, end=end, raw_count=len(candles), skipped_count=len(candles)-len(bars),
++            observation_date=None if self.fixture else datetime.now(IST).date())
+         bars.sort(key=lambda bar: bar.timestamp)
+         index = instrument_key.startswith('NSE_INDEX|')
+         return DiscoveryHistory(
+@@ -83,17 +92,22 @@ class DiscoveryDataAdapter:
+                            'Synthetic adjusted-history inputs.' if self.fixture else 'Returned Upstox closes; equity corporate-action adjustment equivalence is unverified.'),
+             DataCapability(any(bar.volume is not None for bar in bars), 'fixture' if self.fixture else 'reported' if any(bar.volume is not None for bar in bars) else 'unavailable',
+                            'Reported daily volume only; no futures-volume proxy or invented index volume.'),
+-            DataCapability(self.fixture, 'fixture' if self.fixture else 'unverified',
+-                           'Returned daily candles retained; partial-candle completeness is not certified.'),
++            DataCapability(True, 'fixture', 'Synthetic daily candles.') if self.fixture else completeness,
++            validation,
++            tuple(candles),
+         )
+ 
+-    def get_atm_chain(self, instrument_key: str, *, as_of: date | None = None) -> OptionChain | None:
++    def get_atm_chain(self, instrument_key: str, *, as_of: date | None = None, spot: float | None = None) -> OptionChain | None:
+         today = as_of or datetime.now(IST).date()
+         contracts = self.market_provider.get_option_contracts(instrument_key)
+         # Normalize provider ordering to chronological order, as in spread scanning.
+         expiries = sorted({contract.expiry.isoformat() for contract in contracts})
+         picked = pick_expiration(expiries, 14, as_of=today)
+-        return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0])) if picked else None
++        if not picked:
++            return None
++        if self.fixture or spot is None:
++            return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0]))
++        return self.market_provider.get_option_chain(instrument_key, date.fromisoformat(picked[0]), iv_spot=spot)
+ 
+ 
+ class FixtureDiscoveryDataAdapter(DiscoveryDataAdapter):
+diff --git a/angel-one/app/services/spreads/discovery_cache.py b/angel-one/app/services/spreads/discovery_cache.py
+index 581d9ba..e6f27f1 100644
+--- a/angel-one/app/services/spreads/discovery_cache.py
++++ b/angel-one/app/services/spreads/discovery_cache.py
+@@ -39,18 +39,30 @@ class DiscoveryCache:
+         entry = self.entries.get(key, {'updated':0.,'all':[],'universe':{},'errors':[],'capabilities':{}})
+         if key in self.entries:
+             self.entries.move_to_end(key)
+-        return deepcopy({**entry, 'top':entry['all'][:5], 'refreshing':key in self.tasks,
++        age = max(0, self.clock() - entry['updated']) if entry['updated'] else None
++        return deepcopy({**entry, 'cache_age_seconds':age,
++                         'cache_status':'UNKNOWN' if age is None else 'CACHED' if age <= TTL else 'STALE',
++                         'top':entry['all'][:5], 'refreshing':key in self.tasks,
+                          'progress':self.progress.get(key)})
+ 
+     async def _refresh(self, key, loader):
+         try:
+             payload = await loader()
+             old = self.entries.get(key)
+-            # Original empty refresh retains previous ranking/timestamp.
+-            entry = {'updated':self.clock() if payload['all'] else (old['updated'] if old else 0.),
+-                     **payload}
++            stats = payload.get('stats', {})
++            status = 'EMPTY' if not payload['all'] else 'PARTIAL' if payload.get('errors') or stats.get('complete') is False else 'SUCCESS'
++            attempt = {'status':status, 'at':self.clock(), 'stats':{**stats, 'complete':status == 'SUCCESS'},
++                       'errors':payload.get('errors', []), 'universe':payload.get('universe', {})}
++            entry = {'updated':self.clock() if payload['all'] else (old['updated'] if old else 0.), **payload}
+             if not payload['all'] and old:
+-                entry = {**old, 'errors': payload.get('errors', []), 'refresh_empty': True}
++                entry = {**old, 'errors':payload.get('errors', []), 'refresh_empty':True,
++                         'cached_previous_result':True}
++            entry['latest_attempt'] = attempt
++            entry['stats'] = {**stats, 'complete':status == 'SUCCESS'}
++            if status == 'SUCCESS':
++                entry['last_successful'] = {'updated':entry['updated'], 'stats':stats, 'all':deepcopy(entry['all']), 'universe':deepcopy(entry.get('universe', {})), 'capabilities':deepcopy(entry.get('capabilities', {}))}
++            elif old:
++                entry['last_successful'] = old.get('last_successful')
+             entry['last_refresh_at'] = self.clock()
+             self.entries[key] = entry
+             self.entries.move_to_end(key)
+@@ -59,7 +71,11 @@ class DiscoveryCache:
+         except Exception:
+             # Consume background failures; no raw provider exception text.
+             old = self.entries.get(key, {'updated':0.,'all':[],'universe':{},'capabilities':{}})
+-            self.entries[key] = {**old,'last_refresh_at':self.clock(),'errors':[{'ticker':None,'stage':'universe','error':'Discovery inputs could not be loaded. Retry shortly.'}]}
++            errors = [{'ticker':None,'stage':'universe','error':'Discovery inputs could not be loaded. Retry shortly.'}]
++            self.entries[key] = {**old, 'last_refresh_at':self.clock(), 'errors':errors,
++                'stats':{'complete':False}, 'cached_previous_result':bool(old['all']),
++                'latest_attempt':{'status':'FAILED', 'at':self.clock(), 'stats':{}, 'errors':errors},
++                'last_successful':old.get('last_successful')}
+             while len(self.entries) > self.limit:
+                 self.entries.popitem(last=False)
+         finally:
+diff --git a/angel-one/app/services/spreads/earnings_source.py b/angel-one/app/services/spreads/earnings_source.py
+index 64c80f5..d94ed4e 100644
+--- a/angel-one/app/services/spreads/earnings_source.py
++++ b/angel-one/app/services/spreads/earnings_source.py
+@@ -81,7 +81,7 @@ class YahooEarningsSource:
+             return unavailable('Historical earnings dates do not overlap the supplied Upstox price history.')
+         inside,gap = get_earnings_info(events,closes,expiration,as_of=today)
+         return EarningsData(True,inside,gap,DataCapability(True,'yahoo_dates_upstox_closes',
+-            'Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.'))
++            'Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified.'))
+ 
+ 
+ yahoo_earnings_source = YahooEarningsSource()
+diff --git a/angel-one/app/services/spreads/engine.py b/angel-one/app/services/spreads/engine.py
+index 623ec47..7cb2751 100644
+--- a/angel-one/app/services/spreads/engine.py
++++ b/angel-one/app/services/spreads/engine.py
+@@ -61,7 +61,7 @@ def pick_expiration(expirations: Iterable[str], target_dte: int,
+     best = None
+     best_diff = 10**9
+     best_dte = 0
+-    for expiration in expirations:
++    for expiration in sorted(set(value for value in expirations if isinstance(value, str))):
+         try:
+             day = datetime.strptime(expiration, "%Y-%m-%d").date()
+         except (TypeError, ValueError):
+@@ -146,7 +146,7 @@ def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_thre
+         row.pop("_rv21_raw", None)
+         row.pop("_spot_raw", None)
+     df = pd.DataFrame(rows)
+-    df["vrp_rank"] = df["vrp14"].rank(pct=True, na_option="bottom")
++    df["vrp_rank"] = df["vrp14"].rank(pct=True, na_option="keep").fillna(0.0)
+     df["shock_rank"] = df["shock"].rank(pct=True, na_option="bottom")
+     df["edge"] = df["vrp_pass"] & df["shock_pass"]
+     df["score"] = df["vrp_rank"] + df["shock_rank"]
+@@ -163,6 +163,8 @@ def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_thre
+ def capability_blockers(history: HistoryData, earnings: EarningsData) -> list[str]:
+     """Explain source-data requirements that must be met before an exact scan."""
+     blockers = []
++    if history.completeness.status == "incomplete":
++        blockers.append("Known defective historical observations: " + history.completeness.explanation)
+     if not history.scanner_history_eligible:
+         blockers.append("insufficient or missing price history (original requires at least 270 closes)")
+     if (not earnings.available or earnings.earnings_inside is None
+@@ -185,7 +187,7 @@ def scan_provider_data(
+     # gates. These provenance notes do not alter or prevent the original math.
+     warnings = []
+     if chain.open_interest.status not in {"verified", "fixture"}:
+-        warnings.append("Using Upstox reported OI directly; source-unit equivalence is unverified.")
++        warnings.append("Valid Upstox quantity OI is divided by matched contract lot size into contract-count OI; invalid or missing mappings remain unavailable.")
+     if history.completeness.status not in {"verified", "fixture"}:
+         warnings.append("Using returned daily candles; candle completeness is unverified.")
+         if history.validation:
+@@ -255,10 +257,14 @@ def _clean_frame(df: pd.DataFrame) -> pd.DataFrame:
+             df[col] = np.nan
+         df[col] = pd.to_numeric(df[col], errors="coerce")
+     if "openInterest" not in df.columns:
+-        df["openInterest"] = 0
+-    df["openInterest"] = (
+-        pd.to_numeric(df["openInterest"], errors="coerce").fillna(0).astype(int)
+-    )
++        df["openInterest"] = np.nan
++    df["openInterest"] = pd.to_numeric(df["openInterest"], errors="coerce")
++    # Explicit invalid sentinel preserves missingness for the unchanged integer
++    # friction gate; all configured OI thresholds are nonnegative. ATM-IV
++    # selection does not require OI, so retain these rows for discovery.
++    df['oi_available'] = df['openInterest'].notna() & np.isfinite(df['openInterest']) & (df['openInterest'] >= 0) & (df['openInterest'] % 1 == 0)
++    df['openInterest'] = df['openInterest'].where(df['oi_available'], -1).astype(int)
+     df = df.dropna(subset=["strike", "bid", "ask"])
++    df = df[np.isfinite(df['strike']) & np.isfinite(df['bid']) & np.isfinite(df['ask']) & (df['strike'] > 0)]
+     df = df[(df["bid"] > 0) & (df["ask"] > 0) & (df["ask"] >= df["bid"])]
+     return df.sort_values("strike").reset_index(drop=True)
+diff --git a/angel-one/app/services/spreads/history_validation.py b/angel-one/app/services/spreads/history_validation.py
+index 53aad44..36154e5 100644
+--- a/angel-one/app/services/spreads/history_validation.py
++++ b/angel-one/app/services/spreads/history_validation.py
+@@ -1,4 +1,5 @@
+ """Observational daily-history checks; never fill, drop or rewrite scanner bars."""
++import math
+ from collections import Counter
+ from dataclasses import dataclass
+ from datetime import date
+@@ -22,14 +23,14 @@ class SessionCalendar:
+     source: str
+ 
+ 
+-def validate_history(bars, *, start, end, raw_count, skipped_count, calendar=None):
++def validate_history(bars, *, start, end, raw_count, skipped_count, calendar=None, observation_date=None):
+     days = [bar.timestamp.astimezone(IST).date() for bar in bars]
+     duplicates = sorted(day.isoformat() for day, count in Counter(days).items() if count > 1)
+     outside = sorted({day.isoformat() for day in days if not start <= day <= end})
+     invalid = []
+     for bar, day in zip(bars, days):
+         values = (bar.open, bar.high, bar.low, bar.close, bar.volume)
+-        if (any(value is None for value in values) or
++        if (any(value is None or not isinstance(value, (int,float)) or isinstance(value, bool) or not math.isfinite(value) for value in values) or
+                 min(values[:4]) <= 0 or bar.volume < 0 or
+                 bar.high < max(bar.open, bar.close, bar.low) or
+                 bar.low > min(bar.open, bar.close, bar.high)):
+@@ -40,13 +41,19 @@ def validate_history(bars, *, start, end, raw_count, skipped_count, calendar=Non
+     expected = {day for day in calendar.sessions if start <= day <= end} if covered else None
+     missing = sorted(day.isoformat() for day in expected - set(days)) if covered else None
+     unexpected = sorted(day.isoformat() for day in set(days) - expected) if covered else None
+-    defects = bool(duplicates or outside or invalid or skipped_count or missing or unexpected)
++    # A same-day candle cannot be certified final from its OHLC schema alone.
++    # Keep raw bars intact and reject rather than inventing a market-close cutoff.
++    unconfirmed = sorted({day.isoformat() for day in days if observation_date is not None
++                          and day >= observation_date and not (covered and day in expected)})
++    defects = bool(duplicates or outside or invalid or skipped_count or missing or unexpected or unconfirmed)
+     status = 'incomplete' if defects else 'verified' if covered else 'unverified'
+     note = (f'Daily history {status}: {len(duplicates)} duplicate dates; '
+             f'{skipped_count} skipped malformed rows; {len(invalid)} invalid OHLCV rows; '
+             f'{len(outside)} out-of-range dates. ')
+     note += (f'Calendar source: {calendar.source}; missing sessions: {missing}; unexpected sessions: {unexpected}.'
+              if covered else 'No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.')
++    if unconfirmed:
++        note += f' Unconfirmed current/future session candles: {unconfirmed}; analysis unavailable until finality is established.'
+     return DataCapability(status == 'verified', status, note), {
+         'requested_start': start.isoformat(), 'requested_end': end.isoformat(),
+         'raw_count': raw_count, 'parsed_count': len(bars), 'skipped_count': skipped_count,
+@@ -55,5 +62,6 @@ def validate_history(bars, *, start, end, raw_count, skipped_count, calendar=Non
+         'invalid_ohlcv_dates': sorted(set(invalid)), 'out_of_range_dates': outside,
+         'calendar_source': calendar.source if covered else None,
+         'missing_sessions': missing, 'unexpected_sessions': unexpected,
++        'unconfirmed_session_dates': unconfirmed,
+         'status': status, 'explanation': note,
+     }
+diff --git a/angel-one/app/services/spreads/instruments.py b/angel-one/app/services/spreads/instruments.py
+index b0367b8..a012831 100644
+--- a/angel-one/app/services/spreads/instruments.py
++++ b/angel-one/app/services/spreads/instruments.py
+@@ -4,6 +4,8 @@ from __future__ import annotations
+ 
+ import re
+ import threading
++from datetime import datetime
++from zoneinfo import ZoneInfo
+ 
+ from .transport import UpstoxProviderError
+ 
+@@ -39,10 +41,24 @@ def normalize_symbol(symbol: str) -> str:
+ 
+ def resolve_underlying(transport, symbol: str, *, universe_loader=None) -> dict:
+     normalized = normalize_symbol(symbol)
++    today = datetime.now(ZoneInfo('Asia/Kolkata')).date().isoformat()
+     with _identity_lock:
+         identity = _discovered.get(normalized)
+-        if identity:
++        stale = bool(identity and _identity_day != today)
++        if identity and not stale:
+             return dict(identity)
++    if stale:
++        if universe_loader is None:
++            raise UpstoxProviderError('Discovered instrument identity is stale; refresh NSE discovery', status_code=409)
++        master = universe_loader()
++        if master.get('as_of') != today:
++            raise UpstoxProviderError('Authoritative NSE master date is not current', status_code=409)
++        retain_universe_identities(master['items'], master['as_of'])
++        with _identity_lock:
++            identity = _discovered.get(normalized)
++            if identity:
++                return dict(identity)
++        raise UpstoxProviderError('Underlying no longer has an unambiguous current NSE option identity', status_code=404)
+     if normalized in INDEX_KEYS:
+         return {"symbol": normalized, "instrument_key": INDEX_KEYS[normalized], "kind": "INDEX", "segment": "NSE_INDEX"}
+ 
+@@ -59,6 +75,8 @@ def resolve_underlying(transport, symbol: str, *, universe_loader=None) -> dict:
+     if not keys and universe_loader is not None:
+         # Also recover an index selected before discovery or after a service restart.
+         master = universe_loader()
++        if master.get('as_of') != today:
++            raise UpstoxProviderError('Authoritative NSE master date is not current', status_code=409)
+         retain_universe_identities(master['items'], master['as_of'])
+         with _identity_lock:
+             identity = _discovered.get(normalized)
+diff --git a/angel-one/app/services/spreads/nse_calculations.py b/angel-one/app/services/spreads/nse_calculations.py
+index d90ab5f..63d10a8 100644
+--- a/angel-one/app/services/spreads/nse_calculations.py
++++ b/angel-one/app/services/spreads/nse_calculations.py
+@@ -62,15 +62,13 @@ def pair_resolver(contracts, expiry, width_steps, tick_unit, issues):
+             if not matches or len({(c.instrument_key,c.underlying_key,c.lot_size,c.tick_size) for c in matches}) != 1:
+                 return reject('missing_or_conflicting_contract_metadata', short, long_strike=hedge)
+             legs.append(matches[0])
+-        if legs[0].underlying_key != legs[1].underlying_key or legs[0].lot_size != legs[1].lot_size or legs[0].lot_size <= 0:
++        if legs[0].underlying_key != legs[1].underlying_key or legs[0].lot_size != legs[1].lot_size or legs[0].lot_size is None or legs[0].lot_size <= 0:
+             return reject('incompatible_leg_lot_sizes', short, long_strike=hedge)
+         ticks = [contract_tick_inr(c,tick_unit) for c in legs]
+         if any(t is None for t in ticks):
+             return reject('missing_or_invalid_contract_tick', short, long_strike=hedge)
+         valid = all(abs(float(row[field]) / float(tick) - round(float(row[field]) / float(tick))) <= 1e-7
+                     for row,tick in zip((short,long),ticks) for field in ('bid','ask'))
+-        if not valid:
+-            issues.append({'short_strike':float(short.strike),'long_strike':hedge,'reason':'quote_not_on_authoritative_tick_grid'})
+         return long, {'strategy_profile':NSE_RESEARCH_V1, 'width_steps':width_steps,
+             'strike_interval':abs(grid[position+sign]-float(short.strike)),
+             'minimum_credit_points':float(midpoint_quantum(*ticks)),
+@@ -81,11 +79,25 @@ def pair_resolver(contracts, expiry, width_steps, tick_unit, issues):
+ 
+ def build_spreads(ticker: str, spot: float, puts, calls, expiration: str,
+                   dte: int, close: pd.Series, rv: dict, earnings: bool,
+-                  max_gap: float, p: ScanParams, resolve_pair):
++                  max_gap: float, p: ScanParams, resolve_pair, rejections=None):
+     candidates, funnel = [], {
+         "considered": 0, "cushion": 0, "friction": 0,
+         "paired": 0, "ror": 0, "vrp": 0, "final": 0,
+     }
++    def reject(reason, label, short, long=None):
++        if rejections is not None:
++            rejections.append({'reason': reason, 'strategy': label, 'short_strike': float(short),
++                               **({'long_strike': float(long)} if long is not None else {})})
++
++    def friction_reason(detail, leg):
++        if detail['oi'] < 0:
++            return f'{leg}_MISSING_OI'
++        if detail['oi'] < p.min_oi:
++            return f'{leg}_OI'
++        if detail['spread_pct'] > p.max_spread_pct:
++            return f'{leg}_BID_ASK'
++        return f'{leg}_INVALID_QUOTE'
++
+     rv21 = rv.get("rv21", float("nan"))
+ 
+     configs = [
+@@ -107,11 +119,13 @@ def build_spreads(ticker: str, spot: float, puts, calls, expiration: str,
+             k_short = float(srow["strike"])
+             cushion = abs(k_short - spot) / spot * 100.0
+             if cushion < p.min_cushion:
++                reject('CUSHION', label, k_short)
+                 continue
+             funnel["cushion"] += 1
+ 
+             f_short = friction_detail(srow)
+             if not passes_friction(f_short, p):
++                reject(friction_reason(f_short, 'SHORT'), label, k_short)
+                 continue
+ 
+             selected = resolve_pair(sign, srow, df)
+@@ -120,12 +134,14 @@ def build_spreads(ticker: str, spot: float, puts, calls, expiration: str,
+             lrow, market = selected
+             f_long = friction_detail(lrow)
+             if not passes_friction(f_long, p):
++                reject(friction_reason(f_long, 'LONG'), label, k_short, lrow.strike)
+                 continue
+             funnel["friction"] += 1
+ 
+             credit = f_short["mid"] - f_long["mid"]
+             width = abs(float(lrow["strike"]) - k_short)
+             if not market["quote_ticks_valid"] or credit < market["minimum_credit_points"] - 1e-12 or credit >= width:
++                reject('INVALID_TICK_OR_CREDIT', label, k_short, lrow.strike)
+                 continue
+             funnel["paired"] += 1
+ 
+@@ -133,19 +149,23 @@ def build_spreads(ticker: str, spot: float, puts, calls, expiration: str,
+             max_loss = width - credit
+             ror_pct = (credit / max_loss) * 100.0
+             if ror_pct < p.min_ror:
++                reject('ROR', label, k_short, lrow.strike)
+                 continue
+             funnel["ror"] += 1
+ 
+             iv = float(srow["impliedVolatility"])
+             if math.isnan(iv) or iv <= 0:
++                reject('MISSING_IV', label, k_short, lrow.strike)
+                 continue
+             vrp = iv / rv21
+             if vrp < p.min_vrp:
++                reject('VRP', label, k_short, lrow.strike)
+                 continue
+             funnel["vrp"] += 1
+ 
+             p_raw = empirical_breach_prob(close, dte, cushion, direction)
+             if math.isnan(p_raw):
++                reject('INSUFFICIENT_PROBABILITY_SAMPLE', label, k_short, lrow.strike)
+                 continue
+             p_adj = (apply_earnings_penalty(p_raw, cushion, max_gap)
+                      if earnings else p_raw)
+diff --git a/angel-one/app/services/spreads/provider.py b/angel-one/app/services/spreads/provider.py
+index bab1cfb..1271b31 100644
+--- a/angel-one/app/services/spreads/provider.py
++++ b/angel-one/app/services/spreads/provider.py
+@@ -34,11 +34,12 @@ class HistoryData:
+     volume: DataCapability
+     completeness: DataCapability = DataCapability(False, "unverified", "Daily candle completeness needs live validation.")
+     validation: dict | None = None
++    raw_provider_rows: tuple = ()
+ 
+     @property
+     def scanner_history_eligible(self) -> bool:
+         """The original fetch_history gate requires at least 270 close rows."""
+-        return sum(bar.close is not None for bar in self.bars) >= 270
++        return self.completeness.status != "incomplete" and sum(bar.close is not None for bar in self.bars) >= 270
+ 
+ 
+ @dataclass(frozen=True)
+@@ -50,7 +51,7 @@ class OptionContract:
+     trading_symbol: str
+     instrument_type: str
+     strike: float
+-    lot_size: int
++    lot_size: int | None
+     tick_size: float | None
+ 
+ 
+@@ -65,6 +66,8 @@ class OptionQuote:
+     ask_quantity: int | None
+     volume: int | None
+ 
++    raw_iv: float | None = None
++    iv_source: str | None = None
+     raw_oi_quantity: float | None = None
+     oi_lot_size: int | None = None
+     oi_normalization_status: str | None = None
+@@ -90,6 +93,7 @@ class OptionChain:
+     open_interest: DataCapability
+     implied_volatility: DataCapability
+     quote_timestamp: DataCapability
++    iv_errors: tuple[dict, ...] = ()
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/angel-one/app/services/spreads/transport.py b/angel-one/app/services/spreads/transport.py
+index e96817c..e1fa68c 100644
+--- a/angel-one/app/services/spreads/transport.py
++++ b/angel-one/app/services/spreads/transport.py
+@@ -15,14 +15,15 @@ from typing import Any
+ from urllib.parse import quote, urlsplit
+ 
+ import httpx
++from .rate_limit import market_data_quota, retry_after_seconds
+ 
+ 
+ UPSTOX_API_BASE = "https://api.upstox.com"
++QUOTA_WAIT_OBSERVER = ContextVar("spread_quota_wait_observer", default=None)
++RATE_OWNER = ContextVar("spread_rate_owner", default=None)
+ REQUEST_DEADLINE = ContextVar("spread_request_deadline", default=None)
+ _cache = OrderedDict()
+ _cache_lock = threading.Lock()
+-_pace_lock = threading.Lock()
+-_last_call = 0.0
+ _CACHE_TTL = 120
+ _CACHE_LIMIT = 512
+ 
+@@ -35,15 +36,6 @@ def _remaining():
+     return remaining
+ 
+ 
+-def _pace():
+-    global _last_call
+-    with _pace_lock:
+-        delay = max(0, 0.4 - (time.monotonic() - _last_call))
+-        if delay >= _remaining():
+-            raise UpstoxProviderError("Spread market-data deadline exceeded", status_code=504)
+-        if delay:
+-            time.sleep(delay)
+-        _last_call = time.monotonic()
+ _READ_ONLY_PATHS = frozenset({
+     "/v2/instruments/search",
+     "/v2/option/contract",
+@@ -119,15 +111,17 @@ class UpstoxTransport:
+             _cache.pop(key, None)
+         headers = {"Authorization": self._authorization, "Accept": "application/json"}
+         response = None
++        api = "/v3/historical-candle" if path.startswith("/v3/historical-candle/") else path
++        quota_key = (RATE_OWNER.get() or self._identity, api)
+         for attempt in range(self._max_attempts):
++            if self._client is None:
++                market_data_quota.acquire(quota_key, sleep=self._sleep, remaining=_remaining, on_wait=QUOTA_WAIT_OBSERVER.get())
+             metric_key = ('option_chain_requests' if path == '/v2/option/chain' else
+                           'v3_greeks_requests' if path == '/v3/market-quote/option-greek' else None)
+             if metric_key:
+                 with self._metrics_lock:
+                     self._metrics[metric_key] += 1
+             try:
+-                if self._client is None:
+-                    _pace()
+                 timeout = min(self._timeout, _remaining())
+                 if self._client is None:
+                     response = httpx.get(self._base_url + path, params=params, headers=headers,
+@@ -152,10 +146,10 @@ class UpstoxTransport:
+                         self._metrics['rate_limit_responses'] += 1
+                 if attempt + 1 < self._max_attempts:
+                     retry_after = response.headers.get("Retry-After", "")
+-                    try:
+-                        delay = min(max(float(retry_after), 0), 4) if retry_after else None
+-                    except ValueError:
+-                        delay = None
++                    delay = retry_after_seconds(retry_after) if retry_after else None
++                    if response.status_code == 429 and self._client is None:
++                        cooldown = delay if delay is not None else (2 ** attempt) + self._jitter() * .75
++                        market_data_quota.cooldown(quota_key, cooldown)
+                     self._backoff(attempt, delay)
+                     continue
+             break
+diff --git a/angel-one/app/services/spreads/universe.py b/angel-one/app/services/spreads/universe.py
+index b4cebb3..9e694c8 100644
+--- a/angel-one/app/services/spreads/universe.py
++++ b/angel-one/app/services/spreads/universe.py
+@@ -39,7 +39,7 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
+     identities = {}
+     ambiguous = set()
+     rejected = 0
+-    seen_contracts = set()
++    seen_contracts = {}
+     for row in rows:
+         if not isinstance(row, dict) or row.get('segment') != 'NSE_FO' or row.get('instrument_type') not in {'CE', 'PE'}:
+             continue
+@@ -49,7 +49,9 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
+         kind = row.get('underlying_type')
+         try:
+             symbol = normalize_symbol(row.get('underlying_symbol'))
+-            lot = int(row.get('lot_size'))
++            raw_lot = row.get('lot_size')
++            numeric_lot = float(raw_lot)
++            lot = int(numeric_lot) if not isinstance(raw_lot, bool) and numeric_lot.is_integer() else 0
+             valid = (expiry is not None and expiry >= today and lot > 0
+                      and kind in {'INDEX', 'EQUITY'} and isinstance(key, str)
+                      and key.startswith('NSE_INDEX|' if kind == 'INDEX' else 'NSE_EQ|')
+@@ -60,8 +62,11 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
+             rejected += 1
+             continue
+         if contract in seen_contracts:
++            previous = seen_contracts[contract]
++            if previous != (symbol, key, kind):
++                ambiguous.update((previous[0], symbol))
+             continue
+-        seen_contracts.add(contract)
++        seen_contracts[contract] = (symbol, key, kind)
+         if symbol in identities and identities[symbol] != key:
+             ambiguous.add(symbol)
+         identities[symbol] = key
+diff --git a/angel-one/app/services/spreads/upstox_adapter.py b/angel-one/app/services/spreads/upstox_adapter.py
+index 36d6de7..a5cc365 100644
+--- a/angel-one/app/services/spreads/upstox_adapter.py
++++ b/angel-one/app/services/spreads/upstox_adapter.py
+@@ -110,16 +110,17 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+             ))
+         completeness, validation = validate_history(
+             bars, start=start, end=today, raw_count=len(candles),
+-            skipped_count=len(candles) - len(bars),
++            skipped_count=len(candles) - len(bars), observation_date=today,
+         )
+         bars.sort(key=lambda bar: bar.timestamp)
+         return HistoryData(
+             instrument_key=instrument_key, bars=tuple(bars), requested_years=years,
+             completeness=completeness, validation=validation,
++            raw_provider_rows=tuple(candles),
+             adjustment=(
+                 DataCapability(True, "not_applicable", "NSE index close history is not subject to equity corporate-action adjustment.")
+                 if instrument_key.startswith("NSE_INDEX|") else
+-                DataCapability(False, "unverified", "Upstox candle adjustment equivalence to Yahoo adjusted equity history has not been verified.")
++                DataCapability(False, "unverified", "Raw Upstox equity OHLCV; split, bonus, consolidation, dividend, rights and merger/demerger treatment is unverified. No adjustment factors or volume transformations are applied.")
+             ),
+             volume=DataCapability(any(bar.volume is not None for bar in bars), "reported" if any(bar.volume is not None for bar in bars) else "unavailable",
+                                   "Raw Upstox candle volume; index-volume semantics may differ from Yahoo."),
+@@ -132,7 +133,9 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+         contracts: list[OptionContract] = []
+         for item in data:
+             if not isinstance(item, dict):
+-                continue
++                raise UpstoxProviderError('Upstox returned malformed option-contract metadata; listed strike grid is unavailable')
++            if item.get('underlying_key') not in (None, underlying_key):
++                raise UpstoxProviderError('Upstox option-contract underlying identity conflicts with request')
+             instrument_key = item.get("instrument_key")
+             symbol = item.get("trading_symbol")
+             instrument_type = item.get("instrument_type")
+@@ -140,9 +143,9 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+             raw_lot = _number(item.get("lot_size"))
+             lot_size = int(raw_lot) if raw_lot is not None and raw_lot > 0 and raw_lot.is_integer() else None
+             if (not isinstance(instrument_key, str) or not instrument_key or
+-                    not isinstance(symbol, str) or instrument_type not in {"CE", "PE"} or
+-                    strike is None or lot_size is None or lot_size <= 0):
+-                continue
++                    not isinstance(symbol, str) or not symbol or instrument_type not in {"CE", "PE"} or
++                    strike is None or strike <= 0):
++                raise UpstoxProviderError('Upstox returned malformed option-contract metadata; listed strike grid is unavailable')
+             contracts.append(OptionContract(
+                 underlying_symbol=str(item.get("underlying_symbol") or ""),
+                 underlying_key=underlying_key, expiry=_expiry(item.get("expiry")),
+@@ -174,7 +177,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+             return None, raw, lot, 'non_integral_quantity_per_lot'
+         return int(count), raw, lot, 'verified_quantity_to_contracts'
+ 
+-    def get_option_chain(self, underlying_key: str, expiry: date) -> OptionChain:
++    def get_option_chain(self, underlying_key: str, expiry: date, *, iv_spot: float | None = None) -> OptionChain:
+         data = self._transport.get("/v2/option/chain", {
+             "instrument_key": underlying_key, "expiry_date": expiry.isoformat(),
+         })
+@@ -190,6 +193,10 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+         for row in data:
+             if not isinstance(row, dict):
+                 continue
++            if row.get('underlying_key') not in (None, underlying_key):
++                raise UpstoxProviderError('Upstox option-chain underlying identity conflicts with request')
++            if row.get('expiry') is not None and _expiry(row['expiry']) != expiry:
++                raise UpstoxProviderError('Upstox option-chain expiry conflicts with request')
+             if spot is None:
+                 spot = _number(row.get("underlying_spot_price"))
+             strike = _number(row.get("strike_price"))
+@@ -218,6 +225,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+                     instrument_key=instrument_key,
+                     bid=_number(market.get("bid_price")), ask=_number(market.get("ask_price")),
+                     implied_volatility=iv, open_interest=oi,
++                    raw_iv=raw_iv, iv_source="option_chain" if iv is not None and iv > 0 else None,
+                     raw_oi_quantity=raw_oi, oi_lot_size=oi_lot,
+                     oi_normalization_status=oi_status,
+                     bid_quantity=_integer(market.get("bid_qty")),
+@@ -227,11 +235,28 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+         # Live comparison on 2026-10-13 established V3 iv is already decimal.
+         # V2 option-chain iv above is percentage points. Never infer scale from
+         # magnitude, and never replace an existing finite positive chain IV.
+-        invalid_keys = list(dict.fromkeys(quote.instrument_key for _, quote in puts + calls
++        iv_pairs = puts + calls
++        if iv_spot is not None and math.isfinite(iv_spot):
++            # Discovery needs only the nearest three valid-IV rows on each side.
++            # A missing IV farther than the third already valid row cannot alter
++            # that original selection. Ties retain ascending strike order.
++            iv_pairs = []
++            for pairs in (puts, calls):
++                valid_seen = 0
++                for strike, quote in sorted(pairs, key=lambda pair: (abs(pair[0]-iv_spot), pair[0])):
++                    if quote.bid is None or quote.ask is None or quote.bid <= 0 or quote.ask < quote.bid:
++                        continue
++                    iv_pairs.append((strike, quote))
++                    if quote.implied_volatility is not None and quote.implied_volatility > 0:
++                        valid_seen += 1
++                    if valid_seen == 3:
++                        break
++        invalid_keys = list(dict.fromkeys(quote.instrument_key for _, quote in iv_pairs
+             if quote.implied_volatility is None or quote.implied_volatility <= 0))
+-        fallback = self.get_option_greeks(invalid_keys) if invalid_keys else {}
++        fallback, iv_errors = self._get_option_greeks_result(invalid_keys) if invalid_keys else ({}, [])
+         def fill_missing(pairs):
+-            return [(strike, replace(quote, implied_volatility=fallback[quote.instrument_key])
++            return [(strike, replace(quote, implied_volatility=fallback[quote.instrument_key],
++                                             raw_iv=fallback[quote.instrument_key], iv_source="v3_option_greeks")
+                      if (quote.implied_volatility is None or quote.implied_volatility <= 0)
+                      and quote.instrument_key in fallback else quote)
+                     for strike, quote in pairs]
+@@ -249,20 +274,28 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+             implied_volatility=DataCapability(iv_seen, "reported" if iv_seen else "unavailable",
+                                               "Option-chain IV percentage points converted to decimal; missing/invalid IV uses matched V3 decimal IV when available."),
+             quote_timestamp=DataCapability(False, "unavailable", "The option-chain response does not provide a per-quote timestamp."),
++            iv_errors=tuple(iv_errors),
+         )
+ 
+     def get_option_greeks(self, instrument_keys: list[str]) -> dict[str, float]:
+         """Read matched decimal V3 IV in batches; no synthetic/error fallback."""
++        return self._get_option_greeks_result(instrument_keys)[0]
++
++    def _get_option_greeks_result(self, instrument_keys):
+         keys = list(dict.fromkeys(instrument_keys))
+-        result = {}
++        result, errors = {}, []
+         for start in range(0, len(keys), 50):
+             batch = keys[start:start + 50]
+             try:
+                 data = self._transport.get('/v3/market-quote/option-greek',
+                                            {'instrument_key': ','.join(batch)})
+-            except UpstoxProviderError:
++            except UpstoxProviderError as exception:
++                errors.append({'instrument_keys': batch, 'status': exception.status_code,
++                               'code': exception.code, 'reason': 'V3 Option Greeks request failed'})
+                 continue
+             if not isinstance(data, dict):
++                errors.append({'instrument_keys': batch, 'status': None, 'code': None,
++                               'reason': 'V3 Option Greeks returned an invalid response'})
+                 continue
+             for item in data.values():
+                 if not isinstance(item, dict):
+@@ -270,7 +303,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
+                 key, iv = item.get('instrument_token'), _number(item.get('iv'))
+                 if isinstance(key, str) and key in batch and iv is not None and iv > 0:
+                     result[key] = iv
+-        return result
++        return result, errors
+ 
+     def get_earnings_info(self, underlying_key: str, expiration: date) -> EarningsData:
+         del expiration
+diff --git a/backend/controllers/spreadController.js b/backend/controllers/spreadController.js
+index 2afab68..d1578fd 100644
+--- a/backend/controllers/spreadController.js
++++ b/backend/controllers/spreadController.js
+@@ -85,7 +85,7 @@ function scanAccess(req) {
+   if (mode !== 'upstox') throw Object.assign(new Error('Spread market-data mode is not configured.'), { status: 503 });
+   const accessToken = oauth.accessToken(appUserId(req));
+   if (!accessToken) throw Object.assign(new Error('Connect Upstox to scan.'), { status: 401 });
+-  return { accessToken };
++  return { accessToken, userId: appUserId(req) };
+ }
+ 
+ async function niftyExpiries(req, res) {
+diff --git a/backend/services/spreadsPythonService.js b/backend/services/spreadsPythonService.js
+index 6dc2727..911bfe5 100644
+--- a/backend/services/spreadsPythonService.js
++++ b/backend/services/spreadsPythonService.js
+@@ -48,7 +48,7 @@ function createSpreadsPythonService({
+     const timeout = setTimeout(() => controller.abort(), endpoint.discovery ? Math.max(timeoutMs, 190_000) : endpoint.method === 'POST' ? Math.max(timeoutMs, 210_000) : timeoutMs);
+     try {
+       const headers = { 'X-Internal-Service-Key': internalKey, Accept: 'application/json' };
+-      if (endpoint.discovery) {
++      if (endpoint.discovery || userId !== undefined) {
+         if (!userId || typeof userId !== 'string' || userId.length > 128) throw Object.assign(new Error('Discovery user context is required.'), { status: 422 });
+         headers['X-Spreads-User-Id'] = userId;
+       }

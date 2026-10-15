@@ -1,0 +1,53 @@
+{
+  "archived_replay_not_live": true,
+  "batches": [
+    {
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "before": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 2,
+        "paired": 2,
+        "ror": 2,
+        "vrp": 2,
+        "final": 2
+      },
+      "after": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 2,
+        "paired": 2,
+        "ror": 2,
+        "vrp": 2,
+        "final": 2
+      },
+      "finals": 2
+    },
+    {
+      "profile": "NSE_RESEARCH_V1",
+      "before": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "after": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "finals": 0
+    }
+  ],
+  "B5_old_behavior": {
+    "complete_after_empty": true,
+    "latest_attempt_present": false
+  }
+}

@@ -39,7 +39,7 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
     identities = {}
     ambiguous = set()
     rejected = 0
-    seen_contracts = set()
+    seen_contracts = {}
     for row in rows:
         if not isinstance(row, dict) or row.get('segment') != 'NSE_FO' or row.get('instrument_type') not in {'CE', 'PE'}:
             continue
@@ -49,7 +49,9 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
         kind = row.get('underlying_type')
         try:
             symbol = normalize_symbol(row.get('underlying_symbol'))
-            lot = int(row.get('lot_size'))
+            raw_lot = row.get('lot_size')
+            numeric_lot = float(raw_lot)
+            lot = int(numeric_lot) if not isinstance(raw_lot, bool) and numeric_lot.is_integer() else 0
             valid = (expiry is not None and expiry >= today and lot > 0
                      and kind in {'INDEX', 'EQUITY'} and isinstance(key, str)
                      and key.startswith('NSE_INDEX|' if kind == 'INDEX' else 'NSE_EQ|')
@@ -60,8 +62,11 @@ def build_universe(rows, *, as_of: date | None = None) -> dict:
             rejected += 1
             continue
         if contract in seen_contracts:
+            previous = seen_contracts[contract]
+            if previous != (symbol, key, kind):
+                ambiguous.update((previous[0], symbol))
             continue
-        seen_contracts.add(contract)
+        seen_contracts[contract] = (symbol, key, kind)
         if symbol in identities and identities[symbol] != key:
             ambiguous.add(symbol)
         identities[symbol] = key

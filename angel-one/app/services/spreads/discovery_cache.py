@@ -39,18 +39,30 @@ class DiscoveryCache:
         entry = self.entries.get(key, {'updated':0.,'all':[],'universe':{},'errors':[],'capabilities':{}})
         if key in self.entries:
             self.entries.move_to_end(key)
-        return deepcopy({**entry, 'top':entry['all'][:5], 'refreshing':key in self.tasks,
+        age = max(0, self.clock() - entry['updated']) if entry['updated'] else None
+        return deepcopy({**entry, 'cache_age_seconds':age,
+                         'cache_status':'UNKNOWN' if age is None else 'CACHED' if age <= TTL else 'STALE',
+                         'top':entry['all'][:5], 'refreshing':key in self.tasks,
                          'progress':self.progress.get(key)})
 
     async def _refresh(self, key, loader):
         try:
             payload = await loader()
             old = self.entries.get(key)
-            # Original empty refresh retains previous ranking/timestamp.
-            entry = {'updated':self.clock() if payload['all'] else (old['updated'] if old else 0.),
-                     **payload}
+            stats = payload.get('stats', {})
+            status = 'EMPTY' if not payload['all'] else 'PARTIAL' if payload.get('errors') or stats.get('complete') is False else 'SUCCESS'
+            attempt = {'status':status, 'at':self.clock(), 'stats':{**stats, 'complete':status == 'SUCCESS'},
+                       'errors':payload.get('errors', []), 'universe':payload.get('universe', {})}
+            entry = {'updated':self.clock() if payload['all'] else (old['updated'] if old else 0.), **payload}
             if not payload['all'] and old:
-                entry = {**old, 'errors': payload.get('errors', []), 'refresh_empty': True}
+                entry = {**old, 'errors':payload.get('errors', []), 'refresh_empty':True,
+                         'cached_previous_result':True}
+            entry['latest_attempt'] = attempt
+            entry['stats'] = {**stats, 'complete':status == 'SUCCESS'}
+            if status == 'SUCCESS':
+                entry['last_successful'] = {'updated':entry['updated'], 'stats':stats, 'all':deepcopy(entry['all']), 'universe':deepcopy(entry.get('universe', {})), 'capabilities':deepcopy(entry.get('capabilities', {}))}
+            elif old:
+                entry['last_successful'] = old.get('last_successful')
             entry['last_refresh_at'] = self.clock()
             self.entries[key] = entry
             self.entries.move_to_end(key)
@@ -59,7 +71,11 @@ class DiscoveryCache:
         except Exception:
             # Consume background failures; no raw provider exception text.
             old = self.entries.get(key, {'updated':0.,'all':[],'universe':{},'capabilities':{}})
-            self.entries[key] = {**old,'last_refresh_at':self.clock(),'errors':[{'ticker':None,'stage':'universe','error':'Discovery inputs could not be loaded. Retry shortly.'}]}
+            errors = [{'ticker':None,'stage':'universe','error':'Discovery inputs could not be loaded. Retry shortly.'}]
+            self.entries[key] = {**old, 'last_refresh_at':self.clock(), 'errors':errors,
+                'stats':{'complete':False}, 'cached_previous_result':bool(old['all']),
+                'latest_attempt':{'status':'FAILED', 'at':self.clock(), 'stats':{}, 'errors':errors},
+                'last_successful':old.get('last_successful')}
             while len(self.entries) > self.limit:
                 self.entries.popitem(last=False)
         finally:

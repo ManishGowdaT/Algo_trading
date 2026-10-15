@@ -1,0 +1,10 @@
+{
+  "scope": "Synthetic diagnostic input through current production view helper; no market data",
+  "credit_precision_mismatch": {
+    "api_credit": 0.01,
+    "displayed_credit": 0.005,
+    "minimum_credit_filter": 0.006,
+    "row_survives_filter": true
+  },
+  "production_source": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\algo-trading\\src\\pages\\SpreadsPage\\viewFilters.ts"
+}

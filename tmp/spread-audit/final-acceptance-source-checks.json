@@ -1,0 +1,1044 @@
+{
+  "changed_since_audit_start": [
+    "angel-one/app/services/spreads/discovery.py",
+    "angel-one/app/services/spreads/discovery_cache.py",
+    "angel-one/app/services/spreads/universe.py",
+    "angel-one/app/services/spreads/upstox_adapter.py",
+    "algo-trading/src/pages/SpreadsPage/DiscoveryPanel.tsx"
+  ],
+  "formulas_unchanged": true,
+  "production_source_files_checked": 23,
+  "occurrences": {
+    "USD": [],
+    "weekday": [
+      {
+        "file": "angel-one\\app\\services\\spreads\\history_validation.py",
+        "line": 17,
+        "text": "No weekday/holiday inference is permitted. Coverage must include the entire"
+      }
+    ],
+    "universe_count": [],
+    "profit_risk": [],
+    "order_endpoint": [],
+    "missing_coercion": [
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 439,
+        "text": "probability = apply_earnings_penalty(probability, cushion, earnings.max_historical_gap_pct or 0)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 149,
+        "text": "df[\"vrp_rank\"] = df[\"vrp14\"].rank(pct=True, na_option=\"keep\").fillna(0.0)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 218,
+        "text": "bool(earnings.earnings_inside), float(earnings.max_historical_gap_pct or 0), params,"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 223,
+        "text": "\"max_gap\": round(float(earnings.max_historical_gap_pct or 0), 2),"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 47,
+        "text": "setPayload(result); setMessage(result.stats?.complete ? `Discovery complete \u00b7 ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible \u00b7 ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts \u00b7 ${result.stats.atm_iv_available ?? 0} available \u00b7 ${result.stats.atm_iv_unavailable ?? 0} unavailable \u00b7 ${result.stats.atm_iv_failed ?? 0} IV failed \u00b7 ${result.stats.failed_requests ?? 0} provider errors \u00b7 ${result.stats.option_chain_requests ?? 0} option-chain requests \u00b7 ${result.stats.v3_greeks_requests ?? 0} V3 requests \u00b7 ${result.stats.rate_limit_responses ?? 0} rate limits \u00b7 ${result.stats.total_runtime_seconds ?? 0}s` : result.latest_attempt ? `Latest refresh: ${result.latest_attempt.status}${result.cached_previous_result ? ' \u00b7 showing the previous cached ranking' : ''}` : '')"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 86,
+        "text": "<p className=\"mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600\">{payload.data_note}{payload.cached_previous_result && <strong className=\"block text-amber-800\">Previous cached ranking \u00b7 latest refresh {payload.latest_attempt?.status || 'unavailable'}</strong>}<br /><span className=\"text-slate-500\">{payload.universe.size ?? 0} eligible \u00b7 history attempted {payload.stats?.history_attempted ?? 'Unavailable'} / {payload.universe.size ?? 'Unavailable'} \u00b7 history available {payload.stats?.history_available ?? 'Unavailable'} \u00b7 {payload.all.length} ranked \u00b7 {payload.universe.source || 'source unavailable'} \u00b7 {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' \u00b7 refresh in progress' : ''} \u00b7 ranking cache {payload.cache_status ?? 'UNKNOWN'} \u00b7 age {payload.cache_age_seconds == null ? 'Unavailable' : `${Math.round(payload.cache_age_seconds)}s`}</span></p>"
+      }
+    ],
+    "hundred": [
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 48,
+        "text": "min_oi: int = Field(default=100, ge=0, le=10000)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 51,
+        "text": "min_ror: float = Field(default=15, ge=5, le=100, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 323,
+        "text": "\"ranking_note\": \"Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking.\","
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 436,
+        "text": "cushion = abs(candidate[\"short_strike\"] - closes[-1]) / closes[-1] * 100"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 52,
+        "text": "max_gap = max(max_gap, abs(change) * 100.0)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 119,
+        "text": "change = float(close.iloc[-1] / close.iloc[-2] - 1) * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 22,
+        "text": "return Fraction(str(contract.tick_size)) / (100 if tick_unit == 'paise' else 1)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 120,
+        "text": "cushion = abs(k_short - spot) / spot * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 150,
+        "text": "ror_pct = (credit / max_loss) * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 173,
+        "text": "ev = (credit * (1 - p_adj) - max_loss * p_adj) * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 17,
+        "text": "min_oi: int = 100"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 45,
+        "text": "rets = (close.shift(-n) / close - 1.0).dropna() * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 87,
+        "text": "cushion = abs(k_short - spot) / spot * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 114,
+        "text": "ror_pct = (credit / max_loss) * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 133,
+        "text": "ev = (credit * (1 - p_adj) - max_loss * p_adj) * 100.0"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 216,
+        "text": "iv = raw_iv / 100.0 if raw_iv is not None else None"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 28,
+        "text": "const defaultParams: Parameters = { dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 43,
+        "text": "{ label: 'Return / risk', key: 'ror_pct' }, { label: 'Cushion', key: 'cushion_pct' }, { label: 'EV (100-unit score)', key: 'ev' }, { label: 'Details' },"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 45,
+        "text": "const inputClass = 'mt-1 block h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50'"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 49,
+        "text": "return <div className=\"my-3 flex flex-wrap gap-2\" aria-label=\"Filter funnel\">{stages.map(stage => <div key={stage} className=\"min-w-24 flex-1 rounded-lg border p-3 text-xs\"><span className=\"capitalize\">{stage}</span><strong className=\"float-right\">{funnel[stage]}</strong><div className=\"mt-2 h-1 bg-slate-100\"><div className=\"h-1 bg-blue-600\" style={{ width: `${Math.min(100, (funnel[stage] || 0) / Math.max(funnel.considered, 1) * 100)}%` }} /></div></div>)}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 192,
+        "text": "<div className=\"flex flex-wrap items-center gap-2 rounded-2xl border border-white/15 bg-white/5 p-2\"><span className=\"sr-only\" role=\"status\">{loading ? 'Loading setup\u2026' : connection.connected ? 'Upstox connected' : 'Upstox not connected'}</span><span aria-hidden=\"true\" className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${connection.connected ? 'text-emerald-200' : 'text-amber-100'}`}><span className={`h-2 w-2 rounded-full ${connection.connected ? 'bg-emerald-400' : 'bg-amber-400'}`} />{loading ? 'Checking connection\u2026' : connection.connected ? 'Upstox connected' : 'Upstox disconnected'}</span><button type=\"button\" className=\"min-h-10 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-blue-50 disabled:opacity-50\" disabled={connecting || scanning} onClick={() => void connect()}>{connecting ? 'Connecting\u2026' : connection.connected ? 'Reconnect Upstox' : 'Connect Upstox'}</button>{connection.connected && <button type=\"button\" className=\"min-h-10 rounded-xl border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10 disabled:opacity-50\" disabled={disconnecting || scanning} onClick={() => void disconnect()}>{disconnecting ? 'Disconnecting\u2026' : 'Disconnect'}</button>}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 196,
+        "text": "<div className=\"px-5 py-3 md:px-8\">{connectionMessage && <p role=\"status\" className=\"rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900\">{connectionMessage}</p>}<details className=\"group mt-1 text-sm\"><summary className=\"cursor-pointer list-none font-medium text-slate-600 marker:hidden\">Connection diagnostics <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid gap-2 rounded-xl bg-slate-50 p-4 text-xs text-slate-600 sm:grid-cols-2\"><p>{connection.connected ? 'Connected' : 'Not connected'}{connection.expiresAt ? ` \u00b7 expires ${new Date(connection.expiresAt).toLocaleString()}` : ''}</p><p>{connection.lastAttempt ? `${connection.lastAttempt.stage} \u00b7 ${connection.lastAttempt.at}${connection.lastAttempt.httpStatus ? ` \u00b7 HTTP ${connection.lastAttempt.httpStatus}` : ''} \u00b7 ${connection.lastAttempt.message || ''}` : 'No connection attempt recorded in this Node process. In-memory connections reset when Node restarts.'}</p><p className=\"sm:col-span-2\">Detailed OAuth events appear in the Node backend terminal with the [SpreadsOAuth] prefix. Python handles market data after connection.</p></div></details></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 200,
+        "text": "<div className=\"flex flex-wrap items-end justify-between gap-3\"><div><p className=\"text-xs font-semibold uppercase tracking-widest text-blue-700\">Build your scan</p><h2 className=\"mt-1 text-xl font-semibold tracking-tight\">Select underlyings</h2><p className=\"mt-1 text-sm text-slate-500\">Add up to {MAX_UNDERLYINGS} NSE F&amp;O names. Expiries load for each selection.</p></div><span className=\"rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700\">{selected.length} / {MAX_UNDERLYINGS} selected</span></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 201,
+        "text": "{selected.length > 0 && <p className=\"mt-4 rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm leading-6 text-slate-800\"><span className=\"mr-2 text-xs font-semibold uppercase tracking-wide text-blue-800\">Selected</span><span className=\"font-semibold\">{selected.join(', ')}</span></p>}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 203,
+        "text": "<details className=\"mt-3 rounded-xl border border-slate-200 p-3\"><summary className=\"cursor-pointer text-sm font-medium text-slate-700\">Manage selected underlyings \u00b7 {selected.length} names</summary><div className=\"mt-3 space-y-2\" aria-label=\"Selected underlying controls\">{selected.map(symbol => <div key={symbol} className=\"flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 px-3 py-2\"><div className=\"flex min-w-0 items-center gap-2\"><strong className=\"text-sm text-slate-900\">{symbol}</strong><span className=\"text-xs text-slate-500\">NSE F&amp;O</span>{expiries[symbol] && <span className=\"rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600\">{expiries[symbol]}</span>}</div><div className=\"flex items-center gap-2\"><details className=\"group relative\"><summary className=\"cursor-pointer list-none rounded-lg px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50\">Expiry <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg\"><label className=\"block text-xs font-medium text-slate-600\">Option expiry<select aria-label={`${symbol} expiry`} disabled={scanning || !options[symbol]?.length} value={expiries[symbol] || ''} onChange={event => setExpiries(current => ({ ...current, [symbol]: event.target.value }))} className=\"mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 disabled:text-slate-400\"><option value=\"\">Automatic \u00b7 nearest target DTE</option>{options[symbol]?.map(expiry => <option key={expiry}>{expiry}</option>)}</select></label></div></details>{availability[symbol] && <details className=\"group relative\"><summary aria-label={`${symbol} stock data note`} className=\"cursor-pointer list-none rounded-lg px-2 py-2 text-xs font-medium text-amber-800 hover:bg-amber-50\">Data note <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-[min(360px,calc(100vw-5rem))] rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950 shadow-lg\">{availability[symbol]}<p className=\"mt-1\">Other selected underlyings can still scan.</p></div></details>}<button type=\"button\" aria-label={`Remove ${symbol}`} title={`Remove ${symbol}`} disabled={scanning || loading} className=\"rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50\" onClick={() => setSelected(current => current.filter(value => value !== symbol))}>Remove</button></div></div>)}</div></details>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 205,
+        "text": "<fieldset disabled={scanning} className=\"mt-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5\"><legend className=\"px-2 text-base font-semibold text-slate-900\">Scanner parameters</legend><label className=\"mb-4 block max-w-lg text-sm font-medium text-slate-700\">Strategy profile<select aria-label=\"Strategy profile\" className={inputClass} value={strategyProfile} onChange={event => setStrategyProfile(event.target.value)}><option value=\"ORIGINAL_ZIP_BASELINE\">ORIGINAL_ZIP_BASELINE \u00b7 fixed price-point width</option><option value=\"NSE_RESEARCH_V1\">NSE_RESEARCH_V1 \u00b7 actual listed strike steps</option></select></label><p className=\"mb-4 text-sm text-slate-500\">{strategyProfile === 'NSE_RESEARCH_V1' ? 'NSE research uses actual listed hedges and contract tick sizes. Percentage, ratio and contract-count settings are uncalibrated research defaults.' : 'Defaults match the original scanner. Adjust only the filters you want to change.'}</p>{strategyProfile === 'NSE_RESEARCH_V1' && <label className=\"mb-4 block max-w-xs text-sm font-medium text-slate-700\">Listed hedge steps<input aria-label=\"Listed hedge steps\" type=\"number\" required min={1} max={50} step={1} value={widthSteps} onChange={event => setWidthSteps(Number(event.target.value))} className={inputClass} /><span className=\"mt-1 block text-xs text-slate-500\">One step selects the next listed strike away from spot. Missing quotes are not skipped.</span></label>}<div className=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-4\">{controls.filter(control => strategyProfile !== 'NSE_RESEARCH_V1' || control.key !== 'width').map(control => { const labels: Record<keyof Parameters, string> = { dte: 'Target expiry distance', width: 'Spread width (index points / stock \u20b9)', min_vrp: 'Minimum IV \u00f7 RV21', min_oi: 'Minimum open interest', max_spread_pct: 'Maximum bid\u2013ask fraction', min_cushion: 'Minimum price cushion (%)', min_ror: 'Minimum return on risk (%)' }; const hints: Record<keyof Parameters, string> = { dte: 'Calendar days \u00b7 default 30', width: 'Must match an available hedge strike', min_vrp: 'Ratio \u00b7 default 1.15', min_oi: 'Contracts after quantity \u00f7 lot normalization \u00b7 default 100', max_spread_pct: 'Fraction: 0.10 means 10% \u00b7 default 0.10', min_cushion: 'Percent \u00b7 default 2', min_ror: 'Percent \u00b7 default 15' }; return <label key={control.key} className=\"text-sm font-medium text-slate-700\">{labels[control.key]}<input aria-label={control.label} required type=\"number\" min={control.min} max={control.max} step={control.step} value={params[control.key]} onChange={event => setParams(current => ({ ...current, [control.key]: Number(event.target.value) }))} className={inputClass} /><span className=\"mt-1 block text-xs font-normal text-slate-500\">{hints[control.key]}</span></label> })}</div></fieldset>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 218,
+        "text": "<p className=\"mb-3 text-xs text-slate-600\">Credit is an indicative midpoint model, excludes costs and is not guaranteed executable premium. Payoff maximum loss is not broker margin or capital required.</p><div className=\"flex flex-wrap items-start justify-between gap-4\"><div><p className=\"text-xs font-semibold uppercase tracking-widest text-blue-700\">Scan results</p><h2 className=\"mt-1 text-xl font-semibold tracking-tight\">Ranked opportunities</h2><p className=\"mt-1 text-sm text-slate-500\">{result.status || (result.failure_count ? 'PARTIAL / UNAVAILABLE' : 'SUCCESS')} \u00b7 {result.requested_count ?? result.underlyings.length} requested \u00b7 {result.success_count} scanned \u00b7 {result.failure_count} unavailable \u00b7 {result.elapsed}s \u00b7 {result.candidates.length} opportunities</p></div><div className=\"flex flex-wrap gap-2\"><span className=\"rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800\">Bull Put and Bear Call</span><span className=\"rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700\">Ranked by model EV score</span></div></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 220,
+        "text": "<p className=\"mt-3 text-xs text-[#626875]\">{result.data_note}</p><p className=\"mt-2 text-xs text-[#626875]\">{result.ranking_note} Original EV uses 100 units. INR per lot uses actual contract quantity and does not affect ranking; fixture lots are synthetic.</p>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 228,
+        "text": "{numericColumns.map(key => { const title: Record<(typeof numericColumns)[number], string> = { short_strike: 'Short strike', credit: '\u20b9 Credit / unit', ror_pct: 'Return / risk (%)', cushion_pct: 'Cushion (%)', vrp: 'IV / RV21', p_adj: 'Adjusted breach (%)', ev: 'EV score (100-unit convention)' }; return <fieldset key={key} className=\"min-w-0\"><legend className=\"text-xs font-medium text-slate-600\">{title[key]}</legend><div className=\"mt-1 flex gap-2\">{(['min', 'max'] as const).map(bound => <input key={bound} type=\"number\" aria-label={`${key} ${bound}`} placeholder={`${bound} value`} value={ranges[key]?.[bound] || ''} onChange={event => setRanges(current => ({ ...current, [key]: { ...current[key], [bound]: event.target.value } }))} className=\"h-10 min-w-0 w-1/2 rounded-lg border border-slate-300 px-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100\" />)}</div></fieldset> })}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 231,
+        "text": "<div className=\"overflow-hidden rounded-2xl border border-slate-200\"><div className=\"overflow-x-auto\"><table className=\"w-full min-w-[780px] text-left text-sm\"><thead className=\"bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{(result.strategy_profile === 'NSE_RESEARCH_V1' ? [...headers.slice(0,-1), {label:'NSE lot'}, {label:'Width (\u20b9 / pts)'}, {label:'Interval (\u20b9 / pts)'}, {label:'\u20b9 Credit / lot'}, {label:'\u20b9 Payoff max loss / lot'}, headers[headers.length-1]] : headers).map(header => <th key={header.label} aria-sort={header.key && header.key === sortKey ? sortDir === 'asc' ? 'ascending' : 'descending' : undefined} className=\"border-b border-slate-200 px-4 py-3\">{header.key ? <button type=\"button\" className=\"hover:text-blue-700\" onClick={() => toggleSort(header.key!)}>{header.label} {header.key === sortKey ? sortDir === 'asc' ? '\u2191' : '\u2193' : '\u2195'}</button> : header.label}</th>)}</tr></thead><tbody>{visible.map(({ candidate: row }, index) => <tr key={`${row.ticker}-${row.expiration}-${row.type}-${row.short_strike}-${index}`} className=\"border-b border-slate-100 align-top last:border-0 hover:bg-blue-50/40\">"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 234,
+        "text": "<td className=\"px-4 py-3\"><details className=\"group\"><summary className=\"cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-900\">Full breakdown <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid w-[min(620px,calc(100vw-4rem))] gap-3 whitespace-normal text-xs sm:grid-cols-2\"><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Spread</strong><p className=\"mt-1\">Expiry {row.expiration} \u00b7 actual width {row.width} \u00b7 \u20b9 credit/unit {preciseCredit(row)}</p>{row.strategy_profile === 'NSE_RESEARCH_V1' && <p>Listed steps {row.width_steps} \u00b7 interval {row.strike_interval} \u00b7 ticks \u20b9{row.short_tick_inr} / \u20b9{row.long_tick_inr} \u00b7 midpoint-credit quantum \u20b9{row.minimum_credit_points}</p>}<p>Short {row.short_instrument_key ?? 'unavailable'} \u00b7 long {row.long_instrument_key ?? 'unavailable'}</p></div><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Returns</strong><p className=\"mt-1\">RoR {row.ror_pct}% \u00b7 cushion {row.cushion_pct}% \u00b7 Model EV score {row.ev} (100-unit convention)</p><p>Lot {row.lot_size ?? 'unavailable'} \u00b7 Simplified model score/lot {row.ev_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.ev_per_lot_inr}`}{row.lot_size_status === 'fixture' ? ' (fixture)' : ''}</p><p>Credit/lot \u20b9{row.credit_per_lot_inr ?? '\u2014'} \u00b7 payoff max loss/lot \u20b9{row.max_loss_per_lot_inr ?? '\u2014'} \u00b7 lot source {row.lot_size_status}</p></div><div className=\"rounded-xl bg-slate-50 p-3 sm:col-span-2\"><strong>Calculation layers</strong>{row.leg_inputs && Object.entries(row.leg_inputs).map(([name, values]) => <details key={name} className=\"mt-2\"><summary>{name} leg provider inputs</summary>{values ? Object.entries(values).map(([key, value]) => <p key={key}>{key}: {value ?? 'Unavailable'}</p>) : <p>Unavailable</p>}</details>)}<p className=\"mt-1\">RV: {Object.entries(row.layers.l1).map(([key, value]) => `${key} ${value ?? '\u2014'}`).join(' \u00b7 ')}</p><p>Earnings: {row.earnings ? 'inside expiry' : 'outside expiry'} \u00b7 max gap {row.layers.l2.max_gap_pct}%</p><p>IV {row.layers.l3.iv} / RV21 {row.layers.l3.rv21} = VRP {row.layers.l3.ratio}</p><p>Historical breach: raw {row.layers.l4.p_raw} \u00b7 earnings adjusted {row.layers.l4.p_adj} \u00b7 {row.layers.l4.horizon_td} approximate sessions \u00b7 {row.probability_sample_count ?? 'Unavailable'} overlapping observations; uncalibrated terminal breach estimate</p><p>Friction: short {row.layers.l5.short.spread_pct * 100}% \u00b7 OI {row.layers.l5.short.oi}; long {row.layers.l5.long.spread_pct * 100}% \u00b7 OI {row.layers.l5.long.oi}</p>{row.monetary_status === 'ambiguous_duplicate_strike' && <p className=\"mt-2 font-medium text-amber-800\">Per-lot amounts unavailable: duplicate strike quotes cannot be attributed unambiguously.</p>}</div></div></details></td>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 8,
+        "text": "const searchClass = 'h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 9,
+        "text": "const primaryButtonClass = 'inline-flex min-h-10 items-center justify-center rounded-xl border border-blue-800 bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:border-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-600 disabled:opacity-100'"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 10,
+        "text": "const metric = (value: number | null, percent = false) => value == null ? 'Unavailable' : `${(percent ? value * 100 : value).toFixed(2)}${percent ? '%' : ''}`"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 78,
+        "text": "const shellButton = 'inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-100 disabled:text-slate-600 disabled:opacity-100'"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 83,
+        "text": "{busy && !payload && <p role=\"status\" className=\"mt-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900\">Loading the NSE F&amp;O universe and historical market inputs\u2026</p>}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 84,
+        "text": "{message && <p role=\"status\" className=\"mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900\">{message}</p>}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 91,
+        "text": "<div className={`rounded-2xl border border-slate-200 ${showAll ? 'max-h-[min(65vh,680px)] overflow-auto overscroll-contain' : 'overflow-x-auto'}`}><table className=\"w-full min-w-[900px] text-left text-sm\"><thead className=\"sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{['Select','Rank','Underlying','Spot (\u20b9 / index pts)','Daily change','Volume shock','RV21','ATM IV','VRP','Edge','Score'].map(title => <th key={title} className=\"border-b border-slate-200 px-3 py-3\">{title}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={row.ticker} className=\"border-b border-slate-100 last:border-0 hover:bg-blue-50/40\"><td className=\"px-3 py-3\"><input type=\"checkbox\" aria-label={`Select discovery ${row.ticker}`} checked={picked.includes(row.ticker)} disabled={disabled || adding || busy || selected.includes(row.ticker)} onChange={() => toggle(row.ticker)} /></td><td className=\"px-3 py-3 tabular-nums text-slate-500\">{payload.all.findIndex(item => item.ticker === row.ticker) + 1}</td><td className=\"px-3 py-3 font-semibold text-slate-900\">{row.ticker}{selected.includes(row.ticker) ? <span className=\"ml-2 rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-800\">In scan</span> : null}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.spot)}</td><td className=\"px-3 py-3 tabular-nums\">{row.chg.toFixed(2)}%</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.shock)}\u00d7</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.rv21, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.iv_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.iv14 == null ? row.iv_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.iv14, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.vrp_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.vrp14 == null ? row.vrp_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.vrp14)}</td><td className=\"px-3 py-3\">{row.edge ? 'Yes' : 'No'}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.score)}</td></tr>)}</tbody></table></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\viewFilters.ts",
+        "line": 11,
+        "text": "const value = (key === 'credit' ? preciseCredit(row) : row[key]) * (key === 'p_adj' ? 100 : 1)"
+      }
+    ],
+    "nonfinite": [
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 46,
+        "text": "width: float = Field(default=5, gt=0, le=5000, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 47,
+        "text": "min_vrp: float = Field(default=1.15, ge=0.5, le=3, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 49,
+        "text": "max_spread_pct: float = Field(default=0.10, gt=0, le=0.5, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 50,
+        "text": "min_cushion: float = Field(default=2, ge=0, le=30, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 51,
+        "text": "min_ror: float = Field(default=15, ge=5, le=100, allow_inf_nan=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 66,
+        "text": "if isinstance(value, float) and not math.isfinite(value):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 105,
+        "text": "return symbol, float('nan'), 'unavailable', 'unavailable', _error(symbol,'iv',message='No usable discovery option expiry.'), None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 107,
+        "text": "iv = atm_iv(chain, metrics['_spot_raw']) if metrics else float('nan')"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 108,
+        "text": "if math.isnan(iv):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 117,
+        "text": "rv21 = metrics['_rv21_raw'] if metrics else float('nan')"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 118,
+        "text": "vrp_status = 'available' if rv21 and rv21 > 0 and not math.isnan(rv21) else 'unavailable'"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery.py",
+        "line": 121,
+        "text": "return symbol, float('nan'), 'failed', 'failed', _error(symbol,'iv',exception), None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 29,
+        "text": "import yfinance as yf"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 68,
+        "text": "return unavailable('Yahoo earnings source could not be loaded. Install yfinance and retry; no earnings values were assumed.')"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 51,
+        "text": "if position > 0 and change is not None and not math.isnan(change):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 103,
+        "text": "return float(np.median(ivs)) if ivs else float(\"nan\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 118,
+        "text": "rv21 = float(lr.iloc[-21:].std(ddof=1) * math.sqrt(252)) if len(lr) >= 21 else float(\"nan\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 121,
+        "text": "\"rv21\": round(rv21, 4) if not math.isnan(rv21) else None,"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 133,
+        "text": "iv14 = iv14_by_ticker.get(row[\"ticker\"], float(\"nan\"))"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 135,
+        "text": "vrp14 = iv14 / rv21 if rv21 and rv21 > 0 and not math.isnan(iv14) else float(\"nan\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 137,
+        "text": "row[\"ticker\"], \"available\" if not math.isnan(iv14) else \"unavailable\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 139,
+        "text": "row[\"ticker\"], \"available\" if not math.isnan(vrp14) else \"unavailable\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 140,
+        "text": "if not math.isnan(iv14):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 142,
+        "text": "if not math.isnan(vrp14):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 158,
+        "text": "if isinstance(value, float) and not math.isfinite(value):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 187,
+        "text": "# gates. These provenance notes do not alter or prevent the original math."
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 224,
+        "text": "\"rv\": {key: round(value, 4) if not math.isnan(value) else None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 257,
+        "text": "df[col] = np.nan"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 260,
+        "text": "df[\"openInterest\"] = np.nan"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 265,
+        "text": "df['oi_available'] = df['openInterest'].notna() & np.isfinite(df['openInterest']) & (df['openInterest'] >= 0) & (df['openInterest'] % 1 == 0)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\engine.py",
+        "line": 268,
+        "text": "df = df[np.isfinite(df['strike']) & np.isfinite(df['bid']) & np.isfinite(df['ask']) & (df['strike'] > 0)]"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\history_validation.py",
+        "line": 33,
+        "text": "if (any(value is None or not isinstance(value, (int,float)) or isinstance(value, bool) or not math.isfinite(value) for value in values) or"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 18,
+        "text": "if contract.tick_size is None or not math.isfinite(contract.tick_size) or contract.tick_size <= 0:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 101,
+        "text": "rv21 = rv.get(\"rv21\", float(\"nan\"))"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 108,
+        "text": "if df is None or df.empty or math.isnan(rv21) or rv21 <= 0:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 157,
+        "text": "if math.isnan(iv) or iv <= 0:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 167,
+        "text": "if math.isnan(p_raw):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+        "line": 190,
+        "text": "\"l1\": {k: round(v, 4) if not math.isnan(v) else None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 32,
+        "text": "out[f\"rv{win}\"] = float(\"nan\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 47,
+        "text": "return float(\"nan\")"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 68,
+        "text": "rv21 = rv.get(\"rv21\", float(\"nan\"))"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 75,
+        "text": "if df is None or df.empty or math.isnan(rv21) or rv21 <= 0:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 120,
+        "text": "if math.isnan(iv) or iv <= 0:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 128,
+        "text": "if math.isnan(p_raw):"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+        "line": 148,
+        "text": "\"l1\": {k: round(v, 4) if not math.isnan(v) else None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\rate_limit.py",
+        "line": 71,
+        "text": "return max(0.0, seconds) if math.isfinite(seconds) else None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 37,
+        "text": "return number if math.isfinite(number) else None"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 239,
+        "text": "if iv_spot is not None and math.isfinite(iv_spot):"
+      },
+      {
+        "file": "backend\\services\\upstoxOAuthService.js",
+        "line": 143,
+        "text": "if (Number.isFinite(Number(payload.expires_in)) && Number(payload.expires_in) > 0) {"
+      },
+      {
+        "file": "backend\\services\\upstoxOAuthService.js",
+        "line": 149,
+        "text": "if (Number.isFinite(parsed)) expiresAt = parsed;"
+      }
+    ],
+    "cache": [
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 27,
+        "text": "from .discovery_cache import discovery_cache"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 136,
+        "text": "cache_key = discovery_cache.key(owner,mode,token)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 150,
+        "text": "discovery_cache.progress[cache_key] = value"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\api.py",
+        "line": 160,
+        "text": "payload = await discovery_cache.get(cache_key,load,force=force,wait=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 1,
+        "text": "\"\"\"Bounded per-owner in-memory discovery cache and single-flight refresh.\"\"\""
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 11,
+        "text": "class DiscoveryCache:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 33,
+        "text": "# Serve stale cached ranking during GET refresh, as in the original."
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 43,
+        "text": "return deepcopy({**entry, 'cache_age_seconds':age,"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 44,
+        "text": "'cache_status':'UNKNOWN' if age is None else 'CACHED' if age <= TTL else 'STALE',"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 59,
+        "text": "'cached_previous_result':True}"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 76,
+        "text": "'stats':{'complete':False}, 'cached_previous_result':bool(old['all']),"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\discovery_cache.py",
+        "line": 86,
+        "text": "discovery_cache = DiscoveryCache()"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 18,
+        "text": "self.cache = OrderedDict()"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 24,
+        "text": "cached = self.cache.get(key)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 25,
+        "text": "if cached and self.clock()-cached[0] < 900:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 26,
+        "text": "return cached[1]"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 53,
+        "text": "# Missing source data is never cached as a successful no-event result."
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 56,
+        "text": "self.cache[key] = (self.clock(),(events,calendar_known))"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 57,
+        "text": "self.cache.move_to_end(key)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 58,
+        "text": "while len(self.cache)>128:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+        "line": 59,
+        "text": "self.cache.popitem(last=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 25,
+        "text": "_cache = OrderedDict()"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 26,
+        "text": "_cache_lock = threading.Lock()"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 27,
+        "text": "_CACHE_TTL = 120"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 28,
+        "text": "_CACHE_LIMIT = 512"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 106,
+        "text": "with _cache_lock:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 107,
+        "text": "cached = _cache.get(key)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 108,
+        "text": "if cached and time.monotonic() - cached[0] < _CACHE_TTL:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 109,
+        "text": "_cache.move_to_end(key)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 110,
+        "text": "return deepcopy(cached[1])"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 111,
+        "text": "_cache.pop(key, None)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 179,
+        "text": "with _cache_lock:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 180,
+        "text": "_cache[key] = (time.monotonic(), deepcopy(payload[\"data\"]))"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 181,
+        "text": "_cache.move_to_end(key)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 182,
+        "text": "while len(_cache) > _CACHE_LIMIT:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\transport.py",
+        "line": 183,
+        "text": "_cache.popitem(last=False)"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 75,
+        "text": "self._oi_contract_cache = {}"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 157,
+        "text": "self._oi_contract_cache[underlying_key] = result"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 161,
+        "text": "if underlying_key not in self._oi_contract_cache:"
+      },
+      {
+        "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+        "line": 163,
+        "text": "return self._oi_contract_cache[underlying_key]"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 30,
+        "text": "return res.set('Cache-Control', 'no-store').status(200).json(result);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 36,
+        "text": "return res.set('Cache-Control', 'no-store').status(200).json({ ...oauth.status(appUserId(req)), data_mode: (process.env.SPREADS_DATA_MODE || 'fixtures').trim().toLowerCase() });"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 55,
+        "text": "return res.set('Cache-Control', 'no-store').redirect(303, target.toString());"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 62,
+        "text": "return res.set('Cache-Control', 'no-store').redirect(303, target.toString());"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 67,
+        "text": "return res.set('Cache-Control', 'no-store').status(200).json(oauth.disconnect(appUserId(req)));"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 74,
+        "text": "return res.set('Cache-Control', 'no-store').status(status).json({"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 93,
+        "text": "return res.set('Cache-Control', 'no-store').json(await spreadsPython.getExpiries(scanAccess(req)));"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 100,
+        "text": "return res.set('Cache-Control', 'no-store').json(data);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 106,
+        "text": "return res.set('Cache-Control', 'no-store').json("
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 115,
+        "text": "return res.set('Cache-Control', 'no-store').json(data);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 122,
+        "text": "return res.set('Cache-Control', 'no-store').json(data);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 130,
+        "text": "return res.set('Cache-Control', 'no-store').json(data);"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 5,
+        "text": "export type DiscoveryPayload = { cache_age_seconds?: number | null; cache_status?: string; cached_previous_result?: boolean; latest_attempt?: { status: string; at: number; stats?: Record<string, unknown> }; updated: number; refreshing: boolean; progress?: { stage: string; completed: number; total: number; quota_wait_seconds?: number } | null; stats?: { history_attempted?: number; history_available?: number; eligible_underlyings?: number; atm_iv_attempted?: number; atm_iv_available?: number; atm_iv_unavailable?: number; atm_iv_failed?: number; failed_requests?: number; option_chain_requests?: number; v3_greeks_requests?: number; rate_limit_responses?: number; total_runtime_seconds?: number; complete?: boolean }; top: DiscoveryItem[]; all: DiscoveryItem[]; universe: { source?: string; size?: number; note?: string }; errors: { ticker: string | null; stage: string; error: string }[]; capabilities?: Record<string, Record<string, string>>; data_mode: string; data_note: string }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 35,
+        "text": "deadlineTimer = setTimeout(() => { abort.abort(); reject(new Error('Discovery took too long. Use Check cached ranking to retrieve its latest status.')) }, 900_000)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 47,
+        "text": "setPayload(result); setMessage(result.stats?.complete ? `Discovery complete \u00b7 ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible \u00b7 ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts \u00b7 ${result.stats.atm_iv_available ?? 0} available \u00b7 ${result.stats.atm_iv_unavailable ?? 0} unavailable \u00b7 ${result.stats.atm_iv_failed ?? 0} IV failed \u00b7 ${result.stats.failed_requests ?? 0} provider errors \u00b7 ${result.stats.option_chain_requests ?? 0} option-chain requests \u00b7 ${result.stats.v3_greeks_requests ?? 0} V3 requests \u00b7 ${result.stats.rate_limit_responses ?? 0} rate limits \u00b7 ${result.stats.total_runtime_seconds ?? 0}s` : result.latest_attempt ? `Latest refresh: ${result.latest_attempt.status}${result.cached_previous_result ? ' \u00b7 showing the previous cached ranking' : ''}` : '')"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 80,
+        "text": "<div className=\"flex flex-col gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-white p-5 md:flex-row md:items-center md:justify-between md:px-6\"><div><p className=\"text-xs font-semibold uppercase tracking-widest text-blue-700\">Find candidates</p><h2 className=\"mt-1 text-xl font-semibold tracking-tight text-slate-900\">Discovery ranking</h2><p className=\"mt-1 max-w-2xl text-sm text-slate-600\">Ranks NSE F&amp;O underlyings with the original volume-shock and IV/RV method. Select names here, then scan them separately.</p></div><div className=\"flex flex-wrap gap-2\"><button type=\"button\" disabled={!available || disabled || busy || adding} className={primaryButtonClass} onClick={() => load(true)}>{busy ? 'Refreshing ranking\u2026' : 'Discover opportunities'}</button><button type=\"button\" disabled={!available || disabled || busy || adding} className={shellButton} onClick={() => load(false)}>Check cached ranking</button></div></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 86,
+        "text": "<p className=\"mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600\">{payload.data_note}{payload.cached_previous_result && <strong className=\"block text-amber-800\">Previous cached ranking \u00b7 latest refresh {payload.latest_attempt?.status || 'unavailable'}</strong>}<br /><span className=\"text-slate-500\">{payload.universe.size ?? 0} eligible \u00b7 history attempted {payload.stats?.history_attempted ?? 'Unavailable'} / {payload.universe.size ?? 'Unavailable'} \u00b7 history available {payload.stats?.history_available ?? 'Unavailable'} \u00b7 {payload.all.length} ranked \u00b7 {payload.universe.source || 'source unavailable'} \u00b7 {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' \u00b7 refresh in progress' : ''} \u00b7 ranking cache {payload.cache_status ?? 'UNKNOWN'} \u00b7 age {payload.cache_age_seconds == null ? 'Unavailable' : `${Math.round(payload.cache_age_seconds)}s`}</span></p>"
+      }
+    ],
+    "dollar": [
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 12,
+        "text": "console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_http_received hasAppCookie=${Boolean(req.cookies?.jwt)} hasAuthorizationHeader=${Boolean(req.headers?.authorization)}`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 13,
+        "text": "res.once('finish', () => console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_http_finished httpStatus=${res.statusCode}`));"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 22,
+        "text": "console.warn(`[SpreadsOAuth] requestId=${req.requestId || 'unavailable'} stage=connect_failed status=${status}`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 29,
+        "text": "console.info(`[SpreadsOAuth] requestId=${req.requestId || 'unavailable'} stage=connect_started`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 48,
+        "text": "console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_received hasAppUser=${Boolean(appUserId(req))} hasCode=${typeof req.query.code === 'string'} hasState=${typeof req.query.state === 'string'} providerError=${Boolean(req.query.error)}`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 54,
+        "text": "console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_completed connected=true`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 57,
+        "text": "console.warn(`[SpreadsOAuth] requestId=${requestId} stage=callback_failed status=${Number.isInteger(error.status) ? error.status : 502}`);"
+      },
+      {
+        "file": "backend\\controllers\\spreadController.js",
+        "line": 73,
+        "text": "if (status >= 500) console.warn(`[SpreadsScan] requestId=${req.requestId || 'unavailable'} outcome=failed status=${status}`);"
+      },
+      {
+        "file": "backend\\services\\spreadsPythonService.js",
+        "line": 13,
+        "text": "if (!/^[A-Z0-9&._-]{1,30}$/.test(value)) {"
+      },
+      {
+        "file": "backend\\services\\spreadsPythonService.js",
+        "line": 57,
+        "text": "const response = await fetchImpl(`${baseUrl.replace(/\\/+$/, '')}${endpoint.path}`, {"
+      },
+      {
+        "file": "backend\\services\\spreadsPythonService.js",
+        "line": 72,
+        "text": "return field ? `${field}: ${message}` : message;"
+      },
+      {
+        "file": "backend\\services\\spreadsPythonService.js",
+        "line": 106,
+        "text": "path: `/spreads/underlyings/${encodeURIComponent(normalizeSymbol(symbol))}/expiries`, method: 'GET',"
+      },
+      {
+        "file": "backend\\services\\spreadsPythonService.js",
+        "line": 109,
+        "text": "path: `/spreads/underlyings/${encodeURIComponent(normalizeSymbol(symbol))}/scan`, method: 'POST',"
+      },
+      {
+        "file": "backend\\services\\upstoxOAuthService.js",
+        "line": 27,
+        "text": "return `Upstox token exchange failed (HTTP ${status}). Check the developer app credentials and registered redirect URL, then retry.`;"
+      },
+      {
+        "file": "backend\\services\\upstoxOAuthService.js",
+        "line": 52,
+        "text": "logger.info(`[SpreadsOAuth] ${JSON.stringify(attempt)}`);"
+      },
+      {
+        "file": "backend\\services\\upstoxOAuthService.js",
+        "line": 78,
+        "text": "const error = new Error(`UPSTOX_REDIRECT_URI must point to the integrated Node callback ${CALLBACK_PATH} (local default: http://localhost:5000${CALLBACK_PATH}). Register the identical URL in your Upstox developer app; the standalone port-8001 callback is not used.`);"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 49,
+        "text": "return <div className=\"my-3 flex flex-wrap gap-2\" aria-label=\"Filter funnel\">{stages.map(stage => <div key={stage} className=\"min-w-24 flex-1 rounded-lg border p-3 text-xs\"><span className=\"capitalize\">{stage}</span><strong className=\"float-right\">{funnel[stage]}</strong><div className=\"mt-2 h-1 bg-slate-100\"><div className=\"h-1 bg-blue-600\" style={{ width: `${Math.min(100, (funnel[stage] || 0) / Math.max(funnel.considered, 1) * 100)}%` }} /></div></div>)}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 85,
+        "text": "const setup = await apiGet<Setup>(`/spreads/underlyings/${encodeURIComponent(symbol)}/expiries`)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 127,
+        "text": "navigate({ pathname: location.pathname, search: query.size ? `?${query}` : '' }, { replace: true })"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 150,
+        "text": "if (!symbols.length || symbols.some(symbol => !/^[A-Z0-9&._-]{1,30}$/.test(symbol))) { setMessage('Enter valid NSE symbols separated by commas or spaces.'); return }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 151,
+        "text": "if (new Set([...selected, ...symbols]).size > MAX_UNDERLYINGS) { setMessage(`Choose at most ${MAX_UNDERLYINGS} underlyings.`); return }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 164,
+        "text": "if (data.failure_count) setMessage(`${data.success_count} scanned; ${data.failure_count} unavailable. See per-underlying details.`)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 169,
+        "text": "if (new Set([...selected, ...symbols]).size > MAX_UNDERLYINGS) throw new Error(`Choose at most ${MAX_UNDERLYINGS} underlyings.`)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 175,
+        "text": "setMessage(`Loading selected underlyings: ${index + 1} / ${pending.length} \u00b7 ${symbol}`)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 180,
+        "text": "if (failures.length) throw new Error(`Could not load expiries for ${failures.join(', ')}. Successfully loaded names remain in the scanner.`)"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 192,
+        "text": "<div className=\"flex flex-wrap items-center gap-2 rounded-2xl border border-white/15 bg-white/5 p-2\"><span className=\"sr-only\" role=\"status\">{loading ? 'Loading setup\u2026' : connection.connected ? 'Upstox connected' : 'Upstox not connected'}</span><span aria-hidden=\"true\" className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${connection.connected ? 'text-emerald-200' : 'text-amber-100'}`}><span className={`h-2 w-2 rounded-full ${connection.connected ? 'bg-emerald-400' : 'bg-amber-400'}`} />{loading ? 'Checking connection\u2026' : connection.connected ? 'Upstox connected' : 'Upstox disconnected'}</span><button type=\"button\" className=\"min-h-10 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-blue-50 disabled:opacity-50\" disabled={connecting || scanning} onClick={() => void connect()}>{connecting ? 'Connecting\u2026' : connection.connected ? 'Reconnect Upstox' : 'Connect Upstox'}</button>{connection.connected && <button type=\"button\" className=\"min-h-10 rounded-xl border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10 disabled:opacity-50\" disabled={disconnecting || scanning} onClick={() => void disconnect()}>{disconnecting ? 'Disconnecting\u2026' : 'Disconnect'}</button>}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 196,
+        "text": "<div className=\"px-5 py-3 md:px-8\">{connectionMessage && <p role=\"status\" className=\"rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900\">{connectionMessage}</p>}<details className=\"group mt-1 text-sm\"><summary className=\"cursor-pointer list-none font-medium text-slate-600 marker:hidden\">Connection diagnostics <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid gap-2 rounded-xl bg-slate-50 p-4 text-xs text-slate-600 sm:grid-cols-2\"><p>{connection.connected ? 'Connected' : 'Not connected'}{connection.expiresAt ? ` \u00b7 expires ${new Date(connection.expiresAt).toLocaleString()}` : ''}</p><p>{connection.lastAttempt ? `${connection.lastAttempt.stage} \u00b7 ${connection.lastAttempt.at}${connection.lastAttempt.httpStatus ? ` \u00b7 HTTP ${connection.lastAttempt.httpStatus}` : ''} \u00b7 ${connection.lastAttempt.message || ''}` : 'No connection attempt recorded in this Node process. In-memory connections reset when Node restarts.'}</p><p className=\"sm:col-span-2\">Detailed OAuth events appear in the Node backend terminal with the [SpreadsOAuth] prefix. Python handles market data after connection.</p></div></details></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 203,
+        "text": "<details className=\"mt-3 rounded-xl border border-slate-200 p-3\"><summary className=\"cursor-pointer text-sm font-medium text-slate-700\">Manage selected underlyings \u00b7 {selected.length} names</summary><div className=\"mt-3 space-y-2\" aria-label=\"Selected underlying controls\">{selected.map(symbol => <div key={symbol} className=\"flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 px-3 py-2\"><div className=\"flex min-w-0 items-center gap-2\"><strong className=\"text-sm text-slate-900\">{symbol}</strong><span className=\"text-xs text-slate-500\">NSE F&amp;O</span>{expiries[symbol] && <span className=\"rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600\">{expiries[symbol]}</span>}</div><div className=\"flex items-center gap-2\"><details className=\"group relative\"><summary className=\"cursor-pointer list-none rounded-lg px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50\">Expiry <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg\"><label className=\"block text-xs font-medium text-slate-600\">Option expiry<select aria-label={`${symbol} expiry`} disabled={scanning || !options[symbol]?.length} value={expiries[symbol] || ''} onChange={event => setExpiries(current => ({ ...current, [symbol]: event.target.value }))} className=\"mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 disabled:text-slate-400\"><option value=\"\">Automatic \u00b7 nearest target DTE</option>{options[symbol]?.map(expiry => <option key={expiry}>{expiry}</option>)}</select></label></div></details>{availability[symbol] && <details className=\"group relative\"><summary aria-label={`${symbol} stock data note`} className=\"cursor-pointer list-none rounded-lg px-2 py-2 text-xs font-medium text-amber-800 hover:bg-amber-50\">Data note <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-[min(360px,calc(100vw-5rem))] rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950 shadow-lg\">{availability[symbol]}<p className=\"mt-1\">Other selected underlyings can still scan.</p></div></details>}<button type=\"button\" aria-label={`Remove ${symbol}`} title={`Remove ${symbol}`} disabled={scanning || loading} className=\"rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50\" onClick={() => setSelected(current => current.filter(value => value !== symbol))}>Remove</button></div></div>)}</div></details>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 207,
+        "text": "<div className=\"mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center\"><button type=\"submit\" disabled={loading || scanning || !selected.length || (mode === 'upstox' && !connection.connected)} className=\"min-h-12 rounded-xl bg-blue-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-400\">{scanning ? 'Scanning selected underlyings\u2026' : `Scan ${selected.length} underlying${selected.length === 1 ? '' : 's'}`}</button><span className=\"text-xs text-slate-500\">One scan request \u00b7 no orders are placed</span></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 217,
+        "text": "{result.scan_audit && <p role=\"status\" className=\"mb-3 rounded-xl bg-blue-50 p-3 text-xs text-blue-900\">Diagnostic snapshot: {result.scan_audit.status}{result.scan_audit.file ? ` \u00b7 ${result.scan_audit.file}` : ''}{result.scan_audit.error_type ? ` \u00b7 ${result.scan_audit.error_type}` : ''}. Capture records the selected profile and its inputs.</p>}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 222,
+        "text": "<div aria-label=\"Per-underlying scan status\">{result.underlyings.map(item => <details key={item.symbol} className=\"my-2 rounded-lg border p-3 text-xs\"><summary>{item.symbol} \u00b7 {item.ok ? `${item.expiry} \u00b7 ${item.dte} days \u00b7 spot ${item.kind === 'INDEX' ? '' : '\u20b9'}${item.meta?.spot}${item.kind === 'INDEX' ? ' pts' : ''} \u00b7 ${item.candidates.length} opportunities` : item.error}</summary>{item.funnel && <FunnelView funnel={item.funnel} />}<p className=\"mt-2\">{Object.entries(item.capabilities || {}).map(([key, value]) => `${key}: ${value}`).join(' \u00b7 ')}</p>{item.nse_market_structure_issues?.length ? <details className=\"mt-2\"><summary>NSE contract validation \u00b7 {item.nse_market_structure_issues.length} candidate rejection reasons</summary>{item.nse_market_structure_issues.map((issue,index) => <p key={index} className=\"mt-1\">Short {issue.short_strike}{issue.long_strike != null ? ` / long ${issue.long_strike}` : ''}: {issue.reason}</p>)}</details> : null}{item.observation_policy && <p className=\"mt-2\">Reference date {item.observation_policy.reference_date ?? 'Unavailable'} \u00b7 chain spot {item.observation_policy.chain_spot ?? 'Unavailable'}. {item.observation_policy.explanation}</p>}{item.freshness && <p className=\"mt-2\">Fetched {item.freshness.fetched_at}. {item.freshness.explanation}</p>}{item.history_validation && <p className=\"mt-2\">{item.history_validation.explanation}</p>}{item.settlement_note && <p className=\"mt-2\">{item.settlement_note}</p>}{item.costs && <p className=\"mt-2\">{item.costs.explanation} Net credit unavailable.</p>}{item.earnings_source_note && <p className=\"mt-2\">Earnings source: {item.earnings_source_note}</p>}{item.capability_blockers?.length ? <p className=\"mt-2 text-amber-800\">Blocked to preserve original inputs: {item.capability_blockers.join('; ')}</p> : null}</details>)}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 228,
+        "text": "{numericColumns.map(key => { const title: Record<(typeof numericColumns)[number], string> = { short_strike: 'Short strike', credit: '\u20b9 Credit / unit', ror_pct: 'Return / risk (%)', cushion_pct: 'Cushion (%)', vrp: 'IV / RV21', p_adj: 'Adjusted breach (%)', ev: 'EV score (100-unit convention)' }; return <fieldset key={key} className=\"min-w-0\"><legend className=\"text-xs font-medium text-slate-600\">{title[key]}</legend><div className=\"mt-1 flex gap-2\">{(['min', 'max'] as const).map(bound => <input key={bound} type=\"number\" aria-label={`${key} ${bound}`} placeholder={`${bound} value`} value={ranges[key]?.[bound] || ''} onChange={event => setRanges(current => ({ ...current, [key]: { ...current[key], [bound]: event.target.value } }))} className=\"h-10 min-w-0 w-1/2 rounded-lg border border-slate-300 px-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100\" />)}</div></fieldset> })}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 231,
+        "text": "<div className=\"overflow-hidden rounded-2xl border border-slate-200\"><div className=\"overflow-x-auto\"><table className=\"w-full min-w-[780px] text-left text-sm\"><thead className=\"bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{(result.strategy_profile === 'NSE_RESEARCH_V1' ? [...headers.slice(0,-1), {label:'NSE lot'}, {label:'Width (\u20b9 / pts)'}, {label:'Interval (\u20b9 / pts)'}, {label:'\u20b9 Credit / lot'}, {label:'\u20b9 Payoff max loss / lot'}, headers[headers.length-1]] : headers).map(header => <th key={header.label} aria-sort={header.key && header.key === sortKey ? sortDir === 'asc' ? 'ascending' : 'descending' : undefined} className=\"border-b border-slate-200 px-4 py-3\">{header.key ? <button type=\"button\" className=\"hover:text-blue-700\" onClick={() => toggleSort(header.key!)}>{header.label} {header.key === sortKey ? sortDir === 'asc' ? '\u2191' : '\u2193' : '\u2195'}</button> : header.label}</th>)}</tr></thead><tbody>{visible.map(({ candidate: row }, index) => <tr key={`${row.ticker}-${row.expiration}-${row.type}-${row.short_strike}-${index}`} className=\"border-b border-slate-100 align-top last:border-0 hover:bg-blue-50/40\">"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 232,
+        "text": "{[<span className=\"font-semibold text-slate-900\">{row.ticker}</span>, row.expiration, <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${row.type === 'BULL PUT' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>{row.type === 'BULL PUT' ? 'Bull Put' : 'Bear Call'}</span>, <span className=\"whitespace-nowrap font-medium tabular-nums\">{row.short_strike} / {row.long_strike}</span>, <span className=\"font-semibold tabular-nums\">\u20b9{Number(preciseCredit(row).toFixed(6))}</span>, <span className=\"tabular-nums\">{row.ror_pct}%</span>, <span className=\"tabular-nums\">{row.cushion_pct}%</span>, <span className=\"font-semibold tabular-nums\">{row.ev}</span>].map((value, column) => <td key={column} className=\"px-4 py-3.5\">{value}</td>)}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 233,
+        "text": "{result.strategy_profile === 'NSE_RESEARCH_V1' && [row.lot_size ?? 'Unavailable', row.width, row.strike_interval ?? 'Unavailable', row.credit_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.credit_per_lot_inr}`, row.max_loss_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.max_loss_per_lot_inr}`].map((value,column) => <td key={`nse-${column}`} className=\"whitespace-nowrap px-4 py-3.5 tabular-nums\">{value}</td>)}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+        "line": 234,
+        "text": "<td className=\"px-4 py-3\"><details className=\"group\"><summary className=\"cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-900\">Full breakdown <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid w-[min(620px,calc(100vw-4rem))] gap-3 whitespace-normal text-xs sm:grid-cols-2\"><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Spread</strong><p className=\"mt-1\">Expiry {row.expiration} \u00b7 actual width {row.width} \u00b7 \u20b9 credit/unit {preciseCredit(row)}</p>{row.strategy_profile === 'NSE_RESEARCH_V1' && <p>Listed steps {row.width_steps} \u00b7 interval {row.strike_interval} \u00b7 ticks \u20b9{row.short_tick_inr} / \u20b9{row.long_tick_inr} \u00b7 midpoint-credit quantum \u20b9{row.minimum_credit_points}</p>}<p>Short {row.short_instrument_key ?? 'unavailable'} \u00b7 long {row.long_instrument_key ?? 'unavailable'}</p></div><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Returns</strong><p className=\"mt-1\">RoR {row.ror_pct}% \u00b7 cushion {row.cushion_pct}% \u00b7 Model EV score {row.ev} (100-unit convention)</p><p>Lot {row.lot_size ?? 'unavailable'} \u00b7 Simplified model score/lot {row.ev_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.ev_per_lot_inr}`}{row.lot_size_status === 'fixture' ? ' (fixture)' : ''}</p><p>Credit/lot \u20b9{row.credit_per_lot_inr ?? '\u2014'} \u00b7 payoff max loss/lot \u20b9{row.max_loss_per_lot_inr ?? '\u2014'} \u00b7 lot source {row.lot_size_status}</p></div><div className=\"rounded-xl bg-slate-50 p-3 sm:col-span-2\"><strong>Calculation layers</strong>{row.leg_inputs && Object.entries(row.leg_inputs).map(([name, values]) => <details key={name} className=\"mt-2\"><summary>{name} leg provider inputs</summary>{values ? Object.entries(values).map(([key, value]) => <p key={key}>{key}: {value ?? 'Unavailable'}</p>) : <p>Unavailable</p>}</details>)}<p className=\"mt-1\">RV: {Object.entries(row.layers.l1).map(([key, value]) => `${key} ${value ?? '\u2014'}`).join(' \u00b7 ')}</p><p>Earnings: {row.earnings ? 'inside expiry' : 'outside expiry'} \u00b7 max gap {row.layers.l2.max_gap_pct}%</p><p>IV {row.layers.l3.iv} / RV21 {row.layers.l3.rv21} = VRP {row.layers.l3.ratio}</p><p>Historical breach: raw {row.layers.l4.p_raw} \u00b7 earnings adjusted {row.layers.l4.p_adj} \u00b7 {row.layers.l4.horizon_td} approximate sessions \u00b7 {row.probability_sample_count ?? 'Unavailable'} overlapping observations; uncalibrated terminal breach estimate</p><p>Friction: short {row.layers.l5.short.spread_pct * 100}% \u00b7 OI {row.layers.l5.short.oi}; long {row.layers.l5.long.spread_pct * 100}% \u00b7 OI {row.layers.l5.long.oi}</p>{row.monetary_status === 'ambiguous_duplicate_strike' && <p className=\"mt-2 font-medium text-amber-800\">Per-lot amounts unavailable: duplicate strike quotes cannot be attributed unambiguously.</p>}</div></div></details></td>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 10,
+        "text": "const metric = (value: number | null, percent = false) => value == null ? 'Unavailable' : `${(percent ? value * 100 : value).toFixed(2)}${percent ? '%' : ''}`"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 41,
+        "text": "setMessage(result.progress ? `${result.progress.stage === 'history' ? 'Daily history' : result.progress.stage === 'iv' ? 'ATM IV / VRP' : 'Instrument universe'}: ${result.progress.completed} / ${result.progress.total || 'loading'}${result.progress.stage === 'iv' ? ` \u00b7 ${Math.max(0, result.progress.total - result.progress.completed)} pending` : ''}${result.progress.quota_wait_seconds ? ` \u00b7 waiting for Upstox quota (${result.progress.quota_wait_seconds}s)` : ''}` : 'Discovery is running. Waiting for provider data\u2026')"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 47,
+        "text": "setPayload(result); setMessage(result.stats?.complete ? `Discovery complete \u00b7 ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible \u00b7 ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts \u00b7 ${result.stats.atm_iv_available ?? 0} available \u00b7 ${result.stats.atm_iv_unavailable ?? 0} unavailable \u00b7 ${result.stats.atm_iv_failed ?? 0} IV failed \u00b7 ${result.stats.failed_requests ?? 0} provider errors \u00b7 ${result.stats.option_chain_requests ?? 0} option-chain requests \u00b7 ${result.stats.v3_greeks_requests ?? 0} V3 requests \u00b7 ${result.stats.rate_limit_responses ?? 0} rate limits \u00b7 ${result.stats.total_runtime_seconds ?? 0}s` : result.latest_attempt ? `Latest refresh: ${result.latest_attempt.status}${result.cached_previous_result ? ' \u00b7 showing the previous cached ranking' : ''}` : '')"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 54,
+        "text": "if (new Set([...selected, ...picked, symbol]).size > MAX_UNDERLYINGS) { setMessage(`Choose at most ${MAX_UNDERLYINGS} underlyings including your existing scanner selection.`); return }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 59,
+        "text": "if (new Set([...selected, ...picked]).size > MAX_UNDERLYINGS) { setMessage(`Selection exceeds ${MAX_UNDERLYINGS} underlyings. Remove some names first.`); return }"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 74,
+        "text": "? `Selected ${remaining} top-ranked names. Existing scanner selections use ${selected.length} of the ${MAX_UNDERLYINGS} slots. Remove names from the scanner to select more.`"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 75,
+        "text": ": `Selected ${top.length} top-ranked names for addition. Names already in the scanner are retained. Click Add selected to scanner when ready.`);"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 86,
+        "text": "<p className=\"mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600\">{payload.data_note}{payload.cached_previous_result && <strong className=\"block text-amber-800\">Previous cached ranking \u00b7 latest refresh {payload.latest_attempt?.status || 'unavailable'}</strong>}<br /><span className=\"text-slate-500\">{payload.universe.size ?? 0} eligible \u00b7 history attempted {payload.stats?.history_attempted ?? 'Unavailable'} / {payload.universe.size ?? 'Unavailable'} \u00b7 history available {payload.stats?.history_available ?? 'Unavailable'} \u00b7 {payload.all.length} ranked \u00b7 {payload.universe.source || 'source unavailable'} \u00b7 {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' \u00b7 refresh in progress' : ''} \u00b7 ranking cache {payload.cache_status ?? 'UNKNOWN'} \u00b7 age {payload.cache_age_seconds == null ? 'Unavailable' : `${Math.round(payload.cache_age_seconds)}s`}</span></p>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 88,
+        "text": "<div className=\"my-4 flex flex-col gap-3 rounded-2xl bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between\"><div className=\"flex flex-wrap items-center gap-2\"><button type=\"button\" className={shellButton} onClick={() => setShowAll(current => !current)}>{showAll ? 'Show top 5' : `Show all ${payload.all.length}`}</button><span className=\"text-xs font-medium text-slate-600\">{picked.length} selected \u00b7 {selected.length} already in scan \u00b7 limit {MAX_UNDERLYINGS} total</span></div><div className=\"flex flex-wrap items-center gap-2\"><button type=\"button\" className={primaryButtonClass} disabled={!picked.length || disabled || adding || busy} onClick={() => void add()}>{adding ? 'Adding\u2026' : 'Add selected to scanner'}</button>{picked.length > 0 && <button type=\"button\" className={shellButton} disabled={adding || busy} onClick={() => setPicked([])}>Clear picks</button>}</div>{adding && <span role=\"status\" className=\"text-xs font-medium text-blue-800\">Adding selected underlyings\u2026</span>}</div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 89,
+        "text": "<label className=\"mb-3 block max-w-sm text-xs font-medium text-slate-600\">Find an underlying<input aria-label=\"Search discovery underlyings\" value={filter} onChange={event => setFilter(event.target.value)} placeholder=\"Type a symbol, for example TATAELXSI\" className={`${searchClass} mt-1`} /></label>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 90,
+        "text": "<button type=\"button\" className={`${shellButton} mb-3`} disabled={disabled || busy || adding || !payload.all.length || selected.length >= MAX_UNDERLYINGS} onClick={selectTop50}>Select top 50</button>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 91,
+        "text": "<div className={`rounded-2xl border border-slate-200 ${showAll ? 'max-h-[min(65vh,680px)] overflow-auto overscroll-contain' : 'overflow-x-auto'}`}><table className=\"w-full min-w-[900px] text-left text-sm\"><thead className=\"sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{['Select','Rank','Underlying','Spot (\u20b9 / index pts)','Daily change','Volume shock','RV21','ATM IV','VRP','Edge','Score'].map(title => <th key={title} className=\"border-b border-slate-200 px-3 py-3\">{title}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={row.ticker} className=\"border-b border-slate-100 last:border-0 hover:bg-blue-50/40\"><td className=\"px-3 py-3\"><input type=\"checkbox\" aria-label={`Select discovery ${row.ticker}`} checked={picked.includes(row.ticker)} disabled={disabled || adding || busy || selected.includes(row.ticker)} onChange={() => toggle(row.ticker)} /></td><td className=\"px-3 py-3 tabular-nums text-slate-500\">{payload.all.findIndex(item => item.ticker === row.ticker) + 1}</td><td className=\"px-3 py-3 font-semibold text-slate-900\">{row.ticker}{selected.includes(row.ticker) ? <span className=\"ml-2 rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-800\">In scan</span> : null}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.spot)}</td><td className=\"px-3 py-3 tabular-nums\">{row.chg.toFixed(2)}%</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.shock)}\u00d7</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.rv21, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.iv_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.iv14 == null ? row.iv_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.iv14, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.vrp_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.vrp14 == null ? row.vrp_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.vrp14)}</td><td className=\"px-3 py-3\">{row.edge ? 'Yes' : 'No'}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.score)}</td></tr>)}</tbody></table></div>"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 92,
+        "text": "{!rows.length && <p className=\"mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600\">{payload.all.length && filter.trim() ? `No symbols match \u201c${filter.trim()}\u201d.` : 'No rankable underlyings returned. Check provider-input errors below; discovery does not guarantee spread candidates.'}</p>}"
+      },
+      {
+        "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+        "line": 94,
+        "text": "<details className=\"mt-3 rounded-xl border border-slate-200 p-3 text-xs\"><summary className=\"cursor-pointer font-medium text-slate-700\">Data-source and capability notes</summary><p className=\"mt-2\">{payload.universe.note}</p><p className=\"mt-2\">Discovery does not require earnings. Exact stock spread scans can still report missing earnings inputs.</p>{Object.entries(payload.capabilities || {}).map(([symbol, notes]) => <p key={symbol} className=\"mt-1\">{symbol}: {Object.entries(notes).map(([key, value]) => `${key} ${value}`).join(' \u00b7 ')}</p>)}</details>"
+      }
+    ]
+  }
+}

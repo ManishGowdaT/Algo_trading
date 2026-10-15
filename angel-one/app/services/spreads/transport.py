@@ -15,14 +15,15 @@ from typing import Any
 from urllib.parse import quote, urlsplit
 
 import httpx
+from .rate_limit import market_data_quota, retry_after_seconds
 
 
 UPSTOX_API_BASE = "https://api.upstox.com"
+QUOTA_WAIT_OBSERVER = ContextVar("spread_quota_wait_observer", default=None)
+RATE_OWNER = ContextVar("spread_rate_owner", default=None)
 REQUEST_DEADLINE = ContextVar("spread_request_deadline", default=None)
 _cache = OrderedDict()
 _cache_lock = threading.Lock()
-_pace_lock = threading.Lock()
-_last_call = 0.0
 _CACHE_TTL = 120
 _CACHE_LIMIT = 512
 
@@ -35,15 +36,6 @@ def _remaining():
     return remaining
 
 
-def _pace():
-    global _last_call
-    with _pace_lock:
-        delay = max(0, 0.4 - (time.monotonic() - _last_call))
-        if delay >= _remaining():
-            raise UpstoxProviderError("Spread market-data deadline exceeded", status_code=504)
-        if delay:
-            time.sleep(delay)
-        _last_call = time.monotonic()
 _READ_ONLY_PATHS = frozenset({
     "/v2/instruments/search",
     "/v2/option/contract",
@@ -119,15 +111,17 @@ class UpstoxTransport:
             _cache.pop(key, None)
         headers = {"Authorization": self._authorization, "Accept": "application/json"}
         response = None
+        api = "/v3/historical-candle" if path.startswith("/v3/historical-candle/") else path
+        quota_key = (RATE_OWNER.get() or self._identity, api)
         for attempt in range(self._max_attempts):
+            if self._client is None:
+                market_data_quota.acquire(quota_key, sleep=self._sleep, remaining=_remaining, on_wait=QUOTA_WAIT_OBSERVER.get())
             metric_key = ('option_chain_requests' if path == '/v2/option/chain' else
                           'v3_greeks_requests' if path == '/v3/market-quote/option-greek' else None)
             if metric_key:
                 with self._metrics_lock:
                     self._metrics[metric_key] += 1
             try:
-                if self._client is None:
-                    _pace()
                 timeout = min(self._timeout, _remaining())
                 if self._client is None:
                     response = httpx.get(self._base_url + path, params=params, headers=headers,
@@ -152,10 +146,10 @@ class UpstoxTransport:
                         self._metrics['rate_limit_responses'] += 1
                 if attempt + 1 < self._max_attempts:
                     retry_after = response.headers.get("Retry-After", "")
-                    try:
-                        delay = min(max(float(retry_after), 0), 4) if retry_after else None
-                    except ValueError:
-                        delay = None
+                    delay = retry_after_seconds(retry_after) if retry_after else None
+                    if response.status_code == 429 and self._client is None:
+                        cooldown = delay if delay is not None else (2 ** attempt) + self._jitter() * .75
+                        market_data_quota.cooldown(quota_key, cooldown)
                     self._backoff(attempt, delay)
                     continue
             break

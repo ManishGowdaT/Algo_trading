@@ -1,0 +1,1392 @@
+{
+  "scope": "Current code; synthetic fixtures and archived 13 October provider responses. No live broker requests.",
+  "calculations": [
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 52200.0,
+      "long": 52100.0,
+      "short_mid": 130.0,
+      "long_mid": 110.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.01809508338775936,
+        "rv21": 0.016799283909264634,
+        "rv63": 0.039386523885815095,
+        "rv252": 0.04000274971635077
+      },
+      "expected": {
+        "credit": 20.0,
+        "width": 100.0,
+        "cushion_pct": 2.09,
+        "ror_pct": 25.0,
+        "vrp": 14.88,
+        "p_raw": 0.3615,
+        "p_adj": 0.3615,
+        "ev": -1615.0,
+        "credit_per_lot_inr": 20.0,
+        "max_loss_per_lot_inr": 80.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 54400.0,
+      "long": 54500.0,
+      "short_mid": 130.0,
+      "long_mid": 110.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.01809508338775936,
+        "rv21": 0.016799283909264634,
+        "rv63": 0.039386523885815095,
+        "rv252": 0.04000274971635077
+      },
+      "expected": {
+        "credit": 20.0,
+        "width": 100.0,
+        "cushion_pct": 2.03,
+        "ror_pct": 25.0,
+        "vrp": 14.88,
+        "p_raw": 0.3615,
+        "p_adj": 0.3615,
+        "ev": -1615.0,
+        "credit_per_lot_inr": 20.0,
+        "max_loss_per_lot_inr": 80.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 54500.0,
+      "long": 54600.0,
+      "short_mid": 110.0,
+      "long_mid": 90.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.01809508338775936,
+        "rv21": 0.016799283909264634,
+        "rv63": 0.039386523885815095,
+        "rv252": 0.04000274971635077
+      },
+      "expected": {
+        "credit": 20.0,
+        "width": 100.0,
+        "cushion_pct": 2.22,
+        "ror_pct": 25.0,
+        "vrp": 14.88,
+        "p_raw": 0.3277,
+        "p_adj": 0.3277,
+        "ev": -1277.0,
+        "credit_per_lot_inr": 20.0,
+        "max_loss_per_lot_inr": 80.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1700.0,
+      "long": 1690.0,
+      "short_mid": 28.0,
+      "long_mid": 25.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.47,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3547,
+        "p_adj": 0.3547,
+        "ev": -55.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1690.0,
+      "long": 1680.0,
+      "short_mid": 25.0,
+      "long_mid": 22.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.04,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3074,
+        "p_adj": 0.3074,
+        "ev": -7.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1680.0,
+      "long": 1670.0,
+      "short_mid": 22.0,
+      "long_mid": 19.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.62,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2601,
+        "p_adj": 0.2601,
+        "ev": 40.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1670.0,
+      "long": 1660.0,
+      "short_mid": 19.0,
+      "long_mid": 16.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.19,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.1655,
+        "p_adj": 0.1655,
+        "ev": 134.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1660.0,
+      "long": 1650.0,
+      "short_mid": 16.0,
+      "long_mid": 13.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.76,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0709,
+        "p_adj": 0.0709,
+        "ev": 229.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1650.0,
+      "long": 1640.0,
+      "short_mid": 13.0,
+      "long_mid": 10.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 5.34,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0,
+        "p_adj": 0.0,
+        "ev": 300.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1780.0,
+      "long": 1790.0,
+      "short_mid": 28.0,
+      "long_mid": 25.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.12,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3412,
+        "p_adj": 0.3412,
+        "ev": -41.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1790.0,
+      "long": 1800.0,
+      "short_mid": 25.0,
+      "long_mid": 22.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.69,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3108,
+        "p_adj": 0.3108,
+        "ev": -11.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1800.0,
+      "long": 1810.0,
+      "short_mid": 22.0,
+      "long_mid": 19.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.27,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2703,
+        "p_adj": 0.2703,
+        "ev": 30.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1810.0,
+      "long": 1820.0,
+      "short_mid": 19.0,
+      "long_mid": 16.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.84,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2095,
+        "p_adj": 0.2095,
+        "ev": 91.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1820.0,
+      "long": 1830.0,
+      "short_mid": 16.0,
+      "long_mid": 13.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.42,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.152,
+        "p_adj": 0.152,
+        "ev": 148.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1830.0,
+      "long": 1840.0,
+      "short_mid": 13.0,
+      "long_mid": 10.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 550,
+      "rv": {
+        "rv10": 0.018088563205727444,
+        "rv21": 0.01680169192182255,
+        "rv63": 0.03938655251608029,
+        "rv252": 0.040002499014236775
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.99,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0642,
+        "p_adj": 0.0642,
+        "ev": 236.0,
+        "credit_per_lot_inr": 1650.0,
+        "max_loss_per_lot_inr": 3850.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 25100.0,
+      "long": 25050.0,
+      "short_mid": 500.0,
+      "long_mid": 485.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.018095341115381653,
+        "rv21": 0.016799670041723995,
+        "rv63": 0.03938653814210383,
+        "rv252": 0.040002760549958535
+      },
+      "expected": {
+        "credit": 15.0,
+        "width": 50.0,
+        "cushion_pct": 2.08,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3649,
+        "p_adj": 0.3649,
+        "ev": -324.0,
+        "credit_per_lot_inr": 15.0,
+        "max_loss_per_lot_inr": 35.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 25050.0,
+      "long": 25000.0,
+      "short_mid": 485.0,
+      "long_mid": 470.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.018095341115381653,
+        "rv21": 0.016799670041723995,
+        "rv63": 0.03938653814210383,
+        "rv252": 0.040002760549958535
+      },
+      "expected": {
+        "credit": 15.0,
+        "width": 50.0,
+        "cushion_pct": 2.27,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3547,
+        "p_adj": 0.3547,
+        "ev": -274.0,
+        "credit_per_lot_inr": 15.0,
+        "max_loss_per_lot_inr": 35.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 26150.0,
+      "long": 26200.0,
+      "short_mid": 125.0,
+      "long_mid": 110.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.018095341115381653,
+        "rv21": 0.016799670041723995,
+        "rv63": 0.03938653814210383,
+        "rv252": 0.040002760549958535
+      },
+      "expected": {
+        "credit": 15.0,
+        "width": 50.0,
+        "cushion_pct": 2.02,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3649,
+        "p_adj": 0.3649,
+        "ev": -324.0,
+        "credit_per_lot_inr": 15.0,
+        "max_loss_per_lot_inr": 35.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 26200.0,
+      "long": 26250.0,
+      "short_mid": 110.0,
+      "long_mid": 95.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 1,
+      "rv": {
+        "rv10": 0.018095341115381653,
+        "rv21": 0.016799670041723995,
+        "rv63": 0.03938653814210383,
+        "rv252": 0.040002760549958535
+      },
+      "expected": {
+        "credit": 15.0,
+        "width": 50.0,
+        "cushion_pct": 2.21,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3277,
+        "p_adj": 0.3277,
+        "ev": -139.0,
+        "credit_per_lot_inr": 15.0,
+        "max_loss_per_lot_inr": 35.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1450.0,
+      "long": 1440.0,
+      "short_mid": 28.0,
+      "long_mid": 25.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.47,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3547,
+        "p_adj": 0.3547,
+        "ev": -55.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1440.0,
+      "long": 1430.0,
+      "short_mid": 25.0,
+      "long_mid": 22.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.14,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3007,
+        "p_adj": 0.3007,
+        "ev": -1.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1430.0,
+      "long": 1420.0,
+      "short_mid": 22.0,
+      "long_mid": 19.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.81,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2128,
+        "p_adj": 0.2128,
+        "ev": 87.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1420.0,
+      "long": 1410.0,
+      "short_mid": 19.0,
+      "long_mid": 16.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.49,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.1182,
+        "p_adj": 0.1182,
+        "ev": 182.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1410.0,
+      "long": 1400.0,
+      "short_mid": 16.0,
+      "long_mid": 13.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 5.16,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0,
+        "p_adj": 0.0,
+        "ev": 300.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BULL PUT",
+      "short": 1400.0,
+      "long": 1390.0,
+      "short_mid": 13.0,
+      "long_mid": 10.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 5.83,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0,
+        "p_adj": 0.0,
+        "ev": 300.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1520.0,
+      "long": 1530.0,
+      "short_mid": 31.0,
+      "long_mid": 28.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.24,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.3277,
+        "p_adj": 0.3277,
+        "ev": -28.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1530.0,
+      "long": 1540.0,
+      "short_mid": 28.0,
+      "long_mid": 25.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 2.91,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2838,
+        "p_adj": 0.2838,
+        "ev": 16.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1540.0,
+      "long": 1550.0,
+      "short_mid": 25.0,
+      "long_mid": 22.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 3.59,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.2399,
+        "p_adj": 0.2399,
+        "ev": 60.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1550.0,
+      "long": 1560.0,
+      "short_mid": 22.0,
+      "long_mid": 19.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.26,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.1723,
+        "p_adj": 0.1723,
+        "ev": 128.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1560.0,
+      "long": 1570.0,
+      "short_mid": 19.0,
+      "long_mid": 16.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 4.93,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0642,
+        "p_adj": 0.0642,
+        "ev": 236.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1570.0,
+      "long": 1580.0,
+      "short_mid": 16.0,
+      "long_mid": 13.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 5.6,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0,
+        "p_adj": 0.0,
+        "ev": 300.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "profile": "NSE_RESEARCH_V1",
+      "type": "BEAR CALL",
+      "short": 1580.0,
+      "long": 1590.0,
+      "short_mid": 13.0,
+      "long_mid": 10.0,
+      "short_raw_oi": null,
+      "short_oi_contracts": 25000,
+      "long_raw_oi": null,
+      "long_oi_contracts": 25000,
+      "lot": 250,
+      "rv": {
+        "rv10": 0.018097083732883767,
+        "rv21": 0.01680129403203077,
+        "rv63": 0.039387039488819865,
+        "rv252": 0.040002857050732914
+      },
+      "expected": {
+        "credit": 3.0,
+        "width": 10.0,
+        "cushion_pct": 6.28,
+        "ror_pct": 42.9,
+        "vrp": 14.88,
+        "p_raw": 0.0,
+        "p_adj": 0.0,
+        "ev": 300.0,
+        "credit_per_lot_inr": 750.0,
+        "max_loss_per_lot_inr": 1750.0,
+        "probability_sample_count": 296
+      }
+    },
+    {
+      "symbol": "CANBK",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "type": "BEAR CALL",
+      "short": 125.0,
+      "long": 130.0,
+      "short_mid": 3.58,
+      "long_mid": 2.175,
+      "short_raw_oi": 1086750.0,
+      "short_oi_contracts": 161,
+      "long_raw_oi": 1849500.0,
+      "long_oi_contracts": 274,
+      "lot": 6750,
+      "rv": {
+        "rv10": 0.23544839171916204,
+        "rv21": 0.20019207731438488,
+        "rv63": 0.19261377868038773,
+        "rv252": 0.2863763151350774
+      },
+      "expected": {
+        "credit": 1.41,
+        "width": 5.0,
+        "cushion_pct": 5.59,
+        "ror_pct": 39.1,
+        "vrp": 1.56,
+        "p_raw": 0.2979,
+        "p_adj": 0.5801,
+        "ev": -150.0,
+        "credit_per_lot_inr": 9483.75,
+        "max_loss_per_lot_inr": 24266.25,
+        "probability_sample_count": 715
+      }
+    },
+    {
+      "symbol": "NMDC",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "type": "BEAR CALL",
+      "short": 75.0,
+      "long": 80.0,
+      "short_mid": 1.67,
+      "long_mid": 0.6950000000000001,
+      "short_raw_oi": 810000.0,
+      "short_oi_contracts": 120,
+      "long_raw_oi": 1019250.0,
+      "long_oi_contracts": 151,
+      "lot": 6750,
+      "rv": {
+        "rv10": 0.2523093252778075,
+        "rv21": 0.24711853330943134,
+        "rv63": 0.22871374298702984,
+        "rv252": 0.28748061285822085
+      },
+      "expected": {
+        "credit": 0.97,
+        "width": 5.0,
+        "cushion_pct": 6.62,
+        "ror_pct": 24.2,
+        "vrp": 1.22,
+        "p_raw": 0.2825,
+        "p_adj": 0.4808,
+        "ev": -143.0,
+        "credit_per_lot_inr": 6581.25,
+        "max_loss_per_lot_inr": 27168.75,
+        "probability_sample_count": 715
+      }
+    }
+  ],
+  "batches": [
+    {
+      "mode": "fixtures",
+      "status": "SUCCESS",
+      "funnel": {
+        "considered": 96,
+        "cushion": 42,
+        "friction": 32,
+        "paired": 32,
+        "ror": 32,
+        "vrp": 32,
+        "final": 32
+      },
+      "candidates": 32
+    }
+  ],
+  "archived": [
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+      ]
+    },
+    {
+      "symbol": "CANBK",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "CANBK",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "candidates": 1,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+      ]
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+      ]
+    },
+    {
+      "symbol": "NMDC",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "NMDC",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "candidates": 1,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+      ]
+    },
+    {
+      "symbol": "NTPC",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "NTPC",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+      ]
+    },
+    {
+      "symbol": "TATAELXSI",
+      "profile": "NSE_RESEARCH_V1",
+      "ok": true,
+      "funnel": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+        "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+      ]
+    },
+    {
+      "symbol": "TATAELXSI",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "ok": true,
+      "funnel": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "candidates": 0,
+      "warnings": [
+        "Using returned daily candles; candle completeness is unverified.",
+        "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+        "Using Upstox returned closes; corporate-action adjustment equivalence is unverified."
+      ]
+    }
+  ],
+  "partial_and_zero": {
+    "partial_status": "PARTIAL",
+    "zero_status": "SUCCESS",
+    "zero_candidates": 0
+  }
+}

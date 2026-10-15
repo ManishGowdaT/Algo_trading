@@ -6,6 +6,11 @@ const rows: ViewRow[] = [
   { ticker: 'BANKNIFTY', type: 'BEAR CALL', earnings: true, short_strike: 200, credit: 3, ror_pct: 30, cushion_pct: 3, vrp: 1.3, p_adj: .2, ev: -2 },
 ]
 describe('original result view behavior', () => {
+  it('B6 uses precise displayed credit for filters and explicit sorting', () => {
+    const precise = [{ ...rows[0], credit:.01, credit_points_unrounded:.005 }, { ...rows[1], credit:.01, credit_points_unrounded:.009 }]
+    expect(displayedCandidates(precise, '', '', '', {credit:{min:'.006'}}, '', 'desc').map(r=>r.candidate.ticker)).toEqual(['BANKNIFTY'])
+    expect(displayedCandidates(precise, '', '', '', {}, 'credit', 'desc')[0].candidate.ticker).toBe('BANKNIFTY')
+  })
   it('preserves server ranking by default and never mutates results', () => {
     expect(displayedCandidates(rows, '', '', '', {}, '', 'desc').map(r => r.candidate)).toEqual(rows)
     expect(displayedCandidates(rows, '', '', '', {}, 'credit', 'desc')[0].candidate.ticker).toBe('BANKNIFTY')

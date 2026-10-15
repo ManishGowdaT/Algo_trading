@@ -16,7 +16,10 @@ def test_diagnostic_capture_never_changes_existing_scan_or_formula_parameters(mo
     monkeypatch.setattr(scan_audit,'ROOT',tmp_path)
     plain=api._scan_underlying('NIFTY',api.NiftyScanRequest(width=50),None,'')
     captured=api._scan_underlying('NIFTY',api.NiftyScanRequest(width=50,audit_snapshot=True),None,'')
-    assert {k:v for k,v in captured.items() if k!='scan_audit'}==plain
+    # Fetch completion timestamps legitimately differ between independent requests.
+    assert captured['freshness']['fetched_at'] >= plain['freshness']['fetched_at']
+    assert {k:v for k,v in captured.items() if k not in {'scan_audit','freshness'}} == {k:v for k,v in plain.items() if k != 'freshness'}
+    assert {k:v for k,v in captured['freshness'].items() if k != 'fetched_at'} == {k:v for k,v in plain['freshness'].items() if k != 'fetched_at'}
     assert 'audit_snapshot' not in api.NiftyScanRequest(audit_snapshot=True).model_dump()
     snapshot=json.loads(Path(captured['scan_audit']['file']).read_text())
     assert snapshot['normalized']['parameters']==asdict(engine.ScanParams(dte=captured['dte'],width=50))

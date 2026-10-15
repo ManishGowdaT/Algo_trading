@@ -156,15 +156,16 @@ def test_raw_upstox_inputs_scan_without_validation_gates_and_keep_provenance():
     result = engine.scan_provider_data('NIFTY', replace(history, completeness=unverified), replace(chain, open_interest=unverified), earnings, expiry, 30)
     assert result['ok'] and result['funnel'] is not None
     assert 'capability_blockers' not in result
-    assert any('reported OI' in text for text in result['data_warnings'])
+    assert any('contract-count OI' in text for text in result['data_warnings'])
     assert any('completeness' in text for text in result['data_warnings'])
 
 
-def test_global_outbound_spacing_cache_hits_and_original_retry_delays(monkeypatch):
+def test_endpoint_user_quotas_cache_hits_and_original_retry_delays(monkeypatch):
     from app.services.spreads import transport as module
     now, calls, delays = [100.], [], []
     monkeypatch.setattr(module.time, 'monotonic', lambda: now[0])
-    monkeypatch.setattr(module, '_last_call', 0.)
+    from app.services.spreads.rate_limit import MarketDataQuota
+    monkeypatch.setattr(module, 'market_data_quota', MarketDataQuota(clock=lambda: now[0]))
     def sleep(delay):
         delays.append(delay)
         now[0] += delay
@@ -177,8 +178,8 @@ def test_global_outbound_spacing_cache_hits_and_original_retry_delays(monkeypatc
     first.get('/v2/option/contract')
     first.get('/v2/option/contract')  # Cached: no sleep or HTTP call.
     UpstoxTransport('spacing-token-two').get('/v2/option/chain')
-    assert len(calls) == 2 and calls[1]-calls[0] == pytest.approx(.4)
-    assert delays == [pytest.approx(.4)]
+    assert len(calls) == 2 and calls[1] == calls[0]
+    assert delays == []  # Independent users/APIs do not block each other.
     retry_delays = []
     transport = UpstoxTransport('retry-policy', client=object(), sleep=retry_delays.append, jitter=lambda: 1)
     for attempt in range(3):
@@ -277,7 +278,7 @@ def test_discovered_nonstandard_indices_and_stock_keys_are_retained(monkeypatch)
                 ('MIDCPNIFTY','NSE_INDEX|NIFTY MID SELECT','INDEX','NSE_INDEX'),
                 ('NIFTYNXT50','NSE_INDEX|Nifty Next 50','INDEX','NSE_INDEX'),
                 ('TEST-EQ','NSE_EQ|master-identity','EQUITY','NSE_EQ')]]
-    instruments.retain_universe_identities(rows, '2026-10-13')
+    instruments.retain_universe_identities(rows, datetime.now(api.IST).date().isoformat())
     class NoSearch:
         def get(self, *args): pytest.fail('Discovered identity must not be resolved again through EQ search')
     for row in rows:
@@ -323,7 +324,7 @@ def test_discovery_api_retains_master_key_for_subsequent_expiry_resolution(monke
     monkeypatch.setattr(instruments, '_identity_day', None)
     monkeypatch.setattr(api, 'discovery_cache', DiscoveryCache())
     key = 'NSE_INDEX|Nifty Fin Service'
-    master = dict(size=1, as_of='2026-10-13', source='test-upstox-master', items=[dict(symbol='FINNIFTY', instrument_key=key, kind='INDEX', segment='NSE_INDEX')])
+    master = dict(size=1, as_of=datetime.now(api.IST).date().isoformat(), source='test-upstox-master', items=[dict(symbol='FINNIFTY', instrument_key=key, kind='INDEX', segment='NSE_INDEX')])
     monkeypatch.setattr(api, '_discovery_inputs', lambda *args: (SimpleNamespace(get_universe=lambda: master), object()))
     monkeypatch.setattr(api, 'discover', lambda *args, **kwargs: SimpleNamespace(items=[{'ticker':'FINNIFTY'}], errors=[], capabilities={}))
     seen = []
@@ -359,7 +360,7 @@ def test_missing_index_identity_recovers_from_master_after_restart(monkeypatch):
         def get(self, *args): return []
     def master():
         calls.append(1)
-        return {'as_of':'2026-10-13', 'items':[row]}
+        return {'as_of':datetime.now(api.IST).date().isoformat(), 'items':[row]}
     assert instruments.resolve_underlying(EmptyEQSearch(), 'NIFTYNXT50', universe_loader=master) == row
     assert instruments.resolve_underlying(EmptyEQSearch(), 'NIFTYNXT50', universe_loader=master) == row
     assert len(calls) == 1

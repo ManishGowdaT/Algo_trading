@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from .engine import atm_iv, edge_discovery_metrics, rank_edge_discovery
-from .transport import UpstoxProviderError
+from .transport import UpstoxProviderError, QUOTA_WAIT_OBSERVER
 
 logger = logging.getLogger('spreads.discovery')
 
@@ -29,7 +29,7 @@ def _error(symbol, stage, exception=None, message=None):
                        'Upstox connection unavailable; reconnect.' if status in {401,403} else
                        'Discovery provider input could not be loaded.')
     logger.warning('discovery_input_failed symbol=%s stage=%s status=%s', symbol, stage, status)
-    return {'ticker':symbol, 'stage':stage, 'error':safe, 'status':status}
+    return {'ticker':symbol, 'stage':stage, 'error':safe, 'status':status, 'provider_failed':exception is not None}
 
 
 def discover(universe: list[dict], adapter, *, as_of: date | None = None,
@@ -63,9 +63,16 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
     progress_lock = threading.Lock()
     completed = [0]
     def tracked(stage, function, value, total):
+        def waiting(seconds):
+            with progress_lock:
+                if on_progress:
+                    on_progress({'stage':stage, 'completed':completed[0], 'total':total,
+                                 'quota_wait_seconds':round(seconds, 1)})
+        observer = QUOTA_WAIT_OBSERVER.set(waiting)
         try:
             return function(value)
         finally:
+            QUOTA_WAIT_OBSERVER.reset(observer)
             with progress_lock:
                 completed[0] += 1
                 if on_progress:
@@ -91,12 +98,19 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
 
     def stage2(symbol):
         try:
-            chain = adapter.get_atm_chain(by_symbol[symbol]['instrument_key'], as_of=as_of)
+            metrics = metrics_by_symbol.get(symbol)
+            scope = {'spot': metrics['_spot_raw'] if metrics else None} if getattr(adapter, 'supports_atm_iv_scope', False) else {}
+            chain = adapter.get_atm_chain(by_symbol[symbol]['instrument_key'], as_of=as_of, **scope)
             if chain is None:
                 return symbol, float('nan'), 'unavailable', 'unavailable', _error(symbol,'iv',message='No usable discovery option expiry.'), None
             metrics = metrics_by_symbol.get(symbol)
-            iv = atm_iv(chain, metrics['_spot_raw'] if metrics else float('nan'))
+            iv = atm_iv(chain, metrics['_spot_raw']) if metrics else float('nan')
             if math.isnan(iv):
+                if getattr(chain, 'iv_errors', ()):
+                    failure = chain.iv_errors[0]
+                    error = _error(symbol, 'iv', message=failure['reason'])
+                    error.update(status=failure.get('status'), code=failure.get('code'), provider_failed=True)
+                    return symbol, iv, 'failed', 'failed', error, {'iv':'failed', 'oi':chain.open_interest.status}
                 reason = ('Historical spot is unavailable, so the original ATM strike selection cannot be evaluated.'
                           if metrics is None else 'No usable positive IV was present in the original ATM selection.')
                 return symbol, iv, 'unavailable', 'unavailable', _error(symbol,'iv',message=reason), {'iv':chain.implied_volatility.status,'oi':chain.open_interest.status}
@@ -124,8 +138,8 @@ def discover(universe: list[dict], adapter, *, as_of: date | None = None,
                 'atm_iv_available':sum(state == 'available' for state in iv_status.values()),
                 'atm_iv_unavailable':sum(state == 'unavailable' for state in iv_status.values()),
                 'atm_iv_failed':sum(state == 'failed' for state in iv_status.values()),
-                'history_failed':sum(error['stage'] == 'history' and error['status'] is not None for error in errors),
-                'failed_requests':sum(error['status'] is not None for error in errors),
+                'history_failed':sum(error['stage'] == 'history' and error.get('provider_failed', False) for error in errors),
+                'failed_requests':sum(error.get('provider_failed', False) for error in errors),
                 'total_runtime_seconds':round(time.monotonic()-started, 2),
                 'complete':True}
     attempts['failed'] = attempts['failed_requests']

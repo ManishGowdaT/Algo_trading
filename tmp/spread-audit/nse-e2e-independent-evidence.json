@@ -1,0 +1,3544 @@
+{
+  "scope": "Archived 2026-10-13 inputs replayed on current code; NOT a fresh live scan",
+  "arithmetic": [
+    {
+      "symbol": "CANBK",
+      "capture": "7feed0f6-bdac-406e-a973-16a21a846216",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "independent": {
+        "ticker": "CANBK",
+        "type": "BEAR CALL",
+        "short_strike": 125.0,
+        "long_strike": 130.0,
+        "credit": 1.41,
+        "ror_pct": 39.1,
+        "cushion_pct": 5.59,
+        "vrp": 1.56,
+        "p_raw": 0.2979,
+        "p_adj": 0.5801,
+        "ev": -150.0,
+        "credit_unrounded": 1.4050000000000002,
+        "horizon": 28,
+        "observations": 715
+      },
+      "rv_independent": {
+        "rv10": 0.23544839171916204,
+        "rv21": 0.20019207731438488,
+        "rv63": 0.19261377868038773,
+        "rv252": 0.2863763151350774
+      },
+      "api": {
+        "ticker": "CANBK",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 125.0,
+        "long_strike": 130.0,
+        "width": 5.0,
+        "credit": 1.41,
+        "ror_pct": 39.1,
+        "cushion_pct": 5.59,
+        "vrp": 1.56,
+        "iv": 0.3125,
+        "rv21": 0.2002,
+        "earnings": true,
+        "max_gap": 5.3,
+        "p_raw": 0.2979,
+        "p_adj": 0.5801,
+        "ev": -150.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2354,
+            "rv21": 0.2002,
+            "rv63": 0.1926,
+            "rv252": 0.2864
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 5.3
+          },
+          "l3": {
+            "iv": 0.3125,
+            "rv21": 0.2002,
+            "ratio": 1.56
+          },
+          "l4": {
+            "p_raw": 0.2979,
+            "p_adj": 0.5801,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0335,
+              "oi": 161
+            },
+            "long": {
+              "spread_pct": 0.0506,
+              "oi": 274
+            }
+          }
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|83051",
+        "long_instrument_key": "NSE_FO|83064",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_points_unrounded": 1.405,
+        "actual_width_points": 5.0,
+        "credit_per_lot_inr": 9483.75,
+        "max_loss_per_lot_inr": 24266.25,
+        "ev_per_lot_inr": -10093.69
+      },
+      "raw_short_oi": 1086750.0,
+      "raw_long_oi": 1849500.0,
+      "spot": 118.38,
+      "latest_candle": {
+        "timestamp": "2026-10-12T00:00:00+05:30",
+        "open": 120.0,
+        "high": 120.1,
+        "low": 117.71,
+        "close": 118.38,
+        "volume": 9100287.0,
+        "open_interest": 0.0
+      }
+    },
+    {
+      "symbol": "NMDC",
+      "capture": "779f7e49-c2ff-4a16-bc1f-9815b73563d4",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "independent": {
+        "ticker": "NMDC",
+        "type": "BEAR CALL",
+        "short_strike": 75.0,
+        "long_strike": 80.0,
+        "credit": 0.97,
+        "ror_pct": 24.2,
+        "cushion_pct": 6.62,
+        "vrp": 1.22,
+        "p_raw": 0.2825,
+        "p_adj": 0.4808,
+        "ev": -143.0,
+        "credit_unrounded": 0.9749999999999999,
+        "horizon": 28,
+        "observations": 715
+      },
+      "rv_independent": {
+        "rv10": 0.2523093252778075,
+        "rv21": 0.24711853330943134,
+        "rv63": 0.22871374298702984,
+        "rv252": 0.28748061285822085
+      },
+      "api": {
+        "ticker": "NMDC",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 75.0,
+        "long_strike": 80.0,
+        "width": 5.0,
+        "credit": 0.97,
+        "ror_pct": 24.2,
+        "cushion_pct": 6.62,
+        "vrp": 1.22,
+        "iv": 0.3027,
+        "rv21": 0.2471,
+        "earnings": true,
+        "max_gap": 4.65,
+        "p_raw": 0.2825,
+        "p_adj": 0.4808,
+        "ev": -143.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.2523,
+            "rv21": 0.2471,
+            "rv63": 0.2287,
+            "rv252": 0.2875
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 4.65
+          },
+          "l3": {
+            "iv": 0.3027,
+            "rv21": 0.2471,
+            "ratio": 1.22
+          },
+          "l4": {
+            "p_raw": 0.2825,
+            "p_adj": 0.4808,
+            "horizon_td": 28
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.024,
+              "oi": 120
+            },
+            "long": {
+              "spread_pct": 0.0432,
+              "oi": 151
+            }
+          }
+        },
+        "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|139549",
+        "long_instrument_key": "NSE_FO|120954",
+        "lot_size": 6750,
+        "lot_size_status": "contract",
+        "credit_points_unrounded": 0.9749999999999999,
+        "actual_width_points": 5.0,
+        "credit_per_lot_inr": 6581.25,
+        "max_loss_per_lot_inr": 27168.75,
+        "ev_per_lot_inr": -9644.63
+      },
+      "raw_short_oi": 810000.0,
+      "raw_long_oi": 1019250.0,
+      "spot": 70.34,
+      "latest_candle": {
+        "timestamp": "2026-10-12T00:00:00+05:30",
+        "open": 71.99,
+        "high": 72.24,
+        "low": 70.34,
+        "close": 70.34,
+        "volume": 15649136.0,
+        "open_interest": 0.0
+      }
+    }
+  ],
+  "batches": [
+    {
+      "file": "batch-86c96a05-c13f-4166-9a3b-d1a26dfec2cd.json",
+      "funnel": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 2,
+        "paired": 2,
+        "ror": 2,
+        "vrp": 2,
+        "final": 2
+      },
+      "rejections": {
+        "cushion": 54,
+        "short OI": 10,
+        "missing hedge strike": 7,
+        "short bid/ask fraction": 65,
+        "long bid/ask fraction": 1,
+        "long OI": 2
+      },
+      "ranking_matches": true
+    },
+    {
+      "file": "batch-98083cd6-a4f1-4693-a15f-df06ce8b314e.json",
+      "funnel": {
+        "considered": 141,
+        "cushion": 87,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejections": {
+        "cushion": 54,
+        "short OI": 10,
+        "VRP": 1,
+        "short bid/ask fraction": 65,
+        "long bid/ask fraction": 9,
+        "long OI": 2
+      },
+      "ranking_matches": true
+    }
+  ],
+  "underlying_rejections": [
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 54900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.03277613897082924,
+          "short_bid": 546.95,
+          "short_ask": 555.6,
+          "short_oi": 118
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54800.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.21486579991988053,
+          "short_bid": 521.5,
+          "short_ask": 529.85,
+          "short_oi": 150
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54700.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.39695546086893185,
+          "short_bid": 501.3,
+          "short_ask": 506.4,
+          "short_oi": 131
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54600.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.5790451218179832,
+          "short_bid": 475.8,
+          "short_ask": 481.65,
+          "short_oi": 100
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54500.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.7611347827670345,
+          "short_bid": 448.5,
+          "short_ask": 457.9,
+          "short_oi": 2229
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54400.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.9432244437160857,
+          "short_bid": 429.6,
+          "short_ask": 437.95,
+          "short_oi": 966
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54300.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.1253141046651371,
+          "short_bid": 409.5,
+          "short_ask": 418.05,
+          "short_oi": 115
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54200.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.3074037656141884,
+          "short_bid": 389.5,
+          "short_ask": 398.55,
+          "short_oi": 100
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54100.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.4894934265632396,
+          "short_bid": 373.5,
+          "short_ask": 378.95,
+          "short_oi": 110
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.671583087512291,
+          "short_bid": 353.4,
+          "short_ask": 361.05,
+          "short_oi": 3165
+        },
+        {
+          "type": "BULL PUT",
+          "short": 53900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.8536727484613424,
+          "short_bid": 338.75,
+          "short_ask": 345.6,
+          "short_oi": 79
+        },
+        {
+          "type": "BULL PUT",
+          "short": 53800.0,
+          "first_failure": "short OI",
+          "spot": 54918.0,
+          "cushion": 2.0357624094103937,
+          "short_bid": 323.95,
+          "short_ask": 328.9,
+          "short_oi": 49
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.14931352197822206,
+          "short_bid": 1760.5,
+          "short_ask": 1798.95,
+          "short_oi": 4861
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55100.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.3314031829272734,
+          "short_bid": 1690.6,
+          "short_ask": 1723.1,
+          "short_oi": 237
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55200.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.5134928438763247,
+          "short_bid": 1595.2,
+          "short_ask": 1659.65,
+          "short_oi": 159
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55300.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.695582504825376,
+          "short_bid": 1528.0,
+          "short_ask": 1564.9,
+          "short_oi": 149
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55400.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.8776721657744273,
+          "short_bid": 1467.2,
+          "short_ask": 1500.4,
+          "short_oi": 145
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55500.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.0597618267234785,
+          "short_bid": 1417.65,
+          "short_ask": 1443.2,
+          "short_oi": 3380
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55600.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.24185148767253,
+          "short_bid": 1345.85,
+          "short_ask": 1369.0,
+          "short_oi": 230
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55700.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.4239411486215814,
+          "short_bid": 1282.8,
+          "short_ask": 1329.9,
+          "short_oi": 181
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55800.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.6060308095706328,
+          "short_bid": 1228.2,
+          "short_ask": 1269.05,
+          "short_oi": 291
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.788120470519684,
+          "short_bid": 1161.5,
+          "short_ask": 1384.55,
+          "short_oi": 278
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 56000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.9702101314687352,
+          "short_bid": 1121.2,
+          "short_ask": 1132.3,
+          "short_oi": 7258
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 56100.0,
+          "first_failure": "missing hedge strike",
+          "spot": 54918.0,
+          "cushion": 2.1522997924177867,
+          "short_bid": 1063.65,
+          "short_ask": 1076.85,
+          "short_oi": 365
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.15559014882461808,
+        "rv21": 0.14456819260212989,
+        "rv63": 0.11982245537196916,
+        "rv252": 0.1693333839272376
+      }
+    },
+    {
+      "symbol": "CANBK",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 118.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 0.32100016894745353,
+          "short_bid": 2.65,
+          "short_ask": 3.99,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 117.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 1.1657374556512885,
+          "short_bid": 2.66,
+          "short_ask": 3.99,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 116.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.010474742355124,
+          "short_bid": 2.24,
+          "short_ask": 3.61,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 115.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.855212029058959,
+          "short_bid": 1.81,
+          "short_ask": 2.26,
+          "short_oi": 24
+        },
+        {
+          "type": "BULL PUT",
+          "short": 114.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.699949315762794,
+          "short_bid": 1.14,
+          "short_ask": 2.18,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 113.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 4.544686602466629,
+          "short_bid": 1.13,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 112.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 5.389423889170464,
+          "short_bid": 1.12,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 111.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 6.234161175874299,
+          "short_bid": 1.14,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 110.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.078898462578135,
+          "short_bid": 1.11,
+          "short_ask": 1.17,
+          "short_oi": 120,
+          "long": 105.0,
+          "long_bid": 0.36,
+          "long_ask": 1.63,
+          "long_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 109.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.92363574928197,
+          "short_bid": 0.5,
+          "short_ask": 1.12,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 108.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.768373035985805,
+          "short_bid": 0.32,
+          "short_ask": 1.12,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 107.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 9.61311032268964,
+          "short_bid": 0.36,
+          "short_ask": 1.32,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 119.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 0.5237371177563817,
+          "short_bid": 5.11,
+          "short_ask": 6.9,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 120.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 1.3684744044602168,
+          "short_bid": 5.68,
+          "short_ask": 5.84,
+          "short_oi": 118
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 121.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.213211691164052,
+          "short_bid": 4.25,
+          "short_ask": 6.03,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 122.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.0579489778678868,
+          "short_bid": 3.7,
+          "short_ask": 5.68,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 123.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.9026862645717224,
+          "short_bid": 3.64,
+          "short_ask": 5.35,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 124.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 4.747423551275557,
+          "short_bid": 3.64,
+          "short_ask": 5.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 126.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 6.436898124683228,
+          "short_bid": 2.23,
+          "short_ask": 3.57,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 127.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.281635411387062,
+          "short_bid": 2.81,
+          "short_ask": 3.58,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 128.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.126372698090897,
+          "short_bid": 2.17,
+          "short_ask": 3.59,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 129.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.971109984794733,
+          "short_bid": 2.17,
+          "short_ask": 3.59,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 130.0,
+          "first_failure": "missing hedge strike",
+          "spot": 118.38,
+          "cushion": 9.815847271498567,
+          "short_bid": 2.12,
+          "short_ask": 2.23,
+          "short_oi": 274
+        }
+      ],
+      "accepted": [
+        {
+          "ticker": "CANBK",
+          "type": "BEAR CALL",
+          "short_strike": 125.0,
+          "long_strike": 130.0,
+          "credit": 1.41,
+          "ror_pct": 39.1,
+          "cushion_pct": 5.59,
+          "vrp": 1.56,
+          "p_raw": 0.2979,
+          "p_adj": 0.5801,
+          "ev": -150.0,
+          "credit_unrounded": 1.4050000000000002,
+          "horizon": 28,
+          "observations": 715
+        }
+      ],
+      "rv_independent": {
+        "rv10": 0.23544839171916204,
+        "rv21": 0.20019207731438488,
+        "rv63": 0.19261377868038773,
+        "rv252": 0.2863763151350774
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 22350.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.05969588634975773,
+          "short_bid": 133.8,
+          "short_ask": 150.65,
+          "short_oi": 56
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22300.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.28327598503801327,
+          "short_bid": 124.2,
+          "short_ask": 148.9,
+          "short_oi": 169
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22250.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.5068560837262689,
+          "short_bid": 43.3,
+          "short_ask": 224.15,
+          "short_oi": 55
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22200.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.7304361824145245,
+          "short_bid": 107.6,
+          "short_ask": 111.7,
+          "short_oi": 211
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22150.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.95401628110278,
+          "short_bid": 100.0,
+          "short_ask": 236.85,
+          "short_oi": 27
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22100.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.1775963797910356,
+          "short_bid": 93.05,
+          "short_ask": 96.4,
+          "short_oi": 125
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22050.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.4011764784792913,
+          "short_bid": 14.3,
+          "short_ask": 174.75,
+          "short_oi": 14
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22000.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.624756577167547,
+          "short_bid": 80.5,
+          "short_ask": 86.25,
+          "short_oi": 739
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21950.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.8483366758558022,
+          "short_bid": 75.3,
+          "short_ask": 78.4,
+          "short_oi": 7
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21900.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.0719167745440576,
+          "short_bid": 70.0,
+          "short_ask": 83.85,
+          "short_oi": 40
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.2954968732323136,
+          "short_bid": 15.8,
+          "short_ask": 82.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.519076971920569,
+          "short_bid": 36.65,
+          "short_ask": 75.5,
+          "short_oi": 49
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22400.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.16388421233849784,
+          "short_bid": 641.4,
+          "short_ask": 666.35,
+          "short_oi": 48
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22450.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.38746431102675344,
+          "short_bid": 321.95,
+          "short_ask": 774.85,
+          "short_oi": 37
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22500.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.611044409715009,
+          "short_bid": 574.75,
+          "short_ask": 589.25,
+          "short_oi": 443
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22550.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.8346245084032646,
+          "short_bid": 522.8,
+          "short_ask": 669.3,
+          "short_oi": 17
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22600.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.05820460709152,
+          "short_bid": 507.55,
+          "short_ask": 515.0,
+          "short_oi": 79
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22650.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.2817847057797755,
+          "short_bid": 467.2,
+          "short_ask": 484.9,
+          "short_oi": 13
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22700.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.5053648044680312,
+          "short_bid": 435.45,
+          "short_ask": 449.8,
+          "short_oi": 166
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22750.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.728944903156287,
+          "short_bid": 402.3,
+          "short_ask": 423.45,
+          "short_oi": 26
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22800.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.9525250018445424,
+          "short_bid": 378.65,
+          "short_ask": 392.4,
+          "short_oi": 153
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.1761051005327983,
+          "short_bid": 330.85,
+          "short_ask": 486.55,
+          "short_oi": 74
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22900.0,
+          "first_failure": "missing hedge strike",
+          "spot": 22363.35,
+          "cushion": 2.3996851992210537,
+          "short_bid": 324.05,
+          "short_ask": 326.15,
+          "short_oi": 168
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22950.0,
+          "first_failure": "short OI",
+          "spot": 22363.35,
+          "cushion": 2.623265297909309,
+          "short_bid": 295.0,
+          "short_ask": 301.05,
+          "short_oi": 82
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.159687327557503,
+        "rv21": 0.13508546863099818,
+        "rv63": 0.10418390503386206,
+        "rv252": 0.13596089932679775
+      }
+    },
+    {
+      "symbol": "NMDC",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 1,
+        "final": 1
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 70.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 0.48336650554450294,
+          "short_bid": 1.79,
+          "short_ask": 1.86,
+          "short_oi": 84
+        },
+        {
+          "type": "BULL PUT",
+          "short": 69.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 1.9050326983224386,
+          "short_bid": 1.21,
+          "short_ask": 1.83,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 68.0,
+          "first_failure": "short OI",
+          "spot": 70.34,
+          "cushion": 3.3266988911003743,
+          "short_bid": 1.17,
+          "short_ask": 1.22,
+          "short_oi": 10
+        },
+        {
+          "type": "BULL PUT",
+          "short": 67.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 4.74836508387831,
+          "short_bid": 0.93,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 66.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 6.170031276656246,
+          "short_bid": 0.17,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 65.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 7.591697469434182,
+          "short_bid": 0.11,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 64.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 9.013363662212116,
+          "short_bid": 0.12,
+          "short_ask": 0.89,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 63.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 10.435029854990052,
+          "short_bid": 0.02,
+          "short_ask": 1.02,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 62.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 11.856696047767988,
+          "short_bid": 0.12,
+          "short_ask": 0.4,
+          "short_oi": 90
+        },
+        {
+          "type": "BULL PUT",
+          "short": 60.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 14.700028433323858,
+          "short_bid": 0.19,
+          "short_ask": 0.49,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 71.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 0.9382996872334327,
+          "short_bid": 2.94,
+          "short_ask": 3.85,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 72.0,
+          "first_failure": "short OI",
+          "spot": 70.34,
+          "cushion": 2.359965880011368,
+          "short_bid": 2.8,
+          "short_ask": 2.95,
+          "short_oi": 20
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 73.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 3.7816320727893036,
+          "short_bid": 2.12,
+          "short_ask": 4.4,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 74.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 5.2032982655672395,
+          "short_bid": 1.68,
+          "short_ask": 2.85,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 76.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 8.046630651123111,
+          "short_bid": 1.01,
+          "short_ask": 1.66,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 77.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 9.468296843901047,
+          "short_bid": 0.47,
+          "short_ask": 3.51,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 78.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 10.889963036678981,
+          "short_bid": 0.39,
+          "short_ask": 2.18,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 79.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 12.311629229456917,
+          "short_bid": 0.57,
+          "short_ask": 2.3,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 80.0,
+          "first_failure": "long OI",
+          "spot": 70.34,
+          "cushion": 13.733295422234853,
+          "short_bid": 0.68,
+          "short_ask": 0.71,
+          "short_oi": 151,
+          "long": 85.0,
+          "long_bid": 0.33,
+          "long_ask": 0.36,
+          "long_oi": 2
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 81.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 15.154961615012787,
+          "short_bid": 0.57,
+          "short_ask": 0.8,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 82.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 16.576627807790725,
+          "short_bid": 0.17,
+          "short_ask": 0.74,
+          "short_oi": 1
+        }
+      ],
+      "accepted": [
+        {
+          "ticker": "NMDC",
+          "type": "BEAR CALL",
+          "short_strike": 75.0,
+          "long_strike": 80.0,
+          "credit": 0.97,
+          "ror_pct": 24.2,
+          "cushion_pct": 6.62,
+          "vrp": 1.22,
+          "p_raw": 0.2825,
+          "p_adj": 0.4808,
+          "ev": -143.0,
+          "credit_unrounded": 0.9749999999999999,
+          "horizon": 28,
+          "observations": 715
+        }
+      ],
+      "rv_independent": {
+        "rv10": 0.2523093252778075,
+        "rv21": 0.24711853330943134,
+        "rv63": 0.22871374298702984,
+        "rv252": 0.28748061285822085
+      }
+    },
+    {
+      "symbol": "NTPC",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 307.5,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 0.8064516129032258,
+          "short_bid": 4.15,
+          "short_ask": 7.85,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 305.0,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 1.6129032258064515,
+          "short_bid": 2.35,
+          "short_ask": 7.65,
+          "short_oi": 10
+        },
+        {
+          "type": "BULL PUT",
+          "short": 302.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 2.4193548387096775,
+          "short_bid": 2.35,
+          "short_ask": 6.2,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 300.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 3.225806451612903,
+          "short_bid": 3.45,
+          "short_ask": 3.6,
+          "short_oi": 44
+        },
+        {
+          "type": "BULL PUT",
+          "short": 297.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.032258064516129,
+          "short_bid": 2.75,
+          "short_ask": 3.6,
+          "short_oi": 5
+        },
+        {
+          "type": "BULL PUT",
+          "short": 295.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.838709677419355,
+          "short_bid": 1.25,
+          "short_ask": 3.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 292.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 5.64516129032258,
+          "short_bid": 1.25,
+          "short_ask": 3.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 290.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 6.451612903225806,
+          "short_bid": 1.25,
+          "short_ask": 3.45,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 287.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 7.258064516129033,
+          "short_bid": 0.7,
+          "short_ask": 3.2,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 285.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.064516129032258,
+          "short_bid": 0.7,
+          "short_ask": 2.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 282.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.870967741935484,
+          "short_bid": 0.65,
+          "short_ask": 2.3,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 280.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 9.67741935483871,
+          "short_bid": 0.7,
+          "short_ask": 0.95,
+          "short_oi": 5
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 312.5,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 0.8064516129032258,
+          "short_bid": 5.5,
+          "short_ask": 9.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 315.0,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 1.6129032258064515,
+          "short_bid": 4.7,
+          "short_ask": 8.4,
+          "short_oi": 2
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 317.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 2.4193548387096775,
+          "short_bid": 4.5,
+          "short_ask": 7.2,
+          "short_oi": 13
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 320.0,
+          "first_failure": "long OI",
+          "spot": 310.0,
+          "cushion": 3.225806451612903,
+          "short_bid": 4.4,
+          "short_ask": 4.65,
+          "short_oi": 151,
+          "long": 325.0,
+          "long_bid": 3.05,
+          "long_ask": 3.2,
+          "long_oi": 15
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 322.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.032258064516129,
+          "short_bid": 3.0,
+          "short_ask": 4.5,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 325.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 4.838709677419355,
+          "short_bid": 3.05,
+          "short_ask": 3.2,
+          "short_oi": 15
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 327.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 5.64516129032258,
+          "short_bid": 2.05,
+          "short_ask": 3.1,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 330.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 6.451612903225806,
+          "short_bid": 2.05,
+          "short_ask": 2.25,
+          "short_oi": 89
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 332.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 7.258064516129033,
+          "short_bid": 0.9,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 335.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.064516129032258,
+          "short_bid": 0.95,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 337.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.870967741935484,
+          "short_bid": 0.95,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 340.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 9.67741935483871,
+          "short_bid": 0.9,
+          "short_ask": 1.0,
+          "short_oi": 82
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.23163034697110635,
+        "rv21": 0.18281748860105418,
+        "rv63": 0.15898491758886513,
+        "rv252": 0.19464959762944484
+      }
+    },
+    {
+      "symbol": "TATAELXSI",
+      "profile": "ORIGINAL_ZIP_BASELINE",
+      "funnel": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 3250.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 0.21492170709241634,
+          "short_bid": 76.9,
+          "short_ask": 87.45,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3200.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 1.750076757752533,
+          "short_bid": 66.95,
+          "short_ask": 78.75,
+          "short_oi": 63
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3150.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 3.2852318084126497,
+          "short_bid": 46.4,
+          "short_ask": 66.8,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3100.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 4.820386859072767,
+          "short_bid": 46.05,
+          "short_ask": 47.3,
+          "short_oi": 94
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3050.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 6.3555419097328825,
+          "short_bid": 25.55,
+          "short_ask": 44.65,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3000.0,
+          "first_failure": "missing hedge strike",
+          "spot": 3257.0,
+          "cushion": 7.890696960393,
+          "short_bid": 30.15,
+          "short_ask": 31.6,
+          "short_oi": 143
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2950.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 9.425852011053117,
+          "short_bid": 19.15,
+          "short_ask": 30.75,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2900.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 10.961007061713234,
+          "short_bid": 8.9,
+          "short_ask": 21.25,
+          "short_oi": 44
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 12.49616211237335,
+          "short_bid": 13.4,
+          "short_ask": 20.15,
+          "short_oi": 20
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 14.031317163033465,
+          "short_bid": 6.5,
+          "short_ask": 19.9,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2750.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 15.566472213693583,
+          "short_bid": 4.55,
+          "short_ask": 18.25,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2700.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 17.1016272643537,
+          "short_bid": 3.85,
+          "short_ask": 21.4,
+          "short_oi": 14
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3300.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 1.3202333435677003,
+          "short_bid": 235.65,
+          "short_ask": 246.75,
+          "short_oi": 31
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3350.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 2.855388394227817,
+          "short_bid": 194.4,
+          "short_ask": 235.15,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3400.0,
+          "first_failure": "missing hedge strike",
+          "spot": 3257.0,
+          "cushion": 4.390543444887934,
+          "short_bid": 184.05,
+          "short_ask": 192.35,
+          "short_oi": 112
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3450.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 5.92569849554805,
+          "short_bid": 156.35,
+          "short_ask": 172.05,
+          "short_oi": 35
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3500.0,
+          "first_failure": "missing hedge strike",
+          "spot": 3257.0,
+          "cushion": 7.460853546208167,
+          "short_bid": 136.15,
+          "short_ask": 139.8,
+          "short_oi": 251
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3550.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 8.996008596868284,
+          "short_bid": 100.9,
+          "short_ask": 124.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3600.0,
+          "first_failure": "missing hedge strike",
+          "spot": 3257.0,
+          "cushion": 10.5311636475284,
+          "short_bid": 99.7,
+          "short_ask": 103.45,
+          "short_oi": 220
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3650.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 12.066318698188518,
+          "short_bid": 74.3,
+          "short_ask": 101.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3700.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 13.601473748848633,
+          "short_bid": 73.05,
+          "short_ask": 83.9,
+          "short_oi": 163
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3750.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 15.13662879950875,
+          "short_bid": 60.5,
+          "short_ask": 65.5,
+          "short_oi": 8
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 16.671783850168868,
+          "short_bid": 52.1,
+          "short_ask": 58.6,
+          "short_oi": 25
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.4052818702881254,
+        "rv21": 0.32497146370178726,
+        "rv63": 0.2913079106950116,
+        "rv252": 0.3216669447368833
+      }
+    },
+    {
+      "symbol": "BANKNIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 24,
+        "cushion": 2,
+        "friction": 1,
+        "paired": 1,
+        "ror": 1,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 54900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.03277613897082924,
+          "short_bid": 546.95,
+          "short_ask": 555.6,
+          "short_oi": 118
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54800.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.21486579991988053,
+          "short_bid": 521.5,
+          "short_ask": 529.85,
+          "short_oi": 150
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54700.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.39695546086893185,
+          "short_bid": 501.3,
+          "short_ask": 506.4,
+          "short_oi": 131
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54600.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.5790451218179832,
+          "short_bid": 475.8,
+          "short_ask": 481.65,
+          "short_oi": 100
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54500.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.7611347827670345,
+          "short_bid": 448.5,
+          "short_ask": 457.9,
+          "short_oi": 2229
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54400.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.9432244437160857,
+          "short_bid": 429.6,
+          "short_ask": 437.95,
+          "short_oi": 966
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54300.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.1253141046651371,
+          "short_bid": 409.5,
+          "short_ask": 418.05,
+          "short_oi": 115
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54200.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.3074037656141884,
+          "short_bid": 389.5,
+          "short_ask": 398.55,
+          "short_oi": 100
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54100.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.4894934265632396,
+          "short_bid": 373.5,
+          "short_ask": 378.95,
+          "short_oi": 110
+        },
+        {
+          "type": "BULL PUT",
+          "short": 54000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.671583087512291,
+          "short_bid": 353.4,
+          "short_ask": 361.05,
+          "short_oi": 3165
+        },
+        {
+          "type": "BULL PUT",
+          "short": 53900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.8536727484613424,
+          "short_bid": 338.75,
+          "short_ask": 345.6,
+          "short_oi": 79
+        },
+        {
+          "type": "BULL PUT",
+          "short": 53800.0,
+          "first_failure": "short OI",
+          "spot": 54918.0,
+          "cushion": 2.0357624094103937,
+          "short_bid": 323.95,
+          "short_ask": 328.9,
+          "short_oi": 49
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.14931352197822206,
+          "short_bid": 1760.5,
+          "short_ask": 1798.95,
+          "short_oi": 4861
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55100.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.3314031829272734,
+          "short_bid": 1690.6,
+          "short_ask": 1723.1,
+          "short_oi": 237
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55200.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.5134928438763247,
+          "short_bid": 1595.2,
+          "short_ask": 1659.65,
+          "short_oi": 159
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55300.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.695582504825376,
+          "short_bid": 1528.0,
+          "short_ask": 1564.9,
+          "short_oi": 149
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55400.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 0.8776721657744273,
+          "short_bid": 1467.2,
+          "short_ask": 1500.4,
+          "short_oi": 145
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55500.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.0597618267234785,
+          "short_bid": 1417.65,
+          "short_ask": 1443.2,
+          "short_oi": 3380
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55600.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.24185148767253,
+          "short_bid": 1345.85,
+          "short_ask": 1369.0,
+          "short_oi": 230
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55700.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.4239411486215814,
+          "short_bid": 1282.8,
+          "short_ask": 1329.9,
+          "short_oi": 181
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55800.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.6060308095706328,
+          "short_bid": 1228.2,
+          "short_ask": 1269.05,
+          "short_oi": 291
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 55900.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.788120470519684,
+          "short_bid": 1161.5,
+          "short_ask": 1384.55,
+          "short_oi": 278
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 56000.0,
+          "first_failure": "cushion",
+          "spot": 54918.0,
+          "cushion": 1.9702101314687352,
+          "short_bid": 1121.2,
+          "short_ask": 1132.3,
+          "short_oi": 7258
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 56100.0,
+          "first_failure": "VRP",
+          "spot": 54918.0,
+          "cushion": 2.1522997924177867,
+          "short_bid": 1063.65,
+          "short_ask": 1076.85,
+          "short_oi": 365,
+          "long": 56200.0,
+          "long_bid": 1004.2,
+          "long_ask": 1011.5,
+          "long_oi": 454,
+          "short_mid": 1070.25,
+          "long_mid": 1007.85,
+          "credit": 62.39999999999998,
+          "width": 100.0,
+          "ror_pct": 165.95744680851047,
+          "iv": 0.135,
+          "rv21": 0.14456819260212989,
+          "vrp": 0.9338153681670299
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.15559014882461808,
+        "rv21": 0.14456819260212989,
+        "rv63": 0.11982245537196916,
+        "rv252": 0.1693333839272376
+      }
+    },
+    {
+      "symbol": "CANBK",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 118.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 0.32100016894745353,
+          "short_bid": 2.65,
+          "short_ask": 3.99,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 117.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 1.1657374556512885,
+          "short_bid": 2.66,
+          "short_ask": 3.99,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 116.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.010474742355124,
+          "short_bid": 2.24,
+          "short_ask": 3.61,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 115.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.855212029058959,
+          "short_bid": 1.81,
+          "short_ask": 2.26,
+          "short_oi": 24
+        },
+        {
+          "type": "BULL PUT",
+          "short": 114.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.699949315762794,
+          "short_bid": 1.14,
+          "short_ask": 2.18,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 113.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 4.544686602466629,
+          "short_bid": 1.13,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 112.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 5.389423889170464,
+          "short_bid": 1.12,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 111.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 6.234161175874299,
+          "short_bid": 1.14,
+          "short_ask": 2.19,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 110.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.078898462578135,
+          "short_bid": 1.11,
+          "short_ask": 1.17,
+          "short_oi": 120,
+          "long": 109.0,
+          "long_bid": 0.5,
+          "long_ask": 1.12,
+          "long_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 109.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.92363574928197,
+          "short_bid": 0.5,
+          "short_ask": 1.12,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 108.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.768373035985805,
+          "short_bid": 0.32,
+          "short_ask": 1.12,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 107.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 9.61311032268964,
+          "short_bid": 0.36,
+          "short_ask": 1.32,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 119.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 0.5237371177563817,
+          "short_bid": 5.11,
+          "short_ask": 6.9,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 120.0,
+          "first_failure": "cushion",
+          "spot": 118.38,
+          "cushion": 1.3684744044602168,
+          "short_bid": 5.68,
+          "short_ask": 5.84,
+          "short_oi": 118
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 121.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 2.213211691164052,
+          "short_bid": 4.25,
+          "short_ask": 6.03,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 122.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.0579489778678868,
+          "short_bid": 3.7,
+          "short_ask": 5.68,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 123.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 3.9026862645717224,
+          "short_bid": 3.64,
+          "short_ask": 5.35,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 124.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 4.747423551275557,
+          "short_bid": 3.64,
+          "short_ask": 5.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 125.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 5.592160837979392,
+          "short_bid": 3.52,
+          "short_ask": 3.64,
+          "short_oi": 161,
+          "long": 126.0,
+          "long_bid": 2.23,
+          "long_ask": 3.57,
+          "long_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 126.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 6.436898124683228,
+          "short_bid": 2.23,
+          "short_ask": 3.57,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 127.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 7.281635411387062,
+          "short_bid": 2.81,
+          "short_ask": 3.58,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 128.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.126372698090897,
+          "short_bid": 2.17,
+          "short_ask": 3.59,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 129.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 8.971109984794733,
+          "short_bid": 2.17,
+          "short_ask": 3.59,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 130.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 118.38,
+          "cushion": 9.815847271498567,
+          "short_bid": 2.12,
+          "short_ask": 2.23,
+          "short_oi": 274,
+          "long": 131.0,
+          "long_bid": 0.78,
+          "long_ask": 2.18,
+          "long_oi": 0
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.23544839171916204,
+        "rv21": 0.20019207731438488,
+        "rv63": 0.19261377868038773,
+        "rv252": 0.2863763151350774
+      }
+    },
+    {
+      "symbol": "NIFTY",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 24,
+        "cushion": 6,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 22350.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.05969588634975773,
+          "short_bid": 133.8,
+          "short_ask": 150.65,
+          "short_oi": 56
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22300.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.28327598503801327,
+          "short_bid": 124.2,
+          "short_ask": 148.9,
+          "short_oi": 169
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22250.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.5068560837262689,
+          "short_bid": 43.3,
+          "short_ask": 224.15,
+          "short_oi": 55
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22200.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.7304361824145245,
+          "short_bid": 107.6,
+          "short_ask": 111.7,
+          "short_oi": 211
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22150.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.95401628110278,
+          "short_bid": 100.0,
+          "short_ask": 236.85,
+          "short_oi": 27
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22100.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.1775963797910356,
+          "short_bid": 93.05,
+          "short_ask": 96.4,
+          "short_oi": 125
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22050.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.4011764784792913,
+          "short_bid": 14.3,
+          "short_ask": 174.75,
+          "short_oi": 14
+        },
+        {
+          "type": "BULL PUT",
+          "short": 22000.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.624756577167547,
+          "short_bid": 80.5,
+          "short_ask": 86.25,
+          "short_oi": 739
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21950.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.8483366758558022,
+          "short_bid": 75.3,
+          "short_ask": 78.4,
+          "short_oi": 7
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21900.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.0719167745440576,
+          "short_bid": 70.0,
+          "short_ask": 83.85,
+          "short_oi": 40
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.2954968732323136,
+          "short_bid": 15.8,
+          "short_ask": 82.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 21800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.519076971920569,
+          "short_bid": 36.65,
+          "short_ask": 75.5,
+          "short_oi": 49
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22400.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.16388421233849784,
+          "short_bid": 641.4,
+          "short_ask": 666.35,
+          "short_oi": 48
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22450.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.38746431102675344,
+          "short_bid": 321.95,
+          "short_ask": 774.85,
+          "short_oi": 37
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22500.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.611044409715009,
+          "short_bid": 574.75,
+          "short_ask": 589.25,
+          "short_oi": 443
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22550.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 0.8346245084032646,
+          "short_bid": 522.8,
+          "short_ask": 669.3,
+          "short_oi": 17
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22600.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.05820460709152,
+          "short_bid": 507.55,
+          "short_ask": 515.0,
+          "short_oi": 79
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22650.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.2817847057797755,
+          "short_bid": 467.2,
+          "short_ask": 484.9,
+          "short_oi": 13
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22700.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.5053648044680312,
+          "short_bid": 435.45,
+          "short_ask": 449.8,
+          "short_oi": 166
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22750.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.728944903156287,
+          "short_bid": 402.3,
+          "short_ask": 423.45,
+          "short_oi": 26
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22800.0,
+          "first_failure": "cushion",
+          "spot": 22363.35,
+          "cushion": 1.9525250018445424,
+          "short_bid": 378.65,
+          "short_ask": 392.4,
+          "short_oi": 153
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 22363.35,
+          "cushion": 2.1761051005327983,
+          "short_bid": 330.85,
+          "short_ask": 486.55,
+          "short_oi": 74
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22900.0,
+          "first_failure": "long OI",
+          "spot": 22363.35,
+          "cushion": 2.3996851992210537,
+          "short_bid": 324.05,
+          "short_ask": 326.15,
+          "short_oi": 168,
+          "long": 22950.0,
+          "long_bid": 295.0,
+          "long_ask": 301.05,
+          "long_oi": 82
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 22950.0,
+          "first_failure": "short OI",
+          "spot": 22363.35,
+          "cushion": 2.623265297909309,
+          "short_bid": 295.0,
+          "short_ask": 301.05,
+          "short_oi": 82
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.159687327557503,
+        "rv21": 0.13508546863099818,
+        "rv63": 0.10418390503386206,
+        "rv252": 0.13596089932679775
+      }
+    },
+    {
+      "symbol": "NMDC",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 22,
+        "cushion": 19,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 70.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 0.48336650554450294,
+          "short_bid": 1.79,
+          "short_ask": 1.86,
+          "short_oi": 84
+        },
+        {
+          "type": "BULL PUT",
+          "short": 69.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 1.9050326983224386,
+          "short_bid": 1.21,
+          "short_ask": 1.83,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 68.0,
+          "first_failure": "short OI",
+          "spot": 70.34,
+          "cushion": 3.3266988911003743,
+          "short_bid": 1.17,
+          "short_ask": 1.22,
+          "short_oi": 10
+        },
+        {
+          "type": "BULL PUT",
+          "short": 67.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 4.74836508387831,
+          "short_bid": 0.93,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 66.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 6.170031276656246,
+          "short_bid": 0.17,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 65.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 7.591697469434182,
+          "short_bid": 0.11,
+          "short_ask": 1.21,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 64.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 9.013363662212116,
+          "short_bid": 0.12,
+          "short_ask": 0.89,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 63.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 10.435029854990052,
+          "short_bid": 0.02,
+          "short_ask": 1.02,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 62.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 11.856696047767988,
+          "short_bid": 0.12,
+          "short_ask": 0.4,
+          "short_oi": 90
+        },
+        {
+          "type": "BULL PUT",
+          "short": 60.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 14.700028433323858,
+          "short_bid": 0.19,
+          "short_ask": 0.49,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 71.0,
+          "first_failure": "cushion",
+          "spot": 70.34,
+          "cushion": 0.9382996872334327,
+          "short_bid": 2.94,
+          "short_ask": 3.85,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 72.0,
+          "first_failure": "short OI",
+          "spot": 70.34,
+          "cushion": 2.359965880011368,
+          "short_bid": 2.8,
+          "short_ask": 2.95,
+          "short_oi": 20
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 73.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 3.7816320727893036,
+          "short_bid": 2.12,
+          "short_ask": 4.4,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 74.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 5.2032982655672395,
+          "short_bid": 1.68,
+          "short_ask": 2.85,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 75.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 6.6249644583451754,
+          "short_bid": 1.65,
+          "short_ask": 1.69,
+          "short_oi": 120,
+          "long": 76.0,
+          "long_bid": 1.01,
+          "long_ask": 1.66,
+          "long_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 76.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 8.046630651123111,
+          "short_bid": 1.01,
+          "short_ask": 1.66,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 77.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 9.468296843901047,
+          "short_bid": 0.47,
+          "short_ask": 3.51,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 78.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 10.889963036678981,
+          "short_bid": 0.39,
+          "short_ask": 2.18,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 79.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 12.311629229456917,
+          "short_bid": 0.57,
+          "short_ask": 2.3,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 80.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 13.733295422234853,
+          "short_bid": 0.68,
+          "short_ask": 0.71,
+          "short_oi": 151,
+          "long": 81.0,
+          "long_bid": 0.57,
+          "long_ask": 0.8,
+          "long_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 81.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 15.154961615012787,
+          "short_bid": 0.57,
+          "short_ask": 0.8,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 82.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 70.34,
+          "cushion": 16.576627807790725,
+          "short_bid": 0.17,
+          "short_ask": 0.74,
+          "short_oi": 1
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.2523093252778075,
+        "rv21": 0.24711853330943134,
+        "rv63": 0.22871374298702984,
+        "rv252": 0.28748061285822085
+      }
+    },
+    {
+      "symbol": "NTPC",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 307.5,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 0.8064516129032258,
+          "short_bid": 4.15,
+          "short_ask": 7.85,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 305.0,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 1.6129032258064515,
+          "short_bid": 2.35,
+          "short_ask": 7.65,
+          "short_oi": 10
+        },
+        {
+          "type": "BULL PUT",
+          "short": 302.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 2.4193548387096775,
+          "short_bid": 2.35,
+          "short_ask": 6.2,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 300.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 3.225806451612903,
+          "short_bid": 3.45,
+          "short_ask": 3.6,
+          "short_oi": 44
+        },
+        {
+          "type": "BULL PUT",
+          "short": 297.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.032258064516129,
+          "short_bid": 2.75,
+          "short_ask": 3.6,
+          "short_oi": 5
+        },
+        {
+          "type": "BULL PUT",
+          "short": 295.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.838709677419355,
+          "short_bid": 1.25,
+          "short_ask": 3.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 292.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 5.64516129032258,
+          "short_bid": 1.25,
+          "short_ask": 3.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 290.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 6.451612903225806,
+          "short_bid": 1.25,
+          "short_ask": 3.45,
+          "short_oi": 2
+        },
+        {
+          "type": "BULL PUT",
+          "short": 287.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 7.258064516129033,
+          "short_bid": 0.7,
+          "short_ask": 3.2,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 285.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.064516129032258,
+          "short_bid": 0.7,
+          "short_ask": 2.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 282.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.870967741935484,
+          "short_bid": 0.65,
+          "short_ask": 2.3,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 280.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 9.67741935483871,
+          "short_bid": 0.7,
+          "short_ask": 0.95,
+          "short_oi": 5
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 312.5,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 0.8064516129032258,
+          "short_bid": 5.5,
+          "short_ask": 9.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 315.0,
+          "first_failure": "cushion",
+          "spot": 310.0,
+          "cushion": 1.6129032258064515,
+          "short_bid": 4.7,
+          "short_ask": 8.4,
+          "short_oi": 2
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 317.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 2.4193548387096775,
+          "short_bid": 4.5,
+          "short_ask": 7.2,
+          "short_oi": 13
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 320.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 3.225806451612903,
+          "short_bid": 4.4,
+          "short_ask": 4.65,
+          "short_oi": 151,
+          "long": 322.5,
+          "long_bid": 3.0,
+          "long_ask": 4.5,
+          "long_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 322.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 4.032258064516129,
+          "short_bid": 3.0,
+          "short_ask": 4.5,
+          "short_oi": 1
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 325.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 4.838709677419355,
+          "short_bid": 3.05,
+          "short_ask": 3.2,
+          "short_oi": 15
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 327.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 5.64516129032258,
+          "short_bid": 2.05,
+          "short_ask": 3.1,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 330.0,
+          "first_failure": "short OI",
+          "spot": 310.0,
+          "cushion": 6.451612903225806,
+          "short_bid": 2.05,
+          "short_ask": 2.25,
+          "short_oi": 89
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 332.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 7.258064516129033,
+          "short_bid": 0.9,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 335.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.064516129032258,
+          "short_bid": 0.95,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 337.5,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 8.870967741935484,
+          "short_bid": 0.95,
+          "short_ask": 2.05,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 340.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 310.0,
+          "cushion": 9.67741935483871,
+          "short_bid": 0.9,
+          "short_ask": 1.0,
+          "short_oi": 82
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.23163034697110635,
+        "rv21": 0.18281748860105418,
+        "rv63": 0.15898491758886513,
+        "rv252": 0.19464959762944484
+      }
+    },
+    {
+      "symbol": "TATAELXSI",
+      "profile": "NSE_RESEARCH_V1",
+      "funnel": {
+        "considered": 23,
+        "cushion": 20,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "rejected": [
+        {
+          "type": "BULL PUT",
+          "short": 3250.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 0.21492170709241634,
+          "short_bid": 76.9,
+          "short_ask": 87.45,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3200.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 1.750076757752533,
+          "short_bid": 66.95,
+          "short_ask": 78.75,
+          "short_oi": 63
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3150.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 3.2852318084126497,
+          "short_bid": 46.4,
+          "short_ask": 66.8,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3100.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 4.820386859072767,
+          "short_bid": 46.05,
+          "short_ask": 47.3,
+          "short_oi": 94
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3050.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 6.3555419097328825,
+          "short_bid": 25.55,
+          "short_ask": 44.65,
+          "short_oi": 0
+        },
+        {
+          "type": "BULL PUT",
+          "short": 3000.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 7.890696960393,
+          "short_bid": 30.15,
+          "short_ask": 31.6,
+          "short_oi": 143,
+          "long": 2950.0,
+          "long_bid": 19.15,
+          "long_ask": 30.75,
+          "long_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2950.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 9.425852011053117,
+          "short_bid": 19.15,
+          "short_ask": 30.75,
+          "short_oi": 1
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2900.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 10.961007061713234,
+          "short_bid": 8.9,
+          "short_ask": 21.25,
+          "short_oi": 44
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2850.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 12.49616211237335,
+          "short_bid": 13.4,
+          "short_ask": 20.15,
+          "short_oi": 20
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 14.031317163033465,
+          "short_bid": 6.5,
+          "short_ask": 19.9,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2750.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 15.566472213693583,
+          "short_bid": 4.55,
+          "short_ask": 18.25,
+          "short_oi": 4
+        },
+        {
+          "type": "BULL PUT",
+          "short": 2700.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 17.1016272643537,
+          "short_bid": 3.85,
+          "short_ask": 21.4,
+          "short_oi": 14
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3300.0,
+          "first_failure": "cushion",
+          "spot": 3257.0,
+          "cushion": 1.3202333435677003,
+          "short_bid": 235.65,
+          "short_ask": 246.75,
+          "short_oi": 31
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3350.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 2.855388394227817,
+          "short_bid": 194.4,
+          "short_ask": 235.15,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3400.0,
+          "first_failure": "long OI",
+          "spot": 3257.0,
+          "cushion": 4.390543444887934,
+          "short_bid": 184.05,
+          "short_ask": 192.35,
+          "short_oi": 112,
+          "long": 3450.0,
+          "long_bid": 156.35,
+          "long_ask": 172.05,
+          "long_oi": 35
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3450.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 5.92569849554805,
+          "short_bid": 156.35,
+          "short_ask": 172.05,
+          "short_oi": 35
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3500.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 7.460853546208167,
+          "short_bid": 136.15,
+          "short_ask": 139.8,
+          "short_oi": 251,
+          "long": 3550.0,
+          "long_bid": 100.9,
+          "long_ask": 124.6,
+          "long_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3550.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 8.996008596868284,
+          "short_bid": 100.9,
+          "short_ask": 124.6,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3600.0,
+          "first_failure": "long bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 10.5311636475284,
+          "short_bid": 99.7,
+          "short_ask": 103.45,
+          "short_oi": 220,
+          "long": 3650.0,
+          "long_bid": 74.3,
+          "long_ask": 101.55,
+          "long_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3650.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 12.066318698188518,
+          "short_bid": 74.3,
+          "short_ask": 101.55,
+          "short_oi": 0
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3700.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 13.601473748848633,
+          "short_bid": 73.05,
+          "short_ask": 83.9,
+          "short_oi": 163
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3750.0,
+          "first_failure": "short OI",
+          "spot": 3257.0,
+          "cushion": 15.13662879950875,
+          "short_bid": 60.5,
+          "short_ask": 65.5,
+          "short_oi": 8
+        },
+        {
+          "type": "BEAR CALL",
+          "short": 3800.0,
+          "first_failure": "short bid/ask fraction",
+          "spot": 3257.0,
+          "cushion": 16.671783850168868,
+          "short_bid": 52.1,
+          "short_ask": 58.6,
+          "short_oi": 25
+        }
+      ],
+      "accepted": [],
+      "rv_independent": {
+        "rv10": 0.4052818702881254,
+        "rv21": 0.32497146370178726,
+        "rv63": 0.2913079106950116,
+        "rv252": 0.3216669447368833
+      }
+    }
+  ],
+  "reproductions": {
+    "missing_iv_rank_reward": [
+      {
+        "ticker": "MISSING",
+        "spot": 100,
+        "chg": 0,
+        "rv21": 0.2,
+        "iv14": null,
+        "vrp14": null,
+        "shock": 1,
+        "shock_pass": false,
+        "vrp_pass": false,
+        "iv_status": "unavailable",
+        "vrp_status": "unavailable",
+        "edge": false,
+        "score": 1.67
+      },
+      {
+        "ticker": "HIGH",
+        "spot": 100,
+        "chg": 0,
+        "rv21": 0.2,
+        "iv14": 0.4,
+        "vrp14": 2.0,
+        "shock": 1,
+        "shock_pass": false,
+        "vrp_pass": true,
+        "iv_status": "available",
+        "vrp_status": "available",
+        "edge": false,
+        "score": 1.33
+      },
+      {
+        "ticker": "LOW",
+        "spot": 100,
+        "chg": 0,
+        "rv21": 0.2,
+        "iv14": 0.2,
+        "vrp14": 1.0,
+        "shock": 1,
+        "shock_pass": false,
+        "vrp_pass": false,
+        "iv_status": "available",
+        "vrp_status": "available",
+        "edge": false,
+        "score": 1.0
+      }
+    ],
+    "duplicate_history_admitted": {
+      "status": "incomplete",
+      "duplicates": [
+        "2024-03-06"
+      ],
+      "eligible": true,
+      "blockers": []
+    },
+    "missing_oi_zero_threshold": {
+      "normalized_missing_oi": 0,
+      "passes": true
+    },
+    "stale_identity": {
+      "symbol": "AUDITOLD",
+      "instrument_key": "NSE_EQ|OLD",
+      "kind": "EQUITY",
+      "segment": "NSE_EQ"
+    },
+    "missing_lot_changes_listed_step": {
+      "raw_listed_strikes": [
+        100,
+        105,
+        110
+      ],
+      "normalized_listed_strikes": [
+        100,
+        110
+      ],
+      "requested_steps": 1,
+      "selected_hedge": 110,
+      "actual_next_listed_strike": 105
+    },
+    "stale_complete_stats": {
+      "updated": 999,
+      "all": [
+        {
+          "ticker": "OLD"
+        }
+      ],
+      "universe": {
+        "size": 1
+      },
+      "errors": [
+        {
+          "error": "new attempt failed"
+        }
+      ],
+      "capabilities": {},
+      "stats": {
+        "complete": true,
+        "atm_iv_available": 1
+      },
+      "refresh_empty": true,
+      "last_refresh_at": 1000,
+      "top": [
+        {
+          "ticker": "OLD"
+        }
+      ],
+      "refreshing": false,
+      "progress": null
+    }
+  },
+  "earnings_recomputation": [
+    {
+      "symbol": "CANBK",
+      "historical_events": 12,
+      "recomputed_max_gap": 5.2968460111317395,
+      "source_identity_date_accuracy": "UNVERIFIED independently"
+    },
+    {
+      "symbol": "NMDC",
+      "historical_events": 12,
+      "recomputed_max_gap": 4.648894668400527,
+      "source_identity_date_accuracy": "UNVERIFIED independently"
+    }
+  ]
+}

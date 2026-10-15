@@ -1,0 +1,170 @@
+backend/tests\spreadExpiryRateLimit.test.js:5:test('50-name expiry loading has a bounded authenticated budget independent of scans', async () => {
+backend/tests\spreadsPythonService.test.js:9:test('discovery endpoints forward server user identity only through private headers', async () => {
+backend/tests\spreadsPythonService.test.js:25:test('mismatched provider modes cannot silently serve fixture data in live mode', async () => {
+backend/tests\spreadsPythonService.test.js:35:test('fixture mode uses only the private NIFTY endpoint and never forwards an Upstox token', async () => {
+backend/tests\spreadsPythonService.test.js:49:test('live mode forwards the user Upstox token to Python without putting it in the body', async () => {
+backend/tests\spreadsPythonService.test.js:64:test('live mode refuses a scan without an Upstox token and service failures are sanitized', async () => {
+backend/tests\spreadsPythonService.test.js:75:test('production live mode refuses to send an Upstox token over public HTTP', async () => {
+backend/tests\spreadsPythonService.test.js:89:test('production live mode permits HTTP only when the private network is explicitly enabled', async () => {
+backend/tests\spreadsPythonService.test.js:101:test('underlying calls use the private whitelist pattern and sanitize the symbol path', async () => {
+backend/tests\spreadsPythonService.test.js:113:test('multi-underlying scan uses only its fixed private read-only Python route', async () => {
+backend/tests\spreadsPythonService.test.js:128:test('scan transport budget exceeds the cooperative Python worker budget', async t => {
+angel-one/tests\test_spread_b1_b8.py:14:def test_b1_known_defective_history_is_not_eligible():
+angel-one/tests\test_spread_b1_b8.py:19:def test_b2_missing_vrp_receives_no_measured_percentile_reward():
+angel-one/tests\test_spread_b1_b8.py:28:def test_b3_invalid_intermediate_lot_does_not_compress_grid(sign,short,steps):
+angel-one/tests\test_spread_b1_b8.py:42:def test_b4_stale_identity_refreshes_exact_authoritative_key():
+angel-one/tests\test_spread_b1_b8.py:51:def test_b5_empty_refresh_preserves_previous_ranking_not_complete_attempt():
+angel-one/tests\test_spread_b1_b8.py:69:def test_b5_failed_and_partial_attempts_never_claim_success(mode):
+angel-one/tests\test_spread_b1_b8.py:85:def test_b7_missing_oi_is_not_zero_and_cannot_pass_zero_threshold():
+angel-one/tests\test_spread_b1_b8.py:92:def test_b8_oi_warning_describes_normalized_contracts_and_missing_mapping():
+angel-one/tests\test_spread_completion.py:15:def test_expiry_ties_are_independent_of_input_order():
+angel-one/tests\test_spread_completion.py:21:def test_nonfinite_quote_fields_cannot_enter_scanner(field, value):
+angel-one/tests\test_spread_completion.py:27:def test_current_day_requires_finality_and_preserves_raw_bar():
+angel-one/tests\test_spread_completion.py:39:def test_fixture_scan_exposes_inputs_and_reconciles_rejections(monkeypatch):
+angel-one/tests\test_spread_completion.py:56:def test_missing_lot_does_not_crash_baseline_scan(monkeypatch):
+angel-one/tests\test_spread_completion.py:69:def test_one_two_three_steps_on_nonuniform_grid(side, sign, steps):
+backend/tests\spreadSessionIsolation.test.js:9:test('opening Spreads without Upstox returns a connection error rather than app-auth 401', async () => {
+backend/tests\spreadSessionIsolation.test.js:26:test('expired provider and OAuth tokens remain separate from app authentication', () => {
+backend/tests\spreadSessionIsolation.test.js:36:test('unrelated Spread request errors retain their original status', () => {
+backend/tests\spreadSessionIsolation.test.js:45:test('callback admission is logged without exposing query values or cookies', () => {
+backend/tests\spreadSessionIsolation.test.js:63:test('discovery controller uses authenticated user rather than body owner selectors', async () => {
+algo-trading/src/pages/SpreadsPage\SpreadsPage.tsx:150:    if (!symbols.length || symbols.some(symbol => !/^[A-Z0-9&._-]{1,30}$/.test(symbol))) { setMessage('Enter valid NSE symbols separated by commas or spaces.'); return }
+angel-one/tests\test_spread_discovery_adapter.py:24:def test_four_calendar_months_and_leap_month_end():
+angel-one/tests\test_spread_discovery_adapter.py:30:def test_exact_discovery_range_daily_request_chronology_and_no_scan_gate():
+angel-one/tests\test_spread_discovery_adapter.py:41:def test_missing_volume_is_not_invented_and_zero_is_not_missing():
+angel-one/tests\test_spread_discovery_adapter.py:50:def test_original_history_and_independent_missing_close_gates():
+angel-one/tests\test_spread_discovery_adapter.py:60:def test_atm_expiry_nearest_14_excludes_under_three_and_normalizes_tie_order():
+angel-one/tests\test_spread_discovery_adapter.py:70:def test_fixture_history_chain_iv_units_and_no_earnings_dependency():
+angel-one/tests\test_spread_discovery_adapter.py:82:def test_malformed_history_returns_actionable_provider_error():
+angel-one/tests\test_spread_discovery_baseline.py:28:def test_original_source_hashes():
+angel-one/tests\test_spread_discovery_baseline.py:33:def test_original_us_universe_normalization_and_liquidity_are_provider_rules():
+angel-one/tests\test_spread_discovery_baseline.py:46:def test_history_stage_gates_and_four_month_request_match_source(length):
+angel-one/tests\test_spread_discovery_baseline.py:66:def test_full_universe_iv_coverage_matches_original_zip_methodology():
+angel-one/tests\test_spread_discovery_baseline.py:83:def test_atm_iv_uses_three_nearest_valid_strikes_per_side():
+angel-one/tests\test_spread_discovery_baseline.py:91:def test_trending_payload_is_top_five_plus_all_and_recursive_json_safe():
+angel-one/tests\test_spread_audit_regressions.py:44:def test_untouched_zip_oracle_candidates_funnels_and_numeric_boundaries():
+angel-one/tests\test_spread_audit_regressions.py:70:def test_original_defaults_bounds_and_picker():
+angel-one/tests\test_spread_audit_regressions.py:89:def test_multi_normalizes_deduplicates_bounds_concurrency_and_stable_ev(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:112:def test_transport_cache_isolated_deepcopied_expires_and_deadline(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:140:def test_discovery_uses_raw_vrp_threshold_before_rounding():
+angel-one/tests\test_spread_audit_regressions.py:147:def test_raw_upstox_inputs_scan_without_validation_gates_and_keep_provenance():
+angel-one/tests\test_spread_audit_regressions.py:163:def test_endpoint_user_quotas_cache_hits_and_original_retry_delays(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:190:def test_batch_keeps_completed_results_after_event_loop_cutoff(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:204:def test_expired_batch_budget_reports_error_without_starting_provider(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:212:def test_discovery_pipeline_metrics_and_rank_match_original_zip():
+angel-one/tests\test_spread_audit_regressions.py:230:def test_earnings_gap_calculation_matches_original_zip():
+angel-one/tests\test_spread_audit_regressions.py:244:def test_lot_money_uses_unrounded_source_inputs_without_changing_original_ev(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:271:def test_discovered_nonstandard_indices_and_stock_keys_are_retained(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:291:def test_duplicate_strikes_do_not_use_last_quote_for_per_lot_money(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:315:def test_discovery_api_retains_master_key_for_subsequent_expiry_resolution(monkeypatch):
+angel-one/tests\test_spread_audit_regressions.py:353:def test_missing_index_identity_recovers_from_master_after_restart(monkeypatch):
+angel-one/tests\test_spread_discovery_cache_api.py:9:def test_ttl_force_refresh_singleflight_stale_and_defensive_copies():
+angel-one/tests\test_spread_discovery_cache_api.py:34:def test_cache_isolates_users_tokens_modes_bounds_and_preserves_empty_refresh():
+angel-one/tests\test_spread_discovery_cache_api.py:52:def test_timeout_does_not_cancel_singleflight_and_subsequent_wait_completes():
+angel-one/tests\test_spread_discovery_cache_api.py:66:def test_private_discovery_routes_fixture_contract_and_authentication(monkeypatch):
+angel-one/tests\test_spread_discovery_cache_api.py:90:def test_nonblocking_progress_and_empty_failure_poll_does_not_restart():
+angel-one/tests\test_spread_discovery_cache_api.py:106:def test_stale_empty_refresh_polls_do_not_restart_or_relabel_old_ranking():
+angel-one/tests\test_spread_discovery_orchestration.py:20:def test_full_fixture_pipeline_matches_untouched_zip_oracle():
+angel-one/tests\test_spread_discovery_orchestration.py:66:def test_v3_failure_is_failed_not_provider_unavailable(monkeypatch):
+angel-one/tests\test_spread_discovery_orchestration.py:81:def test_concurrency_full_universe_partial_failures_and_deadline_context():
+angel-one/tests\test_spread_discovery_orchestration.py:101:def test_dynamic_universe_sizes_all_receive_iv_attempts_and_statuses(monkeypatch):
+angel-one/tests\test_spread_discovery_orchestration.py:130:def test_iv_statuses_distinguish_unavailable_and_failed_and_history_failure_still_attempts(monkeypatch):
+angel-one/tests\test_spread_discovery_orchestration.py:168:def test_empty_pipeline_does_not_request_iv():
+angel-one/tests\test_spread_earnings_source.py:20:def test_dates_only_original_gap_and_penalty_and_cache():
+angel-one/tests\test_spread_earnings_source.py:36:def test_calendar_fallback_today_matches_original_exclusive_today_rule():
+angel-one/tests\test_spread_earnings_source.py:43:def test_empty_or_only_future_dates_never_assume_zero_historical_gap():
+angel-one/tests\test_spread_earnings_source.py:50:def test_provider_failure_has_safe_error_and_no_private_details():
+angel-one/tests\test_spread_final_acceptance_regressions.py:14:def test_malformed_listing_cannot_silently_compress_strike_grid(field,value):
+angel-one/tests\test_spread_final_acceptance_regressions.py:22:def test_conflicting_duplicate_contract_does_not_select_first_identity():
+angel-one/tests\test_spread_final_acceptance_regressions.py:29:def test_discovery_cannot_claim_atm_iv_without_reference_spot():
+angel-one/tests\test_spread_final_acceptance_regressions.py:40:def test_partial_ranking_never_becomes_last_successful_after_failure():
+angel-one/tests\test_spread_history_validation.py:29:def test_missing_calendar_never_certifies_weekdays_or_holidays():
+angel-one/tests\test_spread_history_validation.py:35:def test_special_session_missing_is_reported_without_filling():
+angel-one/tests\test_spread_history_validation.py:43:def test_full_calendar_and_valid_ohlcv_can_verify_descending_response():
+angel-one/tests\test_spread_history_validation.py:51:def test_duplicates_malformed_invalid_and_out_of_range_are_not_hidden():
+angel-one/tests\test_spread_history_validation.py:62:def test_partial_calendar_cannot_certify_requested_range():
+angel-one/tests\test_spread_history_validation.py:69:def test_nonfinite_or_boolean_prices_never_certify(value):
+angel-one/tests\test_spread_history_validation.py:75:def test_discovery_reports_duplicates_and_malformed_rows_without_claiming_completeness():
+angel-one/tests\test_spread_history_validation.py:91:def test_adapter_mapping_sorting_and_diagnostics_preserve_returned_values():
+angel-one/tests\test_spread_nse_profile.py:25:def test_actual_listed_strike_ladders_no_fixed_five_assumption(grid,short,expected):
+angel-one/tests\test_spread_nse_profile.py:31:def test_nonuniform_steps_do_not_skip_an_unquoted_listed_hedge():
+angel-one/tests\test_spread_nse_profile.py:38:def test_bull_put_hedge_is_next_lower_actual_listed_strike():
+angel-one/tests\test_spread_nse_profile.py:44:def test_verified_paise_ticks_and_positive_midpoint_credit_quantum(a,b,expected):
+angel-one/tests\test_spread_nse_profile.py:49:def test_missing_tick_never_guessed(bad):
+angel-one/tests\test_spread_nse_profile.py:54:def test_mixed_lots_or_offgrid_quotes_are_explicit():
+angel-one/tests\test_spread_nse_profile.py:63:def test_no_mathematical_formula_assignments_changed():
+angel-one/tests\test_spread_nse_profile.py:73:def test_native_uniform_ladder_matches_zip_when_width_and_credit_gates_agree(seed):
+angel-one/tests\test_spread_nse_profile.py:86:def test_explicit_profiles_default_baseline_and_validate_inputs():
+angel-one/tests\test_spread_nse_profile.py:91:def test_fixture_api_native_preserves_lots_money_profiles_and_history_warning(monkeypatch):
+angel-one/tests\test_spread_nse_profile.py:104:def test_native_credit_gate_uses_half_tick_quantum_and_keeps_negative_ev():
+angel-one/tests\test_spread_engine_port.py:24:def test_scan_params_preserve_source_defaults():
+angel-one/tests\test_spread_engine_port.py:30:def test_expiration_picker_uses_nearest_valid_calendar_dte_and_first_tie():
+angel-one/tests\test_spread_engine_port.py:37:def test_realized_volatility_uses_log_returns_sample_std_and_original_windows():
+angel-one/tests\test_spread_engine_port.py:46:def test_empirical_probability_uses_original_calendar_to_trading_horizon_and_60_sample_gate():
+angel-one/tests\test_spread_engine_port.py:54:def test_earnings_penalty_matches_original_branches_and_gap_selection():
+angel-one/tests\test_spread_engine_port.py:65:def test_spread_generation_preserves_filter_order_funnel_and_result_fields():
+angel-one/tests\test_spread_engine_port.py:92:def test_upstox_history_and_earnings_gaps_block_exact_scan_without_fabrication():
+angel-one/tests\test_spread_engine_port.py:102:def test_provider_orchestration_runs_only_with_explicit_required_capabilities():
+angel-one/tests\test_spread_engine_port.py:123:def test_edge_discovery_stage_one_volume_shock():
+angel-one/tests\test_spread_engine_port.py:132:def test_edge_discovery_preserves_vrp_shock_percentile_score_and_edge_sort():
+angel-one/tests\test_spread_nifty_api.py:6:def test_fixture_mode_serves_expiries_and_runs_nifty_scan_without_upstox_activation(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:32:def test_nifty_spread_api_requires_internal_key_and_live_token(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:44:def test_fixture_mode_is_blocked_in_production(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:56:def test_banknifty_and_sample_stock_fixtures_resolve_and_scan(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:81:def test_fixture_rejects_symbols_without_a_fixture_or_f_and_o_contracts(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:91:def test_multi_scan_preserves_original_combined_ev_ranking_and_contract(monkeypatch):
+angel-one/tests\test_spread_nifty_api.py:127:def test_multi_scan_enforces_selection_limit_and_preserves_partial_failure(monkeypatch):
+angel-one/tests\test_spread_market_quota.py:20:def test_each_documented_rolling_window(window, limit):
+angel-one/tests\test_spread_market_quota.py:29:def test_api_and_user_budgets_are_independent():
+angel-one/tests\test_spread_market_quota.py:37:def test_deadline_does_not_consume_a_request_or_sleep_past_budget():
+angel-one/tests\test_spread_market_quota.py:46:def test_concurrent_reservations_are_atomic():
+angel-one/tests\test_spread_market_quota.py:58:def test_cooldown_shared_and_retry_after_not_capped_to_four_seconds():
+angel-one/tests\test_spread_market_quota.py:69:def test_server_owner_survives_token_rotation_and_dependency_resets(monkeypatch):
+angel-one/tests\test_spread_scan_audit.py:14:def test_diagnostic_capture_never_changes_existing_scan_or_formula_parameters(monkeypatch,tmp_path):
+angel-one/tests\test_spread_scan_audit.py:31:def test_transport_capture_returns_identical_data_and_only_market_fields():
+angel-one/tests\test_spread_scan_audit.py:46:def test_independent_first_rejections_reconcile_to_original_zip_for_100_inputs(tmp_path):
+angel-one/tests\test_spread_scan_audit.py:70:def test_malformed_payload_capture_cannot_change_transport_result():
+angel-one/tests\test_spread_oi_normalization.py:32:def test_authoritative_lot_normalizes_before_untouched_scanner_filter(quantity, expected, passes):
+angel-one/tests\test_spread_oi_normalization.py:53:def test_invalid_provider_inputs_remain_missing_with_explicit_reason(quantity,lot,reason):
+angel-one/tests\test_spread_oi_normalization.py:61:def test_lot_must_match_identity_expiry_strike_and_option_type(contract):
+angel-one/tests\test_spread_oi_normalization.py:65:def test_conflicting_lot_sizes_are_not_guessed():
+angel-one/tests\test_spread_oi_normalization.py:69:def test_existing_fixture_oi_is_already_contract_count_and_is_not_divided():
+angel-one/tests\test_spread_oi_normalization.py:76:def test_original_zip_scanner_definitions_unchanged():
+angel-one/tests\test_spread_universe.py:14:def test_fixture_provider_is_explicit_and_has_stock_and_index_identities():
+angel-one/tests\test_spread_universe.py:28:def test_active_indices_stocks_dedup_and_expiry_filtering():
+angel-one/tests\test_spread_universe.py:41:def test_epoch_milliseconds_expiry_and_expiry_day_are_included():
+angel-one/tests\test_spread_universe.py:48:def test_invalid_lot_size_is_never_truncated_or_assumed(lot):
+angel-one/tests\test_spread_universe.py:54:def test_ambiguous_symbols_are_excluded_instead_of_picking_arbitrary_key():
+angel-one/tests\test_spread_universe.py:60:def test_public_master_download_uses_fixed_url_without_tokens():
+angel-one/tests\test_spread_universe.py:72:def test_no_redirects_or_fabricated_fallback_on_master_failure(status,payload):
+angel-one/tests\test_spread_upstox_adapter.py:31:def test_index_identity_and_exact_equity_lookup():
+angel-one/tests\test_spread_upstox_adapter.py:44:def test_history_is_chronological_and_marks_adjustment_semantics_unverified():
+angel-one/tests\test_spread_upstox_adapter.py:60:def test_option_chain_normalizes_iv_and_quantity_oi():
+angel-one/tests\test_spread_upstox_adapter.py:85:def test_contract_parser_preserves_nse_lot_size_expiry_and_strike():
+angel-one/tests\test_spread_upstox_adapter.py:97:def test_earnings_data_is_explicitly_unavailable():
+angel-one/tests\test_spread_upstox_adapter.py:104:def test_fixture_provider_uses_same_normalization_without_network():
+angel-one/tests\test_spread_upstox_adapter.py:116:def test_malformed_option_contract_response_fails_clearly():
+angel-one/tests\test_spread_stock_integration.py:21:def test_discovered_stock_resolves_expiry_and_uses_stock_lots(monkeypatch):
+angel-one/tests\test_spread_stock_integration.py:37:def test_missing_stock_earnings_preserves_index_success_and_errors(monkeypatch):
+angel-one/tests\test_spread_stock_integration.py:50:def test_mismatched_or_missing_contract_lots_never_invent_money(monkeypatch):
+angel-one/tests\test_spread_stock_integration.py:67:def test_live_stock_availability_is_explicit_without_fabricating_earnings(monkeypatch):
+angel-one/tests\test_spread_stock_integration.py:81:def test_live_stock_scan_uses_supplementary_source_and_keeps_earnings_penalty(monkeypatch):
+angel-one/tests\test_spread_upstox_transport.py:30:def test_transport_retries_rate_limit_then_returns_data_without_exposing_token():
+angel-one/tests\test_spread_upstox_transport.py:48:def test_transport_counts_option_chain_greeks_and_rate_limit_attempts():
+angel-one/tests\test_spread_upstox_transport.py:64:def test_transport_rejects_auth_errors_with_safe_message():
+angel-one/tests\test_spread_upstox_transport.py:82:def test_transport_never_allows_paths_outside_market_data_allowlist(path):
+angel-one/tests\test_spread_upstox_transport.py:88:def test_transport_allows_only_documented_market_data_path_shapes():
+angel-one/tests\test_spread_upstox_transport.py:102:def test_transport_rejects_noncanonical_upstox_hosts(base_url):
+angel-one/tests\test_spread_upstox_transport.py:107:def test_transport_uses_https_only():
+angel-one/tests\test_spread_v3_greeks.py:31:def test_live_proven_decimal_scale_and_instrument_token_mapping():
+angel-one/tests\test_spread_v3_greeks.py:39:def test_invalid_iv_is_not_fabricated(iv):
+angel-one/tests\test_spread_v3_greeks.py:44:def test_partial_response_ignores_unrequested_keys_and_keeps_decimal_values():
+angel-one/tests\test_spread_v3_greeks.py:50:def test_50_key_batching_and_deduplication():
+angel-one/tests\test_spread_v3_greeks.py:57:def test_api_failure_retains_unavailable():
+angel-one/tests\test_spread_v3_greeks.py:62:def test_failed_fallback_preserves_safe_error_and_raw_chain_iv():
+angel-one/tests\test_spread_v3_greeks.py:74:def test_chain_identity_conflicts_are_not_silently_scanned(field, value):
+angel-one/tests\test_spread_v3_greeks.py:80:def test_preferred_chain_iv_side_strike_expiry_oi_and_original_atm_median():
+angel-one/tests\test_spread_v3_greeks.py:102:def test_valid_chain_iv_does_not_call_v3():
+angel-one/tests\test_spread_v3_greeks.py:110:def test_both_sources_missing_remain_unavailable():
+angel-one/tests\test_spread_v3_greeks.py:118:def test_discovery_scopes_fallback_without_changing_original_atm_selection():
+angel-one/tests\test_spread_v3_greeks.py:132:def test_discovery_with_less_than_three_valid_rows_attempts_farther_missing_iv():

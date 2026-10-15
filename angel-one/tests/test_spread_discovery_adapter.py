@@ -18,7 +18,7 @@ class Transport:
 
 
 def candles(count=40, volume=100):
-    return [[f'{(TODAY-timedelta(days=i)).isoformat()}T00:00:00+05:30', 100,110,90,100+i,volume] for i in range(count)]
+    return [[f'{(TODAY-timedelta(days=i)).isoformat()}T00:00:00+05:30', 100,140+i,90,100+i,volume] for i in range(count)]
 
 
 def test_four_calendar_months_and_leap_month_end():
@@ -33,7 +33,7 @@ def test_exact_discovery_range_daily_request_chronology_and_no_scan_gate():
     result = adapter.get_history('NSE_EQ|TEST',as_of=TODAY)
     assert transport.calls == ['/v3/historical-candle/NSE_EQ%7CTEST/days/1/2026-10-12/2026-06-12']
     assert len(result.bars) == 40 and result.closes == list(range(139,99,-1))
-    assert result.eligibility_error is None
+    assert "Known defective" in result.eligibility_error
     assert result.adjustment.status == 'unverified'
     assert edge_discovery_metrics('TEST',result.closes,result.volumes) is not None
 
@@ -54,7 +54,7 @@ def test_original_history_and_independent_missing_close_gates():
     rows = candles(40)
     for row in rows[:19]: row[4] = None
     result = DiscoveryDataAdapter(SimpleNamespace(),transport=Transport({'candles':rows})).get_history('NSE_EQ|TEST',as_of=TODAY)
-    assert '22 non-missing daily closes' in result.eligibility_error
+    assert 'Known defective' in result.eligibility_error
 
 
 def test_atm_expiry_nearest_14_excludes_under_three_and_normalizes_tie_order():

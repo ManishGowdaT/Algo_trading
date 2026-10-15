@@ -48,7 +48,7 @@ function createSpreadsPythonService({
     const timeout = setTimeout(() => controller.abort(), endpoint.discovery ? Math.max(timeoutMs, 190_000) : endpoint.method === 'POST' ? Math.max(timeoutMs, 210_000) : timeoutMs);
     try {
       const headers = { 'X-Internal-Service-Key': internalKey, Accept: 'application/json' };
-      if (endpoint.discovery) {
+      if (endpoint.discovery || userId !== undefined) {
         if (!userId || typeof userId !== 'string' || userId.length > 128) throw Object.assign(new Error('Discovery user context is required.'), { status: 422 });
         headers['X-Spreads-User-Id'] = userId;
       }

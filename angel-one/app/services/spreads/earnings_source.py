@@ -81,7 +81,7 @@ class YahooEarningsSource:
             return unavailable('Historical earnings dates do not overlap the supplied Upstox price history.')
         inside,gap = get_earnings_info(events,closes,expiration,as_of=today)
         return EarningsData(True,inside,gap,DataCapability(True,'yahoo_dates_upstox_closes',
-            'Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Historical date coverage and equity adjustment equivalence are not certified.'))
+            'Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified.'))
 
 
 yahoo_earnings_source = YahooEarningsSource()

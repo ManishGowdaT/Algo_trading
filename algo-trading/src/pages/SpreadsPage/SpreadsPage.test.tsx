@@ -130,6 +130,22 @@ it('discovery loads only on explicit action and never starts a spread scan', asy
   expect(requests.get).toHaveBeenCalledWith('/spreads/trending', expect.any(AbortSignal))
 })
 
+it('discovery explains Upstox quota waiting without reporting completion', async () => {
+  vi.useFakeTimers()
+  try {
+    requests.post.mockResolvedValue({ ...discoveryPayload, refreshing:true,
+      progress:{stage:'iv', completed:12, total:219, quota_wait_seconds:31} })
+    requests.get.mockResolvedValue(discoveryPayload)
+    const pending = (button(renderDiscovery(), 'Discover opportunities').props.onClick as () => Promise<void>)()
+    await vi.advanceTimersByTimeAsync(0)
+    const elements = renderDiscovery()
+    expect(elements.some(e => typeof e.props.children === 'string' && e.props.children.includes('waiting for Upstox quota (31s)'))).toBe(true)
+    expect(requests.post).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(3000)
+    await pending
+  } finally { vi.useRealTimers() }
+})
+
 it('discovery selection adds names without changing settings or launching scan', async () => {
   const row = { ticker:'RELIANCE',spot:100,chg:1,rv21:.2,iv14:null,vrp14:null,shock:2,edge:false,score:1,vrp_pass:false,shock_pass:true }
   requests.post.mockResolvedValue({ ...discoveryPayload, top:[row],all:[row] })
@@ -144,6 +160,15 @@ it('discovery selection adds names without changing settings or launching scan',
   expect(onAdd).toHaveBeenCalledWith(['RELIANCE'])
   expect(requests.post).toHaveBeenCalledTimes(1)
   expect(renderDiscovery().some(e => e.props.children === 'Unavailable')).toBe(true)
+})
+
+it('B5 labels failed refresh and retained ranking without claiming completion', async () => {
+  requests.post.mockResolvedValue({ ...discoveryPayload, cached_previous_result:true,
+    latest_attempt:{status:'FAILED',at:2000}, stats:{complete:false} })
+  await (button(renderDiscovery(), 'Discover opportunities').props.onClick as () => Promise<void>)()
+  const elements=renderDiscovery()
+  expect(elements.some(e => typeof e.props.children==='string' && e.props.children.includes('Latest refresh: FAILED'))).toBe(true)
+  expect(elements.some(e => typeof e.props.children==='string' && e.props.children.startsWith('Discovery complete'))).toBe(false)
 })
 
 it('discovery enforces the combined ten-underlying limit and displays request errors', async () => {
@@ -254,7 +279,7 @@ it('NSE profile is opt-in, preserves thresholds and submits only explicit listed
 
 it('NSE results show profile, INR amounts, actual lot and width without relabeling the EV score as money', async () => {
   const c = {ticker:'TEST',type:'BEAR CALL',expiration:'2026-11-23',short_strike:100,long_strike:105,width:5,
-    credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
+    probability_sample_count:700,leg_inputs:{short:{bid:2,ask:2.05,raw_oi_quantity:18750,oi_contracts:150,volume:null}},credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
     p_raw:.2,p_adj:.3,earnings:false,max_gap:0,lot_size:125,lot_size_status:'contract',monetary_status:'available',
     credit_per_lot_inr:125.63,max_loss_per_lot_inr:499.38,ev_per_lot_inr:-12.5,
     strategy_profile:'NSE_RESEARCH_V1',strike_interval:5,width_steps:1,short_tick_inr:.01,long_tick_inr:.01,minimum_credit_points:.005,
@@ -266,8 +291,14 @@ it('NSE results show profile, INR amounts, actual lot and width without relabeli
   const strings = elements.flatMap(e => Array.isArray(e.props.children) ? e.props.children : [e.props.children]).filter(x => typeof x === 'string' || typeof x === 'number').join(' ')
   expect(strings).toContain('NSE_RESEARCH_V1')
   expect(strings).toContain('₹ Credit / lot')
-  expect(strings).toContain('₹ Max loss / lot')
+  expect(strings).toContain('₹ Payoff max loss / lot')
   expect(strings).toContain('₹125.63')
   expect(strings).toContain('EV (100-unit score)')
-  expect(strings).toContain('FAIL / UNVERIFIED')
+  expect(strings).toContain('unverified corporate-action treatment')
+  expect(strings).toContain('uncalibrated')
+  expect(strings).toContain('short')
+  expect(strings).toContain('raw_oi_quantity')
+  expect(strings).toContain('18750')
+  expect(strings).toContain('700')
+  expect(strings).toContain('Unavailable')
 })

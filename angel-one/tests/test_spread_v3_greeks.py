@@ -59,6 +59,24 @@ def test_api_failure_retains_unavailable():
     assert provider.get_option_greeks(['NSE_FO|1']) == {}
 
 
+def test_failed_fallback_preserves_safe_error_and_raw_chain_iv():
+    transport = Transport(UpstoxProviderError('PRIVATE token=secret', status_code=429, code='LIMIT'),
+        [{'strike_price':100, 'put_options':option('NSE_FO|put', 0)}])
+    chain = UpstoxMarketDataProvider(transport=transport).get_option_chain('NSE_EQ|TEST', date(2026,10,27))
+    assert chain.iv_errors[0]['status'] == 429
+    assert chain.iv_errors[0]['code'] == 'LIMIT'
+    assert chain.puts[0][1].raw_iv == 0
+    assert chain.puts[0][1].iv_source is None
+    assert 'secret' not in str(chain.iv_errors)
+
+
+@pytest.mark.parametrize('field,value', [('expiry','2026-11-01'), ('underlying_key','NSE_EQ|OTHER')])
+def test_chain_identity_conflicts_are_not_silently_scanned(field, value):
+    transport = Transport({}, [{field:value, 'strike_price':100}])
+    with pytest.raises(UpstoxProviderError, match='conflicts'):
+        UpstoxMarketDataProvider(transport=transport).get_option_chain('NSE_EQ|TEST', date(2026,10,27))
+
+
 def test_preferred_chain_iv_side_strike_expiry_oi_and_original_atm_median():
     expiry = date(2026, 10, 27)
     transport = Transport({'a': {'instrument_token': 'NSE_FO|put', 'iv': .4},
@@ -70,7 +88,11 @@ def test_preferred_chain_iv_side_strike_expiry_oi_and_original_atm_median():
     assert chain.puts[0][0] == chain.calls[0][0] == 100
     assert chain.puts[0][1].instrument_key == 'NSE_FO|put'
     assert chain.puts[0][1].implied_volatility == .4
+    assert chain.puts[0][1].raw_iv == .4
+    assert chain.puts[0][1].iv_source == 'v3_option_greeks'
     assert chain.calls[0][1].implied_volatility == .2
+    assert chain.calls[0][1].raw_iv == 20
+    assert chain.calls[0][1].iv_source == 'option_chain'
     assert chain.puts[0][1].open_interest == 150
     assert transport.calls[-1][1]['instrument_key'] == 'NSE_FO|put'
     assert atm_iv(chain, 100) == pytest.approx(.3)
@@ -91,3 +113,24 @@ def test_both_sources_missing_remain_unavailable():
     assert math.isnan(atm_iv(chain, 100))
     assert _is_read_only_market_data_path('/v3/market-quote/option-greek')
     assert not _is_read_only_market_data_path('/v3/order/place')
+
+
+def test_discovery_scopes_fallback_without_changing_original_atm_selection():
+    rows = [{'strike_price':strike, 'put_options':option(f'NSE_FO|{strike}', iv)}
+            for strike, iv in [(99, 20), (100, None), (101, 30), (102, 40), (103, None), (104, None)]]
+    def greeks(params):
+        return {key:{'instrument_token':key, 'iv':.25} for key in params['instrument_key'].split(',')}
+    scoped, full = Transport(greeks, rows), Transport(greeks, rows)
+    provider = UpstoxMarketDataProvider(transport=scoped)
+    scoped_chain = provider.get_option_chain('NSE_EQ|TEST', date(2026,10,27), iv_spot=100)
+    full_chain = UpstoxMarketDataProvider(transport=full).get_option_chain('NSE_EQ|TEST', date(2026,10,27))
+    assert scoped.calls[-1][1]['instrument_key'] == 'NSE_FO|100'
+    assert full.calls[-1][1]['instrument_key'] == 'NSE_FO|100,NSE_FO|103,NSE_FO|104'
+    assert atm_iv(scoped_chain, 100) == atm_iv(full_chain, 100) == .25
+
+
+def test_discovery_with_less_than_three_valid_rows_attempts_farther_missing_iv():
+    transport = Transport({}, [{'strike_price':strike, 'put_options':option(f'NSE_FO|{strike}', iv)}
+        for strike,iv in [(100,20), (101,None), (102,None)]])
+    UpstoxMarketDataProvider(transport=transport).get_option_chain('NSE_EQ|TEST', date(2026,10,27), iv_spot=100)
+    assert transport.calls[-1][1]['instrument_key'] == 'NSE_FO|101,NSE_FO|102'

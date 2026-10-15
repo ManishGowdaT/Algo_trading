@@ -85,7 +85,7 @@ function scanAccess(req) {
   if (mode !== 'upstox') throw Object.assign(new Error('Spread market-data mode is not configured.'), { status: 503 });
   const accessToken = oauth.accessToken(appUserId(req));
   if (!accessToken) throw Object.assign(new Error('Connect Upstox to scan.'), { status: 401 });
-  return { accessToken };
+  return { accessToken, userId: appUserId(req) };
 }
 
 async function niftyExpiries(req, res) {

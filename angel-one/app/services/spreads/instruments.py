@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 import threading
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from .transport import UpstoxProviderError
 
@@ -39,10 +41,24 @@ def normalize_symbol(symbol: str) -> str:
 
 def resolve_underlying(transport, symbol: str, *, universe_loader=None) -> dict:
     normalized = normalize_symbol(symbol)
+    today = datetime.now(ZoneInfo('Asia/Kolkata')).date().isoformat()
     with _identity_lock:
         identity = _discovered.get(normalized)
-        if identity:
+        stale = bool(identity and _identity_day != today)
+        if identity and not stale:
             return dict(identity)
+    if stale:
+        if universe_loader is None:
+            raise UpstoxProviderError('Discovered instrument identity is stale; refresh NSE discovery', status_code=409)
+        master = universe_loader()
+        if master.get('as_of') != today:
+            raise UpstoxProviderError('Authoritative NSE master date is not current', status_code=409)
+        retain_universe_identities(master['items'], master['as_of'])
+        with _identity_lock:
+            identity = _discovered.get(normalized)
+            if identity:
+                return dict(identity)
+        raise UpstoxProviderError('Underlying no longer has an unambiguous current NSE option identity', status_code=404)
     if normalized in INDEX_KEYS:
         return {"symbol": normalized, "instrument_key": INDEX_KEYS[normalized], "kind": "INDEX", "segment": "NSE_INDEX"}
 
@@ -59,6 +75,8 @@ def resolve_underlying(transport, symbol: str, *, universe_loader=None) -> dict:
     if not keys and universe_loader is not None:
         # Also recover an index selected before discovery or after a service restart.
         master = universe_loader()
+        if master.get('as_of') != today:
+            raise UpstoxProviderError('Authoritative NSE master date is not current', status_code=409)
         retain_universe_identities(master['items'], master['as_of'])
         with _identity_lock:
             identity = _discovered.get(normalized)

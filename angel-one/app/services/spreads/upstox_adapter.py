@@ -110,16 +110,17 @@ class UpstoxMarketDataProvider(MarketDataProvider):
             ))
         completeness, validation = validate_history(
             bars, start=start, end=today, raw_count=len(candles),
-            skipped_count=len(candles) - len(bars),
+            skipped_count=len(candles) - len(bars), observation_date=today,
         )
         bars.sort(key=lambda bar: bar.timestamp)
         return HistoryData(
             instrument_key=instrument_key, bars=tuple(bars), requested_years=years,
             completeness=completeness, validation=validation,
+            raw_provider_rows=tuple(candles),
             adjustment=(
                 DataCapability(True, "not_applicable", "NSE index close history is not subject to equity corporate-action adjustment.")
                 if instrument_key.startswith("NSE_INDEX|") else
-                DataCapability(False, "unverified", "Upstox candle adjustment equivalence to Yahoo adjusted equity history has not been verified.")
+                DataCapability(False, "unverified", "Raw Upstox equity OHLCV; split, bonus, consolidation, dividend, rights and merger/demerger treatment is unverified. No adjustment factors or volume transformations are applied.")
             ),
             volume=DataCapability(any(bar.volume is not None for bar in bars), "reported" if any(bar.volume is not None for bar in bars) else "unavailable",
                                   "Raw Upstox candle volume; index-volume semantics may differ from Yahoo."),
@@ -132,7 +133,9 @@ class UpstoxMarketDataProvider(MarketDataProvider):
         contracts: list[OptionContract] = []
         for item in data:
             if not isinstance(item, dict):
-                continue
+                raise UpstoxProviderError('Upstox returned malformed option-contract metadata; listed strike grid is unavailable')
+            if item.get('underlying_key') not in (None, underlying_key):
+                raise UpstoxProviderError('Upstox option-contract underlying identity conflicts with request')
             instrument_key = item.get("instrument_key")
             symbol = item.get("trading_symbol")
             instrument_type = item.get("instrument_type")
@@ -140,9 +143,9 @@ class UpstoxMarketDataProvider(MarketDataProvider):
             raw_lot = _number(item.get("lot_size"))
             lot_size = int(raw_lot) if raw_lot is not None and raw_lot > 0 and raw_lot.is_integer() else None
             if (not isinstance(instrument_key, str) or not instrument_key or
-                    not isinstance(symbol, str) or instrument_type not in {"CE", "PE"} or
-                    strike is None or lot_size is None or lot_size <= 0):
-                continue
+                    not isinstance(symbol, str) or not symbol or instrument_type not in {"CE", "PE"} or
+                    strike is None or strike <= 0):
+                raise UpstoxProviderError('Upstox returned malformed option-contract metadata; listed strike grid is unavailable')
             contracts.append(OptionContract(
                 underlying_symbol=str(item.get("underlying_symbol") or ""),
                 underlying_key=underlying_key, expiry=_expiry(item.get("expiry")),
@@ -174,7 +177,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
             return None, raw, lot, 'non_integral_quantity_per_lot'
         return int(count), raw, lot, 'verified_quantity_to_contracts'
 
-    def get_option_chain(self, underlying_key: str, expiry: date) -> OptionChain:
+    def get_option_chain(self, underlying_key: str, expiry: date, *, iv_spot: float | None = None) -> OptionChain:
         data = self._transport.get("/v2/option/chain", {
             "instrument_key": underlying_key, "expiry_date": expiry.isoformat(),
         })
@@ -190,6 +193,10 @@ class UpstoxMarketDataProvider(MarketDataProvider):
         for row in data:
             if not isinstance(row, dict):
                 continue
+            if row.get('underlying_key') not in (None, underlying_key):
+                raise UpstoxProviderError('Upstox option-chain underlying identity conflicts with request')
+            if row.get('expiry') is not None and _expiry(row['expiry']) != expiry:
+                raise UpstoxProviderError('Upstox option-chain expiry conflicts with request')
             if spot is None:
                 spot = _number(row.get("underlying_spot_price"))
             strike = _number(row.get("strike_price"))
@@ -218,6 +225,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
                     instrument_key=instrument_key,
                     bid=_number(market.get("bid_price")), ask=_number(market.get("ask_price")),
                     implied_volatility=iv, open_interest=oi,
+                    raw_iv=raw_iv, iv_source="option_chain" if iv is not None and iv > 0 else None,
                     raw_oi_quantity=raw_oi, oi_lot_size=oi_lot,
                     oi_normalization_status=oi_status,
                     bid_quantity=_integer(market.get("bid_qty")),
@@ -227,11 +235,28 @@ class UpstoxMarketDataProvider(MarketDataProvider):
         # Live comparison on 2026-10-13 established V3 iv is already decimal.
         # V2 option-chain iv above is percentage points. Never infer scale from
         # magnitude, and never replace an existing finite positive chain IV.
-        invalid_keys = list(dict.fromkeys(quote.instrument_key for _, quote in puts + calls
+        iv_pairs = puts + calls
+        if iv_spot is not None and math.isfinite(iv_spot):
+            # Discovery needs only the nearest three valid-IV rows on each side.
+            # A missing IV farther than the third already valid row cannot alter
+            # that original selection. Ties retain ascending strike order.
+            iv_pairs = []
+            for pairs in (puts, calls):
+                valid_seen = 0
+                for strike, quote in sorted(pairs, key=lambda pair: (abs(pair[0]-iv_spot), pair[0])):
+                    if quote.bid is None or quote.ask is None or quote.bid <= 0 or quote.ask < quote.bid:
+                        continue
+                    iv_pairs.append((strike, quote))
+                    if quote.implied_volatility is not None and quote.implied_volatility > 0:
+                        valid_seen += 1
+                    if valid_seen == 3:
+                        break
+        invalid_keys = list(dict.fromkeys(quote.instrument_key for _, quote in iv_pairs
             if quote.implied_volatility is None or quote.implied_volatility <= 0))
-        fallback = self.get_option_greeks(invalid_keys) if invalid_keys else {}
+        fallback, iv_errors = self._get_option_greeks_result(invalid_keys) if invalid_keys else ({}, [])
         def fill_missing(pairs):
-            return [(strike, replace(quote, implied_volatility=fallback[quote.instrument_key])
+            return [(strike, replace(quote, implied_volatility=fallback[quote.instrument_key],
+                                             raw_iv=fallback[quote.instrument_key], iv_source="v3_option_greeks")
                      if (quote.implied_volatility is None or quote.implied_volatility <= 0)
                      and quote.instrument_key in fallback else quote)
                     for strike, quote in pairs]
@@ -249,20 +274,28 @@ class UpstoxMarketDataProvider(MarketDataProvider):
             implied_volatility=DataCapability(iv_seen, "reported" if iv_seen else "unavailable",
                                               "Option-chain IV percentage points converted to decimal; missing/invalid IV uses matched V3 decimal IV when available."),
             quote_timestamp=DataCapability(False, "unavailable", "The option-chain response does not provide a per-quote timestamp."),
+            iv_errors=tuple(iv_errors),
         )
 
     def get_option_greeks(self, instrument_keys: list[str]) -> dict[str, float]:
         """Read matched decimal V3 IV in batches; no synthetic/error fallback."""
+        return self._get_option_greeks_result(instrument_keys)[0]
+
+    def _get_option_greeks_result(self, instrument_keys):
         keys = list(dict.fromkeys(instrument_keys))
-        result = {}
+        result, errors = {}, []
         for start in range(0, len(keys), 50):
             batch = keys[start:start + 50]
             try:
                 data = self._transport.get('/v3/market-quote/option-greek',
                                            {'instrument_key': ','.join(batch)})
-            except UpstoxProviderError:
+            except UpstoxProviderError as exception:
+                errors.append({'instrument_keys': batch, 'status': exception.status_code,
+                               'code': exception.code, 'reason': 'V3 Option Greeks request failed'})
                 continue
             if not isinstance(data, dict):
+                errors.append({'instrument_keys': batch, 'status': None, 'code': None,
+                               'reason': 'V3 Option Greeks returned an invalid response'})
                 continue
             for item in data.values():
                 if not isinstance(item, dict):
@@ -270,7 +303,7 @@ class UpstoxMarketDataProvider(MarketDataProvider):
                 key, iv = item.get('instrument_token'), _number(item.get('iv'))
                 if isinstance(key, str) and key in batch and iv is not None and iv > 0:
                     result[key] = iv
-        return result
+        return result, errors
 
     def get_earnings_info(self, underlying_key: str, expiration: date) -> EarningsData:
         del expiration

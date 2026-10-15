@@ -1,0 +1,282 @@
+[
+  {
+    "symbol": "CANBK",
+    "spot": 118.38,
+    "chain_spot": 120.44,
+    "legs": [
+      {
+        "strike": 125.0,
+        "raw": {
+          "instrument_key": "NSE_FO|83051",
+          "market_data": {
+            "bid_price": 3.52,
+            "ask_price": 3.64,
+            "oi": 1086750.0,
+            "volume": 654750,
+            "bid_qty": 13500,
+            "ask_qty": 6750
+          },
+          "option_greeks": {
+            "iv": 31.25
+          }
+        },
+        "contract": {
+          "underlying_symbol": "CANBK",
+          "underlying_key": "NSE_EQ|INE476A01022",
+          "expiry": "2026-11-23",
+          "instrument_key": "NSE_FO|83051",
+          "trading_symbol": "CANBK 125 CE 23 NOV 26",
+          "instrument_type": "CE",
+          "strike": 125.0,
+          "lot_size": 6750,
+          "tick_size": 1.0
+        }
+      },
+      {
+        "strike": 130.0,
+        "raw": {
+          "instrument_key": "NSE_FO|83064",
+          "market_data": {
+            "bid_price": 2.12,
+            "ask_price": 2.23,
+            "oi": 1849500.0,
+            "volume": 796500,
+            "bid_qty": 20250,
+            "ask_qty": 6750
+          },
+          "option_greeks": {
+            "iv": 32.23
+          }
+        },
+        "contract": {
+          "underlying_symbol": "CANBK",
+          "underlying_key": "NSE_EQ|INE476A01022",
+          "expiry": "2026-11-23",
+          "instrument_key": "NSE_FO|83064",
+          "trading_symbol": "CANBK 130 CE 23 NOV 26",
+          "instrument_type": "CE",
+          "strike": 130.0,
+          "lot_size": 6750,
+          "tick_size": 1.0
+        }
+      }
+    ],
+    "candidate": {
+      "ticker": "CANBK",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 125.0,
+      "long_strike": 130.0,
+      "width": 5.0,
+      "credit": 1.41,
+      "ror_pct": 39.1,
+      "cushion_pct": 5.59,
+      "vrp": 1.56,
+      "iv": 0.3125,
+      "rv21": 0.2002,
+      "earnings": true,
+      "max_gap": 5.3,
+      "p_raw": 0.2979,
+      "p_adj": 0.5801,
+      "ev": -150.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2354,
+          "rv21": 0.2002,
+          "rv63": 0.1926,
+          "rv252": 0.2864
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 5.3
+        },
+        "l3": {
+          "iv": 0.3125,
+          "rv21": 0.2002,
+          "ratio": 1.56
+        },
+        "l4": {
+          "p_raw": 0.2979,
+          "p_adj": 0.5801,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.0335,
+            "oi": 161
+          },
+          "long": {
+            "spread_pct": 0.0506,
+            "oi": 274
+          }
+        }
+      },
+      "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+      "monetary_status": "available",
+      "short_instrument_key": "NSE_FO|83051",
+      "long_instrument_key": "NSE_FO|83064",
+      "lot_size": 6750,
+      "lot_size_status": "contract",
+      "credit_points_unrounded": 1.405,
+      "actual_width_points": 5.0,
+      "credit_per_lot_inr": 9483.75,
+      "max_loss_per_lot_inr": 24266.25,
+      "ev_per_lot_inr": -10093.69
+    },
+    "history_last": {
+      "timestamp": "2026-10-12T00:00:00+05:30",
+      "open": 120.0,
+      "high": 120.1,
+      "low": 117.71,
+      "close": 118.38,
+      "volume": 9100287.0,
+      "open_interest": 0.0
+    },
+    "rv": {
+      "rv10": 0.23544839171916204,
+      "rv21": 0.20019207731438488,
+      "rv63": 0.19261377868038776,
+      "rv252": 0.2863763151350774
+    }
+  },
+  {
+    "symbol": "NMDC",
+    "spot": 70.34,
+    "chain_spot": 71.34,
+    "legs": [
+      {
+        "strike": 75.0,
+        "raw": {
+          "instrument_key": "NSE_FO|139549",
+          "market_data": {
+            "bid_price": 1.65,
+            "ask_price": 1.69,
+            "oi": 810000.0,
+            "volume": 209250,
+            "bid_qty": 6750,
+            "ask_qty": 6750
+          },
+          "option_greeks": {
+            "iv": 30.27
+          }
+        },
+        "contract": {
+          "underlying_symbol": "NMDC",
+          "underlying_key": "NSE_EQ|INE584A01023",
+          "expiry": "2026-11-23",
+          "instrument_key": "NSE_FO|139549",
+          "trading_symbol": "NMDC 75 CE 23 NOV 26",
+          "instrument_type": "CE",
+          "strike": 75.0,
+          "lot_size": 6750,
+          "tick_size": 1.0
+        }
+      },
+      {
+        "strike": 80.0,
+        "raw": {
+          "instrument_key": "NSE_FO|120954",
+          "market_data": {
+            "bid_price": 0.68,
+            "ask_price": 0.71,
+            "oi": 1019250.0,
+            "volume": 580500,
+            "bid_qty": 6750,
+            "ask_qty": 20250
+          },
+          "option_greeks": {
+            "iv": 31.25
+          }
+        },
+        "contract": {
+          "underlying_symbol": "NMDC",
+          "underlying_key": "NSE_EQ|INE584A01023",
+          "expiry": "2026-11-23",
+          "instrument_key": "NSE_FO|120954",
+          "trading_symbol": "NMDC 80 CE 23 NOV 26",
+          "instrument_type": "CE",
+          "strike": 80.0,
+          "lot_size": 6750,
+          "tick_size": 1.0
+        }
+      }
+    ],
+    "candidate": {
+      "ticker": "NMDC",
+      "type": "BEAR CALL",
+      "expiration": "2026-11-23",
+      "short_strike": 75.0,
+      "long_strike": 80.0,
+      "width": 5.0,
+      "credit": 0.97,
+      "ror_pct": 24.2,
+      "cushion_pct": 6.62,
+      "vrp": 1.22,
+      "iv": 0.3027,
+      "rv21": 0.2471,
+      "earnings": true,
+      "max_gap": 4.65,
+      "p_raw": 0.2825,
+      "p_adj": 0.4808,
+      "ev": -143.0,
+      "layers": {
+        "l1": {
+          "rv10": 0.2523,
+          "rv21": 0.2471,
+          "rv63": 0.2287,
+          "rv252": 0.2875
+        },
+        "l2": {
+          "earnings_inside": true,
+          "max_gap_pct": 4.65
+        },
+        "l3": {
+          "iv": 0.3027,
+          "rv21": 0.2471,
+          "ratio": 1.22
+        },
+        "l4": {
+          "p_raw": 0.2825,
+          "p_adj": 0.4808,
+          "horizon_td": 28
+        },
+        "l5": {
+          "short": {
+            "spread_pct": 0.024,
+            "oi": 120
+          },
+          "long": {
+            "spread_pct": 0.0432,
+            "oi": 151
+          }
+        }
+      },
+      "strategy_profile": "ORIGINAL_ZIP_BASELINE",
+      "monetary_status": "available",
+      "short_instrument_key": "NSE_FO|139549",
+      "long_instrument_key": "NSE_FO|120954",
+      "lot_size": 6750,
+      "lot_size_status": "contract",
+      "credit_points_unrounded": 0.9749999999999999,
+      "actual_width_points": 5.0,
+      "credit_per_lot_inr": 6581.25,
+      "max_loss_per_lot_inr": 27168.75,
+      "ev_per_lot_inr": -9644.63
+    },
+    "history_last": {
+      "timestamp": "2026-10-12T00:00:00+05:30",
+      "open": 71.99,
+      "high": 72.24,
+      "low": 70.34,
+      "close": 70.34,
+      "volume": 15649136.0,
+      "open_interest": 0.0
+    },
+    "rv": {
+      "rv10": 0.2523093252778075,
+      "rv21": 0.24711853330943137,
+      "rv63": 0.22871374298702987,
+      "rv252": 0.28748061285822085
+    }
+  }
+]

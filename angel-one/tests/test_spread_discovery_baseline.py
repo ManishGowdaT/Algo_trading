@@ -56,6 +56,9 @@ def test_history_stage_gates_and_four_month_request_match_source(length):
     expected = ref['edge_discovery'](['TEST'])
     metrics = engine.edge_discovery_metrics('TEST', history.Close, history.Volume)
     actual = engine.rank_edge_discovery([metrics], {}) if metrics else []
+    # B2 deliberately removes the reference's unavailable-VRP reward.
+    for row in expected:
+        if row['vrp14'] is None: row['score'] -= 1
     assert [{key:value for key,value in row.items() if key not in {'iv_status','vrp_status'}} for row in actual] == expected
     assert calls == [{'period':'4mo','interval':'1d','auto_adjust':True}]
 

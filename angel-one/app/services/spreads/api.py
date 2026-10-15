@@ -20,7 +20,7 @@ from .engine import ScanParams, scan_provider_data, pick_expiration, empirical_b
 from .fixture_adapter import FixtureMarketDataProvider
 from .instruments import normalize_symbol, retain_universe_identities
 from .nifty_fixtures import spread_fixture_payloads
-from .transport import UpstoxProviderError, REQUEST_DEADLINE
+from .transport import UpstoxProviderError, REQUEST_DEADLINE, RATE_OWNER
 from .upstox_adapter import UpstoxMarketDataProvider
 from .discovery import discover
 from .discovery_adapter import DiscoveryDataAdapter, FixtureDiscoveryDataAdapter
@@ -82,12 +82,20 @@ def _mode() -> str:
     return mode
 
 
-def _authorize_internal(
+async def _authorize_internal(
     supplied: Annotated[str, Header(alias="X-Internal-Service-Key")] = "",
+    owner: Annotated[str, Header(alias="X-Spreads-User-Id")] = "",
 ) -> None:
     internal_key = (os.getenv("INTERNAL_SERVICE_KEY") or os.getenv("INTERNAL_API_SECRET") or "").strip()
     if not internal_key or not hmac.compare_digest(supplied.encode(), internal_key.encode()):
         raise HTTPException(401, "Internal service authentication required.")
+    if len(owner) > 128:
+        raise HTTPException(422, "Invalid Spread user identity.")
+    context = RATE_OWNER.set(owner or None)
+    try:
+        yield
+    finally:
+        RATE_OWNER.reset(context)
 
 
 def _access_token(
@@ -300,6 +308,8 @@ async def scan_multiple(
         "width_mode": 'listed_strike_steps' if request.strategy_profile == nse.NSE_RESEARCH_V1 else 'fixed_price_points',
         "width_steps": request.width_steps if request.strategy_profile == nse.NSE_RESEARCH_V1 else None,
         "underlyings": scans, "success_count": len(successful),
+        "requested_count": len(symbols),
+        "status": "SUCCESS" if len(successful) == len(scans) else "PARTIAL" if successful else "UNAVAILABLE",
         "failure_count": len(scans) - len(successful), "candidates": candidates,
         "funnel": {key: sum((scan.get("funnel") or {}).get(key, 0) for scan in successful)
                    for key in keys} if successful else None,
@@ -365,7 +375,7 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
             def native_builder(ticker, spot, puts, calls, expiry, days, close, rv, earnings_inside, gap, p):
                 import pandas as pd
                 return nse.build_spreads(ticker, spot, pd.DataFrame(puts), pd.DataFrame(calls),
-                    expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve)
+                    expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve, market_issues)
         result = scan_provider_data(symbol, history, chain, earnings,
                                     expiration, dte, params, spread_builder=native_builder)
         result['strategy_profile'] = request.strategy_profile
@@ -398,13 +408,24 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
                     for key in ("short_strike", "long_strike")]
             # Use exact quoted leg identity, never the first contract sharing a strike.
             legs = [matching[0] if matching and len({(leg.instrument_key, leg.lot_size) for leg in matching}) == 1 else None for matching in matches]
-            lot = legs[0].lot_size if all(legs) and legs[0].lot_size == legs[1].lot_size and legs[0].lot_size > 0 else None
+            lot = legs[0].lot_size if all(legs) and legs[0].lot_size is not None and legs[0].lot_size == legs[1].lot_size and legs[0].lot_size > 0 else None
             candidate.update(short_instrument_key=legs[0].instrument_key if legs[0] else None,
                              long_instrument_key=legs[1].instrument_key if legs[1] else None,
                              lot_size=lot, lot_size_status=("fixture" if mode == "fixtures" else "contract") if lot else "unavailable")
             # Recompute unrounded amounts from the original quote/probability inputs;
             # never derive money from rounded displayed EV or change its ordering.
             short, long = quotes.get(candidate["short_strike"]), quotes.get(candidate["long_strike"])
+            candidate['leg_inputs'] = {
+                name: ({'instrument_key': quote.instrument_key, 'bid': quote.bid, 'ask': quote.ask,
+                        'midpoint': (quote.bid + quote.ask) / 2 if quote.bid is not None and quote.ask is not None else None,
+                        'iv': quote.implied_volatility, 'raw_iv': quote.raw_iv, 'iv_source': quote.iv_source,
+                        'raw_oi_quantity': quote.raw_oi_quantity, 'oi_lot_size': quote.oi_lot_size,
+                        'oi_contracts': quote.open_interest, 'oi_status': quote.oi_normalization_status,
+                        'volume': quote.volume} if quote else None)
+                for name, quote in (('short', short), ('long', long))
+            }
+            horizon = max(1, round(dte * 252 / 365))
+            candidate['probability_sample_count'] = max(0, sum(bar.close is not None for bar in history.bars) - horizon)
             if lot and short and long:
                 candidate['monetary_status'] = 'available'
                 credit = (short.bid + short.ask - long.bid - long.ask) / 2
@@ -433,6 +454,26 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
                 "quote_timestamp": chain.quote_timestamp.status,
             },
         })
+        result['iv_provider_errors'] = list(chain.iv_errors)
+        result['history_validation'] = history.validation
+        result['observation_policy'] = {
+            'mode': 'historical_close_reference',
+            'reference_date': history.bars[-1].timestamp.astimezone(IST).date().isoformat() if history.bars else None,
+            'chain_spot': chain.spot,
+            'explanation': 'OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot.',
+        }
+        result['freshness'] = {'fetched_at': datetime.now(IST).isoformat(),
+                               'quote_time_status': 'UNKNOWN', 'provider_quote_timestamp': None,
+                               'explanation': 'Fetch completion time only; provider per-leg quote age is unavailable.'}
+        result['settlement_note'] = (
+            'Stock options are physically settled: expiry can create delivery and funding obligations. '
+            'Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled.'
+            if underlying['kind'] == 'EQUITY' else
+            'Index options are cash settled. Payoff maximum loss is not broker margin or capital required.')
+        result['costs'] = {'status': 'UNVERIFIED', 'estimated_cost_inr': None, 'net_credit_inr': None,
+                           'explanation': 'Gross midpoint model excludes brokerage, STT, exchange charges, GST, SEBI charges, stamp duty, slippage and two-leg execution effects.'}
+        if chain.iv_errors:
+            result.setdefault('data_warnings', []).append('Some V3 IV requests failed; see IV provider errors. Missing values were not estimated.')
         result['earnings_source_note'] = earnings.capability.explanation
         if capture:
             try:

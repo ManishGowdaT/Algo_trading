@@ -34,11 +34,12 @@ class HistoryData:
     volume: DataCapability
     completeness: DataCapability = DataCapability(False, "unverified", "Daily candle completeness needs live validation.")
     validation: dict | None = None
+    raw_provider_rows: tuple = ()
 
     @property
     def scanner_history_eligible(self) -> bool:
         """The original fetch_history gate requires at least 270 close rows."""
-        return sum(bar.close is not None for bar in self.bars) >= 270
+        return self.completeness.status != "incomplete" and sum(bar.close is not None for bar in self.bars) >= 270
 
 
 @dataclass(frozen=True)
@@ -50,7 +51,7 @@ class OptionContract:
     trading_symbol: str
     instrument_type: str
     strike: float
-    lot_size: int
+    lot_size: int | None
     tick_size: float | None
 
 
@@ -65,6 +66,8 @@ class OptionQuote:
     ask_quantity: int | None
     volume: int | None
 
+    raw_iv: float | None = None
+    iv_source: str | None = None
     raw_oi_quantity: float | None = None
     oi_lot_size: int | None = None
     oi_normalization_status: str | None = None
@@ -90,6 +93,7 @@ class OptionChain:
     open_interest: DataCapability
     implied_volatility: DataCapability
     quote_timestamp: DataCapability
+    iv_errors: tuple[dict, ...] = ()
 
 
 @dataclass(frozen=True)

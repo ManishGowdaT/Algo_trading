@@ -1,0 +1,125 @@
+{
+  "scope": "Independent fixture discovery arithmetic and percentile ranking",
+  "expected": [
+    {
+      "ticker": "BANKNIFTY",
+      "spot": 53316.16,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "edge": false,
+      "score_raw": 1.375
+    },
+    {
+      "ticker": "HDFCBANK",
+      "spot": 1743.03,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "edge": false,
+      "score_raw": 1.375
+    },
+    {
+      "ticker": "RELIANCE",
+      "spot": 1486.7,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "edge": false,
+      "score_raw": 1.375
+    },
+    {
+      "ticker": "NIFTY",
+      "spot": 25632.77,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.0,
+      "edge": false,
+      "score_raw": 0.875
+    }
+  ],
+  "actual": [
+    {
+      "ticker": "BANKNIFTY",
+      "spot": 53316.16,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "vrp_pass": true,
+      "shock_pass": false,
+      "iv_status": "available",
+      "vrp_status": "available",
+      "edge": false,
+      "score": 1.38
+    },
+    {
+      "ticker": "HDFCBANK",
+      "spot": 1743.03,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "vrp_pass": true,
+      "shock_pass": false,
+      "iv_status": "available",
+      "vrp_status": "available",
+      "edge": false,
+      "score": 1.38
+    },
+    {
+      "ticker": "RELIANCE",
+      "spot": 1486.7,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.01,
+      "vrp_pass": true,
+      "shock_pass": false,
+      "iv_status": "available",
+      "vrp_status": "available",
+      "edge": false,
+      "score": 1.38
+    },
+    {
+      "ticker": "NIFTY",
+      "spot": 25632.77,
+      "chg": 0.02,
+      "rv21": 0.0168,
+      "iv14": 0.25,
+      "vrp14": 14.88,
+      "shock": 1.0,
+      "vrp_pass": true,
+      "shock_pass": false,
+      "iv_status": "available",
+      "vrp_status": "available",
+      "edge": false,
+      "score": 0.88
+    }
+  ],
+  "stats": {
+    "eligible_underlyings": 4,
+    "history_attempted": 4,
+    "history_available": 4,
+    "atm_iv_attempted": 4,
+    "atm_iv_available": 4,
+    "atm_iv_unavailable": 0,
+    "atm_iv_failed": 0,
+    "history_failed": 0,
+    "failed_requests": 0,
+    "total_runtime_seconds": 0.14,
+    "complete": true,
+    "failed": 0
+  }
+}

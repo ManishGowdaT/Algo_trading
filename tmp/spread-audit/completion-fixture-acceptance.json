@@ -1,0 +1,80 @@
+{
+  "status": "SUCCESS",
+  "requested_count": 4,
+  "success_count": 4,
+  "failure_count": 0,
+  "funnel": {
+    "considered": 96,
+    "cushion": 42,
+    "friction": 32,
+    "paired": 32,
+    "ror": 32,
+    "vrp": 32,
+    "final": 32
+  },
+  "elapsed": 0.3,
+  "mode": "fixtures",
+  "wall_seconds": 0.282,
+  "underlyings": [
+    {
+      "symbol": "BANKNIFTY",
+      "candidates": 3,
+      "funnel": {
+        "considered": 24,
+        "cushion": 3,
+        "friction": 3,
+        "paired": 3,
+        "ror": 3,
+        "vrp": 3,
+        "final": 3
+      },
+      "rejection_count": 21,
+      "settlement_note": "Index options are cash settled. Payoff maximum loss is not broker margin or capital required."
+    },
+    {
+      "symbol": "HDFCBANK",
+      "candidates": 12,
+      "funnel": {
+        "considered": 24,
+        "cushion": 17,
+        "friction": 12,
+        "paired": 12,
+        "ror": 12,
+        "vrp": 12,
+        "final": 12
+      },
+      "rejection_count": 12,
+      "settlement_note": "Stock options are physically settled: expiry can create delivery and funding obligations. Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled."
+    },
+    {
+      "symbol": "NIFTY",
+      "candidates": 4,
+      "funnel": {
+        "considered": 24,
+        "cushion": 4,
+        "friction": 4,
+        "paired": 4,
+        "ror": 4,
+        "vrp": 4,
+        "final": 4
+      },
+      "rejection_count": 20,
+      "settlement_note": "Index options are cash settled. Payoff maximum loss is not broker margin or capital required."
+    },
+    {
+      "symbol": "RELIANCE",
+      "candidates": 13,
+      "funnel": {
+        "considered": 24,
+        "cushion": 18,
+        "friction": 13,
+        "paired": 13,
+        "ror": 13,
+        "vrp": 13,
+        "final": 13
+      },
+      "rejection_count": 11,
+      "settlement_note": "Stock options are physically settled: expiry can create delivery and funding obligations. Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled."
+    }
+  ]
+}

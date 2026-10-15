@@ -1,0 +1,2876 @@
+{
+  "status": "PASS",
+  "scope": "Public unauthenticated instrument master only; not an authenticated option-chain test",
+  "elapsed_seconds": 1.72,
+  "universe": {
+    "source": "upstox_nse_bod",
+    "as_of": "2026-10-15",
+    "size": 219,
+    "items": [
+      {
+        "symbol": "360ONE",
+        "instrument_key": "NSE_EQ|INE466L01038",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "360 ONE WAM LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 91
+      },
+      {
+        "symbol": "ABB",
+        "instrument_key": "NSE_EQ|INE117A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ABB INDIA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 123
+      },
+      {
+        "symbol": "ABCAPITAL",
+        "instrument_key": "NSE_EQ|INE674K01013",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADITYA BIRLA CAPITAL LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 130
+      },
+      {
+        "symbol": "ADANIENSOL",
+        "instrument_key": "NSE_EQ|INE931S01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADANI ENERGY SOLUTION LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 154
+      },
+      {
+        "symbol": "ADANIENT",
+        "instrument_key": "NSE_EQ|INE423A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADANI ENTERPRISES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "ADANIGREEN",
+        "instrument_key": "NSE_EQ|INE364U01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADANI GREEN ENERGY LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "ADANIPORTS",
+        "instrument_key": "NSE_EQ|INE742F01042",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADANI PORT & SEZ LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 139
+      },
+      {
+        "symbol": "ADANIPOWER",
+        "instrument_key": "NSE_EQ|INE814H01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ADANI POWER LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 160
+      },
+      {
+        "symbol": "ALKEM",
+        "instrument_key": "NSE_EQ|INE540L01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ALKEM LABORATORIES LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 162
+      },
+      {
+        "symbol": "AMBER",
+        "instrument_key": "NSE_EQ|INE371P01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AMBER ENTERPRISES (I) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 131
+      },
+      {
+        "symbol": "AMBUJACEM",
+        "instrument_key": "NSE_EQ|INE079A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AMBUJA CEMENTS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 160
+      },
+      {
+        "symbol": "ANANDRATHI",
+        "instrument_key": "NSE_EQ|INE463V01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ANAND RATHI WEALTH LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 172
+      },
+      {
+        "symbol": "ANGELONE",
+        "instrument_key": "NSE_EQ|INE732I01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ANGEL ONE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 124
+      },
+      {
+        "symbol": "APLAPOLLO",
+        "instrument_key": "NSE_EQ|INE702C01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "APL APOLLO TUBES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 193
+      },
+      {
+        "symbol": "APOLLOHOSP",
+        "instrument_key": "NSE_EQ|INE437A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "APOLLO HOSPITALS ENTER. L",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "ASHOKLEY",
+        "instrument_key": "NSE_EQ|INE208A01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ASHOK LEYLAND LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "ASIANPAINT",
+        "instrument_key": "NSE_EQ|INE021A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ASIAN PAINTS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 204
+      },
+      {
+        "symbol": "ASTRAL",
+        "instrument_key": "NSE_EQ|INE006I01046",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ASTRAL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 123
+      },
+      {
+        "symbol": "ATHERENERG",
+        "instrument_key": "NSE_EQ|INE0LEZ01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ATHER ENERGY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 154
+      },
+      {
+        "symbol": "AUBANK",
+        "instrument_key": "NSE_EQ|INE949L01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AU SMALL FINANCE BANK LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 168
+      },
+      {
+        "symbol": "AUROPHARMA",
+        "instrument_key": "NSE_EQ|INE406A01037",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AUROBINDO PHARMA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 127
+      },
+      {
+        "symbol": "AXISBANK",
+        "instrument_key": "NSE_EQ|INE238A01034",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AXIS BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 192
+      },
+      {
+        "symbol": "BAJAJ-AUTO",
+        "instrument_key": "NSE_EQ|INE917I01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BAJAJ AUTO LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 229
+      },
+      {
+        "symbol": "BAJAJFINSV",
+        "instrument_key": "NSE_EQ|INE918I01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BAJAJ FINSERV LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "BAJAJHLDNG",
+        "instrument_key": "NSE_EQ|INE118A01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BAJAJ HOLDINGS & INVS LTD",
+        "expiries": [
+          "2026-10-27"
+        ],
+        "contract_count": 66
+      },
+      {
+        "symbol": "BAJFINANCE",
+        "instrument_key": "NSE_EQ|INE296A01032",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BAJAJ FINANCE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 173
+      },
+      {
+        "symbol": "BANDHANBNK",
+        "instrument_key": "NSE_EQ|INE545U01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BANDHAN BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "BANKBARODA",
+        "instrument_key": "NSE_EQ|INE028A01039",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BANK OF BARODA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 147
+      },
+      {
+        "symbol": "BANKINDIA",
+        "instrument_key": "NSE_EQ|INE084A01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BANK OF INDIA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 93
+      },
+      {
+        "symbol": "BANKNIFTY",
+        "instrument_key": "NSE_INDEX|Nifty Bank",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "Nifty Bank",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29",
+          "2027-03-30",
+          "2027-06-29",
+          "2027-09-28"
+        ],
+        "contract_count": 949
+      },
+      {
+        "symbol": "BDL",
+        "instrument_key": "NSE_EQ|INE171Z01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHARAT DYNAMICS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "BEL",
+        "instrument_key": "NSE_EQ|INE263A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHARAT ELECTRONICS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 144
+      },
+      {
+        "symbol": "BHARATFORG",
+        "instrument_key": "NSE_EQ|INE465A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHARAT FORGE LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 174
+      },
+      {
+        "symbol": "BHARTIARTL",
+        "instrument_key": "NSE_EQ|INE397D01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHARTI AIRTEL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 153
+      },
+      {
+        "symbol": "BHEL",
+        "instrument_key": "NSE_EQ|INE257A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHEL",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 109
+      },
+      {
+        "symbol": "BIOCON",
+        "instrument_key": "NSE_EQ|INE376G01013",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BIOCON LIMITED.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 151
+      },
+      {
+        "symbol": "BLUESTARCO",
+        "instrument_key": "NSE_EQ|INE472A01039",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BLUE STAR LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 145
+      },
+      {
+        "symbol": "BOSCHLTD",
+        "instrument_key": "NSE_EQ|INE323A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BOSCH LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 170
+      },
+      {
+        "symbol": "BPCL",
+        "instrument_key": "NSE_EQ|INE029A01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BHARAT PETROLEUM CORP  LT",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "BRITANNIA",
+        "instrument_key": "NSE_EQ|INE216A01030",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BRITANNIA INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 162
+      },
+      {
+        "symbol": "BSE",
+        "instrument_key": "NSE_EQ|INE118H01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BSE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 136
+      },
+      {
+        "symbol": "CAMS",
+        "instrument_key": "NSE_EQ|INE596I01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "COMPUTER AGE MNGT SER LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 133
+      },
+      {
+        "symbol": "CANBK",
+        "instrument_key": "NSE_EQ|INE476A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CANARA BANK",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 216
+      },
+      {
+        "symbol": "CDSL",
+        "instrument_key": "NSE_EQ|INE736A01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CENTRAL DEPO SER (I) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 115
+      },
+      {
+        "symbol": "CGPOWER",
+        "instrument_key": "NSE_EQ|INE067A01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CG POWER AND IND SOL LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 143
+      },
+      {
+        "symbol": "CHOLAFIN",
+        "instrument_key": "NSE_EQ|INE121A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CHOLAMANDALAM IN & FIN CO",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "CIPLA",
+        "instrument_key": "NSE_EQ|INE059A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CIPLA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 203
+      },
+      {
+        "symbol": "COALINDIA",
+        "instrument_key": "NSE_EQ|INE522F01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "COAL INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 140
+      },
+      {
+        "symbol": "COCHINSHIP",
+        "instrument_key": "NSE_EQ|INE704P01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "COCHIN SHIPYARD LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 142
+      },
+      {
+        "symbol": "COFORGE",
+        "instrument_key": "NSE_EQ|INE591G01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "COFORGE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 178
+      },
+      {
+        "symbol": "COLPAL",
+        "instrument_key": "NSE_EQ|INE259A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "COLGATE PALMOLIVE LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 161
+      },
+      {
+        "symbol": "CONCOR",
+        "instrument_key": "NSE_EQ|INE111A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CONTAINER CORP OF IND LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 165
+      },
+      {
+        "symbol": "CROMPTON",
+        "instrument_key": "NSE_EQ|INE299U01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CROMPT GREA CON ELEC LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 158
+      },
+      {
+        "symbol": "CUMMINSIND",
+        "instrument_key": "NSE_EQ|INE298A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "CUMMINS INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 154
+      },
+      {
+        "symbol": "DABUR",
+        "instrument_key": "NSE_EQ|INE016A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DABUR INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 130
+      },
+      {
+        "symbol": "DELHIVERY",
+        "instrument_key": "NSE_EQ|INE148O01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DELHIVERY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 144
+      },
+      {
+        "symbol": "DIVISLAB",
+        "instrument_key": "NSE_EQ|INE361B01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DIVI S LABORATORIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 154
+      },
+      {
+        "symbol": "DIXON",
+        "instrument_key": "NSE_EQ|INE935N01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DIXON TECHNO (INDIA) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 93
+      },
+      {
+        "symbol": "DLF",
+        "instrument_key": "NSE_EQ|INE271C01023",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DLF LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 111
+      },
+      {
+        "symbol": "DMART",
+        "instrument_key": "NSE_EQ|INE192R01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "AVENUE SUPERMARTS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 151
+      },
+      {
+        "symbol": "DRREDDY",
+        "instrument_key": "NSE_EQ|INE089A01031",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "DR. REDDY S LABORATORIES",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 189
+      },
+      {
+        "symbol": "EICHERMOT",
+        "instrument_key": "NSE_EQ|INE066A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "EICHER MOTORS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 136
+      },
+      {
+        "symbol": "ENRIN",
+        "instrument_key": "NSE_EQ|INE1NPP01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SIEMENS ENERGY INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 108
+      },
+      {
+        "symbol": "ETERNAL",
+        "instrument_key": "NSE_EQ|INE758T01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ETERNAL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 103
+      },
+      {
+        "symbol": "FEDERALBNK",
+        "instrument_key": "NSE_EQ|INE171A01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "FEDERAL BANK LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 117
+      },
+      {
+        "symbol": "FINNIFTY",
+        "instrument_key": "NSE_INDEX|Nifty Fin Service",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "Nifty Fin Service",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 482
+      },
+      {
+        "symbol": "FORCEMOT",
+        "instrument_key": "NSE_EQ|INE451A01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "FORCE MOTORS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 107
+      },
+      {
+        "symbol": "FORTIS",
+        "instrument_key": "NSE_EQ|INE061F01013",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "FORTIS HEALTHCARE LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 159
+      },
+      {
+        "symbol": "GAIL",
+        "instrument_key": "NSE_EQ|INE129A01019",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GAIL (INDIA) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 107
+      },
+      {
+        "symbol": "GLENMARK",
+        "instrument_key": "NSE_EQ|INE935A01035",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GLENMARK PHARMACEUTICALS",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 199
+      },
+      {
+        "symbol": "GMRAIRPORT",
+        "instrument_key": "NSE_EQ|INE776C01039",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GMR AIRPORTS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 174
+      },
+      {
+        "symbol": "GODFRYPHLP",
+        "instrument_key": "NSE_EQ|INE260B01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GODFREY PHILLIPS INDIA LT",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 180
+      },
+      {
+        "symbol": "GODREJCP",
+        "instrument_key": "NSE_EQ|INE102D01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GODREJ CONSUMER PRODUCTS",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 141
+      },
+      {
+        "symbol": "GODREJPROP",
+        "instrument_key": "NSE_EQ|INE484J01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GODREJ PROPERTIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 167
+      },
+      {
+        "symbol": "GRASIM",
+        "instrument_key": "NSE_EQ|INE047A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GRASIM INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 259
+      },
+      {
+        "symbol": "GVT&D",
+        "instrument_key": "NSE_EQ|INE200A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "GE VERNOVA T&D INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 78
+      },
+      {
+        "symbol": "HAL",
+        "instrument_key": "NSE_EQ|INE066F01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HINDUSTAN AERONAUTICS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 162
+      },
+      {
+        "symbol": "HAVELLS",
+        "instrument_key": "NSE_EQ|INE176B01034",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HAVELLS INDIA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 206
+      },
+      {
+        "symbol": "HCLTECH",
+        "instrument_key": "NSE_EQ|INE860A01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HCL TECHNOLOGIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 161
+      },
+      {
+        "symbol": "HDFCAMC",
+        "instrument_key": "NSE_EQ|INE127D01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HDFC AMC LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 213
+      },
+      {
+        "symbol": "HDFCBANK",
+        "instrument_key": "NSE_EQ|INE040A01034",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HDFC BANK LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 121
+      },
+      {
+        "symbol": "HDFCLIFE",
+        "instrument_key": "NSE_EQ|INE795G01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HDFC LIFE INS CO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 185
+      },
+      {
+        "symbol": "HEROMOTOCO",
+        "instrument_key": "NSE_EQ|INE158A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HERO MOTOCORP LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 180
+      },
+      {
+        "symbol": "HINDALCO",
+        "instrument_key": "NSE_EQ|INE038A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HINDALCO  INDUSTRIES  LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 171
+      },
+      {
+        "symbol": "HINDPETRO",
+        "instrument_key": "NSE_EQ|INE094A01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HINDUSTAN PETROLEUM CORP",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 126
+      },
+      {
+        "symbol": "HINDUNILVR",
+        "instrument_key": "NSE_EQ|INE030A01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HINDUSTAN UNILEVER LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 167
+      },
+      {
+        "symbol": "HINDZINC",
+        "instrument_key": "NSE_EQ|INE267A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HINDUSTAN ZINC LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 110
+      },
+      {
+        "symbol": "HYUNDAI",
+        "instrument_key": "NSE_EQ|INE0V6F01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HYUNDAI MOTOR INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 181
+      },
+      {
+        "symbol": "ICICIBANK",
+        "instrument_key": "NSE_EQ|INE090A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ICICI BANK LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 204
+      },
+      {
+        "symbol": "ICICIGI",
+        "instrument_key": "NSE_EQ|INE765G01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ICICI LOMBARD GIC LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 149
+      },
+      {
+        "symbol": "ICICIPRULI",
+        "instrument_key": "NSE_EQ|INE726G01019",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ICICI PRU LIFE INS CO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 158
+      },
+      {
+        "symbol": "IDEA",
+        "instrument_key": "NSE_EQ|INE669E01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "VODAFONE IDEA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 56
+      },
+      {
+        "symbol": "IDFCFIRSTB",
+        "instrument_key": "NSE_EQ|INE092T01019",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "IDFC FIRST BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 147
+      },
+      {
+        "symbol": "IEX",
+        "instrument_key": "NSE_EQ|INE022Q01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDIAN ENERGY EXC LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "INDHOTEL",
+        "instrument_key": "NSE_EQ|INE053A01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "THE INDIAN HOTELS CO. LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 110
+      },
+      {
+        "symbol": "INDIANB",
+        "instrument_key": "NSE_EQ|INE562A01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDIAN BANK",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 141
+      },
+      {
+        "symbol": "INDIGO",
+        "instrument_key": "NSE_EQ|INE646L01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INTERGLOBE AVIATION LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 167
+      },
+      {
+        "symbol": "INDUSINDBK",
+        "instrument_key": "NSE_EQ|INE095A01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDUSIND BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 172
+      },
+      {
+        "symbol": "INDUSTOWER",
+        "instrument_key": "NSE_EQ|INE121J01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDUS TOWERS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 128
+      },
+      {
+        "symbol": "INFY",
+        "instrument_key": "NSE_EQ|INE009A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INFOSYS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 109
+      },
+      {
+        "symbol": "INOXWIND",
+        "instrument_key": "NSE_EQ|INE066P01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INOX WIND LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 162
+      },
+      {
+        "symbol": "IOC",
+        "instrument_key": "NSE_EQ|INE242A01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDIAN OIL CORP LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 236
+      },
+      {
+        "symbol": "IREDA",
+        "instrument_key": "NSE_EQ|INE202E01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDIAN RENEWABLE ENERGY",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23"
+        ],
+        "contract_count": 176
+      },
+      {
+        "symbol": "IRFC",
+        "instrument_key": "NSE_EQ|INE053F01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INDIAN RAILWAY FIN CORP L",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 150
+      },
+      {
+        "symbol": "ITC",
+        "instrument_key": "NSE_EQ|INE154A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ITC LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 184
+      },
+      {
+        "symbol": "JINDALSTEL",
+        "instrument_key": "NSE_EQ|INE749A01030",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "JINDAL STEEL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "JIOFIN",
+        "instrument_key": "NSE_EQ|INE758E01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "JIO FIN SERVICES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 174
+      },
+      {
+        "symbol": "JSWENERGY",
+        "instrument_key": "NSE_EQ|INE121E01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "JSW ENERGY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 100
+      },
+      {
+        "symbol": "JSWSTEEL",
+        "instrument_key": "NSE_EQ|INE019A01038",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "JSW STEEL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 215
+      },
+      {
+        "symbol": "JUBLFOOD",
+        "instrument_key": "NSE_EQ|INE797F01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "JUBILANT FOODWORKS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 128
+      },
+      {
+        "symbol": "KALYANKJIL",
+        "instrument_key": "NSE_EQ|INE303R01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KALYAN JEWELLERS IND LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 129
+      },
+      {
+        "symbol": "KAYNES",
+        "instrument_key": "NSE_EQ|INE918Z01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KAYNES TECHNOLOGY IND LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 134
+      },
+      {
+        "symbol": "KEI",
+        "instrument_key": "NSE_EQ|INE878B01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KEI INDUSTRIES LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 91
+      },
+      {
+        "symbol": "KFINTECH",
+        "instrument_key": "NSE_EQ|INE138Y01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KFIN TECHNOLOGIES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 81
+      },
+      {
+        "symbol": "KOTAKBANK",
+        "instrument_key": "NSE_EQ|INE237A01036",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KOTAK MAHINDRA BANK LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 141
+      },
+      {
+        "symbol": "KPITTECH",
+        "instrument_key": "NSE_EQ|INE04I401011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "KPIT TECHNOLOGIES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "LAURUSLABS",
+        "instrument_key": "NSE_EQ|INE947Q01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LAURUS LABS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 165
+      },
+      {
+        "symbol": "LICHSGFIN",
+        "instrument_key": "NSE_EQ|INE115A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LIC HOUSING FINANCE LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 224
+      },
+      {
+        "symbol": "LICI",
+        "instrument_key": "NSE_EQ|INE0J1Y01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LIFE INSURA CORP OF INDIA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 132
+      },
+      {
+        "symbol": "LODHA",
+        "instrument_key": "NSE_EQ|INE670K01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LODHA DEVELOPERS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 104
+      },
+      {
+        "symbol": "LT",
+        "instrument_key": "NSE_EQ|INE018A01030",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LARSEN & TOUBRO LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 134
+      },
+      {
+        "symbol": "LTF",
+        "instrument_key": "NSE_EQ|INE498L01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "L&T FINANCE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 112
+      },
+      {
+        "symbol": "LTM",
+        "instrument_key": "NSE_EQ|INE214T01019",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LTM LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 111
+      },
+      {
+        "symbol": "LUPIN",
+        "instrument_key": "NSE_EQ|INE326A01037",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "LUPIN LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 183
+      },
+      {
+        "symbol": "M&M",
+        "instrument_key": "NSE_EQ|INE101A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MAHINDRA & MAHINDRA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 126
+      },
+      {
+        "symbol": "MAHABANK",
+        "instrument_key": "NSE_EQ|INE457A01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "BANK OF MAHARASHTRA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 137
+      },
+      {
+        "symbol": "MANAPPURAM",
+        "instrument_key": "NSE_EQ|INE522D01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MANAPPURAM FINANCE LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 116
+      },
+      {
+        "symbol": "MANKIND",
+        "instrument_key": "NSE_EQ|INE634S01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MANKIND PHARMA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 219
+      },
+      {
+        "symbol": "MARICO",
+        "instrument_key": "NSE_EQ|INE196A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MARICO LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 122
+      },
+      {
+        "symbol": "MARUTI",
+        "instrument_key": "NSE_EQ|INE585B01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MARUTI SUZUKI INDIA LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 233
+      },
+      {
+        "symbol": "MAXHEALTH",
+        "instrument_key": "NSE_EQ|INE027H01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MAX HEALTHCARE INS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 203
+      },
+      {
+        "symbol": "MAZDOCK",
+        "instrument_key": "NSE_EQ|INE249Z01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MAZAGON DOCK SHIPBUIL LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 205
+      },
+      {
+        "symbol": "MCX",
+        "instrument_key": "NSE_EQ|INE745G01043",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MULTI COMMODITY EXCHANGE",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 110
+      },
+      {
+        "symbol": "MFSL",
+        "instrument_key": "NSE_EQ|INE180A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MAX FINANCIAL SERV LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 140
+      },
+      {
+        "symbol": "MIDCPNIFTY",
+        "instrument_key": "NSE_INDEX|NIFTY MID SELECT",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "NIFTY MID SELECT",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 864
+      },
+      {
+        "symbol": "MOTHERSON",
+        "instrument_key": "NSE_EQ|INE775A01035",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SAMVRDHNA MTHRSN INTL LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 115
+      },
+      {
+        "symbol": "MOTILALOFS",
+        "instrument_key": "NSE_EQ|INE338I01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MOTILAL OSWAL FIN LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 104
+      },
+      {
+        "symbol": "MPHASIS",
+        "instrument_key": "NSE_EQ|INE356A01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MPHASIS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 104
+      },
+      {
+        "symbol": "MUTHOOTFIN",
+        "instrument_key": "NSE_EQ|INE414G01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "MUTHOOT FINANCE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 103
+      },
+      {
+        "symbol": "NAM-INDIA",
+        "instrument_key": "NSE_EQ|INE298J01013",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NIPPON L I A M LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 96
+      },
+      {
+        "symbol": "NATIONALUM",
+        "instrument_key": "NSE_EQ|INE139A01034",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NATIONAL ALUMINIUM CO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 141
+      },
+      {
+        "symbol": "NAUKRI",
+        "instrument_key": "NSE_EQ|INE663F01032",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "INFO EDGE (I) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 105
+      },
+      {
+        "symbol": "NBCC",
+        "instrument_key": "NSE_EQ|INE095N01031",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NBCC (INDIA) LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 151
+      },
+      {
+        "symbol": "NESTLEIND",
+        "instrument_key": "NSE_EQ|INE239A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NESTLE INDIA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 220
+      },
+      {
+        "symbol": "NHPC",
+        "instrument_key": "NSE_EQ|INE848E01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NHPC LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 121
+      },
+      {
+        "symbol": "NIFTY",
+        "instrument_key": "NSE_INDEX|Nifty 50",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "Nifty 50",
+        "expiries": [
+          "2026-10-19",
+          "2026-10-27",
+          "2026-11-03",
+          "2026-11-09",
+          "2026-11-17",
+          "2026-11-23",
+          "2026-12-29",
+          "2027-03-30",
+          "2027-06-29",
+          "2027-09-28",
+          "2027-12-28",
+          "2028-06-27",
+          "2028-12-26",
+          "2029-06-26",
+          "2029-12-24",
+          "2030-06-25",
+          "2030-12-31",
+          "2031-06-24"
+        ],
+        "contract_count": 1830
+      },
+      {
+        "symbol": "NIFTYFPI",
+        "instrument_key": "NSE_INDEX|Nifty FPI 150",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "Nifty FPI 150",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 500
+      },
+      {
+        "symbol": "NIFTYNXT50",
+        "instrument_key": "NSE_INDEX|Nifty Next 50",
+        "kind": "INDEX",
+        "segment": "NSE_INDEX",
+        "name": "Nifty Next 50",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 1098
+      },
+      {
+        "symbol": "NMDC",
+        "instrument_key": "NSE_EQ|INE584A01023",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NMDC LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 163
+      },
+      {
+        "symbol": "NTPC",
+        "instrument_key": "NSE_EQ|INE733E01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "NTPC LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 202
+      },
+      {
+        "symbol": "NYKAA",
+        "instrument_key": "NSE_EQ|INE388Y01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "FSN E COMMERCE VENTURES",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 124
+      },
+      {
+        "symbol": "OBEROIRLTY",
+        "instrument_key": "NSE_EQ|INE093I01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "OBEROI REALTY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 141
+      },
+      {
+        "symbol": "OFSS",
+        "instrument_key": "NSE_EQ|INE881D01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ORACLE FIN SERV SOFT LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 136
+      },
+      {
+        "symbol": "OIL",
+        "instrument_key": "NSE_EQ|INE274J01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "OIL INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 152
+      },
+      {
+        "symbol": "ONGC",
+        "instrument_key": "NSE_EQ|INE213A01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "OIL AND NATURAL GAS CORP.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 151
+      },
+      {
+        "symbol": "PAGEIND",
+        "instrument_key": "NSE_EQ|INE761H01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PAGE INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "PATANJALI",
+        "instrument_key": "NSE_EQ|INE619A01035",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PATANJALI FOODS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 124
+      },
+      {
+        "symbol": "PAYTM",
+        "instrument_key": "NSE_EQ|INE982J01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ONE 97 COMMUNICATIONS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 165
+      },
+      {
+        "symbol": "PERSISTENT",
+        "instrument_key": "NSE_EQ|INE262H01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PERSISTENT SYSTEMS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "PETRONET",
+        "instrument_key": "NSE_EQ|INE347G01014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PETRONET LNG LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 182
+      },
+      {
+        "symbol": "PFC",
+        "instrument_key": "NSE_EQ|INE134E01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "POWER FIN CORP LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 131
+      },
+      {
+        "symbol": "PGEL",
+        "instrument_key": "NSE_EQ|INE457L01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PG ELECTROPLAST LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 107
+      },
+      {
+        "symbol": "PHOENIXLTD",
+        "instrument_key": "NSE_EQ|INE211B01039",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "THE PHOENIX MILLS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 165
+      },
+      {
+        "symbol": "PIDILITIND",
+        "instrument_key": "NSE_EQ|INE318A01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PIDILITE INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 132
+      },
+      {
+        "symbol": "PIIND",
+        "instrument_key": "NSE_EQ|INE603J01030",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PI INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 222
+      },
+      {
+        "symbol": "PNB",
+        "instrument_key": "NSE_EQ|INE160A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PUNJAB NATIONAL BANK",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 202
+      },
+      {
+        "symbol": "PNBHOUSING",
+        "instrument_key": "NSE_EQ|INE572E01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PNB HOUSING FIN LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 114
+      },
+      {
+        "symbol": "POLICYBZR",
+        "instrument_key": "NSE_EQ|INE417T01026",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PB FINTECH LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 224
+      },
+      {
+        "symbol": "POLYCAB",
+        "instrument_key": "NSE_EQ|INE455K01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "POLYCAB INDIA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 155
+      },
+      {
+        "symbol": "POWERGRID",
+        "instrument_key": "NSE_EQ|INE752E01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "POWER GRID CORP. LTD.",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 183
+      },
+      {
+        "symbol": "POWERINDIA",
+        "instrument_key": "NSE_EQ|INE07Y701011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "HITACHI ENERGY INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 117
+      },
+      {
+        "symbol": "PREMIERENE",
+        "instrument_key": "NSE_EQ|INE0BS701011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PREMIER ENERGIES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 97
+      },
+      {
+        "symbol": "PRESTIGE",
+        "instrument_key": "NSE_EQ|INE811K01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "PRESTIGE ESTATE LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 132
+      },
+      {
+        "symbol": "RADICO",
+        "instrument_key": "NSE_EQ|INE944F01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "RADICO KHAITAN LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 160
+      },
+      {
+        "symbol": "RBLBANK",
+        "instrument_key": "NSE_EQ|INE976G01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "RBL BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 152
+      },
+      {
+        "symbol": "RECLTD",
+        "instrument_key": "NSE_EQ|INE020B01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "REC LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 117
+      },
+      {
+        "symbol": "RELIANCE",
+        "instrument_key": "NSE_EQ|INE002A01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "RELIANCE INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 215
+      },
+      {
+        "symbol": "RVNL",
+        "instrument_key": "NSE_EQ|INE415G01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "RAIL VIKAS NIGAM LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "SAGILITY",
+        "instrument_key": "NSE_EQ|INE0W2G01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SAGILITY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 83
+      },
+      {
+        "symbol": "SAIL",
+        "instrument_key": "NSE_EQ|INE114A01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "STEEL AUTHORITY OF INDIA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 126
+      },
+      {
+        "symbol": "SBICARD",
+        "instrument_key": "NSE_EQ|INE018E01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SBI CARDS & PAY SER LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 126
+      },
+      {
+        "symbol": "SBILIFE",
+        "instrument_key": "NSE_EQ|INE123W01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SBI LIFE INSURANCE CO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 139
+      },
+      {
+        "symbol": "SBIN",
+        "instrument_key": "NSE_EQ|INE062A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "STATE BANK OF INDIA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 163
+      },
+      {
+        "symbol": "SHREECEM",
+        "instrument_key": "NSE_EQ|INE070A01015",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SHREE CEMENT LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 148
+      },
+      {
+        "symbol": "SHRIRAMFIN",
+        "instrument_key": "NSE_EQ|INE721A01047",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SHRIRAM FINANCE LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 106
+      },
+      {
+        "symbol": "SIEMENS",
+        "instrument_key": "NSE_EQ|INE003A01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SIEMENS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 140
+      },
+      {
+        "symbol": "SOLARINDS",
+        "instrument_key": "NSE_EQ|INE343H01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SOLAR INDUSTRIES (I) LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 138
+      },
+      {
+        "symbol": "SONACOMS",
+        "instrument_key": "NSE_EQ|INE073K01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SONA BLW PRECISION FRGS L",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 144
+      },
+      {
+        "symbol": "SRF",
+        "instrument_key": "NSE_EQ|INE647A01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SRF LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 191
+      },
+      {
+        "symbol": "SUNPHARMA",
+        "instrument_key": "NSE_EQ|INE044A01036",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SUN PHARMACEUTICAL IND L",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 145
+      },
+      {
+        "symbol": "SUPREMEIND",
+        "instrument_key": "NSE_EQ|INE195A01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SUPREME INDUSTRIES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 116
+      },
+      {
+        "symbol": "SUZLON",
+        "instrument_key": "NSE_EQ|INE040H01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SUZLON ENERGY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 116
+      },
+      {
+        "symbol": "SWIGGY",
+        "instrument_key": "NSE_EQ|INE00H001014",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "SWIGGY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 116
+      },
+      {
+        "symbol": "TATACONSUM",
+        "instrument_key": "NSE_EQ|INE192A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA CONSUMER PRODUCT LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 162
+      },
+      {
+        "symbol": "TATAELXSI",
+        "instrument_key": "NSE_EQ|INE670A01012",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA ELXSI LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 168
+      },
+      {
+        "symbol": "TATAPOWER",
+        "instrument_key": "NSE_EQ|INE245A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA POWER CO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 129
+      },
+      {
+        "symbol": "TATASTEEL",
+        "instrument_key": "NSE_EQ|INE081A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA STEEL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 132
+      },
+      {
+        "symbol": "TCS",
+        "instrument_key": "NSE_EQ|INE467B01029",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA CONSULTANCY SERV LT",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 224
+      },
+      {
+        "symbol": "TECHM",
+        "instrument_key": "NSE_EQ|INE669C01036",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TECH MAHINDRA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 135
+      },
+      {
+        "symbol": "TIINDIA",
+        "instrument_key": "NSE_EQ|INE974X01010",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TUBE INVEST OF INDIA LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "TITAN",
+        "instrument_key": "NSE_EQ|INE280A01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TITAN COMPANY LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 168
+      },
+      {
+        "symbol": "TMPV",
+        "instrument_key": "NSE_EQ|INE155A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TATA MOTORS PASS VEH LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 125
+      },
+      {
+        "symbol": "TORNTPHARM",
+        "instrument_key": "NSE_EQ|INE685A01028",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TORRENT PHARMACEUTICALS L",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 156
+      },
+      {
+        "symbol": "TRENT",
+        "instrument_key": "NSE_EQ|INE849A01020",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TRENT LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "TVSMOTOR",
+        "instrument_key": "NSE_EQ|INE494B01023",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "TVS MOTOR COMPANY  LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 144
+      },
+      {
+        "symbol": "UJJIVANSFB",
+        "instrument_key": "NSE_EQ|INE551W01018",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "UJJIVAN SMALL FINANC BANK",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 130
+      },
+      {
+        "symbol": "ULTRACEMCO",
+        "instrument_key": "NSE_EQ|INE481G01011",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ULTRATECH CEMENT LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 180
+      },
+      {
+        "symbol": "UNIONBANK",
+        "instrument_key": "NSE_EQ|INE692A01016",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "UNION BANK OF INDIA",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 118
+      },
+      {
+        "symbol": "UNITDSPR",
+        "instrument_key": "NSE_EQ|INE854D01024",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "UNITED SPIRITS LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 126
+      },
+      {
+        "symbol": "UNOMINDA",
+        "instrument_key": "NSE_EQ|INE405E01023",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "UNO MINDA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 107
+      },
+      {
+        "symbol": "UPL",
+        "instrument_key": "NSE_EQ|INE628A01036",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "UPL LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 216
+      },
+      {
+        "symbol": "VBL",
+        "instrument_key": "NSE_EQ|INE200M01039",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "VARUN BEVERAGES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 132
+      },
+      {
+        "symbol": "VEDL",
+        "instrument_key": "NSE_EQ|INE205A01025",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "VEDANTA LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 103
+      },
+      {
+        "symbol": "VMM",
+        "instrument_key": "NSE_EQ|INE01EA01019",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "VISHAL MEGA MART LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 180
+      },
+      {
+        "symbol": "VOLTAS",
+        "instrument_key": "NSE_EQ|INE226A01021",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "VOLTAS LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 106
+      },
+      {
+        "symbol": "WAAREEENER",
+        "instrument_key": "NSE_EQ|INE377N01017",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "WAAREE ENERGIES LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 237
+      },
+      {
+        "symbol": "WIPRO",
+        "instrument_key": "NSE_EQ|INE075A01022",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "WIPRO LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 135
+      },
+      {
+        "symbol": "YESBANK",
+        "instrument_key": "NSE_EQ|INE528G01035",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "YES BANK LIMITED",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 62
+      },
+      {
+        "symbol": "ZYDUSLIFE",
+        "instrument_key": "NSE_EQ|INE010B01027",
+        "kind": "EQUITY",
+        "segment": "NSE_EQ",
+        "name": "ZYDUS LIFESCIENCES LTD",
+        "expiries": [
+          "2026-10-27",
+          "2026-11-23",
+          "2026-12-29"
+        ],
+        "contract_count": 173
+      }
+    ],
+    "ambiguous_symbols": [],
+    "rejected_contracts": 0,
+    "note": "NSE underlyings with non-expired option contracts in the Upstox BOD master; not Yahoo most-active/top-gainer selection. No price, volume or discovery-score filter is applied here."
+  }
+}

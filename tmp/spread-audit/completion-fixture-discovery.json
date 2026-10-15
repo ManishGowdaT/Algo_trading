@@ -1,0 +1,20 @@
+{
+  "mode": "fixtures",
+  "universe_size": 4,
+  "ranked": 4,
+  "stats": {
+    "eligible_underlyings": 4,
+    "history_attempted": 4,
+    "history_available": 4,
+    "atm_iv_attempted": 4,
+    "atm_iv_available": 4,
+    "atm_iv_unavailable": 0,
+    "atm_iv_failed": 0,
+    "history_failed": 0,
+    "failed_requests": 0,
+    "total_runtime_seconds": 0.08,
+    "complete": true,
+    "failed": 0
+  },
+  "errors": []
+}

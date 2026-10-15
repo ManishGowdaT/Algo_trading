@@ -1,0 +1,2433 @@
+[
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 48,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    min_oi: int = Field(default=100, ge=0, le=10000)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 51,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    min_ror: float = Field(default=15, ge=5, le=100, allow_inf_nan=False)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 308,
+    "matches": [
+      ".NS"
+    ],
+    "classification": "NSE earnings symbol mapping; data coverage UNVERIFIED",
+    "source_line": "        \"width_mode\": 'listed_strike_steps' if request.strategy_profile == nse.NSE_RESEARCH_V1 else 'fixed_price_points',"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 309,
+    "matches": [
+      ".NS"
+    ],
+    "classification": "NSE earnings symbol mapping; data coverage UNVERIFIED",
+    "source_line": "        \"width_steps\": request.width_steps if request.strategy_profile == nse.NSE_RESEARCH_V1 else None,"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 321,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "        \"ranking_note\": \"Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking.\","
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 370,
+    "matches": [
+      ".NS"
+    ],
+    "classification": "NSE earnings symbol mapping; data coverage UNVERIFIED",
+    "source_line": "        if request.strategy_profile == nse.NSE_RESEARCH_V1:"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\api.py",
+    "line": 423,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "                cushion = abs(candidate[\"short_strike\"] - closes[-1]) / closes[-1] * 100"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+    "line": 31,
+    "matches": [
+      ".NS"
+    ],
+    "classification": "NSE earnings symbol mapping; data coverage UNVERIFIED",
+    "source_line": "        ticker = factory(normalize_symbol(symbol)+'.NS')"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\earnings_source.py",
+    "line": 76,
+    "matches": [
+      "365"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "        historical = [day for day in events if today-timedelta(days=3*365) <= day <= today]"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 19,
+    "matches": [
+      "252"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "TRADING_DAYS_PER_YEAR = 252"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 20,
+    "matches": [
+      "252",
+      "365"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "CAL_TO_TRADING = 252.0 / 365.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 39,
+    "matches": [
+      "365"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    cutoff = today - timedelta(days=3 * 365)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 52,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "                    max_gap = max(max_gap, abs(change) * 100.0)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 118,
+    "matches": [
+      "252"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    rv21 = float(lr.iloc[-21:].std(ddof=1) * math.sqrt(252)) if len(lr) >= 21 else float(\"nan\")"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\engine.py",
+    "line": 119,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    change = float(close.iloc[-1] / close.iloc[-2] - 1) * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nifty_fixtures.py",
+    "line": 45,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            round(close, 2), 1_250_000 + index * 100, 0,"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nifty_fixtures.py",
+    "line": 115,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            round(close, 2), 125_000 + index * 100, 0,"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nifty_fixtures.py",
+    "line": 118,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "        step = 100 if symbol == \"BANKNIFTY\" else (50 if info[\"kind\"] == \"INDEX\" else 10)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+    "line": 22,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    return Fraction(str(contract.tick_size)) / (100 if tick_unit == 'paise' else 1)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+    "line": 108,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            cushion = abs(k_short - spot) / spot * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+    "line": 134,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            ror_pct = (credit / max_loss) * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\nse_calculations.py",
+    "line": 153,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            ev = (credit * (1 - p_adj) - max_loss * p_adj) * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 9,
+    "matches": [
+      "252"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "TRADING_DAYS_PER_YEAR = 252"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 10,
+    "matches": [
+      "252",
+      "365"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "CAL_TO_TRADING = 252.0 / 365.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 15,
+    "matches": [
+      "width: float = 5"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    width: float = 5.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 17,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    min_oi: int = 100"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 26,
+    "matches": [
+      "252"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    for win in (10, 21, 63, 252):"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 45,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "    rets = (close.shift(-n) / close - 1.0).dropna() * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 87,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            cushion = abs(k_short - spot) / spot * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 97,
+    "matches": [
+      "0.01"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            mask = np.isclose(strikes_all, k_long_t, atol=0.011)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 108,
+    "matches": [
+      "0.01"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            if credit <= 0.01 or credit >= width:"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 114,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            ror_pct = (credit / max_loss) * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\original_calculations.py",
+    "line": 133,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research formula or explicit unit conversion",
+    "source_line": "            ev = (credit * (1 - p_adj) - max_loss * p_adj) * 100.0"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 54,
+    "matches": [
+      "252",
+      "252",
+      "365"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "                          TRADING_DAYS_PER_YEAR=252, CAL_TO_TRADING=252/365)"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 81,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            cushion = abs(float(short.strike)-spot)/spot*100"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 112,
+    "matches": [
+      "0.01"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "                row['first_failure']='credit <= 0.01'; continue"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 116,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            ror = credit/(width-credit)*100"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 130,
+    "matches": [
+      "252",
+      "365"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            n = max(1,round(inputs['dte']*252/365))"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 131,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            returns = (close.shift(-n)/close-1).dropna()*100"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 138,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "            row.update(p_adj=adjusted, ev_unrounded=(credit*(1-adjusted)-(width-credit)*adjusted)*100,"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 245,
+    "matches": [
+      "365"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "        historical=[day for day in events if today-timedelta(days=3*365)<=day<=today]"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\scan_audit.py",
+    "line": 251,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "                        'absolute_gap_pct':abs(float(pct.iloc[position]))*100 if position>0 and not math.isnan(pct.iloc[position]) else None})"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\universe.py",
+    "line": 25,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "            return datetime.fromtimestamp(value / 1000, IST).date()"
+  },
+  {
+    "file": "angel-one\\app\\services\\spreads\\upstox_adapter.py",
+    "line": 215,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "                iv = raw_iv / 100.0 if raw_iv is not None else None"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 8,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "const searchClass = 'h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 9,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "const primaryButtonClass = 'inline-flex min-h-10 items-center justify-center rounded-xl border border-blue-800 bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:border-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-200 disabled:text-slate-600 disabled:opacity-100'"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 10,
+    "matches": [
+      "$",
+      "100",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "const metric = (value: number | null, percent = false) => value == null ? 'Unavailable' : `${(percent ? value * 100 : value).toFixed(2)}${percent ? '%' : ''}`"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 41,
+    "matches": [
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        setMessage(result.progress ? `${result.progress.stage === 'history' ? 'Daily history' : result.progress.stage === 'iv' ? 'ATM IV / VRP' : 'Instrument universe'}: ${result.progress.completed} / ${result.progress.total || 'loading'}${result.progress.stage === 'iv' ? ` \u00b7 ${Math.max(0, result.progress.total - result.progress.completed)} pending` : ''}${result.progress.quota_wait_seconds ? ` \u00b7 waiting for Upstox quota (${result.progress.quota_wait_seconds}s)` : ''}` : 'Discovery is running. Waiting for provider data\u2026')"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 47,
+    "matches": [
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      setPayload(result); setMessage(result.stats?.complete ? `Discovery complete \u00b7 ${result.stats.eligible_underlyings ?? result.universe.size ?? 0} eligible \u00b7 ${result.stats.atm_iv_attempted ?? 0} ATM IV / VRP attempts \u00b7 ${result.stats.atm_iv_available ?? 0} available \u00b7 ${result.stats.atm_iv_unavailable ?? 0} unavailable \u00b7 ${result.stats.atm_iv_failed ?? 0} IV failed \u00b7 ${result.stats.failed_requests ?? 0} provider errors \u00b7 ${result.stats.option_chain_requests ?? 0} option-chain requests \u00b7 ${result.stats.v3_greeks_requests ?? 0} V3 requests \u00b7 ${result.stats.rate_limit_responses ?? 0} rate limits \u00b7 ${result.stats.total_runtime_seconds ?? 0}s` : '')"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 54,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    if (new Set([...selected, ...picked, symbol]).size > MAX_UNDERLYINGS) { setMessage(`Choose at most ${MAX_UNDERLYINGS} underlyings including your existing scanner selection.`); return }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 59,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    if (new Set([...selected, ...picked]).size > MAX_UNDERLYINGS) { setMessage(`Selection exceeds ${MAX_UNDERLYINGS} underlyings. Remove some names first.`); return }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 74,
+    "matches": [
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      ? `Selected ${remaining} top-ranked names. Existing scanner selections use ${selected.length} of the ${MAX_UNDERLYINGS} slots. Remove names from the scanner to select more.`"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 75,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      : `Selected ${top.length} top-ranked names for addition. Names already in the scanner are retained. Click Add selected to scanner when ready.`);"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 78,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "  const shellButton = 'inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-100 disabled:text-slate-600 disabled:opacity-100'"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 83,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    {busy && !payload && <p role=\"status\" className=\"mt-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900\">Loading the NSE F&amp;O universe and historical market inputs\u2026</p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 84,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    {message && <p role=\"status\" className=\"mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-900\">{message}</p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 86,
+    "matches": [
+      "$",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <p className=\"mt-3 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600\">{payload.data_note}<br /><span className=\"text-slate-500\">{payload.universe.size ?? 0} eligible \u00b7 {payload.all.length} ranked \u00b7 {payload.universe.source || 'source unavailable'} \u00b7 {payload.updated ? `updated ${new Date(payload.updated * 1000).toLocaleString()}` : 'No successful ranking yet'}{payload.refreshing ? ' \u00b7 refresh in progress' : ''}</span></p>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 88,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <div className=\"my-4 flex flex-col gap-3 rounded-2xl bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between\"><div className=\"flex flex-wrap items-center gap-2\"><button type=\"button\" className={shellButton} onClick={() => setShowAll(current => !current)}>{showAll ? 'Show top 5' : `Show all ${payload.all.length}`}</button><span className=\"text-xs font-medium text-slate-600\">{picked.length} selected \u00b7 {selected.length} already in scan \u00b7 limit {MAX_UNDERLYINGS} total</span></div><div className=\"flex flex-wrap items-center gap-2\"><button type=\"button\" className={primaryButtonClass} disabled={!picked.length || disabled || adding || busy} onClick={() => void add()}>{adding ? 'Adding\u2026' : 'Add selected to scanner'}</button>{picked.length > 0 && <button type=\"button\" className={shellButton} disabled={adding || busy} onClick={() => setPicked([])}>Clear picks</button>}</div>{adding && <span role=\"status\" className=\"text-xs font-medium text-blue-800\">Adding selected underlyings\u2026</span>}</div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 89,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <label className=\"mb-3 block max-w-sm text-xs font-medium text-slate-600\">Find an underlying<input aria-label=\"Search discovery underlyings\" value={filter} onChange={event => setFilter(event.target.value)} placeholder=\"Type a symbol, for example TATAELXSI\" className={`${searchClass} mt-1`} /></label>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 90,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <button type=\"button\" className={`${shellButton} mb-3`} disabled={disabled || busy || adding || !payload.all.length || selected.length >= MAX_UNDERLYINGS} onClick={selectTop50}>Select top 50</button>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 91,
+    "matches": [
+      "$",
+      "100",
+      "$",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <div className={`rounded-2xl border border-slate-200 ${showAll ? 'max-h-[min(65vh,680px)] overflow-auto overscroll-contain' : 'overflow-x-auto'}`}><table className=\"w-full min-w-[900px] text-left text-sm\"><thead className=\"sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{['Select','Rank','Underlying','Spot (\u20b9 / index pts)','Daily change','Volume shock','RV21','ATM IV','VRP','Edge','Score'].map(title => <th key={title} className=\"border-b border-slate-200 px-3 py-3\">{title}</th>)}</tr></thead><tbody>{rows.map(row => <tr key={row.ticker} className=\"border-b border-slate-100 last:border-0 hover:bg-blue-50/40\"><td className=\"px-3 py-3\"><input type=\"checkbox\" aria-label={`Select discovery ${row.ticker}`} checked={picked.includes(row.ticker)} disabled={disabled || adding || busy || selected.includes(row.ticker)} onChange={() => toggle(row.ticker)} /></td><td className=\"px-3 py-3 tabular-nums text-slate-500\">{payload.all.findIndex(item => item.ticker === row.ticker) + 1}</td><td className=\"px-3 py-3 font-semibold text-slate-900\">{row.ticker}{selected.includes(row.ticker) ? <span className=\"ml-2 rounded-full bg-blue-100 px-2 py-1 text-[10px] font-medium text-blue-800\">In scan</span> : null}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.spot)}</td><td className=\"px-3 py-3 tabular-nums\">{row.chg.toFixed(2)}%</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.shock)}\u00d7</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.rv21, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.iv_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.iv14 == null ? row.iv_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.iv14, true)}</td><td className=\"px-3 py-3 tabular-nums\" title={row.vrp_status || (payload.refreshing ? 'pending' : 'unavailable')}>{row.vrp14 == null ? row.vrp_status === 'failed' ? 'Failed' : payload.refreshing ? 'Pending' : 'Unavailable' : metric(row.vrp14)}</td><td className=\"px-3 py-3\">{row.edge ? 'Yes' : 'No'}</td><td className=\"px-3 py-3 tabular-nums\">{metric(row.score)}</td></tr>)}</tbody></table></div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 92,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      {!rows.length && <p className=\"mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600\">{payload.all.length && filter.trim() ? `No symbols match \u201c${filter.trim()}\u201d.` : 'No rankable underlyings returned. Check provider-input errors below; discovery does not guarantee spread candidates.'}</p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\DiscoveryPanel.tsx",
+    "line": 94,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <details className=\"mt-3 rounded-xl border border-slate-200 p-3 text-xs\"><summary className=\"cursor-pointer font-medium text-slate-700\">Data-source and capability notes</summary><p className=\"mt-2\">{payload.universe.note}</p><p className=\"mt-2\">Discovery does not require earnings. Exact stock spread scans can still report missing earnings inputs.</p>{Object.entries(payload.capabilities || {}).map(([symbol, notes]) => <p key={symbol} className=\"mt-1\">{symbol}: {Object.entries(notes).map(([key, value]) => `${key} ${value}`).join(' \u00b7 ')}</p>)}</details>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 39,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  updated: 1000, refreshing: false, top: [], all: [], universe: { source: 'fixture_nse_bod', size: 2 }, errors: [], data_mode: 'fixtures', data_note: 'Synthetic data',"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 75,
+    "matches": [
+      "width: 5",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  expect(requests.post).toHaveBeenCalledWith('/spreads/scan', { underlyings: ['NIFTY'], expiries: {}, dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 })"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 150,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  const row = { ticker:'RELIANCE',spot:100,chg:1,rv21:.2,iv14:null,vrp14:null,shock:2,edge:false,score:1,vrp_pass:false,shock_pass:true }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 166,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  const row = { ticker:'EXTRA',spot:100,chg:1,rv21:.2,iv14:.3,vrp14:1.5,shock:2,edge:true,score:2,vrp_pass:true,shock_pass:true }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 170,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  elements = renderDiscovery(Array.from({ length:50 },(_,i)=>`S${i}`))"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 265,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "    strategy_profile:'NSE_RESEARCH_V1',width_steps:2,min_vrp:1.15,min_oi:100,max_spread_pct:.1,min_cushion:2,min_ror:15,"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 272,
+    "matches": [
+      "100",
+      "width:5"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  const c = {ticker:'TEST',type:'BEAR CALL',expiration:'2026-11-23',short_strike:100,long_strike:105,width:5,"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.test.tsx",
+    "line": 287,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  expect(strings).toContain('EV (100-unit score)')"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 27,
+    "matches": [
+      "width: 5",
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "const defaultParams: Parameters = { dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 33,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "  { key: 'min_oi', label: 'Minimum open interest', min: 0, max: 1000, step: 25 },"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 42,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "  { label: 'Return / risk', key: 'ror_pct' }, { label: 'Cushion', key: 'cushion_pct' }, { label: 'EV (100-unit score)', key: 'ev' }, { label: 'Details' },"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 44,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "const inputClass = 'mt-1 block h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50'"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 48,
+    "matches": [
+      "100",
+      "$",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  return <div className=\"my-3 flex flex-wrap gap-2\" aria-label=\"Filter funnel\">{stages.map(stage => <div key={stage} className=\"min-w-24 flex-1 rounded-lg border p-3 text-xs\"><span className=\"capitalize\">{stage}</span><strong className=\"float-right\">{funnel[stage]}</strong><div className=\"mt-2 h-1 bg-slate-100\"><div className=\"h-1 bg-blue-600\" style={{ width: `${Math.min(100, (funnel[stage] || 0) / Math.max(funnel.considered, 1) * 100)}%` }} /></div></div>)}</div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 84,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    const setup = await apiGet<Setup>(`/spreads/underlyings/${encodeURIComponent(symbol)}/expiries`)"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 126,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "            navigate({ pathname: location.pathname, search: query.size ? `?${query}` : '' }, { replace: true })"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 149,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    if (!symbols.length || symbols.some(symbol => !/^[A-Z0-9&._-]{1,30}$/.test(symbol))) { setMessage('Enter valid NSE symbols separated by commas or spaces.'); return }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 150,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    if (new Set([...selected, ...symbols]).size > MAX_UNDERLYINGS) { setMessage(`Choose at most ${MAX_UNDERLYINGS} underlyings.`); return }"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 163,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      if (data.failure_count) setMessage(`${data.success_count} scanned; ${data.failure_count} unavailable. See per-underlying details.`)"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 168,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    if (new Set([...selected, ...symbols]).size > MAX_UNDERLYINGS) throw new Error(`Choose at most ${MAX_UNDERLYINGS} underlyings.`)"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 174,
+    "matches": [
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        setMessage(`Loading selected underlyings: ${index + 1} / ${pending.length} \u00b7 ${symbol}`)"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 179,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      if (failures.length) throw new Error(`Could not load expiries for ${failures.join(', ')}. Successfully loaded names remain in the scanner.`)"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 191,
+    "matches": [
+      "$",
+      "100",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "          <div className=\"flex flex-wrap items-center gap-2 rounded-2xl border border-white/15 bg-white/5 p-2\"><span className=\"sr-only\" role=\"status\">{loading ? 'Loading setup\u2026' : connection.connected ? 'Upstox connected' : 'Upstox not connected'}</span><span aria-hidden=\"true\" className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${connection.connected ? 'text-emerald-200' : 'text-amber-100'}`}><span className={`h-2 w-2 rounded-full ${connection.connected ? 'bg-emerald-400' : 'bg-amber-400'}`} />{loading ? 'Checking connection\u2026' : connection.connected ? 'Upstox connected' : 'Upstox disconnected'}</span><button type=\"button\" className=\"min-h-10 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-blue-50 disabled:opacity-50\" disabled={connecting || scanning} onClick={() => void connect()}>{connecting ? 'Connecting\u2026' : connection.connected ? 'Reconnect Upstox' : 'Connect Upstox'}</button>{connection.connected && <button type=\"button\" className=\"min-h-10 rounded-xl border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10 disabled:opacity-50\" disabled={disconnecting || scanning} onClick={() => void disconnect()}>{disconnecting ? 'Disconnecting\u2026' : 'Disconnect'}</button>}</div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 195,
+    "matches": [
+      "100",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <div className=\"px-5 py-3 md:px-8\">{connectionMessage && <p role=\"status\" className=\"rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900\">{connectionMessage}</p>}<details className=\"group mt-1 text-sm\"><summary className=\"cursor-pointer list-none font-medium text-slate-600 marker:hidden\">Connection diagnostics <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid gap-2 rounded-xl bg-slate-50 p-4 text-xs text-slate-600 sm:grid-cols-2\"><p>{connection.connected ? 'Connected' : 'Not connected'}{connection.expiresAt ? ` \u00b7 expires ${new Date(connection.expiresAt).toLocaleString()}` : ''}</p><p>{connection.lastAttempt ? `${connection.lastAttempt.stage} \u00b7 ${connection.lastAttempt.at}${connection.lastAttempt.httpStatus ? ` \u00b7 HTTP ${connection.lastAttempt.httpStatus}` : ''} \u00b7 ${connection.lastAttempt.message || ''}` : 'No connection attempt recorded in this Node process. In-memory connections reset when Node restarts.'}</p><p className=\"sm:col-span-2\">Detailed OAuth events appear in the Node backend terminal with the [SpreadsOAuth] prefix. Python handles market data after connection.</p></div></details></div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 199,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      <div className=\"flex flex-wrap items-end justify-between gap-3\"><div><p className=\"text-xs font-semibold uppercase tracking-widest text-blue-700\">Build your scan</p><h2 className=\"mt-1 text-xl font-semibold tracking-tight\">Select underlyings</h2><p className=\"mt-1 text-sm text-slate-500\">Add up to {MAX_UNDERLYINGS} NSE F&amp;O names. Expiries load for each selection.</p></div><span className=\"rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700\">{selected.length} / {MAX_UNDERLYINGS} selected</span></div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 200,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      {selected.length > 0 && <p className=\"mt-4 rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm leading-6 text-slate-800\"><span className=\"mr-2 text-xs font-semibold uppercase tracking-wide text-blue-800\">Selected</span><span className=\"font-semibold\">{selected.join(', ')}</span></p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 202,
+    "matches": [
+      "100",
+      "$",
+      "$",
+      "100",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <details className=\"mt-3 rounded-xl border border-slate-200 p-3\"><summary className=\"cursor-pointer text-sm font-medium text-slate-700\">Manage selected underlyings \u00b7 {selected.length} names</summary><div className=\"mt-3 space-y-2\" aria-label=\"Selected underlying controls\">{selected.map(symbol => <div key={symbol} className=\"flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 px-3 py-2\"><div className=\"flex min-w-0 items-center gap-2\"><strong className=\"text-sm text-slate-900\">{symbol}</strong><span className=\"text-xs text-slate-500\">NSE F&amp;O</span>{expiries[symbol] && <span className=\"rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600\">{expiries[symbol]}</span>}</div><div className=\"flex items-center gap-2\"><details className=\"group relative\"><summary className=\"cursor-pointer list-none rounded-lg px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50\">Expiry <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg\"><label className=\"block text-xs font-medium text-slate-600\">Option expiry<select aria-label={`${symbol} expiry`} disabled={scanning || !options[symbol]?.length} value={expiries[symbol] || ''} onChange={event => setExpiries(current => ({ ...current, [symbol]: event.target.value }))} className=\"mt-1 h-10 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-800 disabled:text-slate-400\"><option value=\"\">Automatic \u00b7 nearest target DTE</option>{options[symbol]?.map(expiry => <option key={expiry}>{expiry}</option>)}</select></label></div></details>{availability[symbol] && <details className=\"group relative\"><summary aria-label={`${symbol} stock data note`} className=\"cursor-pointer list-none rounded-lg px-2 py-2 text-xs font-medium text-amber-800 hover:bg-amber-50\">Data note <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"absolute right-0 z-20 mt-1 w-[min(360px,calc(100vw-5rem))] rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950 shadow-lg\">{availability[symbol]}<p className=\"mt-1\">Other selected underlyings can still scan.</p></div></details>}<button type=\"button\" aria-label={`Remove ${symbol}`} title={`Remove ${symbol}`} disabled={scanning || loading} className=\"rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50\" onClick={() => setSelected(current => current.filter(value => value !== symbol))}>Remove</button></div></div>)}</div></details>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 204,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "        <fieldset disabled={scanning} className=\"mt-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5\"><legend className=\"px-2 text-base font-semibold text-slate-900\">Scanner parameters</legend><label className=\"mb-4 block max-w-lg text-sm font-medium text-slate-700\">Strategy profile<select aria-label=\"Strategy profile\" className={inputClass} value={strategyProfile} onChange={event => setStrategyProfile(event.target.value)}><option value=\"ORIGINAL_ZIP_BASELINE\">ORIGINAL_ZIP_BASELINE \u00b7 fixed price-point width</option><option value=\"NSE_RESEARCH_V1\">NSE_RESEARCH_V1 \u00b7 actual listed strike steps</option></select></label><p className=\"mb-4 text-sm text-slate-500\">{strategyProfile === 'NSE_RESEARCH_V1' ? 'NSE research uses actual listed hedges and contract tick sizes. All percentage, ratio and contract-count thresholds retain their original defaults.' : 'Defaults match the original scanner. Adjust only the filters you want to change.'}</p>{strategyProfile === 'NSE_RESEARCH_V1' && <label className=\"mb-4 block max-w-xs text-sm font-medium text-slate-700\">Listed hedge steps<input aria-label=\"Listed hedge steps\" type=\"number\" required min={1} max={50} step={1} value={widthSteps} onChange={event => setWidthSteps(Number(event.target.value))} className={inputClass} /><span className=\"mt-1 block text-xs text-slate-500\">One step selects the next listed strike away from spot. Missing quotes are not skipped.</span></label>}<div className=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-4\">{controls.filter(control => strategyProfile !== 'NSE_RESEARCH_V1' || control.key !== 'width').map(control => { const labels: Record<keyof Parameters, string> = { dte: 'Target expiry distance', width: 'Spread width (index points / stock \u20b9)', min_vrp: 'Minimum IV \u00f7 RV21', min_oi: 'Minimum open interest', max_spread_pct: 'Maximum bid\u2013ask fraction', min_cushion: 'Minimum price cushion (%)', min_ror: 'Minimum return on risk (%)' }; const hints: Record<keyof Parameters, string> = { dte: 'Calendar days \u00b7 default 30', width: 'Must match an available hedge strike', min_vrp: 'Ratio \u00b7 default 1.15', min_oi: 'Contracts after quantity \u00f7 lot normalization \u00b7 default 100', max_spread_pct: 'Fraction: 0.10 means 10% \u00b7 default 0.10', min_cushion: 'Percent \u00b7 default 2', min_ror: 'Percent \u00b7 default 15' }; return <label key={control.key} className=\"text-sm font-medium text-slate-700\">{labels[control.key]}<input aria-label={control.label} required type=\"number\" min={control.min} max={control.max} step={control.step} value={params[control.key]} onChange={event => setParams(current => ({ ...current, [control.key]: Number(event.target.value) }))} className={inputClass} /><span className=\"mt-1 block text-xs font-normal text-slate-500\">{hints[control.key]}</span></label> })}</div></fieldset>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 206,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        <div className=\"mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center\"><button type=\"submit\" disabled={loading || scanning || !selected.length || (mode === 'upstox' && !connection.connected)} className=\"min-h-12 rounded-xl bg-blue-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-slate-400\">{scanning ? 'Scanning selected underlyings\u2026' : `Scan ${selected.length} underlying${selected.length === 1 ? '' : 's'}`}</button><span className=\"text-xs text-slate-500\">One scan request \u00b7 no orders are placed</span></div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 215,
+    "matches": [
+      "auto_adjust"
+    ],
+    "classification": "Needs NSE adaptation: historical-equivalence warning is not an NSE adjustment policy",
+    "source_line": "      {result.strategy_profile === 'NSE_RESEARCH_V1' && <p className=\"mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950\">Research profile: adjusted equity history is still FAIL / UNVERIFIED against Yahoo auto_adjust=True. These market-structure adaptations do not resolve that data mismatch or establish strategy performance.</p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 216,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      {result.scan_audit && <p role=\"status\" className=\"mb-3 rounded-xl bg-blue-50 p-3 text-xs text-blue-900\">Diagnostic snapshot: {result.scan_audit.status}{result.scan_audit.file ? ` \u00b7 ${result.scan_audit.file}` : ''}{result.scan_audit.error_type ? ` \u00b7 ${result.scan_audit.error_type}` : ''}. Capture records the selected profile and its inputs.</p>}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 217,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      <div className=\"flex flex-wrap items-start justify-between gap-4\"><div><p className=\"text-xs font-semibold uppercase tracking-widest text-blue-700\">Scan results</p><h2 className=\"mt-1 text-xl font-semibold tracking-tight\">Ranked opportunities</h2><p className=\"mt-1 text-sm text-slate-500\">{result.success_count} scanned \u00b7 {result.failure_count} unavailable \u00b7 {result.elapsed}s \u00b7 {result.candidates.length} opportunities</p></div><div className=\"flex flex-wrap gap-2\"><span className=\"rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800\">Bull Put and Bear Call</span><span className=\"rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700\">Ranked by original EV</span></div></div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 219,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      <p className=\"mt-3 text-xs text-[#626875]\">{result.data_note}</p><p className=\"mt-2 text-xs text-[#626875]\">{result.ranking_note} Original EV uses 100 units. INR per lot uses actual contract quantity and does not affect ranking; fixture lots are synthetic.</p>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 221,
+    "matches": [
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <div aria-label=\"Per-underlying scan status\">{result.underlyings.map(item => <details key={item.symbol} className=\"my-2 rounded-lg border p-3 text-xs\"><summary>{item.symbol} \u00b7 {item.ok ? `${item.expiry} \u00b7 ${item.dte} days \u00b7 spot ${item.kind === 'INDEX' ? '' : '\u20b9'}${item.meta?.spot}${item.kind === 'INDEX' ? ' pts' : ''} \u00b7 ${item.candidates.length} opportunities` : item.error}</summary>{item.funnel && <FunnelView funnel={item.funnel} />}<p className=\"mt-2\">{Object.entries(item.capabilities || {}).map(([key, value]) => `${key}: ${value}`).join(' \u00b7 ')}</p>{item.nse_market_structure_issues?.length ? <details className=\"mt-2\"><summary>NSE contract validation \u00b7 {item.nse_market_structure_issues.length} rejected pairs</summary>{item.nse_market_structure_issues.map((issue,index) => <p key={index} className=\"mt-1\">Short {issue.short_strike}{issue.long_strike != null ? ` / long ${issue.long_strike}` : ''}: {issue.reason}</p>)}</details> : null}{item.earnings_source_note && <p className=\"mt-2\">Earnings source: {item.earnings_source_note}</p>}{item.capability_blockers?.length ? <p className=\"mt-2 text-amber-800\">Blocked to preserve original inputs: {item.capability_blockers.join('; ')}</p> : null}</details>)}</div>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 227,
+    "matches": [
+      "100",
+      "$",
+      "$",
+      "$",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        {numericColumns.map(key => { const title: Record<(typeof numericColumns)[number], string> = { short_strike: 'Short strike', credit: '\u20b9 Credit / unit', ror_pct: 'Return / risk (%)', cushion_pct: 'Cushion (%)', vrp: 'IV / RV21', p_adj: 'Adjusted breach (%)', ev: 'EV score (100-unit convention)' }; return <fieldset key={key} className=\"min-w-0\"><legend className=\"text-xs font-medium text-slate-600\">{title[key]}</legend><div className=\"mt-1 flex gap-2\">{(['min', 'max'] as const).map(bound => <input key={bound} type=\"number\" aria-label={`${key} ${bound}`} placeholder={`${bound} value`} value={ranges[key]?.[bound] || ''} onChange={event => setRanges(current => ({ ...current, [key]: { ...current[key], [bound]: event.target.value } }))} className=\"h-10 min-w-0 w-1/2 rounded-lg border border-slate-300 px-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100\" />)}</div></fieldset> })}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 230,
+    "matches": [
+      "$",
+      "$",
+      "$",
+      "$",
+      "$",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      <div className=\"overflow-hidden rounded-2xl border border-slate-200\"><div className=\"overflow-x-auto\"><table className=\"w-full min-w-[780px] text-left text-sm\"><thead className=\"bg-slate-50 text-xs uppercase tracking-wide text-slate-500\"><tr>{(result.strategy_profile === 'NSE_RESEARCH_V1' ? [...headers.slice(0,-1), {label:'NSE lot'}, {label:'Width (\u20b9 / pts)'}, {label:'Interval (\u20b9 / pts)'}, {label:'\u20b9 Credit / lot'}, {label:'\u20b9 Max loss / lot'}, headers[headers.length-1]] : headers).map(header => <th key={header.label} aria-sort={header.key && header.key === sortKey ? sortDir === 'asc' ? 'ascending' : 'descending' : undefined} className=\"border-b border-slate-200 px-4 py-3\">{header.key ? <button type=\"button\" className=\"hover:text-blue-700\" onClick={() => toggleSort(header.key!)}>{header.label} {header.key === sortKey ? sortDir === 'asc' ? '\u2191' : '\u2193' : '\u2195'}</button> : header.label}</th>)}</tr></thead><tbody>{visible.map(({ candidate: row }, index) => <tr key={`${row.ticker}-${row.expiration}-${row.type}-${row.short_strike}-${index}`} className=\"border-b border-slate-100 align-top last:border-0 hover:bg-blue-50/40\">"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 231,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        {[<span className=\"font-semibold text-slate-900\">{row.ticker}</span>, row.expiration, <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${row.type === 'BULL PUT' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}`}>{row.type === 'BULL PUT' ? 'Bull Put' : 'Bear Call'}</span>, <span className=\"whitespace-nowrap font-medium tabular-nums\">{row.short_strike} / {row.long_strike}</span>, <span className=\"font-semibold tabular-nums\">\u20b9{row.credit_points_unrounded == null ? row.credit : Number(row.credit_points_unrounded.toFixed(6))}</span>, <span className=\"tabular-nums\">{row.ror_pct}%</span>, <span className=\"tabular-nums\">{row.cushion_pct}%</span>, <span className=\"font-semibold tabular-nums\">{row.ev}</span>].map((value, column) => <td key={column} className=\"px-4 py-3.5\">{value}</td>)}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 232,
+    "matches": [
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        {result.strategy_profile === 'NSE_RESEARCH_V1' && [row.lot_size ?? 'Unavailable', row.width, row.strike_interval ?? 'Unavailable', row.credit_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.credit_per_lot_inr}`, row.max_loss_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.max_loss_per_lot_inr}`].map((value,column) => <td key={`nse-${column}`} className=\"whitespace-nowrap px-4 py-3.5 tabular-nums\">{value}</td>)}"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\SpreadsPage.tsx",
+    "line": 233,
+    "matches": [
+      "100",
+      "100",
+      "$",
+      "$",
+      "$",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "        <td className=\"px-4 py-3\"><details className=\"group\"><summary className=\"cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-900\">Full breakdown <span className=\"text-slate-400 group-open:hidden\">\uff0b</span><span className=\"hidden text-slate-400 group-open:inline\">\u2212</span></summary><div className=\"mt-3 grid w-[min(620px,calc(100vw-4rem))] gap-3 whitespace-normal text-xs sm:grid-cols-2\"><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Spread</strong><p className=\"mt-1\">Expiry {row.expiration} \u00b7 actual width {row.width} \u00b7 \u20b9 credit/unit {row.credit_points_unrounded ?? row.credit}</p>{row.strategy_profile === 'NSE_RESEARCH_V1' && <p>Listed steps {row.width_steps} \u00b7 interval {row.strike_interval} \u00b7 ticks \u20b9{row.short_tick_inr} / \u20b9{row.long_tick_inr} \u00b7 midpoint-credit quantum \u20b9{row.minimum_credit_points}</p>}<p>Short {row.short_instrument_key ?? 'unavailable'} \u00b7 long {row.long_instrument_key ?? 'unavailable'}</p></div><div className=\"rounded-xl bg-slate-50 p-3\"><strong>Returns</strong><p className=\"mt-1\">RoR {row.ror_pct}% \u00b7 cushion {row.cushion_pct}% \u00b7 EV {row.ev} original 100-unit convention</p><p>Lot {row.lot_size ?? 'unavailable'} \u00b7 EV/lot {row.ev_per_lot_inr == null ? 'Unavailable' : `\u20b9${row.ev_per_lot_inr}`}{row.lot_size_status === 'fixture' ? ' (fixture)' : ''}</p><p>Credit/lot \u20b9{row.credit_per_lot_inr ?? '\u2014'} \u00b7 max loss/lot \u20b9{row.max_loss_per_lot_inr ?? '\u2014'} \u00b7 lot source {row.lot_size_status}</p></div><div className=\"rounded-xl bg-slate-50 p-3 sm:col-span-2\"><strong>Calculation layers</strong><p className=\"mt-1\">RV: {Object.entries(row.layers.l1).map(([key, value]) => `${key} ${value ?? '\u2014'}`).join(' \u00b7 ')}</p><p>Earnings: {row.earnings ? 'inside expiry' : 'outside expiry'} \u00b7 max gap {row.layers.l2.max_gap_pct}%</p><p>IV {row.layers.l3.iv} / RV21 {row.layers.l3.rv21} = VRP {row.layers.l3.ratio}</p><p>Historical breach: raw {row.layers.l4.p_raw} \u00b7 earnings adjusted {row.layers.l4.p_adj} \u00b7 {row.layers.l4.horizon_td} trading days</p><p>Friction: short {row.layers.l5.short.spread_pct * 100}% \u00b7 OI {row.layers.l5.short.oi}; long {row.layers.l5.long.spread_pct * 100}% \u00b7 OI {row.layers.l5.long.oi}</p>{row.monetary_status === 'ambiguous_duplicate_strike' && <p className=\"mt-2 font-medium text-amber-800\">Per-lot amounts unavailable: duplicate strike quotes cannot be attributed unambiguously.</p>}</div></div></details></td>"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\viewFilters.test.ts",
+    "line": 5,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture",
+    "source_line": "  { ticker: 'NIFTY', type: 'BULL PUT', earnings: false, short_strike: 100, credit: 2, ror_pct: 20, cushion_pct: 2, vrp: 1.2, p_adj: .1, ev: -1 },"
+  },
+  {
+    "file": "algo-trading\\src\\pages\\SpreadsPage\\viewFilters.ts",
+    "line": 10,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      const value = row[key] * (key === 'p_adj' ? 100 : 1)"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 12,
+    "matches": [
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_http_received hasAppCookie=${Boolean(req.cookies?.jwt)} hasAuthorizationHeader=${Boolean(req.headers?.authorization)}`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 13,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  res.once('finish', () => console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_http_finished httpStatus=${res.statusCode}`));"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 22,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  console.warn(`[SpreadsOAuth] requestId=${req.requestId || 'unavailable'} stage=connect_failed status=${status}`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 29,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    console.info(`[SpreadsOAuth] requestId=${req.requestId || 'unavailable'} stage=connect_started`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 48,
+    "matches": [
+      "$",
+      "$",
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_received hasAppUser=${Boolean(appUserId(req))} hasCode=${typeof req.query.code === 'string'} hasState=${typeof req.query.state === 'string'} providerError=${Boolean(req.query.error)}`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 54,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    console.info(`[SpreadsOAuth] requestId=${requestId} stage=callback_completed connected=true`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 57,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    console.warn(`[SpreadsOAuth] requestId=${requestId} stage=callback_failed status=${Number.isInteger(error.status) ? error.status : 502}`);"
+  },
+  {
+    "file": "backend\\controllers\\spreadController.js",
+    "line": 73,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  if (status >= 500) console.warn(`[SpreadsScan] requestId=${req.requestId || 'unavailable'} outcome=failed status=${status}`);"
+  },
+  {
+    "file": "backend\\services\\spreadsPythonService.js",
+    "line": 13,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  if (!/^[A-Z0-9&._-]{1,30}$/.test(value)) {"
+  },
+  {
+    "file": "backend\\services\\spreadsPythonService.js",
+    "line": 57,
+    "matches": [
+      "$",
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      const response = await fetchImpl(`${baseUrl.replace(/\\/+$/, '')}${endpoint.path}`, {"
+  },
+  {
+    "file": "backend\\services\\spreadsPythonService.js",
+    "line": 72,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "            return field ? `${field}: ${message}` : message;"
+  },
+  {
+    "file": "backend\\services\\spreadsPythonService.js",
+    "line": 106,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      path: `/spreads/underlyings/${encodeURIComponent(normalizeSymbol(symbol))}/expiries`, method: 'GET',"
+  },
+  {
+    "file": "backend\\services\\spreadsPythonService.js",
+    "line": 109,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      path: `/spreads/underlyings/${encodeURIComponent(normalizeSymbol(symbol))}/scan`, method: 'POST',"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 5,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "const STATE_TTL_MS = 10 * 60 * 1000;"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 11,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "  const ist = new Date(now + 330 * 60 * 1000);"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 12,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "  return Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1, 3, 30) - 330 * 60 * 1000;"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 20,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100058') return 'Upstox reports no active trading segments. Activate or reactivate the required segments with Upstox, then reconnect.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 21,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100069' || error.error === 'invalid_client') return 'Upstox rejected the API key or secret. Check that both values belong to the same developer app.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 22,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100070') return 'The redirect URL does not match the URL registered in your Upstox developer app.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 23,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100057' || error.error === 'invalid_grant') return 'The Upstox login code is invalid or already used. Start a fresh connection.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 24,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100099') return 'Upstox rate limit reached. Wait briefly, then start a fresh connection.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 25,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "    if (code === 'UDAPI100101') return 'Upstox token exchange requires an individual developer app.';"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 27,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "  return `Upstox token exchange failed (HTTP ${status}). Check the developer app credentials and registered redirect URL, then retry.`;"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 52,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "    logger.info(`[SpreadsOAuth] ${JSON.stringify(attempt)}`);"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 78,
+    "matches": [
+      "$",
+      "$"
+    ],
+    "classification": "Harmless language syntax/reference; inspect any numeric parameter separately",
+    "source_line": "      const error = new Error(`UPSTOX_REDIRECT_URI must point to the integrated Node callback ${CALLBACK_PATH} (local default: http://localhost:5000${CALLBACK_PATH}). Register the identical URL in your Upstox developer app; the standalone port-8001 callback is not used.`);"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 144,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "      expiresAt = issued + Number(payload.expires_in) * 1000;"
+  },
+  {
+    "file": "backend\\services\\upstoxOAuthService.js",
+    "line": 147,
+    "matches": [
+      "100"
+    ],
+    "classification": "Intentionally retained research parameter/unit/display convention; reviewed in parameter table",
+    "source_line": "        ? (payload.expires_at < 1e12 ? payload.expires_at * 1000 : payload.expires_at)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 34,
+    "matches": [
+      "252",
+      "252",
+      "365"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    module.__dict__.update(math=math, np=np, pd=pd, dataclass=dataclass, TRADING_DAYS_PER_YEAR=252, CAL_TO_TRADING=252/365)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 47,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for case in range(100):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 48,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        closes = 100 * np.exp(np.cumsum(rng.normal(0, .012, 400)))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 56,
+    "matches": [
+      "width=[5.,10.,15",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        params = dict(dte=[5,14,30,90,180][case%5], width=[5.,10.,15.][case%3], min_vrp=[.5,1.15,2.][case%3], min_oi=100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 63,
+    "matches": [
+      "100",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for closes in ([100.]*300, [0.]+[100.]*300, [100., np.nan, 0., -1., np.inf]*70):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 72,
+    "matches": [
+      "width == 5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert request.dte == 30 and request.width == 5 and request.expiry is None"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 74,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for field, value in [('dte',4), ('min_vrp',.49), ('min_oi',10001), ('max_spread_pct',0), ('min_cushion',31), ('min_ror',4)]:"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 119,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    now = [100.]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 141,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    item = engine.edge_discovery_metrics('TEST', [100*math.exp(.01*math.sin(i)) for i in range(40)], [100]*39+[200])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 165,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    now, calls, delays = [100.], [], []"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 216,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    histories = {symbol: pd.DataFrame({'Close':[100*math.exp(.01*math.sin(i/(j+1))) for i in range(85)],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 217,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                                      'Volume':[100.] * 84 + [100.+j*10]}) for j, symbol in enumerate(symbols)}"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 235,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes = [100., 102., 97., 103., 100., 110., 108., 107., 112., 110., 105.]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 252,
+    "matches": [
+      "width=5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    result = api._scan_underlying('NIFTY', api.NiftyScanRequest(width=50), None, '')"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 261,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        cushion = abs(row['short_strike']-closes[-1])/closes[-1]*100"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 264,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        assert row['ev'] == round(unit_ev*100, 0)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 303,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    request = api.NiftyScanRequest(width=100, min_cushion=0, max_spread_pct=.3, min_ror=5)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_audit_regressions.py",
+    "line": 342,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        for _ in range(100):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_adapter.py",
+    "line": 20,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "def candles(count=40, volume=100):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_adapter.py",
+    "line": 21,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    return [[f'{(TODAY-timedelta(days=i)).isoformat()}T00:00:00+05:30', 100,110,90,100+i,volume] for i in range(count)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 48,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    history = pd.DataFrame({'Close':np.linspace(100,120,length), 'Volume':[100.]*(length-1)+[150.]})"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 60,
+    "matches": [
+      "auto_adjust"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert calls == [{'period':'4mo','interval':'1d','auto_adjust':True}]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 64,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    histories = {f'S{i}':pd.DataFrame({'Close':[100*math.exp(.01*math.sin(j)) for j in range(85)],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 65,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                                    'Volume':[100.]*84+[100.+i*10]}) for i in range(15)}"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 81,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    rows = pd.DataFrame({'strike':[80.,90.,95.,100.,105.,110.], 'impliedVolatility':[.1,.2,np.nan,.4,.5,0.]})"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_baseline.py",
+    "line": 85,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert ref['_atm_iv'](object(),100) == pytest.approx(.4)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_cache_api.py",
+    "line": 11,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        clock=[1000.]; calls=[]; gate=asyncio.Event()"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_cache_api.py",
+    "line": 25,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        assert stale['refreshing'] and stale['updated']==1000."
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_cache_api.py",
+    "line": 108,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        now = [1000.]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_cache_api.py",
+    "line": 122,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            assert not result['refreshing'] and result['updated'] == 1000."
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_orchestration.py",
+    "line": 59,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        return types.SimpleNamespace(eligibility_error=None,closes=[100*math.exp(.01*math.sin(j)) for j in range(40)],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_orchestration.py",
+    "line": 60,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            volumes=[100]*39+[150+i*.0001],adjustment=cap,volume=cap,completeness=cap)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_orchestration.py",
+    "line": 110,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                closes=[100*math.exp(.01*math.sin(j)) for j in range(40)],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_orchestration.py",
+    "line": 111,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                volumes=[100]*39+[150+i*.0001], adjustment=cap, volume=cap, completeness=cap)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_discovery_orchestration.py",
+    "line": 142,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                closes=[100*math.exp(.01*math.sin(j)) for j in range(40)], volumes=[100]*39+[200],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_earnings_source.py",
+    "line": 16,
+    "matches": [
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes=[100,100,100,100,110,105,104,106,102,101,100]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_earnings_source.py",
+    "line": 17,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    return SimpleNamespace(bars=tuple(PriceBar(datetime.combine(day,datetime.min.time(),tzinfo=IST),close,close,close,close,100) for day,close in zip(days,closes)))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_earnings_source.py",
+    "line": 33,
+    "matches": [
+      ".NS"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert calls==['TATAELXSI.NS']"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 26,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert (params.dte, params.width, params.min_vrp, params.min_oi) == (30, 5.0, 1.15, 100)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 38,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes = [100.0 * math.exp(index * 0.001) for index in range(22)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 43,
+    "matches": [
+      "252"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert math.isnan(rv[\"rv252\"])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 48,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    prices = [100.0 + index for index in range(100)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 49,
+    "matches": [
+      "100",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    expected = sum((prices[i + horizon] / prices[i] - 1) * 100 <= -5 for i in range(100 - horizon)) / (100 - horizon)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 58,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    dates = [(today - timedelta(days=2), 100.0), (today - timedelta(days=1), 95.0), (today, 94.0)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 66,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes = [100 * math.exp(0.025 * math.sin(index / 7)) for index in range(400)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 83,
+    "matches": [
+      "width\"] == 5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        assert row[\"width\"] == 5.0"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 94,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        PriceBar(datetime(2025, 1, 1) + timedelta(days=i), 1, 1, 1, 100, 1) for i in range(300)),"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 103,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes = [100 * math.exp(0.025 * math.sin(index / 7)) for index in range(400)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 105,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        PriceBar(datetime(2025, 1, 1) + timedelta(days=i), close, close, close, close, 100)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 124,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes = [100.0 + index * 0.2 for index in range(30)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 125,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    volumes = [100.0] * 21 + [200.0]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 134,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        {\"ticker\": \"A\", \"spot\": 100, \"chg\": 1, \"rv21\": 0.2, \"iv14\": None, \"vrp14\": None,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 135,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "         \"shock\": 2.0, \"vrp_pass\": False, \"shock_pass\": True, \"_rv21_raw\": 0.2, \"_spot_raw\": 100},"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 136,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        {\"ticker\": \"B\", \"spot\": 100, \"chg\": 0, \"rv21\": 0.1, \"iv14\": None, \"vrp14\": None,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 137,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "         \"shock\": 1.0, \"vrp_pass\": False, \"shock_pass\": False, \"_rv21_raw\": 0.1, \"_spot_raw\": 100},"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 138,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        {\"ticker\": \"C\", \"spot\": 100, \"chg\": -1, \"rv21\": 0.2, \"iv14\": None, \"vrp14\": None,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_engine_port.py",
+    "line": 139,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "         \"shock\": 1.5, \"vrp_pass\": False, \"shock_pass\": False, \"_rv21_raw\": 0.2, \"_spot_raw\": 100},"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_history_validation.py",
+    "line": 14,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                    kwargs.get('open', 10), 12, 9, 11, 100)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_market_quota.py",
+    "line": 40,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    quota.acquire('a', sleep=clock.sleep, remaining=lambda: 100)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nifty_api.py",
+    "line": 20,
+    "matches": [
+      "width\": 5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                               json={\"expiry\": data[\"expiries\"][0], \"width\": 50})"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nifty_api.py",
+    "line": 69,
+    "matches": [
+      "width\": 5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                                 json={\"expiry\": data[\"expiries\"][0], \"width\": 50})"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nifty_api.py",
+    "line": 102,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            \"underlyings\": symbols, \"expiries\": expiry_map, \"width\": 100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 24,
+    "matches": [
+      "100",
+      "100",
+      "100",
+      "100",
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "@pytest.mark.parametrize('grid,short,expected', [([90,95,100,105,110],100,105),([90,100,110,130],100,110),([900,950,1000,1050],1000,1050)])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 32,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    contracts=[contract(k) for k in [100,105,110,130]];frame=pd.DataFrame([row(k) for k in [100,110,130]]); issues=[]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 39,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    grid=[90,95,100];frame=pd.DataFrame([row(k,'PE') for k in grid])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 45,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert float(nse.midpoint_quantum(nse.contract_tick_inr(contract(100,tick=a),'paise'), nse.contract_tick_inr(contract(105,tick=b),'paise')))==expected"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 46,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert float(nse.contract_tick_inr(contract(100,tick=.05),'rupees'))==.05"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 50,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    frame=pd.DataFrame([row(100),row(105)]);issues=[]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 51,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert nse.pair_resolver([contract(100,tick=bad),contract(105)],EXPIRY,1,'paise',issues)(1,frame.iloc[0],frame) is None"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 55,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    frame=pd.DataFrame([row(100),row(105)]);issues=[]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 56,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert nse.pair_resolver([contract(100,lot=125),contract(105,lot=250)],EXPIRY,1,'paise',issues)(1,frame.iloc[0],frame) is None"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 60,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    _,meta=nse.pair_resolver([contract(100),contract(105)],EXPIRY,1,'paise',issues)(1,frame.iloc[0],frame)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 74,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    closes=100*np.exp(np.cumsum(np.random.default_rng(seed).normal(0,.002,400)))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 88,
+    "matches": [
+      "width_steps':1.5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for payload in [{'strategy_profile':'unknown'},{'width_steps':0},{'width_steps':1.5}]:"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 106,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    contracts=[contract(100,tick=1),contract(100.02,tick=1)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 107,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    calls=[row(100,bid=.03,ask=.03),row(100.02,bid=.02,ask=.03)]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_nse_profile.py",
+    "line": 117,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    expected=(native[0]['credit_points_unrounded']*(1-native[0]['p_adj'])-(native[0]['width']-native[0]['credit_points_unrounded'])*native[0]['p_adj'])*100"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 18,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    def __init__(self, quantity=810000, lot=6750):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 31,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "@pytest.mark.parametrize('quantity,expected,passes', [(810000,120,True),(506250,75,False),(0,0,False)])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 41,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert passes_friction(friction_detail(pd.Series(quote.as_scanner_row())), ScanParams(min_oi=100)) is passes"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 50,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    (810001,6750,'non_integral_quantity_per_lot'),(810000,None,'missing_or_invalid_contract_lot_size'),"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 51,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    (810000,0,'missing_or_invalid_contract_lot_size'),(810000,-1,'missing_or_invalid_contract_lot_size'),"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 52,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    (810000,6750.5,'missing_or_invalid_contract_lot_size')])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 63,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert provider._normalize_option_oi(810000,[contract],CONTRACT.instrument_key,EXPIRY,75,'CE')[0] is None"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_oi_normalization.py",
+    "line": 67,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert provider._normalize_option_oi(810000,[CONTRACT,replace(CONTRACT,lot_size=100)],CONTRACT.instrument_key,EXPIRY,75,'CE')[0] is None"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 17,
+    "matches": [
+      "width=5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    plain=api._scan_underlying('NIFTY',api.NiftyScanRequest(width=50),None,'')"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 18,
+    "matches": [
+      "width=5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    captured=api._scan_underlying('NIFTY',api.NiftyScanRequest(width=50,audit_snapshot=True),None,'')"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 22,
+    "matches": [
+      "width=5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert snapshot['normalized']['parameters']==asdict(engine.ScanParams(dte=captured['dte'],width=50))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 29,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    payload=[{'strike_price':100,'expiry':'2026-11-23','secret':'secret-token',"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 31,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                 'market_data':{'oi':100,'bid_price':2,'ask_price':2.1,'token':'secret-token'},"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 40,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert capture.raw[0]['data'][0]['call_options']['market_data']['oi']==100"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 43,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "def test_independent_first_rejections_reconcile_to_original_zip_for_100_inputs(tmp_path):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 48,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for case in range(100):"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 49,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        closes=100*np.exp(np.cumsum(rng.normal(0,.012,400)))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_scan_audit.py",
+    "line": 57,
+    "matches": [
+      "width=[5.,10.,15"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        params=engine.ScanParams(dte=[5,14,30,90,180][case%5],width=[5.,10.,15.][case%3],"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_stock_integration.py",
+    "line": 43,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        result=client.post('/spreads/scan',headers={'X-Internal-Service-Key':'stock-test-key'},json={'underlyings':['RELIANCE','NIFTY'],'width':100}).json()"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_universe.py",
+    "line": 42,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    epoch = int(datetime(2026,10,12,23,59,tzinfo=IST).timestamp()*1000)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_adapter.py",
+    "line": 63,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        \"strike_price\": 25000, \"underlying_spot_price\": 25100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_adapter.py",
+    "line": 65,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            \"bid_price\": 100, \"ask_price\": 102, \"oi\": 123456, \"bid_qty\": 10,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_adapter.py",
+    "line": 76,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert chain.spot == 25100"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_adapter.py",
+    "line": 107,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            \"strike_price\": 25000, \"underlying_spot_price\": 25100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_transport.py",
+    "line": 65,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    client = StubClient([StubResponse(401, {\"status\": \"error\", \"errors\": [{\"errorCode\": \"UDAPI100050\"}]})])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_upstox_transport.py",
+    "line": 69,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert caught.value.code == \"UDAPI100050\""
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 18,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "                     'expiry':'2026-10-27', 'strike_price':100, 'lot_size':10}"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 35,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert .31494140625 == pytest.approx(31.49 / 100, abs=.00005)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 64,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        [{'strike_price':100, 'put_options':option('NSE_FO|put', 0)}])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 75,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    transport = Transport({}, [{field:value, 'strike_price':100}])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 84,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        [{'strike_price': 100, 'underlying_spot_price': 100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 88,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert chain.puts[0][0] == chain.calls[0][0] == 100"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 98,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert atm_iv(chain, 100) == pytest.approx(.3)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 99,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert atm_iv(chain, 100) / .15 == pytest.approx(2)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 103,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    transport = Transport(AssertionError('must not call'), [{'strike_price': 100,"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 111,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    transport = Transport({}, [{'strike_price': 100, 'put_options': option('NSE_FO|put', None)}])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 113,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert math.isnan(atm_iv(chain, 100))"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 120,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "            for strike, iv in [(99, 20), (100, None), (101, 30), (102, 40), (103, None), (104, None)]]"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 125,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    scoped_chain = provider.get_option_chain('NSE_EQ|TEST', date(2026,10,27), iv_spot=100)"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 127,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert scoped.calls[-1][1]['instrument_key'] == 'NSE_FO|100'"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 128,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert full.calls[-1][1]['instrument_key'] == 'NSE_FO|100,NSE_FO|103,NSE_FO|104'"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 129,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    assert atm_iv(scoped_chain, 100) == atm_iv(full_chain, 100) == .25"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 134,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "        for strike,iv in [(100,20), (101,None), (102,None)]])"
+  },
+  {
+    "file": "angel-one\\tests\\test_spread_v3_greeks.py",
+    "line": 135,
+    "matches": [
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    UpstoxMarketDataProvider(transport=transport).get_option_chain('NSE_EQ|TEST', date(2026,10,27), iv_spot=100)"
+  },
+  {
+    "file": "backend\\tests\\spreadExpiryRateLimit.test.js",
+    "line": 31,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "  const base = `http://127.0.0.1:${server.address().port}/spreads`;"
+  },
+  {
+    "file": "backend\\tests\\spreadExpiryRateLimit.test.js",
+    "line": 39,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for (let i = 0; i < 50; i++) assert.equal(await request(`/underlyings/S${i}/expiries`), 200);"
+  },
+  {
+    "file": "backend\\tests\\spreadExpiryRateLimit.test.js",
+    "line": 42,
+    "matches": [
+      "$"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "    for (let i = 50; i < 120; i++) assert.equal(await request(`/underlyings/S${i}/expiries`), 200);"
+  },
+  {
+    "file": "backend\\tests\\spreadsPythonService.test.js",
+    "line": 55,
+    "matches": [
+      "width: 5"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "  const body = { expiry: '2026-12-31', width: 50 };"
+  },
+  {
+    "file": "backend\\tests\\spreadsPythonService.test.js",
+    "line": 143,
+    "matches": [
+      "100",
+      "100"
+    ],
+    "classification": "Harmless reference/test fixture; does not supply live market data",
+    "source_line": "  assert.deepEqual(delays, [60000, 210000, 210000, 190000]);"
+  }
+]

@@ -53,10 +53,11 @@ test('live mode forwards the user Upstox token to Python without putting it in t
     fetchImpl: async (url, options) => { captured = { url, options }; return response(200, { ok: true, candidates: [] }); },
   });
   const body = { expiry: '2026-12-31', width: 50 };
-  await service.scanNifty(body, { accessToken: 'user-scoped-token' });
+  await service.scanNifty(body, { accessToken: 'user-scoped-token', userId: 'server-owner' });
   assert.equal(captured.url, 'http://python.local/spreads/nifty/scan');
   assert.equal(captured.options.method, 'POST');
   assert.equal(captured.options.headers['X-Upstox-Access-Token'], 'user-scoped-token');
+  assert.equal(captured.options.headers['X-Spreads-User-Id'], 'server-owner');
   assert.deepEqual(JSON.parse(captured.options.body), body);
 });
 

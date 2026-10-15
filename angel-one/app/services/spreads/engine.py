@@ -61,7 +61,7 @@ def pick_expiration(expirations: Iterable[str], target_dte: int,
     best = None
     best_diff = 10**9
     best_dte = 0
-    for expiration in expirations:
+    for expiration in sorted(set(value for value in expirations if isinstance(value, str))):
         try:
             day = datetime.strptime(expiration, "%Y-%m-%d").date()
         except (TypeError, ValueError):
@@ -146,7 +146,7 @@ def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_thre
         row.pop("_rv21_raw", None)
         row.pop("_spot_raw", None)
     df = pd.DataFrame(rows)
-    df["vrp_rank"] = df["vrp14"].rank(pct=True, na_option="bottom")
+    df["vrp_rank"] = df["vrp14"].rank(pct=True, na_option="keep").fillna(0.0)
     df["shock_rank"] = df["shock"].rank(pct=True, na_option="bottom")
     df["edge"] = df["vrp_pass"] & df["shock_pass"]
     df["score"] = df["vrp_rank"] + df["shock_rank"]
@@ -163,6 +163,8 @@ def rank_edge_discovery(items, iv14_by_ticker, *, vrp_threshold=1.20, shock_thre
 def capability_blockers(history: HistoryData, earnings: EarningsData) -> list[str]:
     """Explain source-data requirements that must be met before an exact scan."""
     blockers = []
+    if history.completeness.status == "incomplete":
+        blockers.append("Known defective historical observations: " + history.completeness.explanation)
     if not history.scanner_history_eligible:
         blockers.append("insufficient or missing price history (original requires at least 270 closes)")
     if (not earnings.available or earnings.earnings_inside is None
@@ -185,7 +187,7 @@ def scan_provider_data(
     # gates. These provenance notes do not alter or prevent the original math.
     warnings = []
     if chain.open_interest.status not in {"verified", "fixture"}:
-        warnings.append("Using Upstox reported OI directly; source-unit equivalence is unverified.")
+        warnings.append("Valid Upstox quantity OI is divided by matched contract lot size into contract-count OI; invalid or missing mappings remain unavailable.")
     if history.completeness.status not in {"verified", "fixture"}:
         warnings.append("Using returned daily candles; candle completeness is unverified.")
         if history.validation:
@@ -255,10 +257,14 @@ def _clean_frame(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = np.nan
         df[col] = pd.to_numeric(df[col], errors="coerce")
     if "openInterest" not in df.columns:
-        df["openInterest"] = 0
-    df["openInterest"] = (
-        pd.to_numeric(df["openInterest"], errors="coerce").fillna(0).astype(int)
-    )
+        df["openInterest"] = np.nan
+    df["openInterest"] = pd.to_numeric(df["openInterest"], errors="coerce")
+    # Explicit invalid sentinel preserves missingness for the unchanged integer
+    # friction gate; all configured OI thresholds are nonnegative. ATM-IV
+    # selection does not require OI, so retain these rows for discovery.
+    df['oi_available'] = df['openInterest'].notna() & np.isfinite(df['openInterest']) & (df['openInterest'] >= 0) & (df['openInterest'] % 1 == 0)
+    df['openInterest'] = df['openInterest'].where(df['oi_available'], -1).astype(int)
     df = df.dropna(subset=["strike", "bid", "ask"])
+    df = df[np.isfinite(df['strike']) & np.isfinite(df['bid']) & np.isfinite(df['ask']) & (df['strike'] > 0)]
     df = df[(df["bid"] > 0) & (df["ask"] > 0) & (df["ask"] >= df["bid"])]
     return df.sort_values("strike").reset_index(drop=True)

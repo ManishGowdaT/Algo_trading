@@ -1,0 +1,16 @@
+{
+  "scope": "Real FastAPI JSON -> actual Node forwarding service with injected HTTP response -> JSON browser boundary -> actual TypeScript helpers and React server rendering. No browser/live HTTP acceptance claimed.",
+  "candidates": 32,
+  "request": {
+    "underlyings": [
+      "NIFTY",
+      "BANKNIFTY",
+      "RELIANCE",
+      "HDFCBANK"
+    ],
+    "strategy_profile": "NSE_RESEARCH_V1"
+  },
+  "preserved": true,
+  "rendered": true,
+  "credit_precision_decimals": 6
+}

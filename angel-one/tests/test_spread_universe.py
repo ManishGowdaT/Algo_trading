@@ -44,6 +44,13 @@ def test_epoch_milliseconds_expiry_and_expiry_day_are_included():
     assert build_universe([option(expiry='bad')],as_of=TODAY)['size'] == 0
 
 
+@pytest.mark.parametrize('lot', [True, 1.5, float('nan'), float('inf'), -1, 0])
+def test_invalid_lot_size_is_never_truncated_or_assumed(lot):
+    result = build_universe([option(lot_size=lot)], as_of=TODAY)
+    assert result['size'] == 0
+    assert result['rejected_contracts'] == 1
+
+
 def test_ambiguous_symbols_are_excluded_instead_of_picking_arbitrary_key():
     rows = [option(),option(key='NSE_EQ|OTHER',instrument_key='NSE_FO|other')]
     result = build_universe(rows,as_of=TODAY)

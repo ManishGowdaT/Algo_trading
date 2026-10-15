@@ -63,6 +63,21 @@ class Adapter:
         raise UpstoxProviderError('PRIVATE ERROR token=secret',status_code=401)
 
 
+def test_v3_failure_is_failed_not_provider_unavailable(monkeypatch):
+    import app.services.spreads.discovery as module
+    monkeypatch.setattr(module, 'atm_iv', lambda *args: float('nan'))
+    adapter = Adapter()
+    cap = types.SimpleNamespace(status='reported')
+    adapter.get_atm_chain = lambda *args, **kwargs: types.SimpleNamespace(
+        iv_errors=({'reason':'V3 Option Greeks request failed','status':429,'code':'LIMIT'},),
+        implied_volatility=cap, open_interest=cap)
+    result = discover([{'symbol':'TEST','instrument_key':'0'}], adapter)
+    assert result.items[0]['iv_status'] == 'failed'
+    assert result.stats['atm_iv_failed'] == 1
+    assert result.stats['atm_iv_unavailable'] == 0
+    assert result.errors[0]['status'] == 429
+
+
 def test_concurrency_full_universe_partial_failures_and_deadline_context():
     adapter=Adapter()
     universe=[{'symbol':f'S{i}','instrument_key':str(i)} for i in range(15)]+[{'symbol':'BAD','instrument_key':'BAD'}]

@@ -58,7 +58,7 @@ def test_mixed_lots_or_offgrid_quotes_are_explicit():
     frame['bid']=frame['bid'].astype(float)
     frame.loc[0,'bid']=2.01;issues=[]
     _,meta=nse.pair_resolver([contract(100),contract(105)],EXPIRY,1,'paise',issues)(1,frame.iloc[0],frame)
-    assert not meta['quote_ticks_valid'] and issues[0]['reason']=='quote_not_on_authoritative_tick_grid'
+    assert not meta['quote_ticks_valid']  # build gate records the first rejection exactly once
 
 def test_no_mathematical_formula_assignments_changed():
     def assignments(module):

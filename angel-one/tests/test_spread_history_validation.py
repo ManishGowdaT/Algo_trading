@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
+import pytest
 
 from app.services.spreads.history_validation import SessionCalendar, validate_history
 from app.services.spreads.provider import PriceBar
@@ -62,6 +63,29 @@ def test_partial_calendar_cannot_certify_requested_range():
     partial = SessionCalendar(date(2026, 10, 12), date(2026, 10, 12),
                               frozenset([date(2026, 10, 12)]), 'partial test calendar')
     assert check([bar(date(2026, 10, 12))], partial)[0].status == 'unverified'
+
+
+@pytest.mark.parametrize('value', [float('nan'), float('inf'), True])
+def test_nonfinite_or_boolean_prices_never_certify(value):
+    capability, report = check([bar(date(2026,10,12), open=value)], calendar())
+    assert capability.status == 'incomplete'
+    assert report['invalid_ohlcv_dates'] == ['2026-10-12']
+
+
+def test_discovery_reports_duplicates_and_malformed_rows_without_claiming_completeness():
+    from app.services.spreads.discovery_adapter import DiscoveryDataAdapter
+    class Transport:
+        def get(self, path):
+            return {'candles': [
+                ['2026-10-12T00:00:00+05:30',10,12,9,11,123],
+                ['2026-10-12T00:00:00+05:30',10,12,9,11,123],
+                ['bad-date',10,12,9,11,123]]}
+    history = DiscoveryDataAdapter(None, transport=Transport()).get_history('NSE_EQ|TEST', as_of=date(2026,10,12))
+    assert history.completeness.status == 'incomplete'
+    assert history.validation['duplicate_dates'] == ['2026-10-12']
+    assert history.validation['skipped_count'] == 1
+    assert history.validation['missing_sessions'] is None
+    assert len(history.bars) == 2
 
 
 def test_adapter_mapping_sorting_and_diagnostics_preserve_returned_values():
