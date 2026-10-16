@@ -46,6 +46,11 @@ app.use((req, res, next) => {
 });
 
 // Route Middlewares
+// Public liveness only; dependency readiness remains behind authentication.
+app.get('/health', (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    return res.status(draining ? 503 : 200).json({ ok: !draining });
+});
 app.use('/api/v1/users', authRoutes);
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/strategies', strategyRoutes);
