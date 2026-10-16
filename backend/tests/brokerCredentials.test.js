@@ -34,6 +34,7 @@ test('unreadable API key is detected even if the client ID still decrypts', asyn
   await vault.save(userA, input);
   stores.BrokerCredential[0].apiKey.tag = crypto.randomBytes(16).toString('base64');
   assert.equal((await vault.metadata(userA)).recoveryRequired, true);
+
 });
 
 function fixture(t, models = [Credential], seeds = {}) {
@@ -238,4 +239,23 @@ test('HTTP setup saves through POST, MPIN-only login uses server secrets, and re
   assert.equal((await request('/angel/credentials', { ...input, consent: true, currentPassword: 'app-password' })).status, 409);
   assert.equal((await vault.metadata(userA)).version, 1);
   assert.equal((await vault.metadata(userA)).recoveryRequired, true);
+  const replacement = { ...input, consent: true, mpin: '0123', persistCredentials: true };
+  // Begin a separate synthetic login-attempt window for recovery assertions.
+  require('../middleware/rateLimiters').angelLoginLimiter.resetKey(`user:${userA}`);
+  assert.equal((await request('/angel/login', replacement, false)).status, 401);
+  assert.equal((await request('/angel/login', { ...replacement, consent: false })).status, 400);
+  assert.equal((await request('/angel/login', replacement)).status, 409);
+  // Only the synthetic test position is removed; no production database is used.
+  stores.Position.length = 0;
+  rejectBrokerLogin = true;
+  const deniedReplacement = await request('/angel/login', replacement);
+  assert.equal(deniedReplacement.status, 400);
+  for (const secret of [input.apiKey, input.totpSecret, '0123']) assert.ok(!JSON.stringify(await deniedReplacement.clone().json()).includes(secret));
+  assert.equal((await vault.metadata(userA)).version, 1);
+  rejectBrokerLogin = false;
+  const replaced = await request('/angel/login', replacement);
+  assert.equal(replaced.status, 200);
+  assert.equal((await replaced.json()).connected, true);
+  assert.equal((await vault.get(userA)).version, 2);
+  assert.equal((await vault.metadata(userA)).verified, true);
 });

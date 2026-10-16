@@ -54,7 +54,7 @@ it('click shows a visible problem dialog while Python is unavailable', async () 
   expect(api.get).not.toHaveBeenCalled()
 })
 
-it('unreadable saved credentials open replacement fields with application-password requirement', async () => {
+it('unreadable saved credentials open replacement fields with broker verification', async () => {
   vi.stubGlobal('window', { setInterval: () => 1, clearInterval: vi.fn() })
   api.get.mockImplementation(async (path: string) => path === '/system/health' ? { ready: true } : path === '/angel/status' ? { connected: false } : { configured: true, recoveryRequired: true })
   render()
@@ -70,9 +70,15 @@ it('unreadable saved credentials open replacement fields with application-passwo
   h.cursor = 100
   const view = MpinModal(modal.props as Parameters<typeof MpinModal>[0])
   const text = JSON.stringify(view)
-  expect(text).toContain('Application password for reauthentication')
+  expect(text).not.toContain('Application password for reauthentication')
+  expect(text).toContain('verified before the replacement is saved')
   expect(text).toContain('TOTP authenticator setup secret')
   expect(text).toContain('cannot be decrypted')
+  api.post.mockResolvedValue({ status: true, connected: true, brokerAccountId: 'account' })
+  await (modal.props.onSubmit as (credentials: unknown) => Promise<void>)({ apiKey: 'test-api-key', clientCode: 'CLIENT-A', totpSecret: 'TESTSECRET', mpin: '0123', consent: true })
+  expect(api.post).toHaveBeenCalledExactlyOnceWith('/angel/login', {
+    apiKey: 'test-api-key', clientCode: 'CLIENT-A', totpSecret: 'TESTSECRET', mpin: '0123', consent: true, persistCredentials: true,
+  })
   vi.unstubAllGlobals()
 })
 

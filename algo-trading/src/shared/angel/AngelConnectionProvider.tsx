@@ -13,7 +13,6 @@ export type AngelCredentials = {
   clientCode?: string
   totpSecret?: string
   consent?: boolean
-  currentPassword?: string
 }
 
 type AngelLoginResponse = {
@@ -129,27 +128,18 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     setConnectStatus('connecting')
     setConnectMessage('')
     try {
-      if (credentials.apiKey) {
-        if (!credentials.apiKey || !credentials.clientCode || !credentials.totpSecret || !credentials.consent) {
-          throw new Error('Complete broker setup and consent to encrypted credential storage.')
-        }
-        await apiPost('/angel/credentials', {
-          apiKey: credentials.apiKey,
-          clientCode: credentials.clientCode,
-          totpSecret: credentials.totpSecret,
-          consent: credentials.consent,
-          ...(credentials.currentPassword ? { currentPassword: credentials.currentPassword } : {}),
-        })
-        if (ownerId !== userIdRef.current) return
-        setCredentialsConfigured(true)
-        setRecoveryRequired(false)
+      if (credentials.apiKey && (!credentials.clientCode || !credentials.totpSecret || !credentials.consent)) {
+        throw new Error('Complete broker setup and consent to encrypted credential storage.')
       }
-      const login = await apiPost<AngelLoginResponse>('/angel/login', {
-        mpin: credentials.mpin,
-        useSavedCredentials: true,
-      })
+      const login = await apiPost<AngelLoginResponse>('/angel/login', credentials.apiKey ? {
+        apiKey: credentials.apiKey, clientCode: credentials.clientCode,
+        totpSecret: credentials.totpSecret, consent: credentials.consent,
+        mpin: credentials.mpin, persistCredentials: true,
+      } : { mpin: credentials.mpin, useSavedCredentials: true })
       if (ownerId !== userIdRef.current) return
       if (!login.status || !login.connected || !login.brokerAccountId) throw new Error('Broker connection did not return a verified account.')
+      setCredentialsConfigured(true)
+      setRecoveryRequired(false)
       setBrokerAccountId(login.brokerAccountId)
       setApiAccountScope(login.brokerAccountId)
       setConnectStatus('connected')

@@ -93,6 +93,13 @@ function redactLoginDiagnosticBody(data, credentials = []) {
 exports.login = async (req, res) => {
   try {
     const requestedUserId = req.user._id.toString();
+    const persistCredentials = req.body?.persistCredentials === true;
+    if (persistCredentials) {
+      if (req.body?.useSavedCredentials === true || req.body?.consent !== true) throw accounts.denied('Consent and newly entered broker credentials are required.', 400);
+      brokerCredentialVault.validate(req.body);
+      brokerCredentialVault.checkConfiguration();
+      if (typeof req.body.mpin !== 'string' || !req.body.mpin.trim() || req.body.mpin.length > 64) throw accounts.denied('Enter your Angel One MPIN.', 400);
+    }
     let suppliedCredentials = null;
     if (req.body?.useSavedCredentials === true) {
       const saved = await brokerCredentialVault.get(req.user._id);
@@ -126,6 +133,20 @@ exports.login = async (req, res) => {
     if (record?.status === 'CONNECTING') throw accounts.denied('Broker connection is already in progress; reconcile interrupted attempts before retrying.');
     const other = await BrokerAccount.findOne({ broker: 'ANGEL_ONE', brokerClientId: clientId }).lean();
     if (other && String(other.userId) !== requestedUserId) throw accounts.denied('Broker account is already linked to another user.', 403);
+    const credentialState = persistCredentials ? await brokerCredentialVault.metadata(requestedUserId) : null;
+    if (persistCredentials && record) {
+      if (['CONNECTED', 'CONNECTING', 'DISABLED'].includes(record.status) || activeAccountService.getActiveAccount(requestedUserId, record._id)) throw accounts.denied('Disconnect the broker before replacing saved setup.', 409);
+      await strategyEngine.assertAccountCanSwitch(requestedUserId);
+      const scope = { userId: requestedUserId, brokerAccountId: record._id };
+      const [position, intent] = await Promise.all([
+        require('../models/Position').findOne({ ...scope, status: { $ne: 'CLOSED' } }).select('_id').lean(),
+        require('../models/OrderIntent').findOne({ ...scope, $or: [
+          { status: { $in: require('../services/executionLeaseService').unresolvedStates } },
+          { filledQuantity: { $gt: 0 }, positionId: { $exists: false } },
+        ] }).select('_id').lean(),
+      ]);
+      if (position || intent) throw accounts.denied('Broker setup replacement is blocked while exposure is unresolved.', 409);
+    }
     await accounts.verifyOwnershipIndexes();
     let created = false;
     if (!record) {
@@ -173,22 +194,32 @@ exports.login = async (req, res) => {
       if (created) await BrokerAccount.deleteOne(reservation);
       else await BrokerAccount.updateOne(reservation,
         { $set: { status: record.status }, $inc: { version: 1 } });
-      return res.status(response.status).json(req.body?.useSavedCredentials === true
+      return res.status(response.status).json(req.body?.useSavedCredentials === true || persistCredentials
         ? redactLoginDiagnosticBody(data, [suppliedCredentials.apiKey, suppliedCredentials.totpSecret, suppliedCredentials.mpin])
         : data);
     }
     const sanitized = sanitizeLoginResponse(data);
-    if (req.body?.useSavedCredentials === true && sanitized.message) {
+    if ((req.body?.useSavedCredentials === true || persistCredentials) && sanitized.message) {
       sanitized.message = redactLoginDiagnosticBody(sanitized.message,
         [suppliedCredentials.apiKey, suppliedCredentials.totpSecret, suppliedCredentials.mpin]);
     }
     sanitized.brokerAccountId = String(record._id);
     if (sanitized.connected) {
       if (!data.session_id || String(data.client_code).toUpperCase() !== clientId) throw accounts.denied('Broker login identity could not be verified.');
+      if (persistCredentials) {
+        try {
+          await brokerCredentialVault.save(requestedUserId, req.body, credentialState.version);
+          suppliedCredentials.version = credentialState.version + 1;
+        } catch (error) {
+          await BrokerAccount.updateOne(reservation, { $set: { status: 'SERVICE_UNAVAILABLE' }, $inc: { sessionGeneration: 1, version: 1 } });
+          activeAccountService.clearActiveAccount(requestedUserId, record._id);
+          throw error;
+        }
+      }
       const saved = await BrokerAccount.updateOne(reservation,
         { $set: { status: 'CONNECTED', connectedAt: new Date() }, $inc: { sessionGeneration: 1, version: 1 } });
       if (saved.modifiedCount !== 1) throw accounts.denied('Broker connection ownership changed.');
-      if (req.body?.useSavedCredentials === true && !await brokerCredentialVault.markVerified(req.user._id, record._id, suppliedCredentials.version)) {
+      if ((req.body?.useSavedCredentials === true || persistCredentials) && !await brokerCredentialVault.markVerified(req.user._id, record._id, suppliedCredentials.version)) {
         await BrokerAccount.updateOne({ _id: record._id, userId: requestedUserId, sessionGeneration: generation },
           { $set: { status: 'SERVICE_UNAVAILABLE' }, $inc: { version: 1 } });
         throw accounts.denied('Saved broker credentials changed during connection. Please reconnect.');

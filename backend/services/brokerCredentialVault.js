@@ -149,7 +149,7 @@ async function metadata(userId) {
     // Keep configured=true: replacement still requires password and exposure checks.
     return { configured: true, clientCode: null, verified: false, version: doc.version,
       recoveryRequired: true,
-      message: 'Saved broker setup cannot be decrypted. Restore the original server encryption key, or replace the setup using your application password. Server encryption must be configured before saving.' };
+      message: 'Saved broker setup cannot be decrypted. Restore the original server encryption key, or re-enter the broker setup and verify your Angel One MPIN to replace it. Server encryption must be configured before saving.' };
   }
   return { configured: true, clientCode: `****${clientCode.slice(-4)}`, verified: Boolean(doc.verifiedAt), version: doc.version };
 }
@@ -170,4 +170,4 @@ function configurationMessage(error) {
   return 'Secure broker credential storage is unavailable.';
 }
 
-module.exports = { save, get, markVerified, metadata, checkConfiguration, configurationMessage };
+module.exports = { save, get, markVerified, metadata, checkConfiguration, configurationMessage, validate };
