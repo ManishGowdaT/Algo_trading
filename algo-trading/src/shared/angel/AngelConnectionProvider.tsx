@@ -81,12 +81,15 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   const [mpinOpen, setMpinOpen] = useState(false)
   const [credentialsConfigured, setCredentialsConfigured] = useState(false)
   const [credentialStateLoaded, setCredentialStateLoaded] = useState(false)
+  const [recoveryRequired, setRecoveryRequired] = useState(false)
+  const [connectionProblem, setConnectionProblem] = useState('')
 
   const loadCredentialState = useCallback(async () => {
     const ownerId = userIdRef.current
-    const status = await apiGet<{ configured: boolean }>('/angel/credentials/status')
+    const status = await apiGet<{ configured: boolean; recoveryRequired?: boolean }>('/angel/credentials/status')
     if (!ownerId || ownerId !== userIdRef.current) throw new DOMException('Application user changed.', 'AbortError')
     setCredentialsConfigured(status.configured)
+    setRecoveryRequired(Boolean(status.recoveryRequired))
     setCredentialStateLoaded(true)
   }, [])
 
@@ -94,18 +97,23 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     const ownerId = userIdRef.current
     if (!backendReady) {
       setConnectMessage(backendMessage)
+      setConnectionProblem(backendMessage)
       return
     }
-    if (!credentialStateLoaded) {
+    {
       try { await loadCredentialState() }
       catch {
-        if (ownerId === userIdRef.current) setConnectMessage('Unable to check saved broker setup. Please retry the connection.')
+        if (ownerId === userIdRef.current) {
+          setConnectMessage('Unable to check saved broker setup. Please retry the connection.')
+          setConnectionProblem('Unable to check saved broker setup. No credentials have been changed. Retry when the server is available.')
+        }
         return
       }
     }
     if (!ownerId || ownerId !== userIdRef.current) return
+    setConnectionProblem('')
     setMpinOpen(true)
-  }, [backendMessage, backendReady, credentialStateLoaded, loadCredentialState])
+  }, [backendMessage, backendReady, loadCredentialState])
 
   const disconnect = useCallback(async () => {
     await apiPost<Record<string, unknown>>('/angel/logout')
@@ -134,6 +142,7 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
         })
         if (ownerId !== userIdRef.current) return
         setCredentialsConfigured(true)
+        setRecoveryRequired(false)
       }
       const login = await apiPost<AngelLoginResponse>('/angel/login', {
         mpin: credentials.mpin,
@@ -172,6 +181,8 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
     setMpinOpen(false)
     setCredentialsConfigured(false)
     setCredentialStateLoaded(false)
+    setRecoveryRequired(false)
+    setConnectionProblem('')
     if (!user) return () => { active = false }
     apiGet<{ connected: boolean; message?: string; brokerAccountId?: string | null }>('/angel/status')
       .then((status) => {
@@ -246,10 +257,12 @@ export function AngelConnectionProvider({ children }: { children: ReactNode }) {
   return (
     <AngelConnectionContext.Provider value={value}>
       {children}
+      {connectionProblem && user && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-label="Angel One connection unavailable"><div className="max-w-md rounded-xl bg-white p-5 text-slate-900"><h3>Angel One connection unavailable</h3><p role="alert" className="my-3">{connectionProblem}</p><button type="button" onClick={() => setConnectionProblem('')}>Close</button><button type="button" className="ml-4" onClick={() => void openConnect()}>Retry connection</button></div></div>}
       {mpinOpen && user && <MpinModal
         key={user._id}
         open={mpinOpen}
         credentialsConfigured={credentialsConfigured}
+        recoveryRequired={recoveryRequired}
         onCancel={() => setMpinOpen(false)}
         onSubmit={async (credentials) => {
           await submitCredentials(credentials)

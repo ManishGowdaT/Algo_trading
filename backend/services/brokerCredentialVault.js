@@ -137,9 +137,20 @@ async function markVerified(userId, brokerAccountId, version) {
 async function metadata(userId) {
   await ensureIndexes();
   const doc = await BrokerCredential.findOne({ userId, broker: 'ANGEL_ONE' })
-    .select('+clientCode').lean();
+    .select('+clientCode +apiKey +totpSecret').lean();
   if (!doc) return { configured: false, clientCode: null, version: 0 };
-  const clientCode = decrypt(doc.clientCode, { userId: String(userId), version: doc.version, field: 'clientCode' });
+  let clientCode;
+  try {
+    for (const field of ['clientCode', 'apiKey', 'totpSecret']) {
+      const value = decrypt(doc[field], { userId: String(userId), version: doc.version, field });
+      if (field === 'clientCode') clientCode = value;
+    }
+  } catch {
+    // Keep configured=true: replacement still requires password and exposure checks.
+    return { configured: true, clientCode: null, verified: false, version: doc.version,
+      recoveryRequired: true,
+      message: 'Saved broker setup cannot be decrypted. Restore the original server encryption key, or replace the setup using your application password. Server encryption must be configured before saving.' };
+  }
   return { configured: true, clientCode: `****${clientCode.slice(-4)}`, verified: Boolean(doc.verifiedAt), version: doc.version };
 }
 

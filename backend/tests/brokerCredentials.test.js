@@ -10,6 +10,32 @@ const userA = '111111111111111111111111';
 const userB = '222222222222222222222222';
 const input = { clientCode: 'CLIENT-A', apiKey: 'test-broker-api-key', totpSecret: 'JBSWY3DPEHPK3PXP' };
 
+test('unreadable saved setup remains configured and permits version-guarded recovery without leaking secrets', async t => {
+  const stores = fixture(t);
+  await vault.save(userA, input);
+  const previous = JSON.stringify(stores.BrokerCredential[0]);
+  process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS = JSON.stringify({ 'test-v1': crypto.randomBytes(32).toString('base64') });
+  const status = await vault.metadata(userA);
+  assert.equal(status.configured, true);
+  assert.equal(status.recoveryRequired, true);
+  assert.equal(status.version, 1);
+  assert.equal(status.clientCode, null);
+  assert.equal(JSON.stringify(stores.BrokerCredential[0]), previous);
+  await assert.rejects(vault.get(userA));
+  for (const secret of Object.values(input)) assert.ok(!JSON.stringify(status).includes(secret));
+  await assert.rejects(vault.save(userA, input, 0), { status: 409 });
+  await vault.save(userA, input, status.version);
+  assert.equal((await vault.metadata(userA)).recoveryRequired, undefined);
+  assert.equal((await vault.get(userA)).clientCode, input.clientCode);
+});
+
+test('unreadable API key is detected even if the client ID still decrypts', async t => {
+  const stores = fixture(t);
+  await vault.save(userA, input);
+  stores.BrokerCredential[0].apiKey.tag = crypto.randomBytes(16).toString('base64');
+  assert.equal((await vault.metadata(userA)).recoveryRequired, true);
+});
+
 function fixture(t, models = [Credential], seeds = {}) {
   const oldKeys = process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS;
   const oldVersion = process.env.BROKER_CREDENTIAL_ACTIVE_KEY_VERSION;
@@ -198,11 +224,18 @@ test('HTTP setup saves through POST, MPIN-only login uses server secrets, and re
   const diagnostic = JSON.stringify(await failed.json());
   for (const secret of [input.apiKey, input.totpSecret, '0123']) assert.ok(!diagnostic.includes(secret));
   rejectBrokerLogin = false;
+  // A lost/replaced deployment key must expose recovery without weakening
+  // the existing HTTP password, connected-account or open-position gates.
+  process.env.BROKER_CREDENTIAL_ENCRYPTION_KEYS = JSON.stringify({ 'test-v1': crypto.randomBytes(32).toString('base64') });
+  const recovery = await request('/angel/credentials/status');
+  assert.equal(recovery.status, 200);
+  assert.equal((await recovery.json()).recoveryRequired, true);
   assert.equal((await request('/angel/credentials', { ...input, consent: true })).status, 403);
   assert.equal((await request('/angel/credentials', { ...input, consent: true, currentPassword: 'app-password' })).status, 409);
   require('../services/activeAccountService').clearActiveAccount(userA);
   const account = stores.BrokerAccount[0]; account.status = 'DISCONNECTED';
   stores.Position.push({ _id: new mongoose.Types.ObjectId(), userId: account.userId, brokerAccountId: account._id, status: 'OPEN' });
   assert.equal((await request('/angel/credentials', { ...input, consent: true, currentPassword: 'app-password' })).status, 409);
-  assert.equal((await vault.get(userA)).version, 1);
+  assert.equal((await vault.metadata(userA)).version, 1);
+  assert.equal((await vault.metadata(userA)).recoveryRequired, true);
 });

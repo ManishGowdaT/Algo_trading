@@ -74,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ onMobileMenuOpen }) => {
                 <button
                     aria-label={connectStatus === 'connected' ? 'Disconnect Angel One broker' : 'Connect Angel One broker'}
                     onClick={connectStatus === 'connected' ? disconnect : openConnect}
-                    disabled={connectStatus !== 'connected' && (!backendReady || connectStatus === 'connecting')}
+                    disabled={connectStatus === 'connecting'}
                     title={connectStatus !== 'connected' && !backendReady ? backendMessage : undefined}
                     className={`
                         flex h-11 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors

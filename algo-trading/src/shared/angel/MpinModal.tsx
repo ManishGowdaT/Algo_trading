@@ -5,11 +5,13 @@ import type { AngelCredentials } from './AngelConnectionProvider'
 export default function MpinModal({
   open,
   credentialsConfigured,
+  recoveryRequired = false,
   onCancel,
   onSubmit,
 }: {
   open: boolean
   credentialsConfigured: boolean
+  recoveryRequired?: boolean
   onCancel: () => void
   onSubmit: (credentials: AngelCredentials) => Promise<void> | void
 }) {
@@ -17,7 +19,7 @@ export default function MpinModal({
   const [isWorking, setIsWorking] = useState(false)
   const [error, setError] = useState('')
   const [editingSetup, setEditingSetup] = useState(false)
-  const setupVisible = !credentialsConfigured || editingSetup
+  const setupVisible = !credentialsConfigured || editingSetup || recoveryRequired
   const [visibleFields, setVisibleFields] = useState<Record<'apiKey' | 'clientCode' | 'mpin' | 'totpSecret', boolean>>({
     apiKey: false,
     clientCode: false,
@@ -85,6 +87,7 @@ export default function MpinModal({
           </button>
         </div>
 
+        {recoveryRequired && <p role="alert" className="mt-3 text-sm text-amber-700">Saved broker setup cannot be decrypted. Restore the original server encryption key, or replace your setup below using your application password. Existing account and open-position checks still apply.</p>}
         <div className="mt-5 space-y-3">
           {([
             ...(setupVisible ? [['apiKey', 'API Key'], ['clientCode', 'Client ID'], ['totpSecret', 'TOTP authenticator setup secret']] as const : []),
