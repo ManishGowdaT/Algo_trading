@@ -1,0 +1,61 @@
+{
+  "observed_at": "2026-10-16T09:20:56.853531+05:30",
+  "source": "https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.gz",
+  "contracts": [
+    {
+      "instrument_key": "NSE_FO|125997",
+      "trading_symbol": "RELIANCE 1300 CE 23 NOV 26",
+      "underlying_symbol": "RELIANCE",
+      "underlying_key": "NSE_EQ|INE002A01018",
+      "instrument_type": "CE",
+      "strike_price": 1300.0,
+      "lot_size": 500,
+      "tick_size": 5.0,
+      "expiry": 1795458599000
+    },
+    {
+      "instrument_key": "NSE_FO|145081",
+      "trading_symbol": "SBIN 1050 CE 23 NOV 26",
+      "underlying_symbol": "SBIN",
+      "underlying_key": "NSE_EQ|INE062A01020",
+      "instrument_type": "CE",
+      "strike_price": 1050.0,
+      "lot_size": 750,
+      "tick_size": 5.0,
+      "expiry": 1795458599000
+    },
+    {
+      "instrument_key": "NSE_FO|144171",
+      "trading_symbol": "RELIANCE 1290 CE 23 NOV 26",
+      "underlying_symbol": "RELIANCE",
+      "underlying_key": "NSE_EQ|INE002A01018",
+      "instrument_type": "CE",
+      "strike_price": 1290.0,
+      "lot_size": 500,
+      "tick_size": 5.0,
+      "expiry": 1795458599000
+    },
+    {
+      "instrument_key": "NSE_FO|127158",
+      "trading_symbol": "SBIN 1040 CE 23 NOV 26",
+      "underlying_symbol": "SBIN",
+      "underlying_key": "NSE_EQ|INE062A01020",
+      "instrument_type": "CE",
+      "strike_price": 1040.0,
+      "lot_size": 750,
+      "tick_size": 5.0,
+      "expiry": 1795458599000
+    },
+    {
+      "instrument_key": "NSE_FO|127160",
+      "trading_symbol": "SBIN 1060 CE 23 NOV 26",
+      "underlying_symbol": "SBIN",
+      "underlying_key": "NSE_EQ|INE062A01020",
+      "instrument_type": "CE",
+      "strike_price": 1060.0,
+      "lot_size": 750,
+      "tick_size": 5.0,
+      "expiry": 1795458599000
+    }
+  ]
+}

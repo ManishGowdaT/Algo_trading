@@ -52,7 +52,7 @@ beforeEach(() => {
 it('loads setup without scanning; defaults and automatic expiry remain original', async () => {
   let elements = render()
   expect(input(elements, 30).props.min).toBe(5)
-  expect(input(elements, 5).props.max).toBe(5000)
+  expect(elements.find(e => e.props['aria-label'] === 'Listed hedge steps')!.props.value).toBe(1)
   expect(elements.some(e => e.type === 'input' && e.props.value === 12)).toBe(false)
   const effects = [...harness.effects]
   effects.forEach(effect => effect())
@@ -72,7 +72,7 @@ it('only explicit submit scans, uses target DTE, and prevents duplicate in-fligh
   const first = submit(event)
   await submit(event)
   expect(requests.post).toHaveBeenCalledTimes(1)
-  expect(requests.post).toHaveBeenCalledWith('/spreads/scan', { underlyings: ['NIFTY'], expiries: {}, dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 })
+  expect(requests.post).toHaveBeenCalledWith('/spreads/scan', { strategy_profile: 'NSE_PAYOFF_RESEARCH_V2', width_steps: 1, underlyings: ['NIFTY'], expiries: {}, dte: 30, width: 5, min_vrp: 1.15, min_oi: 100, max_spread_pct: .1, min_cushion: 2, min_ror: 15 })
   finish({ ok: true, candidates: [], underlyings: [], failure_count: 0 })
   await first
 })
@@ -84,7 +84,7 @@ it('adding BANKNIFTY does not mutate spread width or trigger a scan', async () =
   const add = elements.find(e => e.type === 'button' && String(e.props.children).startsWith('Load F'))!
   await (add.props.onClick as () => Promise<void>)()
   elements = render()
-  expect(input(elements, 5)).toBeTruthy()
+  expect(elements.find(e => e.props['aria-label'] === 'Listed hedge steps')!.props.value).toBe(1)
   expect(requests.post).not.toHaveBeenCalled()
   expect(requests.get).toHaveBeenCalledWith('/spreads/underlyings/BANKNIFTY/expiries')
 })
@@ -195,7 +195,7 @@ it('adding discovered stock loads expiries and surfaces unavailable earnings wit
   const text = elements.map(e => String(e.props.children)).join(' ')
   expect(text).toContain('Stock earnings inputs unavailable.')
   expect(requests.post).not.toHaveBeenCalled()
-  expect(input(elements,5)).toBeTruthy()
+  expect(elements.find(e => e.props['aria-label'] === 'Listed hedge steps')!.props.value).toBe(1)
 })
 
 it('retries a setup abort once and reports live mode independently of expiry failures', async () => {
@@ -257,10 +257,10 @@ it('surfaces conditional stock availability without claiming inputs are ready', 
 })
 
 
-it('NSE profile is opt-in, preserves thresholds and submits only explicit listed steps', async () => {
+it('payoff profile is default and V1 remains selectable with unchanged thresholds', async () => {
   let elements = render()
   const profile = elements.find(e => e.props['aria-label'] === 'Strategy profile')!
-  expect(profile.props.value).toBe('ORIGINAL_ZIP_BASELINE')
+  expect(profile.props.value).toBe('NSE_PAYOFF_RESEARCH_V2')
   ;(profile.props.onChange as (event: unknown) => void)({ target: { value: 'NSE_RESEARCH_V1' } })
   elements = render()
   expect(elements.some(e => e.props['aria-label'] === 'Width (points; NSE range extended)')).toBe(false)
@@ -277,24 +277,30 @@ it('NSE profile is opt-in, preserves thresholds and submits only explicit listed
 })
 
 
-it('NSE results show profile, INR amounts, actual lot and width without relabeling the EV score as money', async () => {
+it.each(['NSE_RESEARCH_V1', 'NSE_PAYOFF_RESEARCH_V2'])('NSE results explain %s and retain lot money separately from scores', async profile => {
   const c = {ticker:'TEST',type:'BEAR CALL',expiration:'2026-11-23',short_strike:100,long_strike:105,width:5,
     probability_sample_count:700,leg_inputs:{short:{bid:2,ask:2.05,raw_oi_quantity:18750,oi_contracts:150,volume:null}},credit:1,credit_points_unrounded:1.005,ror_pct:25,cushion_pct:2,ev:-10,vrp:1.2,iv:.3,rv21:.25,
     p_raw:.2,p_adj:.3,earnings:false,max_gap:0,lot_size:125,lot_size_status:'contract',monetary_status:'available',
     credit_per_lot_inr:125.63,max_loss_per_lot_inr:499.38,ev_per_lot_inr:-12.5,
-    strategy_profile:'NSE_RESEARCH_V1',strike_interval:5,width_steps:1,short_tick_inr:.01,long_tick_inr:.01,minimum_credit_points:.005,
+    strategy_profile:profile,...(profile === 'NSE_PAYOFF_RESEARCH_V2' ? { payoff_model:'historical_vertical_expiry_payoff',reference_spot:98,historical_loss_probability:.2 } : {}),strike_interval:5,width_steps:1,short_tick_inr:.01,long_tick_inr:.01,minimum_credit_points:.005,
     layers:{l1:{rv21:.25},l2:{earnings_inside:false,max_gap_pct:0},l3:{iv:.3,rv21:.25,ratio:1.2},l4:{p_raw:.2,p_adj:.3,horizon_td:21},l5:{short:{spread_pct:.05,oi:150},long:{spread_pct:.05,oi:200}}}}
-  requests.post.mockResolvedValue({strategy_profile:'NSE_RESEARCH_V1',ok:true,candidates:[c],underlyings:[],failure_count:0,success_count:1,elapsed:1})
+  requests.post.mockResolvedValue({strategy_profile:profile,ok:true,candidates:[c],underlyings:[],failure_count:0,success_count:1,elapsed:1})
   let elements = render()
   await (elements.find(e => e.type === 'form')!.props.onSubmit as (event: unknown) => Promise<void>)({preventDefault:vi.fn()})
   elements = render()
   const strings = elements.flatMap(e => Array.isArray(e.props.children) ? e.props.children : [e.props.children]).filter(x => typeof x === 'string' || typeof x === 'number').join(' ')
-  expect(strings).toContain('NSE_RESEARCH_V1')
+  expect(strings).toContain(profile)
   expect(strings).toContain('₹ Credit / lot')
   expect(strings).toContain('₹ Payoff max loss / lot')
   expect(strings).toContain('₹125.63')
-  expect(strings).toContain('EV (100-unit score)')
-  expect(strings).toContain('unverified corporate-action treatment')
+  expect(strings).toContain(profile === 'NSE_PAYOFF_RESEARCH_V2' ? 'Historical payoff (100-unit score)' : 'EV (100-unit score)')
+  if (profile === 'NSE_PAYOFF_RESEARCH_V2') {
+    expect(strings).toContain('no earnings probability uplift')
+    expect(strings).toContain('Reference spot')
+    expect(strings).toContain('98')
+    expect(strings).toContain('20.00%')
+    expect(strings).toContain('require backtesting')
+  } else expect(strings).toContain('unverified corporate-action treatment')
   expect(strings).toContain('uncalibrated')
   expect(strings).toContain('short')
   expect(strings).toContain('raw_oi_quantity')

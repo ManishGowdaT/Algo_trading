@@ -295,10 +295,12 @@ class ScanAudit:
 
     def finish(self,result):
         self.snapshot['api_result']=result
-        if result.get('ok') and result.get('strategy_profile') == 'NSE_RESEARCH_V1':
-            self.snapshot['strategy_profile'] = 'NSE_RESEARCH_V1'
+        if result.get('ok') and result.get('strategy_profile') in {'NSE_RESEARCH_V1', 'NSE_PAYOFF_RESEARCH_V2'}:
+            self.snapshot['strategy_profile'] = result['strategy_profile']
+            if result['strategy_profile'] == 'NSE_PAYOFF_RESEARCH_V2':
+                self.snapshot['normalized']['spot'] = result['observation_policy']['reference_spot']
             self.snapshot['replay'] = {'status':'PROFILE_ADAPTATION',
-                'reason':'Listed hedge steps and tick-derived credit gate intentionally differ from ZIP baseline; do not claim ZIP candidate parity.'}
+                'reason':'Versioned NSE research profile; do not claim ZIP calculation/candidate parity.'}
         elif result.get('ok'):
             uploaded=Path.home()/'Downloads'/'spread-terminal.zip'
             if uploaded.exists():
@@ -322,13 +324,13 @@ class ScanAudit:
 
 
 def batch_snapshot(result,request):
-    if result.get('strategy_profile') == 'NSE_RESEARCH_V1':
+    if result.get('strategy_profile') in {'NSE_RESEARCH_V1', 'NSE_PAYOFF_RESEARCH_V2'}:
         audit_id = str(uuid.uuid4())
         target = ROOT/'tmp'/'spread-audit'/f'batch-{audit_id}.json'
         target.parent.mkdir(parents=True,exist_ok=True)
         target.write_text(json.dumps(json_safe({'audit_id':audit_id,'request':request,'result':result,
             'status':'PROFILE_ADAPTATION','note':'No original-ZIP candidate parity claim for NSE market-structure adaptations.'}),indent=2,allow_nan=False),encoding='utf-8')
-        return {'audit_id':audit_id,'status':'captured','file':str(target),'strategy_profile':'NSE_RESEARCH_V1'}
+        return {'audit_id':audit_id,'status':'captured','file':str(target),'strategy_profile':result['strategy_profile']}
     expected=[]
     issues=[]
     totals=dict.fromkeys(STAGES,0)

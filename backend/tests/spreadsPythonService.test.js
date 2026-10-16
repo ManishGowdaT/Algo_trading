@@ -6,6 +6,20 @@ function response(status, data) {
   return { ok: status >= 200 && status < 300, status, json: async () => data };
 }
 
+test('V2 profile and unrounded payoff numbers survive Node forwarding', async () => {
+  const body = { underlyings: ['INFY'], strategy_profile: 'NSE_PAYOFF_RESEARCH_V2', width_steps: 1 };
+  const payload = { data_mode: 'fixtures', strategy_profile: body.strategy_profile,
+    candidates: [{ ev: -34, payoff_mean_per_unit: -0.3373456789, reference_spot: 1148.8,
+      ev_per_lot_inr: -134.94, p_raw: 0.1487, p_adj: 0.1487 }] };
+  const service = createSpreadsPythonService({ baseUrl: 'http://python.local', internalKey: 'test-key',
+    getMode: () => 'fixtures', fetchImpl: async (url, options) => {
+      assert.equal(url, 'http://python.local/spreads/scan');
+      assert.deepEqual(JSON.parse(options.body), body);
+      return response(200, JSON.parse(JSON.stringify(payload)));
+    } });
+  assert.deepEqual(await service.scanMultiple(body), payload);
+});
+
 test('discovery endpoints forward server user identity only through private headers', async () => {
   const calls = [];
   const service = createSpreadsPythonService({

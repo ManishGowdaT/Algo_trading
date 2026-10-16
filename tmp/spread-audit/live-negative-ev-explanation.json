@@ -1,0 +1,396 @@
+{
+  "status": "PASS",
+  "scope": "Fresh 16 October diagnostic capture; all 8 candidates independently reconciled. Earlier screenshot was not retained.",
+  "sources": [
+    {
+      "symbol": "INFY",
+      "capture": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\4845a715-bf02-4fca-b574-447b41ff8b59.json",
+      "earnings": {
+        "available": true,
+        "earnings_inside": true,
+        "max_historical_gap_pct": 2.4998697984480067,
+        "capability": {
+          "available": true,
+          "status": "yahoo_dates_upstox_closes",
+          "explanation": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified."
+        },
+        "upcoming_dates": [
+          "2026-10-23"
+        ],
+        "historical_dates_used": [
+          "2026-07-23",
+          "2026-04-23",
+          "2026-01-14",
+          "2025-10-16",
+          "2025-07-23",
+          "2025-04-17",
+          "2025-01-16",
+          "2024-10-17",
+          "2024-07-18",
+          "2024-04-18",
+          "2024-01-11"
+        ],
+        "event_gaps": [
+          {
+            "event_date": "2026-07-23",
+            "close_date": "2026-07-23",
+            "position": 686,
+            "absolute_gap_pct": 0.4467255964261785
+          },
+          {
+            "event_date": "2026-04-23",
+            "close_date": "2026-04-23",
+            "position": 624,
+            "absolute_gap_pct": 2.207157496452783
+          },
+          {
+            "event_date": "2026-01-14",
+            "close_date": "2026-01-14",
+            "position": 559,
+            "absolute_gap_pct": 0.050031269543460155
+          },
+          {
+            "event_date": "2025-10-16",
+            "close_date": "2025-10-16",
+            "position": 498,
+            "absolute_gap_pct": 0.1966901790558917
+          },
+          {
+            "event_date": "2025-07-23",
+            "close_date": "2025-07-23",
+            "position": 440,
+            "absolute_gap_pct": 0.22916799287031608
+          },
+          {
+            "event_date": "2025-04-17",
+            "close_date": "2025-04-17",
+            "position": 373,
+            "absolute_gap_pct": 0.4529049607246538
+          },
+          {
+            "event_date": "2025-01-16",
+            "close_date": "2025-01-16",
+            "position": 312,
+            "absolute_gap_pct": 1.0873746569897147
+          },
+          {
+            "event_date": "2024-10-17",
+            "close_date": "2024-10-17",
+            "position": 250,
+            "absolute_gap_pct": 2.4998697984480067
+          },
+          {
+            "event_date": "2024-07-18",
+            "close_date": "2024-07-18",
+            "position": 187,
+            "absolute_gap_pct": 1.8539439761304788
+          },
+          {
+            "event_date": "2024-04-18",
+            "close_date": "2024-04-18",
+            "position": 125,
+            "absolute_gap_pct": 0.33935451942450623
+          },
+          {
+            "event_date": "2024-01-11",
+            "close_date": "2024-01-11",
+            "position": 60,
+            "absolute_gap_pct": 1.6909007171524437
+          }
+        ],
+        "as_of": "2026-10-16",
+        "expiration": "2026-11-23"
+      },
+      "latest_candle": {
+        "timestamp": "2026-10-15T00:00:00+05:30",
+        "open": 1099.0,
+        "high": 1126.7,
+        "low": 1095.8,
+        "close": 1110.0,
+        "volume": 16012759.0,
+        "open_interest": 0.0
+      },
+      "observations": 719,
+      "horizon_sessions": 26,
+      "chain_spot": 1148.8,
+      "calculation_spot": 1110.0,
+      "quote_timestamp": {
+        "available": false,
+        "status": "unavailable",
+        "explanation": "The option-chain response does not provide a per-quote timestamp."
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "capture": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7333ae5b-9f3b-49a2-a510-4ee9739457b7.json",
+      "earnings": {
+        "available": true,
+        "earnings_inside": true,
+        "max_historical_gap_pct": 2.3600185099491133,
+        "capability": {
+          "available": true,
+          "status": "yahoo_dates_upstox_closes",
+          "explanation": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified."
+        },
+        "upcoming_dates": [
+          "2026-10-21"
+        ],
+        "historical_dates_used": [
+          "2026-10-16",
+          "2026-07-17",
+          "2026-04-24",
+          "2026-01-16",
+          "2025-10-17",
+          "2025-07-18",
+          "2025-04-25",
+          "2025-01-16",
+          "2024-10-14",
+          "2024-07-19",
+          "2024-04-22",
+          "2024-01-19",
+          "2023-10-27"
+        ],
+        "event_gaps": [
+          {
+            "event_date": "2026-07-17",
+            "close_date": "2026-07-17",
+            "position": 682,
+            "absolute_gap_pct": 2.3600185099491133
+          },
+          {
+            "event_date": "2026-04-24",
+            "close_date": "2026-04-24",
+            "position": 625,
+            "absolute_gap_pct": 1.1612326931666028
+          },
+          {
+            "event_date": "2026-01-16",
+            "close_date": "2026-01-16",
+            "position": 560,
+            "absolute_gap_pct": 0.061694543460366624
+          },
+          {
+            "event_date": "2025-10-17",
+            "close_date": "2025-10-17",
+            "position": 499,
+            "absolute_gap_pct": 1.3230351140670837
+          },
+          {
+            "event_date": "2025-07-18",
+            "close_date": "2025-07-18",
+            "position": 437,
+            "absolute_gap_pct": 0.02709292874560898
+          },
+          {
+            "event_date": "2025-04-25",
+            "close_date": "2025-04-25",
+            "position": 378,
+            "absolute_gap_pct": 0.09219422249537867
+          },
+          {
+            "event_date": "2025-01-16",
+            "close_date": "2025-01-16",
+            "position": 312,
+            "absolute_gap_pct": 1.1379971250598864
+          },
+          {
+            "event_date": "2024-10-14",
+            "close_date": "2024-10-14",
+            "position": 247,
+            "absolute_gap_pct": 0.02915239414038595
+          },
+          {
+            "event_date": "2024-07-19",
+            "close_date": "2024-07-19",
+            "position": 188,
+            "absolute_gap_pct": 1.9884036049662823
+          },
+          {
+            "event_date": "2024-04-22",
+            "close_date": "2024-04-22",
+            "position": 127,
+            "absolute_gap_pct": 0.6632201891027867
+          },
+          {
+            "event_date": "2024-01-19",
+            "close_date": "2024-01-19",
+            "position": 66,
+            "absolute_gap_pct": 0.03655104353229577
+          },
+          {
+            "event_date": "2023-10-27",
+            "close_date": "2023-10-27",
+            "position": 8,
+            "absolute_gap_pct": 1.7651021783067655
+          }
+        ],
+        "as_of": "2026-10-16",
+        "expiration": "2026-11-23"
+      },
+      "latest_candle": {
+        "timestamp": "2026-10-15T00:00:00+05:30",
+        "open": 1185.2,
+        "high": 1218.8,
+        "low": 1177.2,
+        "close": 1215.0,
+        "volume": 23456219.0,
+        "open_interest": 0.0
+      },
+      "observations": 719,
+      "horizon_sessions": 26,
+      "chain_spot": 1196.0,
+      "calculation_spot": 1215.0,
+      "quote_timestamp": {
+        "available": false,
+        "status": "unavailable",
+        "explanation": "The option-chain response does not provide a per-quote timestamp."
+      }
+    }
+  ],
+  "rows": [
+    {
+      "symbol": "INFY",
+      "type": "BULL PUT",
+      "short": 1080.0,
+      "long": 1060.0,
+      "credit": 4.65,
+      "width": 20.0,
+      "raw_breach_count": 291,
+      "samples": 719,
+      "p_raw": 0.4047287899860918,
+      "p_adj": 0.7790834230860875,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": -344.45757997218357,
+      "earnings_score_change": -748.7092661999914,
+      "final_score_unrounded": -1093.166846172175,
+      "displayed_score": -1093.0
+    },
+    {
+      "symbol": "INFY",
+      "type": "BULL PUT",
+      "short": 1060.0,
+      "long": 1040.0,
+      "credit": 3.649999999999997,
+      "width": 20.0,
+      "raw_breach_count": 241,
+      "samples": 719,
+      "p_raw": 0.33518776077885953,
+      "p_adj": 0.5212072794945275,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": -305.3755215577194,
+      "earnings_score_change": -372.0390374313359,
+      "final_score_unrounded": -677.4145589890553,
+      "displayed_score": -677.0
+    },
+    {
+      "symbol": "INFY",
+      "type": "BULL PUT",
+      "short": 1040.0,
+      "long": 1020.0,
+      "credit": 2.825000000000001,
+      "width": 20.0,
+      "raw_breach_count": 199,
+      "samples": 719,
+      "p_raw": 0.2767732962447844,
+      "p_adj": 0.38648842435509245,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": -271.04659248956875,
+      "earnings_score_change": -219.430256220616,
+      "final_score_unrounded": -490.47684871018475,
+      "displayed_score": -490.0
+    },
+    {
+      "symbol": "INFY",
+      "type": "BULL PUT",
+      "short": 1020.0,
+      "long": 1000.0,
+      "credit": 2.0749999999999993,
+      "width": 20.0,
+      "raw_breach_count": 155,
+      "samples": 719,
+      "p_raw": 0.21557719054242003,
+      "p_adj": 0.2820433625132096,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": -223.6543810848401,
+      "earnings_score_change": -132.93234394157912,
+      "final_score_unrounded": -356.58672502641923,
+      "displayed_score": -357.0
+    },
+    {
+      "symbol": "INFY",
+      "type": "BEAR CALL",
+      "short": 1140.0,
+      "long": 1160.0,
+      "credit": 10.050000000000004,
+      "width": 20.0,
+      "raw_breach_count": 278,
+      "samples": 719,
+      "p_raw": 0.3866481223922114,
+      "p_adj": 0.744279008996331,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": 231.70375521557762,
+      "earnings_score_change": -715.2617732082392,
+      "final_score_unrounded": -483.5580179926616,
+      "displayed_score": -484.0
+    },
+    {
+      "symbol": "INFY",
+      "type": "BEAR CALL",
+      "short": 1240.0,
+      "long": 1280.0,
+      "credit": 7.474999999999997,
+      "width": 40.0,
+      "raw_breach_count": 52,
+      "samples": 719,
+      "p_raw": 0.07232267037552156,
+      "p_adj": 0.08775997483325335,
+      "earnings_inside": true,
+      "max_gap_pct": 2.4998697984480067,
+      "score_without_earnings_adjustment": 458.20931849791344,
+      "earnings_score_change": -61.74921783092714,
+      "final_score_unrounded": 396.4601006669863,
+      "displayed_score": 396.0
+    },
+    {
+      "symbol": "RELIANCE",
+      "type": "BEAR CALL",
+      "short": 1290.0,
+      "long": 1300.0,
+      "credit": 1.4749999999999988,
+      "width": 10.0,
+      "raw_breach_count": 133,
+      "samples": 719,
+      "p_raw": 0.18497913769123783,
+      "p_adj": 0.25570091629396885,
+      "earnings_inside": true,
+      "max_gap_pct": 2.3600185099491133,
+      "score_without_earnings_adjustment": -37.479137691237966,
+      "earnings_score_change": -70.72177860273099,
+      "final_score_unrounded": -108.20091629396896,
+      "displayed_score": -108.0
+    },
+    {
+      "symbol": "RELIANCE",
+      "type": "BEAR CALL",
+      "short": 1320.0,
+      "long": 1330.0,
+      "credit": 1.15,
+      "width": 10.0,
+      "raw_breach_count": 84,
+      "samples": 719,
+      "p_raw": 0.1168289290681502,
+      "p_adj": 0.14873349084381834,
+      "earnings_inside": true,
+      "max_gap_pct": 2.3600185099491133,
+      "score_without_earnings_adjustment": -1.8289290681502202,
+      "earnings_score_change": -31.90456177566814,
+      "final_score_unrounded": -33.73349084381836,
+      "displayed_score": -34.0
+    }
+  ]
+}

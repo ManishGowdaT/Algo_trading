@@ -29,6 +29,7 @@ from .universe import UpstoxUniverseProvider, FixtureUniverseProvider
 from .earnings_source import yahoo_earnings_source
 from .scan_audit import CURRENT_AUDIT, RecordingTransport, ScanAudit, batch_snapshot
 from . import nse_calculations as nse
+from . import payoff_research
 
 
 logger = logging.getLogger("spreads.api")
@@ -37,7 +38,7 @@ IST = ZoneInfo("Asia/Kolkata")
 
 
 class NiftyScanRequest(BaseModel):
-    strategy_profile: Literal['ORIGINAL_ZIP_BASELINE', 'NSE_RESEARCH_V1'] = 'ORIGINAL_ZIP_BASELINE'
+    strategy_profile: Literal['ORIGINAL_ZIP_BASELINE', 'NSE_RESEARCH_V1', 'NSE_PAYOFF_RESEARCH_V2'] = 'ORIGINAL_ZIP_BASELINE'
     width_steps: int = Field(default=1, ge=1, le=50)
     audit_snapshot: bool = Field(default=False, exclude=True)  # Never a dumped calculation parameter.
     expiry: date | None = None  # Explicit override; default uses original target-DTE picker.
@@ -305,8 +306,8 @@ async def scan_multiple(
     response = _json_safe({
         "ok": bool(successful), "data_mode": _mode(), "data_note": _data_note(_mode()),
         "strategy_profile": request.strategy_profile,
-        "width_mode": 'listed_strike_steps' if request.strategy_profile == nse.NSE_RESEARCH_V1 else 'fixed_price_points',
-        "width_steps": request.width_steps if request.strategy_profile == nse.NSE_RESEARCH_V1 else None,
+        "width_mode": 'listed_strike_steps' if request.strategy_profile != 'ORIGINAL_ZIP_BASELINE' else 'fixed_price_points',
+        "width_steps": request.width_steps if request.strategy_profile != 'ORIGINAL_ZIP_BASELINE' else None,
         "underlyings": scans, "success_count": len(successful),
         "requested_count": len(symbols),
         "status": "SUCCESS" if len(successful) == len(scans) else "PARTIAL" if successful else "UNAVAILABLE",
@@ -320,7 +321,9 @@ async def scan_multiple(
         "meta": {scan["symbol"]: scan["meta"] for scan in successful},
         "errors": [{"ticker": scan["symbol"], "error": scan["error"]}
                    for scan in scans if not scan.get("ok")],
-        "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking.",
+        "ranking_note": ("Historical expiry-payoff mean ranked descending (100-unit score), before costs; negative scores retained. Earnings are flagged without probability uplift. Not a calibrated expected return."
+                         if request.strategy_profile == payoff_research.PROFILE else
+                         "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking."),
     })
     if request.audit_snapshot:
         try:
@@ -369,15 +372,20 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
                 capture.snapshot['capture_error_type'] = type(exc).__name__
         market_issues = []
         native_builder = None
-        if request.strategy_profile == nse.NSE_RESEARCH_V1:
+        is_payoff = request.strategy_profile == payoff_research.PROFILE
+        if is_payoff and (chain.spot is None or isinstance(chain.spot, bool) or not math.isfinite(chain.spot) or chain.spot <= 0):
+            raise ValueError('V2 requires a positive finite chain-reported underlying spot; no historical-close fallback.')
+        if request.strategy_profile in {nse.NSE_RESEARCH_V1, payoff_research.PROFILE}:
             resolve = nse.pair_resolver(contracts, expiration, request.width_steps,
                                        'paise' if mode == 'upstox' else 'rupees', market_issues)
             def native_builder(ticker, spot, puts, calls, expiry, days, close, rv, earnings_inside, gap, p):
                 import pandas as pd
-                return nse.build_spreads(ticker, spot, pd.DataFrame(puts), pd.DataFrame(calls),
+                builder = payoff_research.build_spreads if is_payoff else nse.build_spreads
+                return builder(ticker, spot, pd.DataFrame(puts), pd.DataFrame(calls),
                     expiry, days, pd.Series(close, dtype=float), rv, earnings_inside, gap, p, resolve, market_issues)
         result = scan_provider_data(symbol, history, chain, earnings,
-                                    expiration, dte, params, spread_builder=native_builder)
+                                    expiration, dte, params, spread_builder=native_builder,
+                                    reference_spot=chain.spot if is_payoff else None)
         result['strategy_profile'] = request.strategy_profile
         result['width_mode'] = 'listed_strike_steps' if native_builder else 'fixed_price_points'
         if native_builder:
@@ -385,7 +393,7 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
             result['nse_market_structure_issues'] = market_issues
             result['history_parity_status'] = 'UNVERIFIED' if history.adjustment.status not in {'verified','not_applicable','fixture'} else history.adjustment.status
             result.setdefault('data_warnings', []).append(
-                'NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. '
+                f'{request.strategy_profile} is a separate research profile; economic thresholds are unchanged. '
                 'The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity.')
         for candidate in result["candidates"]:
             candidate['strategy_profile'] = request.strategy_profile
@@ -434,11 +442,12 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
                 loss = candidate["width"] - credit
                 closes = [bar.close for bar in history.bars if bar.close is not None]
                 cushion = abs(candidate["short_strike"] - closes[-1]) / closes[-1] * 100
-                probability = empirical_breach_prob(closes, dte, cushion, "down" if side == "PE" else "up")
-                if earnings.earnings_inside:
+                probability = empirical_breach_prob(closes, dte, cushion, "down" if side == "PE" else "up") if not is_payoff else candidate['p_raw']
+                if earnings.earnings_inside and not is_payoff:
                     probability = apply_earnings_penalty(probability, cushion, earnings.max_historical_gap_pct or 0)
                 candidate.update(credit_per_lot_inr=round(credit * lot, 2), max_loss_per_lot_inr=round(loss * lot, 2),
-                                 ev_per_lot_inr=round((credit * (1 - probability) - loss * probability) * lot, 2))
+                                 ev_per_lot_inr=round((candidate['payoff_mean_per_unit'] if is_payoff else
+                                     (credit * (1 - probability) - loss * probability)) * lot, 2))
             else:
                 candidate.update(credit_per_lot_inr=None, max_loss_per_lot_inr=None, ev_per_lot_inr=None)
         result.update({
@@ -457,10 +466,13 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
         result['iv_provider_errors'] = list(chain.iv_errors)
         result['history_validation'] = history.validation
         result['observation_policy'] = {
-            'mode': 'historical_close_reference',
-            'reference_date': history.bars[-1].timestamp.astimezone(IST).date().isoformat() if history.bars else None,
+            'mode': 'chain_spot_reference' if is_payoff else 'historical_close_reference',
+            'reference_spot': chain.spot if is_payoff else (result.get('meta') or {}).get('spot'),
+            'historical_close': history.bars[-1].close if history.bars else None,
+            'reference_date': None if is_payoff else (history.bars[-1].timestamp.astimezone(IST).date().isoformat() if history.bars else None),
             'chain_spot': chain.spot,
-            'explanation': 'OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot.',
+            'explanation': ('OTM, cushion and historical payoff scenarios use the chain-reported underlying spot. Completed daily closes supply historical returns only. Chain/leg timestamp synchronization is unverified.' if is_payoff else
+                'OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot.'),
         }
         result['freshness'] = {'fetched_at': datetime.now(IST).isoformat(),
                                'quote_time_status': 'UNKNOWN', 'provider_quote_timestamp': None,
@@ -475,6 +487,13 @@ def _scan_underlying(symbol: str, request: NiftyScanRequest, _authorized, access
         if chain.iv_errors:
             result.setdefault('data_warnings', []).append('Some V3 IV requests failed; see IV provider errors. Missing values were not estimated.')
         result['earnings_source_note'] = earnings.capability.explanation
+        if is_payoff:
+            result['research_model'] = {
+                'method': 'historical_vertical_expiry_payoff',
+                'earnings_treatment': 'unconditional_history_no_probability_uplift',
+                'explanation': 'Actual terminal intrinsic payoffs averaged over overlapping historical return scenarios. '
+                    'Earnings remain flagged; event-specific risk is uncalibrated. Raw equity corporate-action treatment '
+                    'and quote synchronization remain unverified. Gross midpoint estimate before costs, not expected profit.'}
         if capture:
             try:
                 result['scan_audit'] = capture.finish(result)

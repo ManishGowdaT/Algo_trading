@@ -1,0 +1,123 @@
+{
+  "scope": "Screenshot arithmetic only. Adjusted probabilities inferred from rounded EV; raw probability and earnings contribution are not observed.",
+  "rows": [
+    {
+      "spread": "INFY call 1240/1280",
+      "credit": 6.45,
+      "width": 40,
+      "display_ev": 294,
+      "model_breakeven_probability_pct": 16.125,
+      "implied_adjusted_probability_pct": 8.775,
+      "inferred_probability_uncertainty_pp": 0.0125,
+      "reconstructed_ev": 294,
+      "ror_pct": 19.2
+    },
+    {
+      "spread": "RELIANCE call 1320/1330",
+      "credit": 1.125,
+      "width": 10,
+      "display_ev": -36,
+      "model_breakeven_probability_pct": 11.25,
+      "implied_adjusted_probability_pct": 14.85,
+      "inferred_probability_uncertainty_pp": 0.05,
+      "reconstructed_ev": -36,
+      "ror_pct": 12.7
+    },
+    {
+      "spread": "RELIANCE call 1290/1300",
+      "credit": 1.5,
+      "width": 10,
+      "display_ev": -106,
+      "model_breakeven_probability_pct": 15.0,
+      "implied_adjusted_probability_pct": 25.6,
+      "inferred_probability_uncertainty_pp": 0.05,
+      "reconstructed_ev": -106,
+      "ror_pct": 17.6
+    },
+    {
+      "spread": "RELIANCE call 1270/1280",
+      "credit": 2.2,
+      "width": 10,
+      "display_ev": -127,
+      "model_breakeven_probability_pct": 22.000000000000004,
+      "implied_adjusted_probability_pct": 34.7,
+      "inferred_probability_uncertainty_pp": 0.05,
+      "reconstructed_ev": -127,
+      "ror_pct": 28.2
+    },
+    {
+      "spread": "INFY put 1000/980",
+      "credit": 2.05,
+      "width": 20,
+      "display_ev": -216,
+      "model_breakeven_probability_pct": 10.249999999999998,
+      "implied_adjusted_probability_pct": 21.05,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -216,
+      "ror_pct": 11.4
+    },
+    {
+      "spread": "INFY put 1020/1000",
+      "credit": 2.35,
+      "width": 20,
+      "display_ev": -329,
+      "model_breakeven_probability_pct": 11.75,
+      "implied_adjusted_probability_pct": 28.2,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -329,
+      "ror_pct": 13.3
+    },
+    {
+      "spread": "INFY put 1040/1020",
+      "credit": 3.125,
+      "width": 20,
+      "display_ev": -460,
+      "model_breakeven_probability_pct": 15.625,
+      "implied_adjusted_probability_pct": 38.625,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -460,
+      "ror_pct": 18.5
+    },
+    {
+      "spread": "INFY call 1140/1160",
+      "credit": 8.825,
+      "width": 20,
+      "display_ev": -606,
+      "model_breakeven_probability_pct": 44.12499999999999,
+      "implied_adjusted_probability_pct": 74.42499999999998,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -606,
+      "ror_pct": 79.0
+    },
+    {
+      "spread": "INFY put 1060/1040",
+      "credit": 4.2,
+      "width": 20,
+      "display_ev": -622,
+      "model_breakeven_probability_pct": 21.0,
+      "implied_adjusted_probability_pct": 52.1,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -622,
+      "ror_pct": 26.6
+    },
+    {
+      "spread": "INFY put 1080/1060",
+      "credit": 5.2,
+      "width": 20,
+      "display_ev": -1038,
+      "model_breakeven_probability_pct": 26.0,
+      "implied_adjusted_probability_pct": 77.9,
+      "inferred_probability_uncertainty_pp": 0.025,
+      "reconstructed_ev": -1038,
+      "ror_pct": 35.1
+    }
+  ],
+  "payoff_example": {
+    "short_call": 1320,
+    "long_call": 1330,
+    "credit": 1.125,
+    "terminal_price": 1321,
+    "actual_per_unit_payoff": 0.125,
+    "binary_breach_model_per_unit_payoff": -8.875
+  }
+}

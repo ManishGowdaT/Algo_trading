@@ -1,0 +1,2330 @@
+{
+  "audit_id": "303cd255-87d5-4f12-8ed4-23d1d09e5a88",
+  "request": {
+    "strategy_profile": "NSE_RESEARCH_V1",
+    "width_steps": 1,
+    "expiry": null,
+    "dte": 30,
+    "width": 5.0,
+    "min_vrp": 1.0,
+    "min_oi": 100,
+    "max_spread_pct": 0.1,
+    "min_cushion": 1.5,
+    "min_ror": 10.0,
+    "underlyings": [
+      "NIFTY",
+      "INFY",
+      "RELIANCE"
+    ],
+    "expiries": {}
+  },
+  "result": {
+    "ok": true,
+    "data_mode": "upstox",
+    "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+    "strategy_profile": "NSE_RESEARCH_V1",
+    "width_mode": "listed_strike_steps",
+    "width_steps": 1,
+    "underlyings": [
+      {
+        "ticker": "INFY",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 20.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 4.65,
+            "ticker": "INFY",
+            "type": "BULL PUT",
+            "expiration": "2026-11-23",
+            "short_strike": 1080.0,
+            "long_strike": 1060.0,
+            "width": 20.0,
+            "credit": 4.65,
+            "ror_pct": 30.3,
+            "cushion_pct": 2.7,
+            "vrp": 1.17,
+            "iv": 0.3503,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.4047,
+            "p_adj": 0.7791,
+            "ev": -1093.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3503,
+                "rv21": 0.2987,
+                "ratio": 1.17
+              },
+              "l4": {
+                "p_raw": 0.4047,
+                "p_adj": 0.7791,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.023,
+                  "oi": 199
+                },
+                "long": {
+                  "spread_pct": 0.0176,
+                  "oi": 225
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|104787",
+            "long_instrument_key": "NSE_FO|129507",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|104787",
+                "bid": 21.45,
+                "ask": 21.95,
+                "midpoint": 21.7,
+                "iv": 0.3503,
+                "raw_iv": 35.03,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 79600.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 199,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 17600
+              },
+              "long": {
+                "instrument_key": "NSE_FO|129507",
+                "bid": 16.9,
+                "ask": 17.2,
+                "midpoint": 17.049999999999997,
+                "iv": 0.3552,
+                "raw_iv": 35.52,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 90000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 225,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 20000
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 20.0,
+            "credit_per_lot_inr": 1860.0,
+            "max_loss_per_lot_inr": 6140.0,
+            "ev_per_lot_inr": -4372.67
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 20.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 3.649999999999997,
+            "ticker": "INFY",
+            "type": "BULL PUT",
+            "expiration": "2026-11-23",
+            "short_strike": 1060.0,
+            "long_strike": 1040.0,
+            "width": 20.0,
+            "credit": 3.65,
+            "ror_pct": 22.3,
+            "cushion_pct": 4.5,
+            "vrp": 1.19,
+            "iv": 0.3552,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.3352,
+            "p_adj": 0.5212,
+            "ev": -677.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3552,
+                "rv21": 0.2987,
+                "ratio": 1.19
+              },
+              "l4": {
+                "p_raw": 0.3352,
+                "p_adj": 0.5212,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0176,
+                  "oi": 225
+                },
+                "long": {
+                  "spread_pct": 0.0224,
+                  "oi": 265
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|129507",
+            "long_instrument_key": "NSE_FO|104783",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|129507",
+                "bid": 16.9,
+                "ask": 17.2,
+                "midpoint": 17.049999999999997,
+                "iv": 0.3552,
+                "raw_iv": 35.52,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 90000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 225,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 20000
+              },
+              "long": {
+                "instrument_key": "NSE_FO|104783",
+                "bid": 13.25,
+                "ask": 13.55,
+                "midpoint": 13.4,
+                "iv": 0.36560000000000004,
+                "raw_iv": 36.56,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 106000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 265,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 38800
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 20.0,
+            "credit_per_lot_inr": 1460.0,
+            "max_loss_per_lot_inr": 6540.0,
+            "ev_per_lot_inr": -2709.66
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 20.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 2.825000000000001,
+            "ticker": "INFY",
+            "type": "BULL PUT",
+            "expiration": "2026-11-23",
+            "short_strike": 1040.0,
+            "long_strike": 1020.0,
+            "width": 20.0,
+            "credit": 2.83,
+            "ror_pct": 16.4,
+            "cushion_pct": 6.31,
+            "vrp": 1.22,
+            "iv": 0.3656,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.2768,
+            "p_adj": 0.3865,
+            "ev": -490.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3656,
+                "rv21": 0.2987,
+                "ratio": 1.22
+              },
+              "l4": {
+                "p_raw": 0.2768,
+                "p_adj": 0.3865,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0224,
+                  "oi": 265
+                },
+                "long": {
+                  "spread_pct": 0.0236,
+                  "oi": 122
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|104783",
+            "long_instrument_key": "NSE_FO|129504",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|104783",
+                "bid": 13.25,
+                "ask": 13.55,
+                "midpoint": 13.4,
+                "iv": 0.36560000000000004,
+                "raw_iv": 36.56,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 106000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 265,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 38800
+              },
+              "long": {
+                "instrument_key": "NSE_FO|129504",
+                "bid": 10.45,
+                "ask": 10.7,
+                "midpoint": 10.575,
+                "iv": 0.37479999999999997,
+                "raw_iv": 37.48,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 48800.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 122,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 10800
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 20.0,
+            "credit_per_lot_inr": 1130.0,
+            "max_loss_per_lot_inr": 6870.0,
+            "ev_per_lot_inr": -1961.91
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 20.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 2.0749999999999993,
+            "ticker": "INFY",
+            "type": "BULL PUT",
+            "expiration": "2026-11-23",
+            "short_strike": 1020.0,
+            "long_strike": 1000.0,
+            "width": 20.0,
+            "credit": 2.07,
+            "ror_pct": 11.6,
+            "cushion_pct": 8.11,
+            "vrp": 1.25,
+            "iv": 0.3748,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.2156,
+            "p_adj": 0.282,
+            "ev": -357.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3748,
+                "rv21": 0.2987,
+                "ratio": 1.25
+              },
+              "l4": {
+                "p_raw": 0.2156,
+                "p_adj": 0.282,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0236,
+                  "oi": 122
+                },
+                "long": {
+                  "spread_pct": 0.0235,
+                  "oi": 1134
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|129504",
+            "long_instrument_key": "NSE_FO|104781",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|129504",
+                "bid": 10.45,
+                "ask": 10.7,
+                "midpoint": 10.575,
+                "iv": 0.37479999999999997,
+                "raw_iv": 37.48,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 48800.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 122,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 10800
+              },
+              "long": {
+                "instrument_key": "NSE_FO|104781",
+                "bid": 8.4,
+                "ask": 8.6,
+                "midpoint": 8.5,
+                "iv": 0.3906,
+                "raw_iv": 39.06,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 453600.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 1134,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 77200
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 20.0,
+            "credit_per_lot_inr": 830.0,
+            "max_loss_per_lot_inr": 7170.0,
+            "ev_per_lot_inr": -1426.35
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 20.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 10.050000000000004,
+            "ticker": "INFY",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 1140.0,
+            "long_strike": 1160.0,
+            "width": 20.0,
+            "credit": 10.05,
+            "ror_pct": 101.0,
+            "cushion_pct": 2.7,
+            "vrp": 1.13,
+            "iv": 0.3387,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.3866,
+            "p_adj": 0.7443,
+            "ev": -484.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3387,
+                "rv21": 0.2987,
+                "ratio": 1.13
+              },
+              "l4": {
+                "p_raw": 0.3866,
+                "p_adj": 0.7443,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0139,
+                  "oi": 220
+                },
+                "long": {
+                  "spread_pct": 0.0148,
+                  "oi": 434
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|129536",
+            "long_instrument_key": "NSE_FO|104790",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|129536",
+                "bid": 57.1,
+                "ask": 57.9,
+                "midpoint": 57.5,
+                "iv": 0.3387,
+                "raw_iv": 33.87,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 88000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 220,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 40800
+              },
+              "long": {
+                "instrument_key": "NSE_FO|104790",
+                "bid": 47.1,
+                "ask": 47.8,
+                "midpoint": 47.45,
+                "iv": 0.3333,
+                "raw_iv": 33.33,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 173600.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 434,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 58400
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 20.0,
+            "credit_per_lot_inr": 4020.0,
+            "max_loss_per_lot_inr": 3980.0,
+            "ev_per_lot_inr": -1934.23
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 40.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 7.474999999999997,
+            "ticker": "INFY",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 1240.0,
+            "long_strike": 1280.0,
+            "width": 40.0,
+            "credit": 7.47,
+            "ror_pct": 23.0,
+            "cushion_pct": 11.71,
+            "vrp": 1.13,
+            "iv": 0.3381,
+            "rv21": 0.2987,
+            "earnings": true,
+            "max_gap": 2.5,
+            "p_raw": 0.0723,
+            "p_adj": 0.0878,
+            "ev": 396.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3535,
+                "rv21": 0.2987,
+                "rv63": 0.307,
+                "rv252": 0.3087
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.5
+              },
+              "l3": {
+                "iv": 0.3381,
+                "rv21": 0.2987,
+                "ratio": 1.13
+              },
+              "l4": {
+                "p_raw": 0.0723,
+                "p_adj": 0.0878,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0146,
+                  "oi": 385
+                },
+                "long": {
+                  "spread_pct": 0.0115,
+                  "oi": 976
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|104810",
+            "long_instrument_key": "NSE_FO|104944",
+            "lot_size": 400,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|104810",
+                "bid": 20.4,
+                "ask": 20.7,
+                "midpoint": 20.549999999999997,
+                "iv": 0.3381,
+                "raw_iv": 33.81,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 154000.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 385,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 81200
+              },
+              "long": {
+                "instrument_key": "NSE_FO|104944",
+                "bid": 13.0,
+                "ask": 13.15,
+                "midpoint": 13.075,
+                "iv": 0.3467,
+                "raw_iv": 34.67,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 390400.0,
+                "oi_lot_size": 400,
+                "oi_contracts": 976,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 237200
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 40.0,
+            "credit_per_lot_inr": 2990.0,
+            "max_loss_per_lot_inr": 13010.0,
+            "ev_per_lot_inr": 1585.84
+          }
+        ],
+        "funnel": {
+          "considered": 20,
+          "cushion": 18,
+          "friction": 10,
+          "paired": 10,
+          "ror": 6,
+          "vrp": 6,
+          "final": 6
+        },
+        "meta": {
+          "spot": 1110.0,
+          "expiration": "2026-11-23",
+          "dte": 38,
+          "earnings": true,
+          "max_gap": 2.5,
+          "rv": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-16",
+          "requested_end": "2026-10-16",
+          "raw_count": 745,
+          "parsed_count": 745,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "unconfirmed_session_dates": [],
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 1100.0
+          },
+          {
+            "reason": "ROR",
+            "strategy": "BULL PUT",
+            "short_strike": 1000.0,
+            "long_strike": 980.0
+          },
+          {
+            "reason": "ROR",
+            "strategy": "BULL PUT",
+            "short_strike": 980.0,
+            "long_strike": 960.0
+          },
+          {
+            "reason": "ROR",
+            "strategy": "BULL PUT",
+            "short_strike": 960.0,
+            "long_strike": 940.0
+          },
+          {
+            "reason": "ROR",
+            "strategy": "BULL PUT",
+            "short_strike": 940.0,
+            "long_strike": 920.0
+          },
+          {
+            "reason": "LONG_BID_ASK",
+            "strategy": "BULL PUT",
+            "short_strike": 920.0,
+            "long_strike": 900.0
+          },
+          {
+            "reason": "SHORT_BID_ASK",
+            "strategy": "BULL PUT",
+            "short_strike": 900.0
+          },
+          {
+            "reason": "SHORT_BID_ASK",
+            "strategy": "BULL PUT",
+            "short_strike": 880.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 1120.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1160.0,
+            "long_strike": 1180.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1180.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1200.0,
+            "long_strike": 1220.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1220.0
+          },
+          {
+            "short_strike": 1280.0,
+            "reason": "listed_hedge_steps_unavailable"
+          }
+        ],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "INFY",
+        "instrument_key": "NSE_EQ|INE009A01021",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 38,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "iv_provider_errors": [],
+        "observation_policy": {
+          "mode": "historical_close_reference",
+          "reference_date": "2026-10-15",
+          "chain_spot": 1148.8,
+          "explanation": "OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot."
+        },
+        "freshness": {
+          "fetched_at": "2026-10-16T09:32:30.243239+05:30",
+          "quote_time_status": "UNKNOWN",
+          "provider_quote_timestamp": null,
+          "explanation": "Fetch completion time only; provider per-leg quote age is unavailable."
+        },
+        "settlement_note": "Stock options are physically settled: expiry can create delivery and funding obligations. Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled.",
+        "costs": {
+          "status": "UNVERIFIED",
+          "estimated_cost_inr": null,
+          "net_credit_inr": null,
+          "explanation": "Gross midpoint model excludes brokerage, STT, exchange charges, GST, SEBI charges, stamp duty, slippage and two-leg execution effects."
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified.",
+        "scan_audit": {
+          "audit_id": "4845a715-bf02-4fca-b574-447b41ff8b59",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\4845a715-bf02-4fca-b574-447b41ff8b59.json"
+        }
+      },
+      {
+        "ticker": "NIFTY",
+        "ok": true,
+        "error": null,
+        "candidates": [],
+        "funnel": {
+          "considered": 24,
+          "cushion": 11,
+          "friction": 0,
+          "paired": 0,
+          "ror": 0,
+          "vrp": 0,
+          "final": 0
+        },
+        "meta": {
+          "spot": 22997.35,
+          "expiration": "2026-11-17",
+          "dte": 32,
+          "earnings": false,
+          "max_gap": 0.0,
+          "rv": {
+            "rv10": 0.1886,
+            "rv21": 0.1561,
+            "rv63": 0.1147,
+            "rv252": 0.1378
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-16",
+          "requested_end": "2026-10-16",
+          "raw_count": 745,
+          "parsed_count": 745,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "unconfirmed_session_dates": [],
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22950.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22900.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22850.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22800.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22750.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 22700.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22650.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22600.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22550.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22500.0,
+            "long_strike": 22450.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22450.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 22400.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23000.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23050.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23100.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23150.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23200.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23250.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 23300.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 23350.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 23400.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 23450.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 23500.0,
+            "long_strike": 23550.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 23550.0
+          }
+        ],
+        "history_parity_status": "not_applicable",
+        "symbol": "NIFTY",
+        "instrument_key": "NSE_INDEX|Nifty 50",
+        "kind": "INDEX",
+        "expiry": "2026-11-17",
+        "dte": 32,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "not_applicable",
+          "earnings": "not_applicable",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "iv_provider_errors": [],
+        "observation_policy": {
+          "mode": "historical_close_reference",
+          "reference_date": "2026-10-15",
+          "chain_spot": 22939.15,
+          "explanation": "OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot."
+        },
+        "freshness": {
+          "fetched_at": "2026-10-16T09:32:31.614983+05:30",
+          "quote_time_status": "UNKNOWN",
+          "provider_quote_timestamp": null,
+          "explanation": "Fetch completion time only; provider per-leg quote age is unavailable."
+        },
+        "settlement_note": "Index options are cash settled. Payoff maximum loss is not broker margin or capital required.",
+        "costs": {
+          "status": "UNVERIFIED",
+          "estimated_cost_inr": null,
+          "net_credit_inr": null,
+          "explanation": "Gross midpoint model excludes brokerage, STT, exchange charges, GST, SEBI charges, stamp duty, slippage and two-leg execution effects."
+        },
+        "earnings_source_note": "An index has no company earnings calendar; the original earnings-event filter does not apply to NIFTY.",
+        "scan_audit": {
+          "audit_id": "9f26abf1-09e7-4957-b9ca-b18aec75f2e7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\9f26abf1-09e7-4957-b9ca-b18aec75f2e7.json"
+        }
+      },
+      {
+        "ticker": "RELIANCE",
+        "ok": true,
+        "error": null,
+        "candidates": [
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 10.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 1.4749999999999988,
+            "ticker": "RELIANCE",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 1290.0,
+            "long_strike": 1300.0,
+            "width": 10.0,
+            "credit": 1.47,
+            "ror_pct": 17.3,
+            "cushion_pct": 6.17,
+            "vrp": 1.03,
+            "iv": 0.2618,
+            "rv21": 0.255,
+            "earnings": true,
+            "max_gap": 2.36,
+            "p_raw": 0.185,
+            "p_adj": 0.2557,
+            "ev": -108.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3004,
+                "rv21": 0.255,
+                "rv63": 0.2119,
+                "rv252": 0.2193
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.36
+              },
+              "l3": {
+                "iv": 0.2618,
+                "rv21": 0.255,
+                "ratio": 1.03
+              },
+              "l4": {
+                "p_raw": 0.185,
+                "p_adj": 0.2557,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0241,
+                  "oi": 165
+                },
+                "long": {
+                  "spread_pct": 0.0137,
+                  "oi": 4511
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|144171",
+            "long_instrument_key": "NSE_FO|125997",
+            "lot_size": 500,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|144171",
+                "bid": 12.3,
+                "ask": 12.6,
+                "midpoint": 12.45,
+                "iv": 0.2618,
+                "raw_iv": 26.18,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 82500.0,
+                "oi_lot_size": 500,
+                "oi_contracts": 165,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 10000
+              },
+              "long": {
+                "instrument_key": "NSE_FO|125997",
+                "bid": 10.9,
+                "ask": 11.05,
+                "midpoint": 10.975000000000001,
+                "iv": 0.2612,
+                "raw_iv": 26.12,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 2255500.0,
+                "oi_lot_size": 500,
+                "oi_contracts": 4511,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 380500
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 10.0,
+            "credit_per_lot_inr": 737.5,
+            "max_loss_per_lot_inr": 4262.5,
+            "ev_per_lot_inr": -541.0
+          },
+          {
+            "strategy_profile": "NSE_RESEARCH_V1",
+            "width_steps": 1,
+            "strike_interval": 10.0,
+            "minimum_credit_points": 0.025,
+            "short_tick_inr": 0.05,
+            "long_tick_inr": 0.05,
+            "quote_ticks_valid": true,
+            "credit_points_unrounded": 1.15,
+            "ticker": "RELIANCE",
+            "type": "BEAR CALL",
+            "expiration": "2026-11-23",
+            "short_strike": 1320.0,
+            "long_strike": 1330.0,
+            "width": 10.0,
+            "credit": 1.15,
+            "ror_pct": 13.0,
+            "cushion_pct": 8.64,
+            "vrp": 1.04,
+            "iv": 0.2661,
+            "rv21": 0.255,
+            "earnings": true,
+            "max_gap": 2.36,
+            "p_raw": 0.1168,
+            "p_adj": 0.1487,
+            "ev": -34.0,
+            "layers": {
+              "l1": {
+                "rv10": 0.3004,
+                "rv21": 0.255,
+                "rv63": 0.2119,
+                "rv252": 0.2193
+              },
+              "l2": {
+                "earnings_inside": true,
+                "max_gap_pct": 2.36
+              },
+              "l3": {
+                "iv": 0.2661,
+                "rv21": 0.255,
+                "ratio": 1.04
+              },
+              "l4": {
+                "p_raw": 0.1168,
+                "p_adj": 0.1487,
+                "horizon_td": 26
+              },
+              "l5": {
+                "short": {
+                  "spread_pct": 0.0179,
+                  "oi": 557
+                },
+                "long": {
+                  "spread_pct": 0.0623,
+                  "oi": 129
+                }
+              }
+            },
+            "monetary_status": "available",
+            "short_instrument_key": "NSE_FO|125999",
+            "long_instrument_key": "NSE_FO|144175",
+            "lot_size": 500,
+            "lot_size_status": "contract",
+            "leg_inputs": {
+              "short": {
+                "instrument_key": "NSE_FO|125999",
+                "bid": 8.3,
+                "ask": 8.45,
+                "midpoint": 8.375,
+                "iv": 0.2661,
+                "raw_iv": 26.61,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 278500.0,
+                "oi_lot_size": 500,
+                "oi_contracts": 557,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 35500
+              },
+              "long": {
+                "instrument_key": "NSE_FO|144175",
+                "bid": 7.0,
+                "ask": 7.45,
+                "midpoint": 7.225,
+                "iv": 0.2826,
+                "raw_iv": 28.26,
+                "iv_source": "option_chain",
+                "raw_oi_quantity": 64500.0,
+                "oi_lot_size": 500,
+                "oi_contracts": 129,
+                "oi_status": "verified_quantity_to_contracts",
+                "volume": 0
+              }
+            },
+            "probability_sample_count": 719,
+            "actual_width_points": 10.0,
+            "credit_per_lot_inr": 575.0,
+            "max_loss_per_lot_inr": 4425.0,
+            "ev_per_lot_inr": -168.67
+          }
+        ],
+        "funnel": {
+          "considered": 24,
+          "cushion": 20,
+          "friction": 17,
+          "paired": 17,
+          "ror": 16,
+          "vrp": 2,
+          "final": 2
+        },
+        "meta": {
+          "spot": 1215.0,
+          "expiration": "2026-11-23",
+          "dte": 38,
+          "earnings": true,
+          "max_gap": 2.36,
+          "rv": {
+            "rv10": 0.3004,
+            "rv21": 0.255,
+            "rv63": 0.2119,
+            "rv252": 0.2193
+          }
+        },
+        "data_warnings": [
+          "Using returned daily candles; candle completeness is unverified.",
+          "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified.",
+          "Using Upstox returned closes; corporate-action adjustment equivalence is unverified.",
+          "NSE_RESEARCH_V1 is a separate market-structure research profile; economic thresholds are unchanged. The adjusted-history mismatch remains unresolved for equities; profile adaptation does not establish backtest validity."
+        ],
+        "history_validation": {
+          "requested_start": "2023-10-16",
+          "requested_end": "2026-10-16",
+          "raw_count": 745,
+          "parsed_count": 745,
+          "skipped_count": 0,
+          "source_order": "descending",
+          "normalized_order": "ascending",
+          "duplicate_dates": [],
+          "invalid_ohlcv_dates": [],
+          "out_of_range_dates": [],
+          "calendar_source": null,
+          "missing_sessions": null,
+          "unexpected_sessions": null,
+          "unconfirmed_session_dates": [],
+          "status": "unverified",
+          "explanation": "Daily history unverified: 0 duplicate dates; 0 skipped malformed rows; 0 invalid OHLCV rows; 0 out-of-range dates. No authoritative NSE completed-session calendar covers the requested range; missing-session dates cannot be certified."
+        },
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_mode": "listed_strike_steps",
+        "width_steps": 1,
+        "nse_market_structure_issues": [
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 1210.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BULL PUT",
+            "short_strike": 1200.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1190.0,
+            "long_strike": 1180.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1180.0,
+            "long_strike": 1170.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1170.0,
+            "long_strike": 1160.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1160.0,
+            "long_strike": 1150.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1150.0,
+            "long_strike": 1140.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1140.0,
+            "long_strike": 1130.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1130.0,
+            "long_strike": 1120.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1120.0,
+            "long_strike": 1110.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BULL PUT",
+            "short_strike": 1110.0,
+            "long_strike": 1100.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BULL PUT",
+            "short_strike": 1100.0,
+            "long_strike": 1090.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 1220.0
+          },
+          {
+            "reason": "CUSHION",
+            "strategy": "BEAR CALL",
+            "short_strike": 1230.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BEAR CALL",
+            "short_strike": 1240.0,
+            "long_strike": 1250.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BEAR CALL",
+            "short_strike": 1250.0,
+            "long_strike": 1260.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BEAR CALL",
+            "short_strike": 1260.0,
+            "long_strike": 1270.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BEAR CALL",
+            "short_strike": 1270.0,
+            "long_strike": 1280.0
+          },
+          {
+            "reason": "VRP",
+            "strategy": "BEAR CALL",
+            "short_strike": 1280.0,
+            "long_strike": 1290.0
+          },
+          {
+            "reason": "LONG_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1300.0,
+            "long_strike": 1310.0
+          },
+          {
+            "reason": "SHORT_OI",
+            "strategy": "BEAR CALL",
+            "short_strike": 1310.0
+          },
+          {
+            "reason": "ROR",
+            "strategy": "BEAR CALL",
+            "short_strike": 1330.0,
+            "long_strike": 1340.0
+          }
+        ],
+        "history_parity_status": "UNVERIFIED",
+        "symbol": "RELIANCE",
+        "instrument_key": "NSE_EQ|INE002A01018",
+        "kind": "EQUITY",
+        "expiry": "2026-11-23",
+        "dte": 38,
+        "data_mode": "upstox",
+        "data_note": "Upstox market data. Research only; no Upstox order placement is available.",
+        "capabilities": {
+          "daily_candle_completeness": "unverified",
+          "history_adjustment": "unverified",
+          "earnings": "yahoo_dates_upstox_closes",
+          "option_open_interest": "verified",
+          "option_implied_volatility": "reported",
+          "quote_timestamp": "unavailable"
+        },
+        "iv_provider_errors": [],
+        "observation_policy": {
+          "mode": "historical_close_reference",
+          "reference_date": "2026-10-15",
+          "chain_spot": 1196.0,
+          "explanation": "OTM, cushion, strike proximity and breach thresholds use the last returned historical close. Option quotes are fetched separately; this is not a synchronized current-market snapshot."
+        },
+        "freshness": {
+          "fetched_at": "2026-10-16T09:32:30.600014+05:30",
+          "quote_time_status": "UNKNOWN",
+          "provider_quote_timestamp": null,
+          "explanation": "Fetch completion time only; provider per-leg quote age is unavailable."
+        },
+        "settlement_note": "Stock options are physically settled: expiry can create delivery and funding obligations. Payoff maximum loss is not broker margin or capital required; broker square-off policies are not modeled.",
+        "costs": {
+          "status": "UNVERIFIED",
+          "estimated_cost_inr": null,
+          "net_credit_inr": null,
+          "explanation": "Gross midpoint model excludes brokerage, STT, exchange charges, GST, SEBI charges, stamp duty, slippage and two-leg execution effects."
+        },
+        "earnings_source_note": "Yahoo NSE earnings dates (limit 24 plus calendar fallback); original event/gap calculation using Upstox closes. Announcement timing is unknown: date-only events do not identify before/during/after-market releases. Symbol-to-company mapping, historical date coverage and equity corporate-action treatment are not certified.",
+        "scan_audit": {
+          "audit_id": "7333ae5b-9f3b-49a2-a510-4ee9739457b7",
+          "status": "captured",
+          "file": "C:\\Users\\Manish gowda\\OneDrive\\Desktop\\algo-trading\\Angel-one-trading\\tmp\\spread-audit\\7333ae5b-9f3b-49a2-a510-4ee9739457b7.json"
+        }
+      }
+    ],
+    "success_count": 3,
+    "requested_count": 3,
+    "status": "SUCCESS",
+    "failure_count": 0,
+    "candidates": [
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 40.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 7.474999999999997,
+        "ticker": "INFY",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 1240.0,
+        "long_strike": 1280.0,
+        "width": 40.0,
+        "credit": 7.47,
+        "ror_pct": 23.0,
+        "cushion_pct": 11.71,
+        "vrp": 1.13,
+        "iv": 0.3381,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.0723,
+        "p_adj": 0.0878,
+        "ev": 396.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3381,
+            "rv21": 0.2987,
+            "ratio": 1.13
+          },
+          "l4": {
+            "p_raw": 0.0723,
+            "p_adj": 0.0878,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0146,
+              "oi": 385
+            },
+            "long": {
+              "spread_pct": 0.0115,
+              "oi": 976
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|104810",
+        "long_instrument_key": "NSE_FO|104944",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|104810",
+            "bid": 20.4,
+            "ask": 20.7,
+            "midpoint": 20.549999999999997,
+            "iv": 0.3381,
+            "raw_iv": 33.81,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 154000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 385,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 81200
+          },
+          "long": {
+            "instrument_key": "NSE_FO|104944",
+            "bid": 13.0,
+            "ask": 13.15,
+            "midpoint": 13.075,
+            "iv": 0.3467,
+            "raw_iv": 34.67,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 390400.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 976,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 237200
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 40.0,
+        "credit_per_lot_inr": 2990.0,
+        "max_loss_per_lot_inr": 13010.0,
+        "ev_per_lot_inr": 1585.84
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 10.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 1.15,
+        "ticker": "RELIANCE",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 1320.0,
+        "long_strike": 1330.0,
+        "width": 10.0,
+        "credit": 1.15,
+        "ror_pct": 13.0,
+        "cushion_pct": 8.64,
+        "vrp": 1.04,
+        "iv": 0.2661,
+        "rv21": 0.255,
+        "earnings": true,
+        "max_gap": 2.36,
+        "p_raw": 0.1168,
+        "p_adj": 0.1487,
+        "ev": -34.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3004,
+            "rv21": 0.255,
+            "rv63": 0.2119,
+            "rv252": 0.2193
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.36
+          },
+          "l3": {
+            "iv": 0.2661,
+            "rv21": 0.255,
+            "ratio": 1.04
+          },
+          "l4": {
+            "p_raw": 0.1168,
+            "p_adj": 0.1487,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0179,
+              "oi": 557
+            },
+            "long": {
+              "spread_pct": 0.0623,
+              "oi": 129
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|125999",
+        "long_instrument_key": "NSE_FO|144175",
+        "lot_size": 500,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|125999",
+            "bid": 8.3,
+            "ask": 8.45,
+            "midpoint": 8.375,
+            "iv": 0.2661,
+            "raw_iv": 26.61,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 278500.0,
+            "oi_lot_size": 500,
+            "oi_contracts": 557,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 35500
+          },
+          "long": {
+            "instrument_key": "NSE_FO|144175",
+            "bid": 7.0,
+            "ask": 7.45,
+            "midpoint": 7.225,
+            "iv": 0.2826,
+            "raw_iv": 28.26,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 64500.0,
+            "oi_lot_size": 500,
+            "oi_contracts": 129,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 0
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 10.0,
+        "credit_per_lot_inr": 575.0,
+        "max_loss_per_lot_inr": 4425.0,
+        "ev_per_lot_inr": -168.67
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 10.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 1.4749999999999988,
+        "ticker": "RELIANCE",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 1290.0,
+        "long_strike": 1300.0,
+        "width": 10.0,
+        "credit": 1.47,
+        "ror_pct": 17.3,
+        "cushion_pct": 6.17,
+        "vrp": 1.03,
+        "iv": 0.2618,
+        "rv21": 0.255,
+        "earnings": true,
+        "max_gap": 2.36,
+        "p_raw": 0.185,
+        "p_adj": 0.2557,
+        "ev": -108.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3004,
+            "rv21": 0.255,
+            "rv63": 0.2119,
+            "rv252": 0.2193
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.36
+          },
+          "l3": {
+            "iv": 0.2618,
+            "rv21": 0.255,
+            "ratio": 1.03
+          },
+          "l4": {
+            "p_raw": 0.185,
+            "p_adj": 0.2557,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0241,
+              "oi": 165
+            },
+            "long": {
+              "spread_pct": 0.0137,
+              "oi": 4511
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|144171",
+        "long_instrument_key": "NSE_FO|125997",
+        "lot_size": 500,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|144171",
+            "bid": 12.3,
+            "ask": 12.6,
+            "midpoint": 12.45,
+            "iv": 0.2618,
+            "raw_iv": 26.18,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 82500.0,
+            "oi_lot_size": 500,
+            "oi_contracts": 165,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 10000
+          },
+          "long": {
+            "instrument_key": "NSE_FO|125997",
+            "bid": 10.9,
+            "ask": 11.05,
+            "midpoint": 10.975000000000001,
+            "iv": 0.2612,
+            "raw_iv": 26.12,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 2255500.0,
+            "oi_lot_size": 500,
+            "oi_contracts": 4511,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 380500
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 10.0,
+        "credit_per_lot_inr": 737.5,
+        "max_loss_per_lot_inr": 4262.5,
+        "ev_per_lot_inr": -541.0
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 20.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 2.0749999999999993,
+        "ticker": "INFY",
+        "type": "BULL PUT",
+        "expiration": "2026-11-23",
+        "short_strike": 1020.0,
+        "long_strike": 1000.0,
+        "width": 20.0,
+        "credit": 2.07,
+        "ror_pct": 11.6,
+        "cushion_pct": 8.11,
+        "vrp": 1.25,
+        "iv": 0.3748,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.2156,
+        "p_adj": 0.282,
+        "ev": -357.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3748,
+            "rv21": 0.2987,
+            "ratio": 1.25
+          },
+          "l4": {
+            "p_raw": 0.2156,
+            "p_adj": 0.282,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0236,
+              "oi": 122
+            },
+            "long": {
+              "spread_pct": 0.0235,
+              "oi": 1134
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|129504",
+        "long_instrument_key": "NSE_FO|104781",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|129504",
+            "bid": 10.45,
+            "ask": 10.7,
+            "midpoint": 10.575,
+            "iv": 0.37479999999999997,
+            "raw_iv": 37.48,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 48800.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 122,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 10800
+          },
+          "long": {
+            "instrument_key": "NSE_FO|104781",
+            "bid": 8.4,
+            "ask": 8.6,
+            "midpoint": 8.5,
+            "iv": 0.3906,
+            "raw_iv": 39.06,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 453600.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 1134,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 77200
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 20.0,
+        "credit_per_lot_inr": 830.0,
+        "max_loss_per_lot_inr": 7170.0,
+        "ev_per_lot_inr": -1426.35
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 20.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 10.050000000000004,
+        "ticker": "INFY",
+        "type": "BEAR CALL",
+        "expiration": "2026-11-23",
+        "short_strike": 1140.0,
+        "long_strike": 1160.0,
+        "width": 20.0,
+        "credit": 10.05,
+        "ror_pct": 101.0,
+        "cushion_pct": 2.7,
+        "vrp": 1.13,
+        "iv": 0.3387,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.3866,
+        "p_adj": 0.7443,
+        "ev": -484.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3387,
+            "rv21": 0.2987,
+            "ratio": 1.13
+          },
+          "l4": {
+            "p_raw": 0.3866,
+            "p_adj": 0.7443,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0139,
+              "oi": 220
+            },
+            "long": {
+              "spread_pct": 0.0148,
+              "oi": 434
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|129536",
+        "long_instrument_key": "NSE_FO|104790",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|129536",
+            "bid": 57.1,
+            "ask": 57.9,
+            "midpoint": 57.5,
+            "iv": 0.3387,
+            "raw_iv": 33.87,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 88000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 220,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 40800
+          },
+          "long": {
+            "instrument_key": "NSE_FO|104790",
+            "bid": 47.1,
+            "ask": 47.8,
+            "midpoint": 47.45,
+            "iv": 0.3333,
+            "raw_iv": 33.33,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 173600.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 434,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 58400
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 20.0,
+        "credit_per_lot_inr": 4020.0,
+        "max_loss_per_lot_inr": 3980.0,
+        "ev_per_lot_inr": -1934.23
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 20.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 2.825000000000001,
+        "ticker": "INFY",
+        "type": "BULL PUT",
+        "expiration": "2026-11-23",
+        "short_strike": 1040.0,
+        "long_strike": 1020.0,
+        "width": 20.0,
+        "credit": 2.83,
+        "ror_pct": 16.4,
+        "cushion_pct": 6.31,
+        "vrp": 1.22,
+        "iv": 0.3656,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.2768,
+        "p_adj": 0.3865,
+        "ev": -490.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3656,
+            "rv21": 0.2987,
+            "ratio": 1.22
+          },
+          "l4": {
+            "p_raw": 0.2768,
+            "p_adj": 0.3865,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0224,
+              "oi": 265
+            },
+            "long": {
+              "spread_pct": 0.0236,
+              "oi": 122
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|104783",
+        "long_instrument_key": "NSE_FO|129504",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|104783",
+            "bid": 13.25,
+            "ask": 13.55,
+            "midpoint": 13.4,
+            "iv": 0.36560000000000004,
+            "raw_iv": 36.56,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 106000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 265,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 38800
+          },
+          "long": {
+            "instrument_key": "NSE_FO|129504",
+            "bid": 10.45,
+            "ask": 10.7,
+            "midpoint": 10.575,
+            "iv": 0.37479999999999997,
+            "raw_iv": 37.48,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 48800.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 122,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 10800
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 20.0,
+        "credit_per_lot_inr": 1130.0,
+        "max_loss_per_lot_inr": 6870.0,
+        "ev_per_lot_inr": -1961.91
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 20.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 3.649999999999997,
+        "ticker": "INFY",
+        "type": "BULL PUT",
+        "expiration": "2026-11-23",
+        "short_strike": 1060.0,
+        "long_strike": 1040.0,
+        "width": 20.0,
+        "credit": 3.65,
+        "ror_pct": 22.3,
+        "cushion_pct": 4.5,
+        "vrp": 1.19,
+        "iv": 0.3552,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.3352,
+        "p_adj": 0.5212,
+        "ev": -677.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3552,
+            "rv21": 0.2987,
+            "ratio": 1.19
+          },
+          "l4": {
+            "p_raw": 0.3352,
+            "p_adj": 0.5212,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.0176,
+              "oi": 225
+            },
+            "long": {
+              "spread_pct": 0.0224,
+              "oi": 265
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|129507",
+        "long_instrument_key": "NSE_FO|104783",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|129507",
+            "bid": 16.9,
+            "ask": 17.2,
+            "midpoint": 17.049999999999997,
+            "iv": 0.3552,
+            "raw_iv": 35.52,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 90000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 225,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 20000
+          },
+          "long": {
+            "instrument_key": "NSE_FO|104783",
+            "bid": 13.25,
+            "ask": 13.55,
+            "midpoint": 13.4,
+            "iv": 0.36560000000000004,
+            "raw_iv": 36.56,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 106000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 265,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 38800
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 20.0,
+        "credit_per_lot_inr": 1460.0,
+        "max_loss_per_lot_inr": 6540.0,
+        "ev_per_lot_inr": -2709.66
+      },
+      {
+        "strategy_profile": "NSE_RESEARCH_V1",
+        "width_steps": 1,
+        "strike_interval": 20.0,
+        "minimum_credit_points": 0.025,
+        "short_tick_inr": 0.05,
+        "long_tick_inr": 0.05,
+        "quote_ticks_valid": true,
+        "credit_points_unrounded": 4.65,
+        "ticker": "INFY",
+        "type": "BULL PUT",
+        "expiration": "2026-11-23",
+        "short_strike": 1080.0,
+        "long_strike": 1060.0,
+        "width": 20.0,
+        "credit": 4.65,
+        "ror_pct": 30.3,
+        "cushion_pct": 2.7,
+        "vrp": 1.17,
+        "iv": 0.3503,
+        "rv21": 0.2987,
+        "earnings": true,
+        "max_gap": 2.5,
+        "p_raw": 0.4047,
+        "p_adj": 0.7791,
+        "ev": -1093.0,
+        "layers": {
+          "l1": {
+            "rv10": 0.3535,
+            "rv21": 0.2987,
+            "rv63": 0.307,
+            "rv252": 0.3087
+          },
+          "l2": {
+            "earnings_inside": true,
+            "max_gap_pct": 2.5
+          },
+          "l3": {
+            "iv": 0.3503,
+            "rv21": 0.2987,
+            "ratio": 1.17
+          },
+          "l4": {
+            "p_raw": 0.4047,
+            "p_adj": 0.7791,
+            "horizon_td": 26
+          },
+          "l5": {
+            "short": {
+              "spread_pct": 0.023,
+              "oi": 199
+            },
+            "long": {
+              "spread_pct": 0.0176,
+              "oi": 225
+            }
+          }
+        },
+        "monetary_status": "available",
+        "short_instrument_key": "NSE_FO|104787",
+        "long_instrument_key": "NSE_FO|129507",
+        "lot_size": 400,
+        "lot_size_status": "contract",
+        "leg_inputs": {
+          "short": {
+            "instrument_key": "NSE_FO|104787",
+            "bid": 21.45,
+            "ask": 21.95,
+            "midpoint": 21.7,
+            "iv": 0.3503,
+            "raw_iv": 35.03,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 79600.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 199,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 17600
+          },
+          "long": {
+            "instrument_key": "NSE_FO|129507",
+            "bid": 16.9,
+            "ask": 17.2,
+            "midpoint": 17.049999999999997,
+            "iv": 0.3552,
+            "raw_iv": 35.52,
+            "iv_source": "option_chain",
+            "raw_oi_quantity": 90000.0,
+            "oi_lot_size": 400,
+            "oi_contracts": 225,
+            "oi_status": "verified_quantity_to_contracts",
+            "volume": 20000
+          }
+        },
+        "probability_sample_count": 719,
+        "actual_width_points": 20.0,
+        "credit_per_lot_inr": 1860.0,
+        "max_loss_per_lot_inr": 6140.0,
+        "ev_per_lot_inr": -4372.67
+      }
+    ],
+    "funnel": {
+      "considered": 68,
+      "cushion": 49,
+      "friction": 27,
+      "paired": 27,
+      "ror": 22,
+      "vrp": 8,
+      "final": 8
+    },
+    "elapsed": 3.5,
+    "tickers_ok": 3,
+    "tickers_failed": 0,
+    "funnels": {
+      "INFY": {
+        "considered": 20,
+        "cushion": 18,
+        "friction": 10,
+        "paired": 10,
+        "ror": 6,
+        "vrp": 6,
+        "final": 6
+      },
+      "NIFTY": {
+        "considered": 24,
+        "cushion": 11,
+        "friction": 0,
+        "paired": 0,
+        "ror": 0,
+        "vrp": 0,
+        "final": 0
+      },
+      "RELIANCE": {
+        "considered": 24,
+        "cushion": 20,
+        "friction": 17,
+        "paired": 17,
+        "ror": 16,
+        "vrp": 2,
+        "final": 2
+      }
+    },
+    "meta": {
+      "INFY": {
+        "spot": 1110.0,
+        "expiration": "2026-11-23",
+        "dte": 38,
+        "earnings": true,
+        "max_gap": 2.5,
+        "rv": {
+          "rv10": 0.3535,
+          "rv21": 0.2987,
+          "rv63": 0.307,
+          "rv252": 0.3087
+        }
+      },
+      "NIFTY": {
+        "spot": 22997.35,
+        "expiration": "2026-11-17",
+        "dte": 32,
+        "earnings": false,
+        "max_gap": 0.0,
+        "rv": {
+          "rv10": 0.1886,
+          "rv21": 0.1561,
+          "rv63": 0.1147,
+          "rv252": 0.1378
+        }
+      },
+      "RELIANCE": {
+        "spot": 1215.0,
+        "expiration": "2026-11-23",
+        "dte": 38,
+        "earnings": true,
+        "max_gap": 2.36,
+        "rv": {
+          "rv10": 0.3004,
+          "rv21": 0.255,
+          "rv63": 0.2119,
+          "rv252": 0.2193
+        }
+      }
+    },
+    "errors": [],
+    "ranking_note": "Original stable descending rounded EV ranking (100-unit convention); negative EV is retained. Per-lot INR values do not change ranking."
+  },
+  "status": "PROFILE_ADAPTATION",
+  "note": "No original-ZIP candidate parity claim for NSE market-structure adaptations."
+}

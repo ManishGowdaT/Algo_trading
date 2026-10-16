@@ -176,7 +176,7 @@ def capability_blockers(history: HistoryData, earnings: EarningsData) -> list[st
 def scan_provider_data(
     ticker: str, history: HistoryData, chain: OptionChain, earnings: EarningsData,
     expiration: date, dte: int, p: ScanParams | None = None,
-    *, spread_builder=None,
+    *, spread_builder=None, reference_spot=None,
 ) -> dict:
     """Safely run the exact engine when all original input capabilities exist."""
     params = p or ScanParams()
@@ -206,7 +206,9 @@ def scan_provider_data(
     if not closes:
         result["error"] = "insufficient or missing price history"
         return result
-    spot = float(closes[-1])
+    spot = float(closes[-1]) if reference_spot is None else float(reference_spot)
+    if not math.isfinite(spot) or spot <= 0:
+        raise ValueError('A positive finite underlying reference spot is required.')
     rv = realized_vols(closes)
     puts = option_chain_rows(chain, "puts")
     calls = option_chain_rows(chain, "calls")
