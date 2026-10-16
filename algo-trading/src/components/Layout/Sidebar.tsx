@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useIndexOrbAvailability from '../../hooks/useIndexOrbAvailability';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -24,6 +25,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }) => {
     const location = useLocation();
     const [isStrategiesOpen, setIsStrategiesOpen] = useState(true);
+    const indexOrbAvailable = useIndexOrbAvailability();
 
     useEffect(() => {
         onMobileClose?.();
@@ -37,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen = false, onMobileClose }
         { name: 'Ichimoku', path: '/strategies/ichimoku', icon: BarChart3 },
         { name: 'VWAP SMMA', path: '/strategies/vwap-smma', icon: Clock },
         { name: 'Expiry Strategy', path: '/strategies/expiry', icon: Target },
+        ...(indexOrbAvailable ? [{ name: 'Index VWAP ORB', path: '/strategies/index-vwap-orb', icon: Activity }] : []),
     ];
 
     const isActive = (path: string) => location.pathname === path;

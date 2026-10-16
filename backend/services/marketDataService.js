@@ -47,10 +47,12 @@ class AccountMarketDataService extends EventEmitter {
     };
     this.destroyed = false;
     this.requestPython = requestPython;
+    this.validateUnderlyingContext = () => accountContext.validate(this.accountContext);
     this.ltpCache = new Map(); // exchangeType:token -> { ltp, timestamp }
     this.subscribers = new Map(); // role:exchange_token_interval -> { exchange, exchangeType, token, role, refCount }
     this.streamSubscribers = new Map(); // exchangeType:token -> { exchange, exchangeType, token, refCount }
     this.candleBuilders = new Map(); // bufferKey -> builder object
+    this.underlyingStreams = new Map(); // Opt-in full-session index OHLCV, independent of legacy option buffers.
 
     this.wsConsecutiveTicks = 0;
     this.fallbackTimer = null;
@@ -114,6 +116,8 @@ class AccountMarketDataService extends EventEmitter {
       return false;
     }
     this.destroyed = true;
+    for (const stream of this.underlyingStreams.values()) stream.stop();
+    this.underlyingStreams.clear();
     for (const builder of this.candleBuilders.values()) clearTimeout(builder.historyRetryTimer);
     for (const pending of this.pendingSubscriptions.values()) pending.cancelled = true;
     this.pendingSubscriptions.clear();
@@ -489,6 +493,31 @@ class AccountMarketDataService extends EventEmitter {
     return builder.candles;
   }
 
+  async subscribeUnderlying(underlying) {
+    if (this.destroyed) return null;
+    let stream = this.underlyingStreams.get(underlying);
+    if (!stream) {
+      const { UnderlyingCandleStream } = require('./underlyingCandleStream');
+      stream = new UnderlyingCandleStream(this, underlying);
+      this.underlyingStreams.set(underlying, stream);
+    }
+    stream.references++;
+    await stream.refresh();
+    stream.schedule();
+    return stream.getSnapshot();
+  }
+
+  unsubscribeUnderlying(underlying) {
+    const stream = this.underlyingStreams.get(underlying);
+    if (stream && --stream.references <= 0) {
+      stream.stop(); this.underlyingStreams.delete(underlying);
+    }
+  }
+
+  getUnderlyingSnapshot(underlying) {
+    return this.underlyingStreams.get(underlying)?.getSnapshot() ?? null;
+  }
+
   scheduleHistoryRetry(builder, delay) {
     if (this.destroyed || this.candleBuilders.get(builder.key) !== builder || builder.historyRetryTimer) return;
     builder.historyRetryTimer = setTimeout(() => {
@@ -798,7 +827,7 @@ class MarketDataRouter extends EventEmitter {
       accountContext.assertVerified(context);
       const pending = [...this.pendingRoutes].find(item => !item.cancelled && this._key(item.context) === this._key(context)
         && item.context.sessionId === context.sessionId && item.context.sessionGeneration === context.sessionGeneration
-        && item.args[0] === args[0] && String(item.args[1]) === String(args[1])
+        && item.args?.[0] === args[0] && String(item.args[1]) === String(args[1])
         && (item.args[2] || 'FIVE_MINUTE') === (args[2] || 'FIVE_MINUTE')
         && (item.args[4]?.role || 'scanner') === (args[3] || 'scanner'));
       if (pending) { pending.cancelled = true; return; }
@@ -812,6 +841,34 @@ class MarketDataRouter extends EventEmitter {
   getLtp(...args) { return this._serviceSync().getLtp(...args); }
   getBuffer(...args) { return this._serviceSync().getBuffer(...args); }
   async ensureHistory(...args) { return (await this._service()).ensureHistory(...args); }
+  async subscribeUnderlying(underlying) {
+    const context = accountContext.optional() || await this._currentContext();
+    const reservation = { context, underlying, cancelled: false };
+    this.pendingRoutes.add(reservation);
+    try {
+      const service = await this._service(context);
+      if (reservation.cancelled) return null;
+      const result = service.subscribeUnderlying(underlying);
+      this.pendingRoutes.delete(reservation);
+      return await result;
+    } finally { this.pendingRoutes.delete(reservation); }
+  }
+  unsubscribeUnderlying(underlying) {
+    const context = accountContext.optional();
+    if (context) {
+      accountContext.assertVerified(context);
+      const pending = [...this.pendingRoutes].find(item => !item.cancelled && item.underlying === underlying
+        && this._key(item.context) === this._key(context) && item.context.sessionId === context.sessionId
+        && item.context.sessionGeneration === context.sessionGeneration);
+      if (pending) { pending.cancelled = true; return; }
+      const service = this.accounts.get(this._key(context));
+      if (!service || service.destroyed || service.sessionIdentity.sessionId !== context.sessionId
+        || service.sessionIdentity.sessionGeneration !== context.sessionGeneration) return;
+      return service.unsubscribeUnderlying(underlying);
+    }
+    return this._serviceSync().unsubscribeUnderlying(underlying);
+  }
+  getUnderlyingSnapshot(...args) { return this._serviceSync().getUnderlyingSnapshot(...args); }
   async getOrderUpdateService() { return (await this._service()).getOrderUpdateService(); }
 
   on(event, listener) {

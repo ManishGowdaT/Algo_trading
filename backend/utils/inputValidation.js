@@ -58,6 +58,7 @@ function isIsoDate(value) {
 }
 
 function validateStrategyConfig(strategyName, config) {
+  if (strategyName === 'IndexVwapOrb') return require('./indexVwapOrbConfig').validate(config, InputValidationError);
   const allowedFields = STRATEGY_CONFIG_FIELDS[strategyName];
   if (!allowedFields) throw new InputValidationError('Unsupported strategy.');
   if (!config || typeof config !== 'object' || Array.isArray(config)) {

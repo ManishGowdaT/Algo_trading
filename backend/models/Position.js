@@ -18,6 +18,15 @@ const executionSnapshotSchema = new mongoose.Schema({
     finalTargetPoints: Number,
     targetPoints: Number,
     slPoints: Number,
+    referenceRisk: { type: new mongoose.Schema({
+      type: { type: String, enum: ['INDEX_SPOT'], required: true },
+      underlying: { type: String, required: true }, exchange: { type: String, required: true },
+      symboltoken: { type: String, required: true }, direction: { type: String, enum: ['LONG', 'SHORT'], required: true },
+      entry: { type: Number, required: true }, stop: { type: Number, required: true }, target: { type: Number, required: true },
+      signalClosedAt: { type: Number, required: true }, squareOffAt: { type: Number, required: true },
+      ruleVersion: { type: String, required: true }, setupId: { type: String, required: true },
+      optionExpiry: String, optionStrike: Number, optionType: String,
+    }, { _id: false, strict: 'throw' }), default: undefined },
 }, { _id: false, strict: 'throw' });
 
 const positionSchema = new mongoose.Schema({
@@ -51,6 +60,7 @@ const positionSchema = new mongoose.Schema({
     executionOwnerId: { type: String, maxlength: 160 },
     executionOwnerGeneration: { type: Number, min: 0, default: 0, required: true },
     lastQuoteAt: Date,
+    referenceTrigger: { type: mongoose.Schema.Types.Mixed },
     lastReconciledAt: Date,
     reconciliationHealth: {
         type: String,

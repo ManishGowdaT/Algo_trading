@@ -501,6 +501,7 @@ def market_candles(
     interval: str = Query("FIVE_MINUTE", min_length=1, max_length=24),
     lookback_minutes: int = Query(375, ge=1, le=10_080),
     date: Optional[str] = Query(None, max_length=10),
+    include_volume: bool = Query(False),
 ) -> Dict[str, Any]:
     try:
         if date is not None:
@@ -534,6 +535,7 @@ def market_candles(
             interval=interval,
             from_dt=from_dt,
             to_dt=to_dt,
+            **({"include_volume": True} if include_volume else {}),
         )
         return {"items": candles}
     except HTTPException:
@@ -773,7 +775,7 @@ def index_options(
 
 
 @app.get("/market/index-ltp")
-def index_ltp(underlying: str = Query(..., min_length=1, max_length=32)) -> Dict[str, Any]:
+def index_ltp(underlying: str = Query(..., min_length=1, max_length=32), requireFresh: bool = Query(False)) -> Dict[str, Any]:
     und = underlying.strip().upper()
     # NIFTY/BANKNIFTY are NSE indices, SENSEX is BSE, CRUDEOILM is MCX.
     primary_ex = "BSE" if und == "SENSEX" else "MCX" if und == "CRUDEOILM" else "NSE"
@@ -781,6 +783,10 @@ def index_ltp(underlying: str = Query(..., min_length=1, max_length=32)) -> Dict
 
     try:
         tradingsymbol, symboltoken = instruments.get_index_spot(underlying=und)
+        if requireFresh:
+            # Reference-risk exits require the catalogue identity and exchange time;
+            # never fall back to an ambiguous search result or untimestamped LTP.
+            return angel.get_ltp(exchange=primary_ex, tradingsymbol=tradingsymbol, symboltoken=symboltoken, require_fresh=True)
         try:
             return angel.get_ltp(exchange=primary_ex, tradingsymbol=tradingsymbol, symboltoken=symboltoken)
         except Exception:

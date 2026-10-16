@@ -90,6 +90,9 @@ class StrategyRegistry {
 
       for (const user of users) {
         for (const [id, PluginClass] of this.plugins.entries()) {
+          if (id === 'IndexVwapOrb' && !await require('../models/StrategyAvailability').findOne({
+            userId: user._id, strategyName: id, settingsEnabled: true,
+          }).lean()) continue;
           const existing = await StrategyModel.findOne({ name: id, userId: user._id });
           if (!existing) {
             await StrategyModel.create({

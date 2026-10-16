@@ -98,25 +98,27 @@ async function recoverAccount(context) {
         if (!snapshot || !position.executionConfig
           || !Number.isFinite(snapshot.quantity) || snapshot.quantity < 1
           || !Number.isFinite(snapshot.entryPrice) || snapshot.entryPrice <= 0
-          || !Number.isFinite(snapshot.stopLoss) || snapshot.stopLoss <= 0
-          || !Number.isFinite(snapshot.target) || snapshot.target <= 0
+          || (!snapshot.referenceRisk && (!Number.isFinite(snapshot.stopLoss) || snapshot.stopLoss <= 0
+            || !Number.isFinite(snapshot.target) || snapshot.target <= 0))
           || !snapshot.exchange || !snapshot.tradingsymbol || !snapshot.symboltoken
           || !['PAPER', 'LIVE'].includes(snapshot.executionMode)) {
           throw new Error('Persisted position snapshot is incomplete; recovery will not guess instrument, mode, quantity, or risk thresholds.');
         }
+        if (snapshot.referenceRisk) require('./referenceRisk').reason(snapshot, null, snapshot.referenceRisk.squareOffAt);
       }
       if (snapshotConfig) runner.config = structuredClone(snapshotConfig);
       const execution = require('./positionExecution').forRunner(runner, { feed: marketData });
       const resumeResult = await execution.resume();
-      if (['RECONCILIATION_REQUIRED', 'EXIT_PENDING', 'UNPROTECTED'].includes(resumeResult?.status)) {
+      if (['RECONCILIATION_REQUIRED', 'EXIT_PENDING', 'UNPROTECTED'].includes(resumeResult?.status)
+        && !(position?.executionSnapshot.referenceRisk && resumeResult?.status === 'UNPROTECTED')) {
         throw new Error(`Recovered position is ${resumeResult.status}; broker execution authority remains withheld until reconciliation and protection are verified.`);
       }
       const recoveredPosition = await Position.findOne({ ...scope, strategyId: strategy._id, status: { $ne: 'CLOSED' } }).lean();
       if (recoveredPosition) {
         // The persisted thresholds are authoritative on restart. Strategy
         // calculations remain untouched for ordinary new entries.
-        runner.stopLoss = recoveredPosition.executionSnapshot.stopLoss;
-        runner.target = recoveredPosition.executionSnapshot.target;
+        runner.stopLoss = recoveredPosition.executionSnapshot.referenceRisk?.stop ?? recoveredPosition.executionSnapshot.stopLoss;
+        runner.target = recoveredPosition.executionSnapshot.referenceRisk?.target ?? recoveredPosition.executionSnapshot.target;
         runner.activeTrailingSl = recoveredPosition.activeTrailingSl ?? null;
         runner.protectiveOrderId = recoveredPosition.protectiveOrderId || null;
         runner.protectiveStopPrice = recoveredPosition.protectiveStopPrice ?? null;
@@ -127,7 +129,7 @@ async function recoverAccount(context) {
         // discovery, scanner timers or new entries.
         await accounts.run(context, async () => {
           await marketData.ensureReady();
-          await runner.startScanLoop();
+          if (!recoveredPosition.executionSnapshot.referenceRisk) await runner.startScanLoop();
         });
       }
       // Recovery never starts scanner timers or permits fresh entries.

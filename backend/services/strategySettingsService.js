@@ -7,6 +7,11 @@ const { validateStrategyConfig } = require('../utils/inputValidation');
 async function ownedStrategy(context, strategyName, requireActiveSession = true) {
   context = accounts.assertVerified(context);
   if (requireActiveSession) await accounts.validate(context);
+  if (strategyName === 'IndexVwapOrb') {
+    const availability = require('./indexVwapOrbAvailability');
+    await availability.assertEnabled(context);
+    await availability.ensureStrategy(context.userId);
+  }
   await strategyRegistry.init();
   const strategy = await Strategy.findOne({ userId: context.userId, name: strategyName, internalExecutionOnly: { $ne: true } });
   if (!strategy) return null;
@@ -22,6 +27,16 @@ async function get(context, strategyName) {
 async function save(context, strategyName, config) {
   const strategy = await ownedStrategy(context, strategyName);
   if (!strategy) return null;
+  if (strategyName === 'IndexVwapOrb') {
+    const runner = require('./strategyEngine').runners.get(`${context.userId}_${strategyName}`);
+    const scope = { userId: context.userId, brokerAccountId: context.brokerAccountId, strategyId: strategy._id };
+    const [position, reservation] = await Promise.all([
+      require('../models/Position').findOne({ ...scope, status: { $ne: 'CLOSED' } }).lean(),
+      require('../models/StrategySession').findOne({ ...scope, activeIntentId: { $ne: null } }).lean(),
+    ]);
+    if (runner?.isRunning || position || reservation) throw Object.assign(new Error('Stop the strategy and reconcile exposure before changing its settings.'),
+      { status: 409, code: 'STRATEGY_SETTINGS_LOCKED' });
+  }
   const validated = structuredClone(validateStrategyConfig(strategyName, config));
   let settings = await StrategySettings.findOne({ userId: context.userId, brokerAccountId: context.brokerAccountId, strategyId: strategy._id });
   if (settings) {

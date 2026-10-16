@@ -1,0 +1,36 @@
+# Index VWAP ORB - execution and operational rule lock
+
+Revision: 0.2.0. Updated 16 October 2026. User authorized locking remaining rules with index-first VWAP and 15:20 IST EOD. These are the implementation baseline; runtime remains unchanged and live eligibility requires real-data evidence.
+
+## Signal and setup rules
+
+- Analyze only the selected index's real completed 1M/5M candles. Opening range is [09:15,09:30) IST. No previous-session warm-up in OR or session VWAP.
+- Compute session VWAP internally from completed index 1M bars: cumulative sum(HLC3 * barVolume) / cumulative sum(barVolume), with HLC3=(high+low+close)/3. Reset each IST trading session. Current 1M close is compared with index VWAP through that same closed bar.
+- Missing volume is different from zero. Missing, negative or nonfinite volume, zero cumulative volume, synthetic bars or missing session bars block entries. A genuine bar with zero volume contributes zero weight and does not alone invalidate an otherwise complete session with positive total volume.
+- No futures/ETF VWAP in normal operation. First validate actual raw index volume separately for NIFTY, BANKNIFTY and SENSEX. A disconnected broker, application normalization loss or request failure does not constitute index-volume validation failure. If actual volume fails, record evidence and a separate explicit proxy design; do not silently select one. Earlier conditional matching-futures permission is retained only as a fallback candidate, not activated or required for the normal data path.
+- Breakout must be a closed 5M candle strictly beyond the frozen OR. The accepted retest is a later closed 5M candle, using the supplied test/rejection inequalities. Defaults: NIFTY 10/BANKNIFTY 20/SENSEX 30 tolerance points. No candle-colour or extra maximum-penetration filter.
+- Freeze the first accepted retest candle's extremum for SL. Do not silently replace it with a later candle. Pivot centre must form after retest close; two actual closed 1M bars on each side are required. Equal highs/lows are not strict pivots. Use the latest eligible confirmed pivot; entry requires a later closed 1M candle strictly breaking it with VWAP agreement.
+- A closed opposite 5M OR breakout invalidates a pending setup and arms the opposite side. Invalidate pending setups at entry cutoff/session reset or on unresolved data gaps; rebuild only from complete verified history. An open position never exits just because a new opposite setup appears.
+- A consumed setup cannot generate a second trade after exit. Require a fresh later 5M breakout/retest/pivot sequence. Duplicate signal identity and processed-candle checks survive restart.
+
+## Admission, count and configuration
+
+- New admission must occur no later than 11:30:00 IST. A bar closing exactly at the cutoff is eligible only if actually admitted by the cutoff. Never interpret an 11:30-start bar as an 11:30-close bar. Reject entry signals delivered more than 5 seconds after close; use a server clock synchronized to exchange time. This is an explicit freshness baseline for new implementation, not a change to existing strategies.
+- One selected underlying and at most one exposed/pending entry per user/account/strategy. The two-entry daily quota is shared across underlying changes, keyed by user + broker account + strategy + IST session date. Other strategies retain their existing admission policies.
+- Atomically reserve quota before order submission under existing execution ownership. Count one trade at the first nonzero fill of its entry intent. Subsequent partial fills do not increment again. Confirmed unfilled terminal cancellation/rejection releases reservation; ambiguous or partially filled orders do not. Do not reset capacity on Stop, reconnect, index change or restart.
+- Settings follow the existing Stop -> edit -> save -> Start flow. Monitor an existing position independently; snapshot its contract, quantity, underlying levels and rules immutably. Do not apply edited settings to held exposure or unresolved intents.
+- LONG buys CE and SHORT buys PE. Resolver owns exchange, expiry, strike, premium filters and lot metadata. Paper/live execution uses actual option-price evidence; index points are not option P&L.
+
+## Risk, outage and EOD
+
+- Strategy stop and 2R target are index-reference levels. Generic position management evaluates fresh spot ticks: LONG spot <= SL or >= TP; SHORT spot >= SL or <= TP. Closed-bar-only applies to signal generation, not protective exits. Record reference trigger separately from actual option fill.
+- Reuse existing generic order/lease/reconciliation machinery. No discretionary structure/VWAP exit. No guessed premium stop derived from index levels or delta. Retain separately configured generic broker protection if supported and valid; never label a software index trigger as broker-native protection.
+- Spot ticks older than 5 seconds, future timestamps beyond allowed clock skew, missing timestamp/identity, or a broken session feed block new entries and mark held monitoring degraded. Keep available protection active, raise the existing urgent alert, reconnect/backfill and reconcile. Do not execute speculative threshold exits using stale data or invent a fill when data returns. Fresh data resumes generic risk checks. EOD/manual exits do not depend on a strategy entry signal.
+- If broker access is unavailable during an exit, persist intent, show EXIT_PENDING/RECONCILIATION_REQUIRED and alert for manual broker recovery. Never mark closed without verified remaining quantity zero. Never blindly retry an ambiguous submit.
+- EOD baseline is **15:20 IST**, superseding 15:30. Repository service/config/example search found no existing dedicated global square-off policy. `MARKET.CLOSE_TIME` default 15:40 is not a square-off time and remains unchanged. If deployed/account-specific policy is subsequently found to conflict, report it before changing that policy.
+- At 15:20 on an open session, stop new admissions, reconcile pending buys, cancel confirmed unfilled remainder where needed and close confirmed held quantity through the generic coordinated exit. Late fills remain managed. On restart after the deadline, reconcile and continue required square-off immediately. Retry only after outcome reconciliation; target/SL/manual/EOD share one coordinator.
+- Use explicit Asia/Kolkata session dates independent of host timezone. Normal weekdays alone are insufficient: validate against each exchange's published holiday/special-session schedule during implementation. On unknown/closed session, block new entries. If a verified special session closes earlier, exit by the earlier of 15:20 and ten minutes before its published close. For special sessions without a valid 09:15 opening window, this strategy takes no new entries.
+
+## Remaining Phase 0 gate
+
+Phase 0 design/build handoff is complete under the user's build-first direction; live testing is deferred. Execution/operational baseline is locked. Real 1M index OHLCV evidence remains pending for all three indices because the observed broker connection is offline. Source volume preservation, clock/calendar correctness and EOD scheduler are later implementation work, not certified current runtime features. No futures data is required to pass the normal index-first validation gate.

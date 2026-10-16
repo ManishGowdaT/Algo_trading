@@ -1,3 +1,4 @@
+import { normalizeOrbSettings } from './indexVwapOrbUi'
 export type StrategySettingsConfig = Record<string, unknown>
 
 /** A save queue belongs to one keyed user/account page instance. Disposing it
@@ -44,6 +45,9 @@ const fields: Record<string, readonly string[]> = {
 
 export function isValidStrategySettings(config: unknown, strategyName?: string): config is StrategySettingsConfig {
   if (!config || typeof config !== 'object' || Array.isArray(config)) return false
+  if (strategyName === 'IndexVwapOrb') {
+    try { normalizeOrbSettings(config as Record<string, unknown>); return true } catch { return false }
+  }
   const values = config as Record<string, unknown>
   if (strategyName && (!fields[strategyName] || Object.keys(values).some(key => !fields[strategyName].includes(key)))) return false
   for (const [key, options] of Object.entries(enums)) {

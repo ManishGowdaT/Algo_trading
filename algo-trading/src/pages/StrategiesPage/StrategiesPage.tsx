@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Zap, TrendingUp, BarChart2, Clock, Target, Activity, Cpu } from 'lucide-react'
 import { apiGet } from '../../trading'
+import useIndexOrbAvailability from '../../hooks/useIndexOrbAvailability'
 
 import StrategiesLayout from './StrategiesLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
@@ -22,15 +23,17 @@ type PluginManifest = {
 export default function StrategiesPage() {
   const navigate = useNavigate()
   const [plugins, setPlugins] = useState<PluginManifest[]>([])
+  const indexOrbAvailable = useIndexOrbAvailability()
 
   useEffect(() => {
     async function loadPlugins() {
       try {
-        const res = await apiGet<{ manifests: PluginManifest[] }>('/strategies/manifests')
-        if (res && Array.isArray(res.manifests)) {
+        const res = await apiGet<{ manifests?: PluginManifest[]; data?: { manifests?: PluginManifest[] } }>('/strategies/manifests')
+        const manifests = res?.data?.manifests ?? res?.manifests
+        if (Array.isArray(manifests)) {
           // Filter out existing hardcoded pages to prevent duplicates
-          const builtinIds = ['HeikenAshi', 'ModifiedHeikenAshi', '5minBreakout']
-          const customPlugins = res.manifests.filter(m => !builtinIds.includes(m.id))
+          const builtinIds = ['HeikenAshi', 'ModifiedHeikenAshi', '5minBreakout', 'IndexVwapOrb']
+          const customPlugins = manifests.filter(m => !builtinIds.includes(m.id))
           setPlugins(customPlugins)
         }
       } catch (e) {}
@@ -84,6 +87,8 @@ export default function StrategiesPage() {
   ]
 
   // Append dynamically discovered plugins
+  if (indexOrbAvailable) cards.push({ title: 'Index VWAP + Opening Range',
+    description: 'Index breakout, retest and confirmed 1-minute execution.', to: '/strategies/index-vwap-orb', icon: Activity })
   plugins.forEach(p => {
     cards.push({
       title: p.name,

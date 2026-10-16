@@ -186,6 +186,14 @@ class SingleStrategyRunner {
   }
 
   async start(config, userId) {
+    if (this.strategyName === 'IndexVwapOrb') {
+      await require('./indexVwapOrbAvailability').assertEnabled(this.accountContext);
+      config = require('../utils/inputValidation').validateStrategyConfig(this.strategyName, config);
+      if (config.liveTradingConsent) await require('./indexVwapOrbAvailability').assertLiveExecution(this.accountContext);
+      await require('../models/StrategySession').createIndexes();
+      this.indexOrbSession = await require('./indexVwapOrbSession').restore(this.accountContext);
+      if (this.indexOrbSession.blocked) throw Object.assign(new Error('Index VWAP ORB has an unresolved entry or exposure.'), { status: 409, code: 'ENTRY_OR_EXPOSURE_UNRESOLVED' });
+    }
     this.config = config || {};
     this.userId = userId;
 
@@ -386,6 +394,10 @@ class SingleStrategyRunner {
     } else this.clearAllIntervals();
 
     const baseTimeframe = this.getBaseTimeframe();
+    if (this.underlyingSubscription) {
+      require('./accountContext').run(this.accountContext, () => marketDataService.unsubscribeUnderlying(this.underlyingSubscription));
+      this.underlyingSubscription = null;
+    }
     if (this.candleListener && !managed) {
       marketDataService.removeListener('candle:closed', this.candleListener);
       this.candleListener = null;
@@ -540,6 +552,7 @@ class SingleStrategyRunner {
 
         if (this.ceContract && this.peContract) {
           this.monitoredPremiums = { ce: this.ceContract.tradingsymbol, pe: this.peContract.tradingsymbol };
+          if (strategyRegistry.getPlugin(this.strategyName)?.manifest?.requires?.dataStreams?.includes('UNDERLYING_CANDLES')) return;
           
           // Subscribe contracts to MarketDataService only when changed or initial
           const baseTimeframe = this.getBaseTimeframe();
@@ -575,6 +588,10 @@ class SingleStrategyRunner {
 
   async startScanLoop() {
     if (this.candleListener) return;
+    const requirements = strategyRegistry.getPlugin(this.strategyName)?.manifest?.requires;
+    if (requirements?.dataStreams?.includes('UNDERLYING_CANDLES')) {
+      return this.startUnderlyingDataLoop(requirements);
+    }
 
     const runScan = async (eventData = null) => {
       if ((!this.isRunning || this.feedScanReady === false) && !(this.accountContext && require('./positionExecution').forRunner(this, { feed: marketDataService }).hasExposure())) return;
@@ -806,6 +823,55 @@ class SingleStrategyRunner {
     };
 
     marketDataService.on('candle:closed', this.candleListener);
+  }
+
+  async startUnderlyingDataLoop(requirements) {
+    const { INDEX_SPOT_TOKENS } = require('./candleService');
+    const underlying = this.config.underlying;
+    const instrument = INDEX_SPOT_TOKENS[underlying];
+    if (!['NIFTY', 'BANKNIFTY', 'SENSEX'].includes(underlying) || !instrument || !this.accountContext) {
+      throw new Error('Underlying candle strategies require a verified account and supported index');
+    }
+    const context = this.accountContext;
+    this.candleListener = async event => {
+      if (!this.isRunning || event.userId !== context.userId || event.brokerAccountId !== context.brokerAccountId
+        || event.sessionGeneration !== context.sessionGeneration || event.sessionId !== context.sessionId
+        || event.role !== 'underlying' || event.underlying !== underlying || event.exchange !== instrument.exchange
+        || event.symboltoken !== instrument.symboltoken || !requirements.timeframes.includes(event.interval)) return;
+      const snapshot = marketDataService.getUnderlyingSnapshot(underlying);
+      this.underlyingData = snapshot;
+      this.setDataReadiness(snapshot?.ready ? 'READY' : 'DATA_DEGRADED', snapshot?.ready
+        ? 'Completed underlying candle history is ready.' : 'Underlying history is incomplete, invalid or stale.');
+      if (this.strategyName === 'IndexVwapOrb' && snapshot?.ready && event.interval === 'ONE_MINUTE' && !this.indexOrbScanInFlight) {
+        this.indexOrbScanInFlight = true;
+        try {
+          const sessions = require('./indexVwapOrbSession');
+          const restored = await sessions.restore(context);
+          if (!this.isRunning) return;
+          const Plugin = strategyRegistry.getPlugin(this.strategyName);
+          const result = new Plugin(this.config).analyze({ underlying, asOf: Date.now(), snapshot,
+            consumedSetupIds: restored.consumedSetupIds });
+          await sessions.checkpoint(context, underlying, { asOf: result.diagnostics.asOf ?? Date.now(),
+            state: result.state, setup: result.diagnostics.setup ?? null, signalId: result.signalId ?? null, processedClose: event.closedAt });
+          if (!this.isRunning) return;
+          this.indexOrbAnalysis = result; this.indexOrbSession = restored;
+          this.message = restored.blocked ? 'Entry or exposure requires reconciliation.' : result.isEntry
+            ? 'Signal ready; checking option execution.' : result.failedReasons.join(', ');
+          if (result.isEntry && !restored.blocked && restored.entriesFilled + restored.entriesReserved < 2) {
+            const contract = result.direction === 'LONG' ? this.ceContract : this.peContract;
+            const intent = await sessions.prepareEntry(context, { signal: result, config: this.config, contract });
+            await require('./positionExecution').forRunner(this, { feed: marketDataService }).executePreparedReferenceEntry(intent._id);
+          }
+        } catch (error) { this.setDataReadiness('DATA_DEGRADED', error.message); }
+        finally { this.indexOrbScanInFlight = false; }
+      }
+    };
+    marketDataService.on('candle:closed', this.candleListener);
+    this.underlyingSubscription = underlying;
+    const snapshot = await marketDataService.subscribeUnderlying(underlying);
+    if (!this.isRunning) return;
+    this.underlyingData = snapshot;
+    this.setDataReadiness(snapshot?.ready ? 'READY' : 'DATA_DEGRADED');
   }
 
   async submitSignalEntry(contract, signalPrice, trendSide, candleTime, timingInfo) {
@@ -1544,6 +1610,12 @@ class SingleStrategyRunner {
   }
 
   getStatus() {
+    if (this.underlyingSubscription) {
+      const snapshot = require('./accountContext').run(this.accountContext,
+        () => marketDataService.getUnderlyingSnapshot(this.underlyingSubscription));
+      this.underlyingData = snapshot;
+      this.dataReadiness = snapshot?.ready ? 'READY' : 'DATA_DEGRADED';
+    }
     // Refresh checkpoints dynamically
     this.checkpoints = [
       { id: 'broker', label: 'Broker Connection', status: this.brokerReady ? 'success' : 'error' },
@@ -1582,6 +1654,13 @@ class SingleStrategyRunner {
       lastExitAttemptTime: this.lastExitAttemptTime,
       brokerReady: this.brokerReady,
       dataReadiness: this.dataReadiness,
+      ...(this.underlyingSubscription ? { underlyingData: this.underlyingData } : {}),
+      ...(this.strategyName === 'IndexVwapOrb' ? { executionReadiness: 'REFERENCE_RISK_ACCOUNT_GATED', referenceRisk: this.referenceRisk ?? null,
+        analysis: this.indexOrbAnalysis ?? null, dailyEntries: this.indexOrbSession ? {
+          sessionDate: this.indexOrbSession.day.istDate,
+          filled: this.indexOrbSession.entriesFilled, reserved: this.indexOrbSession.entriesReserved, limit: 2,
+          blocked: this.indexOrbSession.blocked,
+        } : null } : {}),
       positionState: this.positionState,
       remainingQuantity: this.remainingQuantity ?? null,
       pendingEntryQuantity: this.pendingEntryQuantity ?? null,

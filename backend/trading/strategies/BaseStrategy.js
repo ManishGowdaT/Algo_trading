@@ -62,6 +62,13 @@ class BaseStrategy {
     if (!manifest.name || typeof manifest.name !== 'string') throw new Error('Strategy manifest requires a string name');
     if (!manifest.engineVersion || typeof manifest.engineVersion !== 'string') throw new Error('Strategy manifest requires engineVersion string');
     if (!manifest.requires || typeof manifest.requires !== 'object') throw new Error('Strategy manifest requires a requires object');
+    if (manifest.requires.dataStreams?.includes('UNDERLYING_CANDLES')) {
+      const frames = manifest.requires.timeframes;
+      if (!Array.isArray(frames) || !frames.length || new Set(frames).size !== frames.length
+        || frames.some(frame => !['ONE_MINUTE', 'FIVE_MINUTE'].includes(frame))) {
+        throw new Error('Underlying candle streams require unique ONE_MINUTE/FIVE_MINUTE timeframes');
+      }
+    }
     return true;
   }
 }

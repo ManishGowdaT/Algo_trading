@@ -53,6 +53,7 @@ exports.startStrategy = async (req, res) => {
         activeAccountService.assertActiveUser(req.user._id, req.accountContext?.brokerAccountId);
         await require('../services/startupRecovery').assertStrategyStartAllowed(req.accountContext);
         const { strategyName } = req.params;
+        if (strategyName === 'IndexVwapOrb') await require('../services/indexVwapOrbAvailability').assertEnabled(req.accountContext);
         await requireRegisteredStrategy(strategyName);
         const config = validateStrategyConfig(strategyName, req.body === undefined ? {} : req.body);
         await require('../services/strategySettingsService').save(req.accountContext, strategyName, config);
@@ -84,6 +85,7 @@ exports.stopStrategy = async (req, res) => {
 exports.getStrategyStatus = async (req, res) => {
     try {
         const { strategyName } = req.params;
+        if (strategyName === 'IndexVwapOrb') await require('../services/indexVwapOrbAvailability').assertEnabled(req.accountContext);
         await requireRegisteredStrategy(strategyName);
         const status = strategyEngine.getStrategyStatus(req.user._id.toString(), strategyName, req.accountContext);
         res.status(200).json({
@@ -140,10 +142,10 @@ exports.resetConditionReport = (req, res) => {
  * GET /api/v1/strategies/manifests
  * Returns schemas of all registered strategy plugins.
  */
-exports.getManifests = (req, res) => {
+exports.getManifests = async (req, res) => {
     try {
         const strategyRegistry = require('../services/strategyRegistry');
-        const manifests = strategyRegistry.getManifests();
+        const manifests = await require('../services/indexVwapOrbAvailability').manifestsForUser(strategyRegistry.getManifests(), req.user._id);
         res.status(200).json({ status: 'success', data: { manifests } });
     } catch (err) {
         respondWithApiError(req, res, err);

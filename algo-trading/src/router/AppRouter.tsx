@@ -17,6 +17,7 @@ import DashboardLayout from '../components/Layout/DashboardLayout'
 import ProtectedRoute from './ProtectedRoute'
 
 import DynamicStrategyPage from '../pages/StrategiesPage/DynamicStrategyPage'
+import IndexVwapOrbPage from '../pages/StrategiesPage/IndexVwapOrbPage'
 
 export default function AppRouter() {
   return (
@@ -38,6 +39,7 @@ export default function AppRouter() {
         <Route path="/strategies/heikenashi" element={<HeikenashiPage />} />
         <Route path="/strategies/modified-heikenashi" element={<ModifiedHeikenashiPage />} />
         <Route path="/strategies/plugin/:strategyId" element={<DynamicStrategyPage />} />
+        <Route path="/strategies/index-vwap-orb" element={<IndexVwapOrbPage />} />
         <Route path="/trades" element={<TradesPage />} />
       </Route>
 

@@ -1,0 +1,10 @@
+{
+  "dateIst": "2026-10-16",
+  "repositoryDedicatedSquareOffPolicyFound": false,
+  "localEnvPolicyMatches": [],
+  "marketCloseDefault": "15:40",
+  "marketCloseIsSquareOff": false,
+  "requestedSquareOffIst": "15:20",
+  "deployedOverridesVerified": false,
+  "runtimeModified": false
+}

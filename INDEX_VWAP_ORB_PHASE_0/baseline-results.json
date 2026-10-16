@@ -1,0 +1,43 @@
+{
+  "dateIst": "2026-10-16",
+  "reviewedHead": "6cef21cb5b8ca60c6ff6ffcaded7f085b9741d08",
+  "frontend": {
+    "command": "npm test -- --reporter=dot",
+    "cwd": "algo-trading",
+    "exitCode": 0,
+    "testFilesPassed": 9,
+    "testsPassed": 51,
+    "testsFailed": 0
+  },
+  "backend": {
+    "command": "node --test tests/tradingBaseline.test.js tests/marketDataIsolation.phase4.test.js tests/entryReliability.test.js tests/startupRecovery.phase6.test.js",
+    "cwd": "backend",
+    "exitCode": 0,
+    "testsPassed": 47,
+    "testsFailed": 0,
+    "testsSkipped": 0,
+    "durationMs": 49749.2223,
+    "notes": "Existing mocked suites. Persistence-timeout/recovery alerts occur in fault scenarios; final runner summary reports no failures. Mock broker events do not certify real connectivity."
+  },
+  "retainedLog": {
+    "path": "backend-baseline.log",
+    "scope": "Supplemental rerun of tradingBaseline, marketDataIsolation.phase4 and entryReliability only; excludes startupRecovery.phase6."
+  },
+  "notPerformed": [
+    "live broker market-data capture",
+    "real account settings export",
+    "broker order submission",
+    "holiday-calendar certification",
+    "new-strategy analyzer validation",
+    "full backend suite",
+    "frontend production build"
+  ],
+  "phase0Acceptance": "COMPLETE_FOR_DESIGN_BUILD_SCOPE_REAL_DATA_RELEASE_GATE_DEFERRED_BY_USER",
+  "offlineIndexValidator": {
+    "command": "python -m unittest discover -s INDEX_VWAP_ORB_PHASE_0 -p test_validate_index_ohlcv.py -v",
+    "testsPassed": 4,
+    "testsFailed": 0,
+    "exitCode": 0,
+    "evidenceType": "SYNTHETIC_UNIT_FIXTURES_NOT_REAL_BROKER_DATA"
+  }
+}

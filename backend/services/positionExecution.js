@@ -144,6 +144,17 @@ class PositionExecution {
       this.polling = true;
       try { await this.reconcile(); }
       catch (error) { this.degraded(error); }
+      try { if (this.runner.strategyName === 'IndexVwapOrb') await this.monitorReferenceRisk(); }
+      catch (error) {
+        this.degraded(error);
+        if (!this.referenceAlerted) {
+          this.referenceAlerted = true;
+          require('./notificationService').notifyUrgent('OPEN_POSITION_UNPROTECTED', {
+            userId: this.context.userId, brokerAccountId: this.context.brokerAccountId,
+            strategyName: this.runner.strategyName, reason: error.message,
+          }).catch(() => {});
+        }
+      }
       finally { this.polling = false; }
     }, 1000);
   }
@@ -366,6 +377,8 @@ class PositionExecution {
     if (entry.filledQuantity <= 0) return null;
     const metadata = entry.executionMetadata;
     const config = metadata.config;
+    const referenceRisk = metadata.referenceRisk;
+    if (metadata.strategyName === 'IndexVwapOrb' && !referenceRisk) throw unresolved('Missing durable index reference risk; recovery will not guess.');
     const price = entry.averageFillPrice;
     const stop = metadata.strategyName === '5minBreakout' ? metadata.stopLoss
       : price - (Number(config.initialSlPoints && metadata.strategyName === 'ModifiedHeikenAshi' && config.exitStrategy === 'TRAILING_SL'
@@ -375,6 +388,10 @@ class PositionExecution {
       entryPrice: price, stopLoss: Number.isFinite(stop) && stop > 0 ? stop : undefined, target: price + (Number(config.targetPoints) || 20),
       producttype: entry.requestSnapshot.producttype,
       ...Object.fromEntries(['exitStrategy', 'initialSlPoints', 'trailingStopPoints', 'finalTargetPoints', 'targetPoints', 'slPoints'].filter(key => config[key] !== undefined).map(key => [key, config[key]])) };
+    if (referenceRisk) {
+      delete snapshot.stopLoss; delete snapshot.target;
+      snapshot.referenceRisk = structuredClone(referenceRisk);
+    }
     await executionLeases.assertCurrent(this.leaseToken);
     let trade = await Trade.findOne({ ...this.scope(), _id: entry.resultTradeId });
     if (!trade) trade = await Trade.create({ _id: entry.resultTradeId, ...this.scope(), strategyId: entry.strategyId,
@@ -421,6 +438,10 @@ class PositionExecution {
     runner.entryPrice = position.averageEntryPrice || held.entryPrice;
     runner.config = { ...position.executionConfig, quantity: position.remainingQuantity || held.quantity };
     runner.stopLoss = held.stopLoss; runner.target = held.target;
+    if (held.referenceRisk) {
+      runner.referenceRisk = structuredClone(held.referenceRisk.toObject?.() ?? held.referenceRisk);
+      runner.stopLoss = held.referenceRisk.stop; runner.target = held.referenceRisk.target;
+    }
     runner.activeTrailingSl = position.activeTrailingSl ?? null; runner.protectiveOrderId = position.protectiveOrderId || null;
     runner.remainingQuantity = position.remainingQuantity; runner.pendingEntryQuantity = position.pendingEntryQuantity;
     runner.completionPending = position.completionPending;
@@ -439,7 +460,7 @@ class PositionExecution {
           this.heldSubscription = null; this.degraded(error);
         });
     }
-    if (!runner.monitorInterval && position.remainingQuantity > 0) runner.startMonitorLoop();
+    if (!held.referenceRisk && !runner.monitorInterval && position.remainingQuantity > 0) runner.startMonitorLoop();
     this.watch();
     this.attachEvents();
   }
@@ -462,6 +483,7 @@ class PositionExecution {
     }).catch(error => { if (this.hasExposure()) this.degraded(error); }).finally(() => { this.eventsPromise = null; });
   }
   async entry(contract, signalPrice, trendSide) {
+    if (this.runner.strategyName === 'IndexVwapOrb') throw unresolved('Index VWAP ORB execution awaits reference-aware risk integration.');
     try {
       return await this.run(async () => {
       if (!this.runner.isRunning || !this.runner.brokerReady || this.hasExposure()) return;
@@ -517,6 +539,92 @@ class PositionExecution {
       throw error;
     }
   }
+  async executePreparedReferenceEntry(intentId) {
+    return this.run(async () => {
+      if (this.hasExposure()) throw unresolved('Entry runner already has exposure.');
+      const strategyId = await this.strategy();
+      const intent = await OrderIntent.findOne({ ...this.scope(), strategyId, _id: intentId, purpose: 'ENTRY', status: 'PREPARED' });
+      if (!intent?.executionMetadata?.referenceRisk || intent.executionMetadata.strategyName !== 'IndexVwapOrb') throw unresolved('Prepared reference entry is unavailable.');
+      const session = await require('../models/StrategySession').findOne({ ...this.scope(), strategyId,
+        _id: intent.executionMetadata.strategySessionId, activeIntentId: intent._id }).lean();
+      if (!session?.entries.some(entry => String(entry.intentId) === String(intent._id) && entry.state === 'INTENT_PREPARED')) throw unresolved('Entry has no confirmed daily reservation.');
+      const config = intent.executionMetadata.config;
+      if (config.liveTradingConsent) await require('./indexVwapOrbAvailability').assertLiveExecution(this.context);
+      this.entryIntentId = intent._id; this.watch();
+      if (!this.runner.isRunning || !this.runner.brokerReady) throw unresolved('Entry runner is not ready.');
+      const signal = intent.executionMetadata.signal;
+      if (Date.now() - signal.signalClosedAt > 5000 || Date.now() < signal.signalClosedAt
+        || Date.now() > require('./underlyingCandleStream').sessionBounds(Date.now()).open + 135 * 60000) throw unresolved('Prepared signal expired before execution.');
+      const quote = await this.freshOptionQuote(intent.requestSnapshot);
+      if (quote.ltp < config.premiumMin || quote.ltp > config.premiumMax) throw unresolved('Option quote outside configured premium filter.');
+      if (config.liveTradingConsent) await this.referenceEntryMargin(intent);
+      if (!this.runner.isRunning) throw unresolved('Entry scanner stopped before submission.');
+      if (Date.now() - signal.signalClosedAt > 5000 || Date.now() > require('./underlyingCandleStream').sessionBounds(Date.now()).open + 135 * 60000) throw unresolved('Prepared entry expired during quote validation.');
+      if (config.liveTradingConsent) {
+        await this.submit(intent); await this.observe(intent, await this.book(true));
+      } else {
+        intent.status = 'SUBMITTING'; await this.saveIntent(intent);
+        intent.status = 'FILLED'; intent.averageFillPrice = quote.ltp;
+        intent.filledQuantity = intent.requestedQuantity; intent.remainingQuantity = 0; await this.saveIntent(intent);
+      }
+      const position = await this.materialize(intent);
+      if (position) await this.protect(position);
+      return { accepted: true, intentId: String(intent._id) };
+    });
+  }
+  async freshOptionQuote(contract) {
+    const { response, data } = await requestPython(`/market/ltp?exchange=${encodeURIComponent(contract.exchange)}&symboltoken=${encodeURIComponent(contract.symboltoken)}&tradingsymbol=${encodeURIComponent(contract.tradingsymbol)}&requireFresh=true`,
+      { context: this.context, timeoutMs: 5000 });
+    const now = Date.now();
+    if (!response.ok || !Number.isFinite(data?.ltp) || data.ltp <= 0 || !Number.isFinite(data.quoteTimestamp)
+      || now - data.quoteTimestamp > 5000 || data.quoteTimestamp - now > 5000) throw unresolved('Fresh option quote unavailable.');
+    return data;
+  }
+  async referenceEntryMargin(intent) {
+    const request = intent.requestSnapshot.toObject?.() ?? intent.requestSnapshot;
+    const { action, ...payload } = request;
+    const required = await requestPython('/angel/margins/required', { context: this.context, method: 'POST',
+      body: { ...payload, transactiontype: action }, timeoutMs: 5000 });
+    const available = await requestPython('/angel/margins', { context: this.context, timeoutMs: 5000 });
+    const needData = required.data?.data; const cashData = available.data?.data;
+    const needed = Number(needData?.totalMargin ?? needData?.totalmargin ?? needData?.requiredMargin);
+    const cash = Number(cashData?.availablecash ?? cashData?.availablelimitmargin);
+    if (!required.response.ok || !available.response.ok || required.data?.status === false || available.data?.status === false
+      || !Number.isFinite(needed) || needed <= 0 || !Number.isFinite(cash) || cash < needed) throw unresolved('Required margin or available funds could not be verified.');
+  }
+  async monitorReferenceRisk() {
+    return this.run(async () => {
+      let position = await this.ownedPosition();
+      if (!position?.executionSnapshot.referenceRisk || position.status === 'CLOSED') {
+        // EOD can also cancel a zero-fill pending buy; never send another buy on recovery.
+        if (this.entryIntentId) {
+          const entry = await OrderIntent.findOne({ ...this.scope(), _id: this.entryIntentId });
+          if (entry?.executionMetadata?.referenceRisk && Date.now() >= entry.executionMetadata.referenceRisk.squareOffAt && !terminal.has(entry.status)) {
+            if (entry.executionMetadata.config.liveTradingConsent) await this.cancel(entry, null, await this.book(true));
+            else if (entry.status === 'PREPARED') { entry.status = 'FAILED'; entry.remainingQuantity = 0; await this.saveIntent(entry); }
+          }
+        }
+        return;
+      }
+      const held = position.executionSnapshot; const risk = held.referenceRisk;
+      let quote = null;
+      if (Date.now() < risk.squareOffAt && !position.exitReason) {
+        const result = await requestPython(`/market/index-ltp?underlying=${encodeURIComponent(risk.underlying)}&requireFresh=true`,
+          { context: this.context, timeoutMs: 5000 });
+        if (!result.response.ok) throw unresolved('Index risk feed unavailable.');
+        quote = result.data;
+      }
+      const reason = position.exitReason || require('./referenceRisk').reason(held, quote);
+      if (!reason) return;
+      this.referenceAlerted = false;
+      position.exitReason = reason;
+      position.referenceTrigger = { reason, at: Date.now(), indexPrice: quote?.ltp ?? null, quoteTimestamp: quote?.quoteTimestamp ?? null };
+      await this.savePosition(position);
+      // Persist decision before quote/exit work. Repeated triggers share exitLocked's coordinator.
+      const option = held.executionMode === 'PAPER' ? await this.freshOptionQuote(held) : null;
+      await this.exitLocked(reason, option?.ltp);
+    });
+  }
   async cancel(target, position, book) {
     await this.observe(target, book);
     if (terminal.has(target.status)) return true;
@@ -542,6 +650,12 @@ class PositionExecution {
     await this.savePosition(position);
   }
   async protect(position, stopPrice) {
+    if (position.executionSnapshot.referenceRisk) {
+      // A spot-triggered exit cannot be submitted as an option-premium stop.
+      position.status = 'UNPROTECTED'; await this.savePosition(position);
+      await this.persistTradeState(position); this.sync(position);
+      return false;
+    }
     if (position.remainingQuantity <= 0) return false;
     if (!Number.isFinite(stopPrice) || stopPrice <= 0) {
       position.status = 'UNPROTECTED'; await this.savePosition(position); this.sync(position);
@@ -611,8 +725,14 @@ class PositionExecution {
     if (!entry && !this.positionId) return null;
     let position = await this.ownedPosition();
     if (position?.status === 'CLOSED') { this.complete(position, position.exitReason); return null; }
-    if (entry && entry.executionMetadata.config.liveTradingConsent && !terminal.has(entry.status)) {
+    if (entry && !terminal.has(entry.status)) {
+      if (entry.executionMetadata.referenceRisk && entry.status === 'PREPARED' && !entry.attemptCount && !entry.brokerOrderId) {
+        // A restart never replays an unsubmitted admission. Its reserved slot is
+        // released only after this durable proof of pre-submit cancellation.
+        entry.status = 'FAILED'; entry.remainingQuantity = 0; await this.saveIntent(entry);
+      } else if (entry.executionMetadata.config.liveTradingConsent) {
       await this.observe(entry, await this.book(freshBrokerEvidence));
+      }
     }
     if (entry) {
       position = await this.materialize(entry);
@@ -649,7 +769,7 @@ class PositionExecution {
     }
     await this.persistTradeState(position);
     this.sync(position);
-    if (position.executionSnapshot.executionMode === 'LIVE' && !position.pendingEntryQuantity
+    if (!position.executionSnapshot.referenceRisk && position.executionSnapshot.executionMode === 'LIVE' && !position.pendingEntryQuantity
       && !intents.some(intent => ['PROTECT', 'EXIT', 'CANCEL'].includes(intent.purpose))) {
       await this.protect(position, this.initialStop(position));
     }
@@ -683,6 +803,9 @@ class PositionExecution {
       }
       position.status = 'EXIT_PENDING'; position.exitReason = reason; await this.savePosition(position);
       const quantity = requestedQuantity ?? position.remainingQuantity;
+      if (position.executionSnapshot.referenceRisk && position.executionSnapshot.executionMode === 'PAPER') {
+        paperPrice = (await this.freshOptionQuote(position.executionSnapshot)).ltp;
+      }
       if (!Number.isInteger(quantity) || quantity <= 0 || quantity > position.remainingQuantity) throw unresolved('Requested exit quantity exceeds persisted exposure.');
       const partialRequested = quantity < position.remainingQuantity;
       const intent = await this.intent('EXIT', { action: 'SELL', ...this.held(position), quantity, ordertype: 'MARKET' }, position);
@@ -721,6 +844,7 @@ class PositionExecution {
     if (!trade) throw unresolved('Trade persistence record is missing.');
     trade.qty = quantity; trade.buyPrice = position.averageEntryPrice || position.executionSnapshot.entryPrice;
     trade.exitPrice = price; trade.exitReason = reason; trade.pnl = (price - trade.buyPrice) * quantity;
+    if (position.referenceTrigger) trade.referenceTrigger = structuredClone(position.referenceTrigger);
     await executionLeases.assertCurrent(this.leaseToken);
     trade.positionState = 'CLOSED'; trade.lastBrokerSyncAt = new Date(); await trade.save();
     position.completionPending = false; position.status = 'CLOSED'; position.exitReason = reason; position.reconciliationHealth = 'HEALTHY';
@@ -735,7 +859,7 @@ class PositionExecution {
     runner.config = structuredClone(position.executionConfig);
     runner.releaseFeed(held.exchange, held.symboltoken, 'ONE_MINUTE', 'position');
     runner.releaseFeed(held.exchange, held.symboltoken, runner.getBaseTimeframe(), 'position');
-    for (const field of ['activeTradeId', 'activeTradePremium', 'activeTradeContract', 'entryPrice', 'activeTrailingSl', 'entryOrderId', 'protectiveOrderId', 'protectiveStopPrice', 'stopLoss', 'target', 'rangeSide']) runner[field] = null;
+    for (const field of ['activeTradeId', 'activeTradePremium', 'activeTradeContract', 'entryPrice', 'activeTrailingSl', 'entryOrderId', 'protectiveOrderId', 'protectiveStopPrice', 'stopLoss', 'target', 'rangeSide', 'referenceRisk']) runner[field] = null;
     runner.heldWarmupCandles = null; runner.heldSide = null;
     runner.positionState = 'NONE'; runner.exitInProgress = false; runner.isExiting = false;
     runner.remainingQuantity = 0; runner.pendingEntryQuantity = 0; runner.completionPending = false;

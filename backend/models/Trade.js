@@ -68,9 +68,10 @@ const tradeSchema = new mongoose.Schema({
     lastBrokerSyncAt: {
         type: Date
     },
+    referenceTrigger: { type: mongoose.Schema.Types.Mixed, default: undefined },
     exitReason: {
         type: String,
-        enum: ['Target', 'SL', 'Trailing SL', 'Strategy', 'HA_TREND_REVERSAL', 'Reversal', 'RECOVERY_CLEANUP', 'Manual']
+        enum: ['Target', 'SL', 'Trailing SL', 'Strategy', 'HA_TREND_REVERSAL', 'Reversal', 'RECOVERY_CLEANUP', 'Manual', 'EOD']
     }
 }, { timestamps: true });
 

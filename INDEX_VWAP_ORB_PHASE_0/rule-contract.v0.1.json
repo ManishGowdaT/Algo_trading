@@ -1,0 +1,162 @@
+{
+  "strategyId": "IndexVwapOrb",
+  "contractVersion": "0.2.1",
+  "status": "PHASE_0_DESIGN_BASELINE_COMPLETE_REAL_DATA_VALIDATION_DEFERRED_BY_USER",
+  "liveEligible": false,
+  "underlyings": {
+    "NIFTY": {
+      "spotExchange": "NSE",
+      "spotToken": "99926000",
+      "optionsExchange": "NFO",
+      "volumeValidated": false
+    },
+    "BANKNIFTY": {
+      "spotExchange": "NSE",
+      "spotToken": "99926009",
+      "optionsExchange": "NFO",
+      "volumeValidated": false
+    },
+    "SENSEX": {
+      "spotExchange": "BSE",
+      "spotToken": "99919000",
+      "optionsExchange": "BFO",
+      "volumeValidated": false
+    }
+  },
+  "confirmedRequirements": {
+    "timezone": "Asia/Kolkata",
+    "closedCandlesOnly": true,
+    "timeframes": [
+      "ONE_MINUTE",
+      "FIVE_MINUTE"
+    ],
+    "openingRange": {
+      "start": "09:15",
+      "endExclusive": "09:30",
+      "high": "MAX_WICK_HIGH",
+      "low": "MIN_WICK_LOW",
+      "freezeAt": "09:30"
+    },
+    "breakout": {
+      "long": "5M_CLOSE > OR_HIGH",
+      "short": "5M_CLOSE < OR_LOW",
+      "immediateEntry": false
+    },
+    "retest": {
+      "long": "LOW <= OR_HIGH + TOLERANCE AND CLOSE >= OR_HIGH",
+      "short": "HIGH >= OR_LOW - TOLERANCE AND CLOSE <= OR_LOW",
+      "candleColorRequired": false,
+      "timeframe": "FIVE_MINUTE",
+      "mustFollowBreakoutCandle": true,
+      "tolerancePoints": {
+        "NIFTY": 10,
+        "BANKNIFTY": 20,
+        "SENSEX": 30
+      },
+      "toleranceValuesAre": "USER_DEFAULTS_EDITABLE_BEFORE_START"
+    },
+    "pivot": {
+      "leftBars": 2,
+      "rightBars": 2,
+      "confirmedBarsOnly": true,
+      "mustFormAfterRetest": true,
+      "entryMustFollowConfirmation": true
+    },
+    "entry": {
+      "long": "CLOSED_1M_CLOSE > CONFIRMED_SWING_HIGH AND CLOSED_1M_CLOSE > VWAP",
+      "short": "CLOSED_1M_CLOSE < CONFIRMED_SWING_LOW AND CLOSED_1M_CLOSE < VWAP",
+      "priceReference": "CLOSED_1M_CLOSE"
+    },
+    "risk": {
+      "reference": "SELECTED_UNDERLYING_INDEX",
+      "stopBufferPoints": 2,
+      "longStop": "PULLBACK_LOW - 2",
+      "shortStop": "PULLBACK_HIGH + 2",
+      "targetR": 2,
+      "positiveFiniteRiskRequired": true
+    },
+    "dailyEntryLimit": 2,
+    "entryCutoffIst": "11:30",
+    "strategySpecificExit": false,
+    "execution": {
+      "long": "BUY_CE",
+      "short": "BUY_PE",
+      "contractPolicyOwner": "EXISTING_EXECUTION_LAYER",
+      "lotSizeHardcoded": false
+    },
+    "ui": {
+      "reuseConnectionProvider": true,
+      "reuseAccountScope": true,
+      "preserveExistingFlow": true,
+      "configurationContract": "UI_CONFIGURATION_CONTRACT.md",
+      "editableSettings": [
+        "underlying",
+        "strikeMode",
+        "strikeDepth",
+        "premiumMin",
+        "premiumMax",
+        "quantity",
+        "retestTolerancePointsByUnderlying",
+        "liveTradingConsent"
+      ],
+      "visibleWhileRunning": true,
+      "modificationFlow": "STOP_EDIT_SAVE_START_MATCH_EXISTING_PAGES",
+      "expirySelection": "EXISTING_AUTOMATIC_RESOLVER_WITH_DISPLAY",
+      "heldPositionSettings": "IMMUTABLE_SNAPSHOT"
+    },
+    "globalSquareOffTimeIst": "15:20",
+    "vwapSourcePolicy": {
+      "primary": "INTERNAL_SESSION_VWAP_FROM_SELECTED_INDEX_1M_OHLCV",
+      "formula": "SUM(HLC3 * BAR_VOLUME) / SUM(BAR_VOLUME)",
+      "reset": "EACH_IST_TRADING_SESSION",
+      "normalProxyAllowed": false,
+      "fallback": "ONLY_AFTER_ACTUAL_INDEX_VOLUME_FAILURE_EVIDENCE_AND_SEPARATE_VALIDATED_PROXY_DESIGN",
+      "failureDistinction": "DISCONNECT_NORMALIZATION_LOSS_OR_REQUEST_FAILURE_IS_NOT_VOLUME_FAILURE",
+      "spotRemainsSignalAndRiskReference": true,
+      "proxyValidated": false
+    }
+  },
+  "unresolvedValues": {
+    "validatedIndexData": {
+      "NIFTY": null,
+      "BANKNIFTY": null,
+      "SENSEX": null
+    },
+    "conditionalProxyDesign": "NOT_NEEDED_UNLESS_ACTUAL_INDEX_VOLUME_VALIDATION_FAILS",
+    "deployedGlobalSquareOffConflict": "NO_POLICY_FOUND_IN_REPOSITORY; DEPLOYED_OVERRIDE_NOT_CERTIFIED"
+  },
+  "runtimeIntegration": "PHASE_0_RULES_AND_OFFLINE_VALIDATOR_ONLY_NO_TRADING_INTEGRATION",
+  "lockedImplementationPolicies": {
+    "pivotTiePolicy": "STRICT_EXTREMUM_EQUAL_HIGH_LOW_NOT_A_PIVOT",
+    "retestAnchor": "FIRST_ACCEPTED_RETEST_CANDLE_EXTREMUM_FROZEN",
+    "pendingSetupOppositeBreakout": "INVALIDATE_AND_REARM_OPPOSITE",
+    "setupExpiration": "ENTRY_CUTOFF_OR_SESSION_END",
+    "entryAdmissionByCutoff": true,
+    "countScope": "USER_ACCOUNT_STRATEGY_IST_DATE_SHARED_ACROSS_UNDERLYINGS",
+    "countOn": "FIRST_NONZERO_FILL_PER_ENTRY_INTENT",
+    "unresolvedSubmissionHoldsReservation": true,
+    "onePositionScope": "USER_ACCOUNT_STRATEGY",
+    "simultaneousUnderlyings": false,
+    "vwapFormula": "SUM(HLC3 * BAR_VOLUME) / SUM(BAR_VOLUME)",
+    "vwapInputTimeframe": "ONE_MINUTE",
+    "specification": "LOCKED_EXECUTION_RULES.md",
+    "decisionAuthority": "IMPLEMENTATION_BASELINE_UNDER_USER_RULE_LOCK_REQUEST",
+    "signalMaxDelayMs": 5000,
+    "spotTickMaxAgeMs": 5000,
+    "zeroVolumeBar": "ALLOW_ZERO_WEIGHT_IF_COMPLETE_AND_CUMULATIVE_VOLUME_POSITIVE",
+    "consumedSetup": "REQUIRES_FRESH_BREAKOUT_RETEST_SEQUENCE",
+    "outagePolicy": "BLOCK_ENTRIES_MARK_DEGRADED_KEEP_PROTECTION_ALERT_RECONNECT_RECONCILE_NO_STALE_THRESHOLD_ORDER",
+    "premiumEmergencyProtection": "REUSE_VALID_EXPLICIT_GENERIC_POLICY_NO_GUESSED_CONVERSION",
+    "eodPolicy": "RECONCILE_PENDING_ENTRIES_AND_EXIT_VERIFIED_REMAINING_QUANTITY_AT_1520_IST",
+    "calendarPolicy": "VERIFIED_EXCHANGE_SESSION_UNKNOWN_BLOCKS_ENTRIES",
+    "specialSession": "EARLIER_OF_1520_OR_TEN_MINUTES_BEFORE_PUBLISHED_CLOSE_NO_ENTRY_WITHOUT_0915_OR"
+  },
+  "validationPolicy": {
+    "userDirection": "BUILD_FIRST_USER_WILL_TEST_LATER",
+    "liveTestingNow": false,
+    "brokerTestOrdersAllowed": false,
+    "automatedOfflineTestsRequired": true,
+    "realIndexOhlcvValidation": "DEFERRED_RELEASE_GATE_NOT_PHASE_0_BUILD_BLOCKER",
+    "liveActivation": "DISABLED_UNTIL_LATER_USER_VALIDATION"
+  }
+}

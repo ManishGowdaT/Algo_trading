@@ -298,6 +298,7 @@ class AngelClient:
         interval: str,
         from_dt: datetime,
         to_dt: datetime,
+        include_volume: bool = False,
     ) -> List[Dict[str, Any]]:
         self._require_session()
 
@@ -368,7 +369,19 @@ class AngelClient:
                 c_f = float(c)
             except Exception:
                 continue
-            candles.append({"ts": ts, "open": o_f, "high": h_f, "low": l_f, "close": c_f})
+            candle = {"ts": ts, "open": o_f, "high": h_f, "low": l_f, "close": c_f}
+            if include_volume:
+                # Preserve missing/invalid separately from genuine zero volume.
+                volume = None
+                if len(row) > 5 and row[5] is not None and not isinstance(row[5], bool):
+                    try:
+                        parsed_volume = float(row[5])
+                        if math.isfinite(parsed_volume) and parsed_volume >= 0:
+                            volume = parsed_volume
+                    except (TypeError, ValueError, OverflowError):
+                        pass
+                candle["volume"] = volume
+            candles.append(candle)
 
         return candles
 
