@@ -135,7 +135,10 @@ exports.login = async (req, res) => {
     if (other && String(other.userId) !== requestedUserId) throw accounts.denied('Broker account is already linked to another user.', 403);
     const credentialState = persistCredentials ? await brokerCredentialVault.metadata(requestedUserId) : null;
     if (persistCredentials && record) {
-      if (['CONNECTED', 'CONNECTING', 'DISABLED'].includes(record.status) || activeAccountService.getActiveAccount(requestedUserId, record._id)) throw accounts.denied('Disconnect the broker before replacing saved setup.', 409);
+      // CONNECTED is durable, but the verified runtime session is not. After
+      // a restart, allow the same-account recovery through the exposure gates
+      // below and the normal generation-fenced, broker-verified login.
+      if (['CONNECTING', 'DISABLED'].includes(record.status) || activeAccountService.getActiveAccount(requestedUserId, record._id)) throw accounts.denied('Disconnect the broker before replacing saved setup.', 409);
       await strategyEngine.assertAccountCanSwitch(requestedUserId);
       const scope = { userId: requestedUserId, brokerAccountId: record._id };
       const [position, intent] = await Promise.all([

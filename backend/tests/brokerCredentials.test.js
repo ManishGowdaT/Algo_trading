@@ -234,7 +234,8 @@ test('HTTP setup saves through POST, MPIN-only login uses server secrets, and re
   assert.equal((await request('/angel/credentials', { ...input, consent: true })).status, 403);
   assert.equal((await request('/angel/credentials', { ...input, consent: true, currentPassword: 'app-password' })).status, 409);
   require('../services/activeAccountService').clearActiveAccount(userA);
-  const account = stores.BrokerAccount[0]; account.status = 'DISCONNECTED';
+  // Simulate a deployment restart: durable CONNECTED survives, runtime does not.
+  const account = stores.BrokerAccount[0]; account.status = 'CONNECTED';
   stores.Position.push({ _id: new mongoose.Types.ObjectId(), userId: account.userId, brokerAccountId: account._id, status: 'OPEN' });
   assert.equal((await request('/angel/credentials', { ...input, consent: true, currentPassword: 'app-password' })).status, 409);
   assert.equal((await vault.metadata(userA)).version, 1);
@@ -258,4 +259,8 @@ test('HTTP setup saves through POST, MPIN-only login uses server secrets, and re
   assert.equal((await replaced.json()).connected, true);
   assert.equal((await vault.get(userA)).version, 2);
   assert.equal((await vault.metadata(userA)).verified, true);
+  // An actual active session must still be explicitly disconnected.
+  const activeReplacement = await request('/angel/login', replacement);
+  assert.equal(activeReplacement.status, 409);
+  assert.equal((await vault.get(userA)).version, 2);
 });
