@@ -16,6 +16,31 @@
   button, input, select, textarea { font: inherit; }
 }
 
+/* ─── Browser autofill override — prevents the light-blue tint ─────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0F172A !important;
+  caret-color: #0F172A;
+  border-color: #E2E8F0 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset,
+                      0 0 0 3px rgba(11,95,255,0.15) !important;
+  border-color: #0B5FFF !important;
+}
+
+/* ─── Reduced-motion: strip transitions for users who prefer it ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Institutional Tabular Numbers for Prices & PnL */
 .font-mono, .tabular-nums {
   font-variant-numeric: tabular-nums;
