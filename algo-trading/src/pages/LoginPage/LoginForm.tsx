@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, X, Info } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, X, Shield, ArrowRight } from 'lucide-react';
 
-// ─── Input base class ────────────────────────────────────────────────────────
+// ─── Input styling with high-precision focus states ─────────────────────────
 const inputCls =
   'w-full h-11 pl-10 pr-4 text-sm text-slate-900 bg-white ' +
-  'border border-slate-200 rounded-input placeholder:text-slate-400 ' +
-  'focus:outline-none focus:border-brand-primary focus:ring-[3px] focus:ring-brand-primary/[.12] ' +
+  'border border-slate-300 rounded-xl placeholder:text-slate-400 ' +
+  'focus:outline-none focus:border-[#0052FF] focus:ring-4 focus:ring-[#0052FF]/10 ' +
   'transition-all duration-150';
 
 // ─── Dismissible server-error alert ─────────────────────────────────────────
@@ -18,7 +18,7 @@ const ErrorAlert: React.FC<{ message: string; onDismiss: () => void }> = ({
   <div
     role="alert"
     aria-live="assertive"
-    className="flex items-start gap-2.5 p-3 mb-5 rounded-lg bg-red-50 border border-red-200 text-red-700"
+    className="flex items-start gap-2.5 p-3 mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700"
   >
     <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
     <p className="text-xs font-medium flex-1 leading-relaxed">{message}</p>
@@ -33,12 +33,7 @@ const ErrorAlert: React.FC<{ message: string; onDismiss: () => void }> = ({
   </div>
 );
 
-// ─── Main LoginForm — Angel One card-style layout ────────────────────────────
-/**
- * Right-panel authentication card.
- * Floats on a light background, logo at top, dashed separator, form, info strip.
- * Auth logic is 100% unchanged from the original.
- */
+// ─── Main LoginForm — Institutional Angel One Reference Card ─────────────────
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -51,7 +46,7 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ── Auth logic — UNCHANGED ────────────────────────────────────────────────
+  // ── Auth logic — 100% UNCHANGED ──────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -77,51 +72,54 @@ const LoginForm: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    /* Right panel: very light background, center the card */
-    <div className="flex-1 bg-[#F5F7FA] flex flex-col items-center justify-center p-6 min-h-full">
-
-      {/* Floating card — Angel One style */}
-      <div className="bg-white w-full max-w-[380px] rounded-card border border-slate-200/80 shadow-card overflow-hidden">
-
-        {/* ── Card body ── */}
-        <div className="px-8 pt-8 pb-6">
-
-          {/* Logo + brand */}
-          <div className="flex items-center gap-2.5 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-sm tracking-tighter leading-none">OA</span>
+    <div className="flex-1 bg-[#F8FAFC] flex flex-col items-center justify-center p-6 sm:p-10 min-h-full">
+      {/* Floating Card */}
+      <div className="bg-white w-full max-w-[400px] rounded-2xl border border-slate-200/90 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.08),0_1px_3px_rgba(15,23,42,0.04)] overflow-hidden">
+        
+        {/* Card Body */}
+        <div className="p-7 sm:p-8">
+          
+          {/* Logo & Platform Branding */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0B5FFF] to-[#0047D0] flex items-center justify-center shadow-xs">
+              <span className="text-white font-extrabold text-[13px] tracking-tight">OA</span>
             </div>
-            <div className="leading-none">
-              <span className="font-bold text-[14px] text-slate-900 tracking-tight">OptionAlgo</span>
-              <span className="block text-[10px] font-medium text-slate-500 tracking-widest uppercase mt-0.5">
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-[15px] text-slate-900 tracking-tight leading-none">OptionAlgo</span>
+                <span className="text-[9px] font-bold text-[#0052FF] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">PRO</span>
+              </div>
+              <span className="block text-[10px] font-semibold text-slate-400 tracking-widest uppercase mt-0.5">
                 Automated Trading Suite
               </span>
             </div>
           </div>
 
-          {/* Dashed separator — matches Angel One aesthetic */}
+          {/* Clean Dashed Separator */}
           <div className="border-b border-dashed border-slate-200 mb-6" />
 
-          {/* Welcome text */}
-          <p className="text-sm text-slate-500 mb-0.5">Welcome back!</p>
-          <h1 className="text-[22px] font-bold text-slate-900 tracking-tightest mb-6 leading-tight">
-            Sign in to continue
-          </h1>
+          {/* Heading */}
+          <div className="mb-5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Welcome Back</span>
+            <h1 className="text-[22px] font-extrabold text-slate-900 tracking-tight mt-0.5">
+              Sign in to continue
+            </h1>
+          </div>
 
-          {/* Server error */}
+          {/* Server Error Alert */}
           {error && <ErrorAlert message={error} onDismiss={() => setError(null)} />}
 
-          {/* ── Form ── */}
+          {/* Form */}
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
-
-            {/* Email */}
+            
+            {/* Email Address */}
             <div className="space-y-1.5">
-              <label htmlFor="login-email" className="block text-[13px] font-medium text-slate-700">
+              <label htmlFor="login-email" className="block text-xs font-semibold text-slate-700">
                 Email address
               </label>
               <div className="relative">
                 <Mail
-                  className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
                   aria-hidden="true"
                 />
                 <input
@@ -140,12 +138,14 @@ const LoginForm: React.FC = () => {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="login-password" className="block text-[13px] font-medium text-slate-700">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="login-password" className="block text-xs font-semibold text-slate-700">
+                  Password
+                </label>
+              </div>
               <div className="relative">
                 <Lock
-                  className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
                   aria-hidden="true"
                 />
                 <input
@@ -153,7 +153,7 @@ const LoginForm: React.FC = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••"
+                  placeholder="••••••••••••"
                   autoComplete="current-password"
                   required
                   disabled={loading}
@@ -164,40 +164,42 @@ const LoginForm: React.FC = () => {
                   onClick={() => setShowPassword((v) => !v)}
                   disabled={loading}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-700 rounded transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-700 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0052FF]"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Remember me */}
-            <label className="flex items-center gap-2 cursor-pointer select-none group w-fit">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-slate-300 text-brand-primary focus:ring-brand-primary focus:ring-offset-0 cursor-pointer"
-                style={{ minHeight: 'unset' }}
-              />
-              <span className="text-[13px] text-slate-500 group-hover:text-slate-700 transition-colors">
-                Remember me
-              </span>
-            </label>
+            {/* Remember Me */}
+            <div className="flex items-center justify-between pt-0.5">
+              <label className="flex items-center gap-2 cursor-pointer select-none group">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 text-[#0052FF] focus:ring-[#0052FF] focus:ring-offset-0 cursor-pointer"
+                  style={{ minHeight: 'unset' }}
+                />
+                <span className="text-xs font-medium text-slate-600 group-hover:text-slate-900 transition-colors">
+                  Remember me
+                </span>
+              </label>
+            </div>
 
-            {/* Primary CTA — full-width, uppercase, Angel One "PROCEED" style */}
+            {/* Primary Action Button */}
             <button
               type="submit"
               disabled={loading}
               className="
                 w-full h-11 mt-1
-                bg-brand-primary hover:bg-brand-hover active:scale-[.99]
-                text-white font-bold text-[13px] tracking-widest uppercase rounded-input
+                bg-[#0052FF] hover:bg-[#0047D0] active:scale-[0.99]
+                text-white font-bold text-xs tracking-wider uppercase rounded-xl
                 flex items-center justify-center gap-2
-                shadow-card-sm
+                shadow-sm hover:shadow-md
                 transition-all duration-150
                 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100
-                focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-primary/[.3] focus-visible:ring-offset-1
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0052FF]/20
               "
             >
               {loading ? (
@@ -207,42 +209,44 @@ const LoginForm: React.FC = () => {
                   aria-label="Signing in…"
                 />
               ) : (
-                'Sign In'
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
               )}
             </button>
           </form>
+
+          {/* Register Prompt */}
+          <div className="mt-6 pt-4 border-t border-slate-100 text-center">
+            <p className="text-xs text-slate-500">
+              New to OptionAlgo?{' '}
+              <Link
+                to="/register"
+                className="font-bold text-[#0052FF] hover:text-[#0047D0] tracking-wide uppercase text-[11px] hover:underline"
+              >
+                Register Here
+              </Link>
+            </p>
+          </div>
         </div>
 
-        {/* ── Register link strip ── */}
-        <div className="px-8 py-3.5 border-t border-slate-100 text-center">
-          <p className="text-[12px] text-slate-500">
-            New to OptionAlgo?{' '}
-            <Link
-              to="/register"
-              className="font-bold text-brand-primary uppercase text-[11px] tracking-wide hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded"
-            >
-              Register Here
-            </Link>
-          </p>
-        </div>
-
-        {/* ── Info strip (Angel One "Welcome back! Enter your PIN…" equivalent) ── */}
-        <div className="flex items-start gap-2.5 px-5 py-3 bg-blue-50 border-t border-blue-100">
-          <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
-          <p className="text-[11px] text-blue-700 leading-relaxed">
-            Sign in to access your automated trading terminal and monitor live positions.
+        {/* Informational Guidance Banner */}
+        <div className="flex items-start gap-2.5 px-6 py-3 bg-blue-50/70 border-t border-blue-100/80">
+          <Shield className="w-4 h-4 text-[#0052FF] mt-0.5 flex-shrink-0" />
+          <p className="text-[11px] text-blue-900 leading-relaxed font-medium">
+            Authorized session securely routes through Angel One SmartAPI with automated risk bounds.
           </p>
         </div>
       </div>
 
-      {/* Encrypted session note — below card */}
-      <div className="flex items-center gap-1.5 mt-4 text-[11px] text-slate-400 select-none">
-        <Lock className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
-        <span>Encrypted connection</span>
+      {/* Security Tagline */}
+      <div className="flex items-center gap-1.5 mt-5 text-[11px] font-medium text-slate-400 select-none">
+        <Lock className="w-3.5 h-3.5 text-slate-400" />
+        <span>256-bit TLS Protected Terminal Session</span>
       </div>
     </div>
   );
 };
 
 export default LoginForm;
-
